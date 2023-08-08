@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Artifact ID -->
+    <artifactId>datareference-service</artifactId>
+
+    <!-- Project description -->
+    <description>Project data reference server</description>
+
+    <!-- gestion de build -->
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <version>2.3.8.RELEASE</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <groupId>org.mapstruct</groupId>
+                            <version>1.5.3.Final</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- dependencies -->
+    <dependencies>
+        <dependency>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>org.springframework.boot</groupId>
+        </dependency>
+
+        <dependency>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.springframework.boot</groupId>
+        </dependency>
+
+        <!--
+        <dependency>
+          <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+          <groupId>org.springframework.cloud</groupId>
+        </dependency>
+        -->
+
+        <dependency>
+            <artifactId>mapstruct</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>org.springframework.boot</groupId>
+        </dependency>
+
+        <dependency>
+            <artifactId>spring-boot-devtools</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <optional>true</optional>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.imgscalr</groupId>
+            <artifactId>imgscalr-lib</artifactId>
+            <version>4.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <artifactId>postgresql</artifactId>
+            <groupId>org.postgresql</groupId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${io.springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${io.springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <!-- test dependency -->
+        <dependency>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>junit-vintage-engine</artifactId>
+                    <groupId>org.junit.vintage</groupId>
+                </exclusion>
+            </exclusions>
+            <groupId>org.springframework.boot</groupId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Project developpers -->
+    <developers>
+        <developer>
+            <email>patrick.simo@cca-bank.com</email>
+            <name>Patrick SIMO</name>
+            <organization>CCA BANK</organization>
+            <roles>
+                <role>Technical Architect</role>
+                <role>Integrator</role>
+                <role>Technical Support</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>GMT+1</timezone>
+        </developer>
+    </developers>
+
+    <!-- Group ID -->
+    <groupId>com.ccabank</groupId>
+
+    <!-- Pome model version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project name -->
+    <name>datareferenceservice</name>
+
+    <!-- Project Packaging -->
+    <packaging>jar</packaging>
+
+    <!-- Project parent -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <!-- Plugin Repositories -->
+    <pluginRepositories>
+
+        <pluginRepository>
+            <id>central</id>
+            <layout>default</layout>
+            <name>Central Repository</name>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>jcenter-snapshots</id>
+            <name>jcenter</name>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>jcenter-releases</id>
+            <name>jcenter</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://jcenter.bintray.com</url>
+        </pluginRepository>
+
+        <!-- Spring Snapshots Repository -->
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>https://repo.spring.io/snapshot</url>
+        </pluginRepository>
+
+        <!-- Spring Milestones Repository -->
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+
+        <!-- Spring Releases Repository -->
+        <pluginRepository>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
+
+        <!-- Oracle OJDBC Repository -->
+        <pluginRepository>
+            <id>oracle-ojdbc-repository</id>
+            <name>Oracle OJDBC Driver Repository</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://code.lds.org/nexus/content/groups/main-repo/</url>
+        </pluginRepository>
+
+        <!-- smartics Repository -->
+        <pluginRepository>
+            <id>smartics</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://www.smartics.eu/nexus/content/groups/public-group</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- properties -->
+    <properties>
+
+        <aerogear.version>1.0.0</aerogear.version>
+
+        <!-- JAVA version property -->
+        <java.version>11</java.version>
+
+        <io.springfox.version>2.9.2</io.springfox.version>
+
+        <!-- Project build date -->
+        <maven.build.timestamp.format>dd-MM-yyyy</maven.build.timestamp.format>
+
+
+        <!-- Maven source compiler version property -->
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+
+
+        <!-- Maven target compiler version property -->
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- mapstruct version -->
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
+
+        <passay.version>1.0</passay.version>
+
+        <!-- Timestamp format -->
+        <project.build.date>${maven.build.timestamp}</project.build.date>
+
+        <!-- encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- encoding -->
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+
+        <!-- spring-cloud version property -->
+        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
+    </properties>
+
+    <version>0.0.1</version>
+
+
+</project>

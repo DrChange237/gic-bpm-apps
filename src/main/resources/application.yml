@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: datareference-service
+
+  # DATASOURCE (POSTGRESSSQL)
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/datareference-service
+    username: admin
+    password: CCAP@ssw0rd
+  # JAP
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.default_schema: public
+
+
+server:
+  port: ${port:60463}
+  servlet:
+    context-path: /api
+
+
+
+
