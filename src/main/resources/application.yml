@@ -19,7 +19,7 @@ spring:
 
 
 server:
-  port: ${port:60463}
+  port: ${port:0}
   servlet:
     context-path: /api
 

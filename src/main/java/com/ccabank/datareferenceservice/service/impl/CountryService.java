@@ -48,19 +48,7 @@ public class CountryService implements ICountryService {
             logger.info(COUNTRY_DETAIL_SERVICE, "getAllCountry : methode invocation");
             List<Country> countries = countryRepository.findAll();
 
-            if (countries == null) {
-                logger.warn(COUNTRY_DETAIL_SERVICE, "getAllCountry",
-                        "Country not exist!, Cannot further process!");
-                return new AppServiceResult<List<CountryDto>>(false, AppError.Validattion.errorCode(),
-                        "Organization not exist!", null);
-            }
-            List<CountryDto> result = new ArrayList<CountryDto>();
-            if (countries.size() > 0) {
-                for (Country country : countries) {
-                    result.add(countryMapper.toDto(country));
-                }
-            }
-            return new AppServiceResult<List<CountryDto>>(true, 0, "Succeed!", result);
+            return getConvertedResult(countries, "getAllCountry ");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(COUNTRY_DETAIL_SERVICE, "getAllCountry : Exception ", e.getMessage());
@@ -68,5 +56,121 @@ public class CountryService implements ICountryService {
                     AppError.Unknown.errorMessage(), null);
         }
 
+    }
+
+    @Override
+    public AppServiceResult<CountryDto> getCountryById(String id) {
+        try {
+            logger.info(COUNTRY_DETAIL_SERVICE, "getCountryById : methode invocation", id);
+            Country country = countryRepository.findById(Long.parseLong(id)).orElse(null);
+            if (country == null) {
+                logger.warn(COUNTRY_DETAIL_SERVICE, "getCountryById",
+                        "Country not exist!, Cannot further process!");
+                return new AppServiceResult<CountryDto>(false, AppError.Validattion.errorCode(),
+                        "Country not exist!", null);
+            }
+            return new AppServiceResult<CountryDto>(true, 0, "Succeed!", countryMapper.toDto(country));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(COUNTRY_DETAIL_SERVICE, "getCountryById : Exception ", e.getMessage());
+            return new AppServiceResult<CountryDto>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<CountryDto> getCountryByName(String countryName) {
+        try {
+            logger.info(COUNTRY_DETAIL_SERVICE, "getCountryByName : methode invocation", countryName);
+            Country country = countryRepository.getCountryByName(countryName);
+            if (country == null) {
+                logger.warn(COUNTRY_DETAIL_SERVICE, "getCountryByName",
+                        "Country not exist!, Cannot further process!");
+                return new AppServiceResult<CountryDto>(false, AppError.Validattion.errorCode(),
+                        "Country not exist!", null);
+            }
+            return new AppServiceResult<CountryDto>(true, 0, "Succeed!", countryMapper.toDto(country));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(COUNTRY_DETAIL_SERVICE, "getCountryByName : Exception ", e.getMessage());
+            return new AppServiceResult<CountryDto>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<CountryDto> getCountryByCode(String code) {
+        try {
+            logger.info(COUNTRY_DETAIL_SERVICE, "getCountryByCode : methode invocation");
+            Country country = countryRepository.getCountryByCode(code);
+            if (country == null) {
+                logger.warn(COUNTRY_DETAIL_SERVICE, "getCountryByCode",
+                        "Country not exist!, Cannot further process!");
+                return new AppServiceResult<CountryDto>(false, AppError.Validattion.errorCode(),
+                        "Country not exist!", null);
+            }
+            return new AppServiceResult<CountryDto>(true, 0, "Succeed!", countryMapper.toDto(country));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(COUNTRY_DETAIL_SERVICE, "getCountryByCode : Exception ", e.getMessage());
+            return new AppServiceResult<CountryDto>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<CountryDto> getCountryByCodeIso3(String code) {
+        try {
+            logger.info(COUNTRY_DETAIL_SERVICE, "getCountryByCodeIso3 : methode invocation");
+            Country country = countryRepository.getCountryByCodeIso3(code);
+            if (country == null) {
+                logger.warn(COUNTRY_DETAIL_SERVICE, "getCountryByCodeIso3",
+                        "Country not exist!, Cannot further process!");
+                return new AppServiceResult<CountryDto>(false, AppError.Validattion.errorCode(),
+                        "Country not exist!", null);
+            }
+            return new AppServiceResult<CountryDto>(true, 0, "Succeed!", countryMapper.toDto(country));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(COUNTRY_DETAIL_SERVICE, "getCountryByCodeIso3 : Exception ", e.getMessage());
+            return new AppServiceResult<CountryDto>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<CountryDto> getCountryByPhoneCode(String code) {
+        try {
+            logger.info(COUNTRY_DETAIL_SERVICE, "getCountryByPhoneCode : methode invocation");
+            Country country = countryRepository.getCountryByPhoneCode(code);
+            if (country == null) {
+                logger.warn(COUNTRY_DETAIL_SERVICE, "getCountryByPhoneCode",
+                        "Country not exist!, Cannot further process!");
+                return new AppServiceResult<CountryDto>(false, AppError.Validattion.errorCode(),
+                        "Country not exist!", null);
+            }
+            return new AppServiceResult<CountryDto>(true, 0, "Succeed!", countryMapper.toDto(country));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(COUNTRY_DETAIL_SERVICE, "getCountryByPhoneCode : Exception ", e.getMessage());
+            return new AppServiceResult<CountryDto>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    private AppServiceResult<List<CountryDto>> getConvertedResult(List<Country> countries, String functionName) {
+        if (countries == null) {
+            logger.warn(COUNTRY_DETAIL_SERVICE, functionName,
+                    "Country not exist!, Cannot further process!");
+            return new AppServiceResult<List<CountryDto>>(false, AppError.Validattion.errorCode(),
+                    "Country not exist!", null);
+        }
+        List<CountryDto> result =  new ArrayList<CountryDto>();
+        if (countries.size() > 0) {
+            for (Country country : countries) {
+                result.add(countryMapper.toDto(country));
+            }
+        }
+        return new AppServiceResult<List<CountryDto>>(true, 0, "Succeed!", result);
     }
 }
