@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Artifact ID -->
-    <artifactId>datareference-service</artifactId>
+    <artifactId>entity-service</artifactId>
 
     <!-- Project description -->
-    <description>Project data reference server</description>
+    <description>Project entity server</description>
 
     <!-- gestion de build -->
     <build>
