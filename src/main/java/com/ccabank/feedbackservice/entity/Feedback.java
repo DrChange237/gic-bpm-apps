@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -34,6 +35,9 @@ public class Feedback implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID", columnDefinition = "serial")
     private Long id;
+
+    @Column(name = "CREATED_AT", nullable = false)
+    private LocalDateTime createdAt;
 
     //Noms et Prénoms du Client
     @Basic(optional = false)
@@ -134,6 +138,14 @@ public class Feedback implements Serializable {
      */
     public Long getId() {
         return id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getStaffUsername() {

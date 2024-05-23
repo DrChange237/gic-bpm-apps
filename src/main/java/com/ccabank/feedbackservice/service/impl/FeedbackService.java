@@ -71,6 +71,23 @@ public class FeedbackService implements IFeedbackService {
         return null;
     }
 
+    @Override
+    public AppServiceResult<FeedbackDto> addFeedback(FeedbackDto feedbackDto) {
+        try {
+            logger.info(FEEDBACK_DETAIL_SERVICE + "addFeedback : methode invocation");
+            Feedback feedback = feedbackMapper.toEntity(feedbackDto);
+
+            return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", feedbackMapper.toDto(feedbackRepository.save(feedback)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(FEEDBACK_DETAIL_SERVICE + " addFeedback : Exception {}", e.getMessage());
+            return new AppServiceResult<FeedbackDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
+    }
+
+
     private AppServiceResult<List<FeedbackDto>> getConvertedResult(List<Feedback> feedbacks, String functionName) {
         if (feedbacks == null) {
             logger.warn(FEEDBACK_DETAIL_SERVICE, functionName,

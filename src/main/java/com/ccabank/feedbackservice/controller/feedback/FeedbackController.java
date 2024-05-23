@@ -1,18 +1,20 @@
-package com.ccabank.feedbackservice.controller.country;
+package com.ccabank.feedbackservice.controller.feedback;
 
+import com.ccabank.feedbackservice.domain.AppBaseResult;
 import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.HttpResponse;
 import com.ccabank.feedbackservice.dto.HttpResponseError;
 import com.ccabank.feedbackservice.dto.HttpResponseSuccess;
 import com.ccabank.feedbackservice.dto.country.FeedbackDto;
+import com.ccabank.feedbackservice.security.Authority;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -47,6 +49,16 @@ public class FeedbackController {
     public ResponseEntity<HttpResponse> countryDetails(@Valid @RequestParam(value = "id") String id) {
         AppServiceResult<FeedbackDto> result = feedbackService.getFeedbackById(id);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<FeedbackDto>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @PreAuthorize(Authority.FeedBack.ADD_FEEDBACK)
+    @PostMapping("/addAgencyAccount")
+    public ResponseEntity<HttpResponse> addFeedback(@Valid @RequestBody FeedbackDto feedbackDto) {
+        AppBaseResult result = feedbackService.addFeedback(feedbackDto);
+        return result.isSuccess()
+                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Account successfully added to Customer Feedback !, Feedback Has Been Added!"))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 

@@ -12,4 +12,7 @@ public interface IFeedbackService {
 
     AppServiceResult<FeedbackDto> getFeedbackByStaffUsername(String staffUsername);
 
+    AppServiceResult<FeedbackDto> addFeedback(FeedbackDto feedbackDto);
+
+
 }

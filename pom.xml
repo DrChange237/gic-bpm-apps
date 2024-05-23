@@ -128,6 +128,11 @@
             <groupId>org.springframework.boot</groupId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>6.2.2</version>
+        </dependency>
     </dependencies>
 
     <!-- dependency Management -->
