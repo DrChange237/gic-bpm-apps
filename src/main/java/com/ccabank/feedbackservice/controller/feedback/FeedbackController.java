@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ public class FeedbackController {
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PreAuthorize(Authority.FeedBack.ADD_FEEDBACK)
-    @PostMapping("/addAgencyAccount")
+    @PostMapping("/addFeedback")
     public ResponseEntity<HttpResponse> addFeedback(@Valid @RequestBody FeedbackDto feedbackDto) {
         AppBaseResult result = feedbackService.addFeedback(feedbackDto);
         return result.isSuccess()
@@ -66,6 +67,13 @@ public class FeedbackController {
     public ResponseEntity<HttpResponse> getFeedbackByStaff(@Valid @RequestParam(value = "name") String username) {
         AppServiceResult<FeedbackDto> result = feedbackService.getFeedbackByStaffUsername(username);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<FeedbackDto>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @GetMapping("/getFeedbackByStaffAndCreatedAt")
+    public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@Valid @RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt ) {
+        AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, startAt, endAt);
+        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 

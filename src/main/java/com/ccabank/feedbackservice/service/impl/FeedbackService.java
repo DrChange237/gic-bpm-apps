@@ -68,6 +68,19 @@ public class FeedbackService implements IFeedbackService {
     }
 
     @Override
+    public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffAndCreatedAt(String staff, LocalDateTime startAt, LocalDateTime endAt) {
+        try {
+            List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staff, startAt, endAt);
+
+            return getConvertedResult(feedbacks, "getFeedbackByStaffAndCreatedAt ");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
     public AppServiceResult<FeedbackDto> getFeedbackByStaffUsername(String staffUsername) {
         return null;
     }

@@ -39,6 +39,8 @@ public class Feedback implements Serializable {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
+
+
     //Noms et Prénoms du Client
     @Basic(optional = false)
     @NotNull
@@ -50,6 +52,7 @@ public class Feedback implements Serializable {
     @NotNull
     @Column(name = "FULLNAME")
     private String fullname;
+
 
     //Numero de Téléphone du Client
     @Basic(optional = false)
