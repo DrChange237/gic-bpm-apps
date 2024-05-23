@@ -1,0 +1,89 @@
+package com.ccabank.feedbackservice.service.impl;
+
+import com.ccabank.feedbackservice.constant.AppError;
+import com.ccabank.feedbackservice.domain.AppServiceResult;
+import com.ccabank.feedbackservice.dto.country.FeedbackDto;
+import com.ccabank.feedbackservice.entity.Feedback;
+import com.ccabank.feedbackservice.mappers.FeedbackMapper;
+import com.ccabank.feedbackservice.repository.FeedbackRepository;
+import com.ccabank.feedbackservice.service.faces.IFeedbackService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
+
+
+@Service
+@Transactional
+@Qualifier(FEEDBACK_DETAIL_SERVICE)
+public class FeedbackService implements IFeedbackService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FeedbackService.class);
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private FeedbackMapper feedbackMapper;
+
+
+    @Override
+    public AppServiceResult<List<FeedbackDto>> getAllFeedback() {
+        try {
+            List<Feedback> feedbacks = feedbackRepository.findAll();
+
+            return getConvertedResult(feedbacks, "getAllFeedback ");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<FeedbackDto> getFeedbackById(String id) {
+        try {
+            Feedback feedback = feedbackRepository.findById(Long.parseLong(id)).orElse(null);
+            if (feedback == null) {
+                logger.warn(FEEDBACK_DETAIL_SERVICE, "getCountryById",
+                        "Feedback not exist!, Cannot further process!");
+                return new AppServiceResult<FeedbackDto>(false, AppError.Validattion.errorCode(),
+                        "Feedback not exist!", null);
+            }
+            return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", feedbackMapper.toDto(feedback));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(FEEDBACK_DETAIL_SERVICE, "getFeedbackById : Exception ", e.getMessage());
+            return new AppServiceResult<FeedbackDto>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<FeedbackDto> getFeedbackByStaffUsername(String staffUsername) {
+        return null;
+    }
+
+    private AppServiceResult<List<FeedbackDto>> getConvertedResult(List<Feedback> feedbacks, String functionName) {
+        if (feedbacks == null) {
+            logger.warn(FEEDBACK_DETAIL_SERVICE, functionName,
+                    "Feedback not exist!, Cannot further process!");
+            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Validattion.errorCode(),
+                    "Feedback not exist!", null);
+        }
+        List<FeedbackDto> result =  new ArrayList<FeedbackDto>();
+        if (feedbacks.size() > 0) {
+            for (Feedback feedback : feedbacks) {
+                result.add(feedbackMapper.toDto(feedback));
+            }
+        }
+        return new AppServiceResult<List<FeedbackDto>>(true, 0, "Succeed!", result);
+    }
+}

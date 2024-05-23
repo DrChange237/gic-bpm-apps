@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Artifact ID -->
-    <artifactId>entity-service</artifactId>
+    <artifactId>feedback-service</artifactId>
 
     <!-- Project description -->
-    <description>Project entity server</description>
+    <description>Project for Feedback Customer</description>
 
     <!-- gestion de build -->
     <build>
