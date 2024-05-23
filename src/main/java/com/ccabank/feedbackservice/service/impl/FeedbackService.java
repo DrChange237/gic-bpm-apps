@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class FeedbackService implements IFeedbackService {
         try {
             logger.info(FEEDBACK_DETAIL_SERVICE + "addFeedback : methode invocation");
             Feedback feedback = feedbackMapper.toEntity(feedbackDto);
-
+            feedback.setCreatedAt(LocalDateTime.now());
             return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", feedbackMapper.toDto(feedbackRepository.save(feedback)));
 
         } catch (Exception e) {
