@@ -1,7 +1,7 @@
 package com.ccabank.feedbackservice.service.faces;
 
 import com.ccabank.feedbackservice.domain.AppServiceResult;
-import com.ccabank.feedbackservice.dto.country.FeedbackDto;
+import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

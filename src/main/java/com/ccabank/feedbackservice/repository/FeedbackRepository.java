@@ -13,6 +13,6 @@ import java.util.List;
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff AND  f.createdAt BETWEEN :startDate AND :endDate")
-    List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(String staffUsername, LocalDateTime startDate, LocalDateTime endDate);
+    List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(String staff, LocalDateTime startDate, LocalDateTime endDate);
 
 }

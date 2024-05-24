@@ -1,4 +1,4 @@
-package com.ccabank.feedbackservice.dto.country;
+package com.ccabank.feedbackservice.dto.feedback;
 
 
 import io.swagger.annotations.ApiModel;

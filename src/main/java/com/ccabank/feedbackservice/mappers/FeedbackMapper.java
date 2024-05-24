@@ -1,6 +1,6 @@
 package com.ccabank.feedbackservice.mappers;
 
-import com.ccabank.feedbackservice.dto.country.FeedbackDto;
+import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.entity.Feedback;
 import org.mapstruct.Mapper;
 

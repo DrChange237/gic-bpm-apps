@@ -2,7 +2,7 @@ package com.ccabank.feedbackservice.service.impl;
 
 import com.ccabank.feedbackservice.constant.AppError;
 import com.ccabank.feedbackservice.domain.AppServiceResult;
-import com.ccabank.feedbackservice.dto.country.FeedbackDto;
+import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;

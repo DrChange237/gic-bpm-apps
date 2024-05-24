@@ -5,15 +5,11 @@ import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.HttpResponse;
 import com.ccabank.feedbackservice.dto.HttpResponseError;
 import com.ccabank.feedbackservice.dto.HttpResponseSuccess;
-import com.ccabank.feedbackservice.dto.country.FeedbackDto;
-import com.ccabank.feedbackservice.security.Authority;
+import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -53,8 +49,8 @@ public class FeedbackController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
-    @PreAuthorize(Authority.FeedBack.ADD_FEEDBACK)
+    //@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    //@PreAuthorize(Authority.FeedBack.ADD_FEEDBACK)
     @PostMapping("/addFeedback")
     public ResponseEntity<HttpResponse> addFeedback(@Valid @RequestBody FeedbackDto feedbackDto) {
         AppBaseResult result = feedbackService.addFeedback(feedbackDto);
