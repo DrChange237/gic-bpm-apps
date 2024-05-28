@@ -6,9 +6,11 @@ import com.ccabank.feedbackservice.dto.HttpResponse;
 import com.ccabank.feedbackservice.dto.HttpResponseError;
 import com.ccabank.feedbackservice.dto.HttpResponseSuccess;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
+import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +57,7 @@ public class FeedbackController {
     public ResponseEntity<HttpResponse> addFeedback(@Valid @RequestBody FeedbackDto feedbackDto) {
         AppBaseResult result = feedbackService.addFeedback(feedbackDto);
         return result.isSuccess()
-                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Account successfully added to Customer Feedback !, Feedback Has Been Added!"))
+                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Feedback successfully added"))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
@@ -66,12 +68,22 @@ public class FeedbackController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+
+
     @GetMapping("/getFeedbackByStaffAndCreatedAt")
     public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@Valid @RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, startAt, endAt);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
+
+    @GetMapping("/getRank")
+    public ResponseEntity<HttpResponse> getRank(@Valid @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt, @RequestParam(value="property") String property, @RequestParam(value="size") int size ) {
+        Page<Feedback> result = feedbackService.findRank(startAt, endAt, property, size);
+        return ResponseEntity.ok(new HttpResponseSuccess<Page<Feedback>>(result));
+    }
+
+
 
 
 }

@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +84,18 @@ public class FeedbackService implements IFeedbackService {
     }
 
     @Override
+    public Page<Feedback> findRank(LocalDateTime startAt, LocalDateTime endAt, String property, int limit) {
+        Pageable pageable = PageRequest.of(1, limit);
+        try {
+            Page<Feedback> feedbacks = feedbackRepository.findRank(pageable, startAt, endAt, property);
+            return feedbacks;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public AppServiceResult<FeedbackDto> getFeedbackByStaffUsername(String staffUsername) {
         return null;
     }
@@ -98,6 +113,21 @@ public class FeedbackService implements IFeedbackService {
             logger.error(FEEDBACK_DETAIL_SERVICE + " addFeedback : Exception {}", e.getMessage());
             return new AppServiceResult<FeedbackDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
+        }
+    }
+
+    @Override
+    public AppServiceResult<List<FeedbackDto>> getFilterFeedback(String property) {
+        try {
+            List<Feedback> feedbacks = feedbackRepository.findAll();
+
+            //List<Feedback> feeds =  feedbacks.stream().filter(entity ->  entity.getProfessionalism() == property).collect(Collectors.toList()) ;
+
+            return getConvertedResult(feedbacks, "getFilterFeedback ");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
         }
     }
 
