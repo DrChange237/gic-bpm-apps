@@ -51,7 +51,6 @@ public class FeedbackService implements IFeedbackService {
     public AppServiceResult<List<FeedbackDto>> getAllFeedback() {
         try {
             List<Feedback> feedbacks = feedbackRepository.findAll();
-
             return getConvertedResult(feedbacks, "getAllFeedback ");
         } catch (Exception e) {
             e.printStackTrace();
