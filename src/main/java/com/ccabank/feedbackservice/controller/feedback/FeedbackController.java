@@ -61,7 +61,7 @@ public class FeedbackController {
     //@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     //@PreAuthorize(Authority.FeedBack.ADD_FEEDBACK)
     @PostMapping("/addFeedback")
-    public ResponseEntity<HttpResponse> addFeedback(@Valid @RequestBody FeedbackDto feedbackDto) {
+    public ResponseEntity<HttpResponse> addFeedback(@RequestBody FeedbackDto feedbackDto) {
         AppBaseResult result = feedbackService.addFeedback(feedbackDto);
         return result.isSuccess()
                 ? ResponseEntity.ok(new HttpResponseSuccess<String>("Feedback successfully added"))

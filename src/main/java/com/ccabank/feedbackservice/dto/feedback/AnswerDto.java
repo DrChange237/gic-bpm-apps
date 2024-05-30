@@ -1,6 +1,7 @@
 package com.ccabank.feedbackservice.dto.feedback;
 
 import com.ccabank.feedbackservice.entity.Feedback;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +16,7 @@ public class AnswerDto {
     private String answer;
 
     @NotNull(message = "feedback cannot be null")
+    @JsonIgnore
     private FeedbackDto feedback;
 
 
@@ -22,6 +24,9 @@ public class AnswerDto {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getQuestion() {
         return question;

@@ -39,7 +39,7 @@ import java.util.List;
  */
 @Api(tags = "Feedback")
 @RestController
-@RequestMapping("/question")
+@RequestMapping("/feedback")
 public class QuestionController {
 
     @Autowired

@@ -127,7 +127,19 @@ public class FeedbackService implements IFeedbackService {
                 answer.setFeedback(feedback);
             }
 
-            return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", feedbackMapper.toDto(feedbackRepository.save(feedback)));
+
+            logger.info(FEEDBACK_DETAIL_SERVICE + "before save : methode invocation");
+            feedback = feedbackRepository.save(feedback);
+
+
+            logger.info(FEEDBACK_DETAIL_SERVICE + "convert to Dto : methode invocation");
+
+            FeedbackDto dto = feedbackMapper.toDto(feedback);
+
+            logger.info(FEEDBACK_DETAIL_SERVICE + "return to view");
+
+
+            return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", dto );
 
         } catch (Exception e) {
             e.printStackTrace();
