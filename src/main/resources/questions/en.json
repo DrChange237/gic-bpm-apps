@@ -1,87 +1,87 @@
 [
   {
-    "label" : "Avez vous un compte au CCA-BANK ?",
+    "label" : "Do you have an account with CCA-BANK?",
     "type" : "bool",
     "property" : "haveAccount"
   },
   {
-    "label" : "Agence ou est domicilié le compte en question",
+    "label" : "Agency where the account in question is domiciled",
     "type" : "text",
     "property" : "branchWhereAccount"
   },
   {
-    "label" : "Objet de la visite",
+    "label" : "Purpose of the visit",
     "type" : "choice",
     "property" : "visitCause",
     "choices" : [
       {
-        "label" : "Ouverture de Compte",
+        "label" : "Account opening",
         "value" : "OPEN_ACCOUNT"
       },
       {
-        "label" : "Demande de Prêt",
+        "label" : "Loan Request",
         "value" : "LOAN_APPLICATION"
       },
       {
-        "label" : "Dépot ou Retrait",
+        "label" : "Deposit or Withdrawal",
         "value" : "CASH_IN_OUT"
       },
       {
-        "label" : "Conseils Financiers",
+        "label" : "Financial Advice",
         "value" : "FINANCIAL_ADVICE"
       },
       {
-        "label" : "Réclamation ou litige",
+        "label" : "Complaint or dispute",
         "value" : "COMPLAINT_DISPUTE"
       },
       {
-        "label" : "Mise à jour des informations",
+        "label" : "Updating information",
         "value" : "UPDATING_INFORMATION"
       },
       {
-        "label" : "Demande de Carte Bancaire",
+        "label" : "Bank Card Application",
         "value" : "BANK_CARD_APPLICATION"
       },
       {
-        "label" : "Consultation de solde",
+        "label" : "Balance consultation",
         "value" : "BALANCE_CONSULTATION"
       },
       {
-        "label" : "Renouvellement de produits",
+        "label" : "Product renewal",
         "value" : "PRODUCT_RENEWAL"
       },
       {
-        "label" : "Demande de chéquier",
+        "label" : "Checkbook request",
         "value" : "CHECKBOOK_REQUEST"
       },
       {
-        "label" : "Renseignements divers (Préciser)",
+        "label" : "Miscellaneous information",
         "value" : "MISCELLANEOUS_INFORMATION"
       }
     ]
   },
   {
-    "label" : "Comment évaluerez-vous la clarté des infos et des instructions fournis par l’agent qui vous a reçu ?",
+    "label" : "How will you rate the clarity of the information and instructions provided by the agent who received you?",
     "type" : "1-5",
     "property" : "clarteInstructions"
   },
   {
-    "label" : "Avez-vous été satisfait de la qualité de l’accueil de cet agent ?",
+    "label" : "Were you satisfied with the quality of the reception from this agent?",
     "type" : "1-5",
     "property" : "qualityOfWelcome"
   },
   {
-    "label" : "Comment évaluez-vous le Professionnalisme, la convivialité et la courtoisie de cet agent ?",
+    "label" : "How do you rate the professionalism, friendliness and courtesy of this agent?",
     "type" : "1-5",
     "property" : "professionalism"
   },
   {
-    "label" : "Comment évalueriez-vous la rapidité de réponse de l’agent à vos demandes ou questions ?",
+    "label" : "How would you rate the agent’s timeliness of response to your requests or questions?\n",
     "type" : "1-5",
     "property" : "speedOfAnswer"
   },
   {
-    "label" : "Disponibilité des fournitures formulaires de guichet, stylos, eau potable, etc.",
+    "label" : "Availability of supplies counter forms, pens, drinking water, etc.",
     "type" : "1-5",
     "property" : "formAvaibility"
   },
@@ -91,32 +91,32 @@
     "property" : "climatisation"
   },
   {
-    "label" : "Temps d'attente",
+    "label" : "Waiting time",
     "type" : "1-5",
     "property" : "waitingTime"
   },
   {
-    "label" : "Confort des locaux et disponibilité des sièges ",
+    "label" : "Comfort of premises and availability of seats",
     "type" : "1-5",
     "property" : "comfort"
   },
   {
-    "label" : "Propreté des toilettes",
+    "label" : "Toilet cleanliness",
     "type" : "1-5",
     "property" : "toiletCleanliness"
   },
   {
-    "label" : "Propreté générale",
+    "label" : "General cleanliness",
     "type" : "1-5",
     "property" : "mainCleanliness"
   },
   {
-    "label" : "Comment évaluerez-vous tout autre membre du personnel avec qui vous avez interagit",
+    "label" : "How will you rate any other staff members you interacted with",
     "type" : "1-5",
     "property" : "otherStaffMember"
   },
   {
-    "label" : "Avez-vous des commentaires ou des suggestions ?",
+    "label" : "Do you have any comments or suggestions?",
     "type" : "text",
     "property" : "comments"
   }
