@@ -1,0 +1,96 @@
+[
+  {
+    "label" : "Avez vous un compte au CCA-BANK ?",
+    "type" : "bool",
+    "property" : "haveAccount"
+  },
+  {
+    "label" : "Agence ou est domicilié le compte en question",
+    "type" : "text",
+    "property" : "branch"
+
+  },
+  {
+    "label" : "Objet de la visite",
+    "type" : "choice",
+    "property" : "visitCause",
+    "choices" : [
+      {
+        "label" : "Ouverture de Compte",
+        "value" : "OPEN_ACCOUNT"
+      },
+      {
+        "label" : "Demande de Prêt",
+        "value" : "LOAN_APPLICATION"
+      },
+      {
+        "label" : "Dépot ou Retrait",
+        "value" : "CASH_IN_OUT"
+      },
+      {
+        "label" : "Conseils Financiers",
+        "value" : "FINANCIAL_ADVICE"
+      }
+    ]
+  },
+  {
+    "label" : "Comment évaluerez-vous la clarté des infos et des instructions fournis par l’agent qui vous a reçu ?",
+    "type" : "1-5",
+    "property" : "clarteInstructions"
+  },
+  {
+    "label" : "Avez-vous été satisfait de la qualité de l’accueil de cet agent ?",
+    "type" : "1-5",
+    "property" : "qualityOfWelcome"
+  },
+  {
+    "label" : "Comment évaluez-vous le Professionnalisme, la convivialité et la courtoisie de cet agent ?",
+    "type" : "1-5",
+    "property" : "professionalism"
+  },
+  {
+    "label" : "Comment évalueriez-vous la rapidité de réponse de l’agent à vos demandes ou questions ?",
+    "type" : "1-5",
+    "property" : "speed"
+  },
+  {
+    "label" : "Disponibilité des fournitures formulaires de guichet, stylos, eau potable, etc.",
+    "type" : "1-5",
+    "property" : "formAvaibility"
+  },
+  {
+    "label" : "Climatisation",
+    "type" : "1-5",
+    "property" : "climatisation"
+  },
+  {
+    "label" : "Temps d'attente",
+    "type" : "1-5",
+    "property" : "waitingTime"
+  },
+  {
+    "label" : "Confort des locaux et disponibilité des sièges ",
+    "type" : "1-5",
+    "property" : "comfort"
+  },
+  {
+    "label" : "Propreté des toilettes",
+    "type" : "1-5",
+    "property" : "toiletCleanliness"
+  },
+  {
+    "label" : "Propreté générale",
+    "type" : "1-5",
+    "property" : "cleanliness"
+  },
+  {
+    "label" : "Comment évaluerez-vous tout autre membre du personnel avec qui vous avez interagit",
+    "type" : "1-5",
+    "property" : "otherStaffMember"
+  },
+  {
+    "label" : "Avez-vous des commentaires ou des suggestions ?",
+    "type" : "text",
+    "property" : "comments"
+  }
+]

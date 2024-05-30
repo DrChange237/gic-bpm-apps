@@ -3,20 +3,28 @@ package com.ccabank.feedbackservice.service.impl;
 import com.ccabank.feedbackservice.constant.AppError;
 import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
+import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
 import com.ccabank.feedbackservice.service.faces.IFeedbackService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +58,8 @@ public class FeedbackService implements IFeedbackService {
                     AppError.Unknown.errorMessage(), null);
         }
     }
+
+
 
     @Override
     public AppServiceResult<FeedbackDto> getFeedbackById(String id) {
@@ -96,8 +106,15 @@ public class FeedbackService implements IFeedbackService {
     }
 
     @Override
-    public AppServiceResult<FeedbackDto> getFeedbackByStaffUsername(String staffUsername) {
-        return null;
+    public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffUsername(String staffUsername) {
+        try {
+            List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaff(staffUsername);
+            return getConvertedResult(feedbacks, "getFeedbackByStaffUsername");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
     }
 
     @Override

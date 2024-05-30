@@ -37,13 +37,9 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ccabank.userservice.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.ccabank.feedbackservice.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .tags(new Tag("Countries", "These endpoints are used to manage countries.", 1)
-                        , new Tag("States", "These endpoints are used to manage states", 2)
-                        , new Tag("Cities", "These endpoints are used to manage cities", 3)
-                )
                 .enable(true)
                 .apiInfo(apiInfo());
     }

@@ -17,6 +17,9 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff AND  f.createdAt BETWEEN :startDate AND :endDate")
     List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(String staff, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff")
+    List<Feedback> findFeedbackByStaff(String staff);
+
 
     @Query("SELECT f FROM Feedback f WHERE  f.createdAt BETWEEN :startDate AND :endDate ORDER BY :property DESC ")
     Page<Feedback> findRank(Pageable pageable, LocalDateTime startDate, LocalDateTime endDate, String property);

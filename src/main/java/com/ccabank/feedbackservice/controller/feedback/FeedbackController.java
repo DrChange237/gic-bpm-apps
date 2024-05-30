@@ -6,15 +6,22 @@ import com.ccabank.feedbackservice.dto.HttpResponse;
 import com.ccabank.feedbackservice.dto.HttpResponseError;
 import com.ccabank.feedbackservice.dto.HttpResponseSuccess;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
+import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,7 +52,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/feedbackDetails")
-    public ResponseEntity<HttpResponse> countryDetails(@Valid @RequestParam(value = "id") String id) {
+    public ResponseEntity<HttpResponse> feedbackDetails(@RequestParam(value = "id") String id) {
         AppServiceResult<FeedbackDto> result = feedbackService.getFeedbackById(id);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<FeedbackDto>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
@@ -62,16 +69,16 @@ public class FeedbackController {
     }
 
     @GetMapping("/getFeedbackByStaff")
-    public ResponseEntity<HttpResponse> getFeedbackByStaff(@Valid @RequestParam(value = "name") String username) {
-        AppServiceResult<FeedbackDto> result = feedbackService.getFeedbackByStaffUsername(username);
-        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<FeedbackDto>(result.getData()))
+    public ResponseEntity<HttpResponse> getFeedbackByStaff(@RequestParam(value = "name") String username) {
+        AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffUsername(username);
+        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
 
 
     @GetMapping("/getFeedbackByStaffAndCreatedAt")
-    public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@Valid @RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt ) {
+    public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, startAt, endAt);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));

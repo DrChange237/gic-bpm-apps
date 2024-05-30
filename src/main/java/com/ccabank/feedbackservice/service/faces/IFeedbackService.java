@@ -4,7 +4,6 @@ import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.entity.Feedback;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +18,7 @@ public interface IFeedbackService {
     Page<Feedback> findRank(LocalDateTime startAt, LocalDateTime endAt, String property, int limit);
 
 
-    AppServiceResult<FeedbackDto> getFeedbackByStaffUsername(String staffUsername);
+    AppServiceResult<List<FeedbackDto>> getFeedbackByStaffUsername(String staffUsername);
 
     AppServiceResult<FeedbackDto> addFeedback(FeedbackDto feedbackDto);
 
