@@ -117,7 +117,7 @@
   },
   {
     "label" : "Avez-vous des commentaires ou des suggestions ?",
-    "type" : "text",
+    "type" : "textarea",
     "property" : "comments"
   }
 ]
