@@ -9,26 +9,22 @@ import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
 import com.ccabank.feedbackservice.service.faces.IFeedbackService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
 
@@ -45,6 +41,9 @@ public class FeedbackService implements IFeedbackService {
 
     @Autowired
     private FeedbackMapper feedbackMapper;
+
+    @Autowired
+    private QuestionService questionService;
 
 
     @Override
@@ -81,7 +80,7 @@ public class FeedbackService implements IFeedbackService {
     }
 
     @Override
-    public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffAndCreatedAt(String staff, LocalDateTime startAt, LocalDateTime endAt) {
+    public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffAndCreatedAt(String staff, LocalDate startAt, LocalDate endAt) {
         try {
             List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staff, startAt, endAt);
 
@@ -126,19 +125,8 @@ public class FeedbackService implements IFeedbackService {
             for (Answer answer : feedback.getAnswerCollection()) {
                 answer.setFeedback(feedback);
             }
-
-
-            logger.info(FEEDBACK_DETAIL_SERVICE + "before save : methode invocation");
             feedback = feedbackRepository.save(feedback);
-
-
-            logger.info(FEEDBACK_DETAIL_SERVICE + "convert to Dto : methode invocation");
-
             FeedbackDto dto = feedbackMapper.toDto(feedback);
-
-            logger.info(FEEDBACK_DETAIL_SERVICE + "return to view");
-
-
             return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", dto );
 
         } catch (Exception e) {
@@ -162,6 +150,38 @@ public class FeedbackService implements IFeedbackService {
             return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
                     AppError.Unknown.errorMessage(), null);
         }
+    }
+
+    @Override
+    public Map<String, Map<String, Double>> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt) {
+
+        List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staffUsername, startAt, endAt);
+
+        Map<String, Map<String, Double>> statistics = new HashMap<>();
+
+        for (Feedback feedback : feedbacks) {
+            Map<String, Double> questionStats = statistics.getOrDefault(staffUsername, new HashMap<>());
+
+            // Itérer sur chaque question et calculer le pourcentage
+            for (Answer answer : feedback.getAnswerCollection()) {
+                QuestionDto questionDto = questionService.getQuestion(answer.getQuestion());
+                if(questionDto.getType() != "1-5"){
+                    continue;
+                }
+                int questionScore = Integer.parseInt(answer.getAnswer());
+                String questionName = answer.getQuestion();
+                double percentage = calculatePercentage(questionScore, 5);
+                questionStats.put(questionName, percentage);
+            }
+
+            statistics.put(staffUsername, questionStats);
+        }
+
+        return statistics;
+    }
+
+    private double calculatePercentage(int value, int max) {
+        return (double) value / max * 100;
     }
 
 

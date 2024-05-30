@@ -27,6 +27,17 @@ public class QuestionService implements IQuestionService {
 
     private static final Logger logger = LoggerFactory.getLogger(FeedbackService.class);
 
+
+    public QuestionDto getQuestion(String property){
+
+        List<QuestionDto> questionDtos = this.getAllQuestions("fr");
+        return questionDtos.stream()
+                .filter(person -> person.getProperty().equals(property))
+                .findFirst()
+                .orElse(null);
+    }
+
+
     @Override
     public List<QuestionDto> getAllQuestions(String lang) {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -47,6 +47,7 @@ public class QuestionController {
 
 
     @GetMapping("/allQuestions")
+    @CrossOrigin()
     public ResponseEntity<HttpResponse> getAllQuestions(@RequestParam(value = "lang") String lang) {
 
         try{

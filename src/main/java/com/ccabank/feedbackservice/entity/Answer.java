@@ -3,6 +3,7 @@ package com.ccabank.feedbackservice.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "T_ANSWER")
@@ -24,6 +25,7 @@ public class Answer {
     private String question;
 
     @Column(name = "ANSWER")
+    @Size(max = 1000)
     private String answer;
 
 

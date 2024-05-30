@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : <a href="mailto:herve.foudjo@cca-bank.com">Herve FOUDJO</a>
@@ -45,6 +48,7 @@ public class FeedbackController {
     private FeedbackService feedbackService;
 
     @GetMapping("/allFeedback")
+    @CrossOrigin()
     public ResponseEntity<HttpResponse> getAllFeedback() {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getAllFeedback();
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
@@ -61,6 +65,7 @@ public class FeedbackController {
     //@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     //@PreAuthorize(Authority.FeedBack.ADD_FEEDBACK)
     @PostMapping("/addFeedback")
+    @CrossOrigin()
     public ResponseEntity<HttpResponse> addFeedback(@RequestBody FeedbackDto feedbackDto) {
         AppBaseResult result = feedbackService.addFeedback(feedbackDto);
         return result.isSuccess()
@@ -78,19 +83,21 @@ public class FeedbackController {
 
 
     @GetMapping("/getFeedbackByStaffAndCreatedAt")
-    public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt ) {
+    public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDate startAt,  @RequestParam(value = "endAt") LocalDate endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, startAt, endAt);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @GetMapping("/getRank")
-    public ResponseEntity<HttpResponse> getRank(@Valid @RequestParam(value = "startAt") LocalDateTime startAt,  @RequestParam(value = "endAt") LocalDateTime endAt, @RequestParam(value="property") String property, @RequestParam(value="size") int size ) {
-        Page<Feedback> result = feedbackService.findRank(startAt, endAt, property, size);
-        return ResponseEntity.ok(new HttpResponseSuccess<Page<Feedback>>(result));
+    @GetMapping("/getEvaluation")
+    public ResponseEntity<HttpResponse> getEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+        Map<String, Map<String, Double>> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+        return ResponseEntity.ok(new HttpResponseSuccess<Map<String, Map<String, Double>>>(result));
     }
 
-
-
+    public static LocalDate convertStringToLocalDate(String dateString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(dateString, formatter);
+    }
 
 }

@@ -14,6 +14,7 @@ public class QuestionDto {
 
     private List<QuestionChoiceDto> choices;
 
+
     public String getProperty() {
         return property;
     }
