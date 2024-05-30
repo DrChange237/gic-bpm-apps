@@ -1,11 +1,11 @@
 [
   {
-    "label" : "Do you have an account with CCA-BANK?",
+    "label" : "Do you have an account with CCA-BANK ?",
     "type" : "bool",
     "property" : "haveAccount"
   },
   {
-    "label" : "Agency where the account in question is domiciled",
+    "label" : "Agency where the account in question is domiciled ?",
     "type" : "text",
     "property" : "branchWhereAccount"
   },
@@ -61,22 +61,22 @@
     ]
   },
   {
-    "label" : "How will you rate the clarity of the information and instructions provided by the agent who received you?",
+    "label" : "How will you rate the clarity of the information and instructions provided by the agent who received you ?",
     "type" : "1-5",
     "property" : "clarteInstructions"
   },
   {
-    "label" : "Were you satisfied with the quality of the reception from this agent?",
+    "label" : "Were you satisfied with the quality of the reception from this agent ?",
     "type" : "1-5",
     "property" : "qualityOfWelcome"
   },
   {
-    "label" : "How do you rate the professionalism, friendliness and courtesy of this agent?",
+    "label" : "How do you rate the professionalism, friendliness and courtesy of this agent ?",
     "type" : "1-5",
     "property" : "professionalism"
   },
   {
-    "label" : "How would you rate the agent’s timeliness of response to your requests or questions?\n",
+    "label" : "How would you rate the agent’s timeliness of response to your requests or questions ?",
     "type" : "1-5",
     "property" : "speedOfAnswer"
   },

@@ -86,27 +86,27 @@
     "property" : "formAvaibility"
   },
   {
-    "label" : "Climatisation",
+    "label" : "Comment évaluerez-vous la climatisation",
     "type" : "1-5",
     "property" : "climatisation"
   },
   {
-    "label" : "Temps d'attente",
+    "label" : "Comment évaluerez-vous le temps d'attente",
     "type" : "1-5",
     "property" : "waitingTime"
   },
   {
-    "label" : "Confort des locaux et disponibilité des sièges ",
+    "label" : "Comment évaluerez-vous le confort des locaux et disponibilité des sièges ",
     "type" : "1-5",
     "property" : "comfort"
   },
   {
-    "label" : "Propreté des toilettes",
+    "label" : "Comment évaluerez-vous la propreté des toilettes",
     "type" : "1-5",
     "property" : "toiletCleanliness"
   },
   {
-    "label" : "Propreté générale",
+    "label" : "Comment évaluerez-vous la propreté générale",
     "type" : "1-5",
     "property" : "mainCleanliness"
   },
