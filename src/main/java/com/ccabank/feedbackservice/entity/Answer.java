@@ -26,6 +26,7 @@ public class Answer {
     @Column(name = "ANSWER")
     private String answer;
 
+
     public Long getId() {
         return id;
     }

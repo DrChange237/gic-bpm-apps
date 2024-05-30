@@ -4,6 +4,7 @@ import com.ccabank.feedbackservice.constant.AppError;
 import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
+import com.ccabank.feedbackservice.entity.Answer;
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
@@ -123,6 +124,10 @@ public class FeedbackService implements IFeedbackService {
             logger.info(FEEDBACK_DETAIL_SERVICE + "addFeedback : methode invocation");
             Feedback feedback = feedbackMapper.toEntity(feedbackDto);
             feedback.setCreatedAt(LocalDateTime.now());
+            for (Answer answer : feedback.getAnswerCollection()) {
+                answer.setFeedback(feedback);
+            }
+
             return new AppServiceResult<FeedbackDto>(true, 0, "Succeed!", feedbackMapper.toDto(feedbackRepository.save(feedback)));
 
         } catch (Exception e) {
