@@ -46,7 +46,7 @@ public class Feedback implements Serializable {
     @Column(name = "STAFF_USERNAME")
     private String staffUsername;
 
-    @JoinColumn(name = "AGENCY", referencedColumnName = "ID")
+    @JoinColumn(name = "AGENCY", referencedColumnName = "ID", nullable = true)
     @ManyToOne(optional = true)
     private Agency agency;
 

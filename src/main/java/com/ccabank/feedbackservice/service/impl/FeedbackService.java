@@ -67,7 +67,7 @@ public class FeedbackService implements IFeedbackService {
         try {
             Feedback feedback = feedbackRepository.findById(Long.parseLong(id)).orElse(null);
             if (feedback == null) {
-                logger.warn(FEEDBACK_DETAIL_SERVICE, "getCountryById",
+                logger.warn(FEEDBACK_DETAIL_SERVICE, "getFeedbackById",
                         "Feedback not exist!, Cannot further process!");
                 return new AppServiceResult<FeedbackDto>(false, AppError.Validattion.errorCode(),
                         "Feedback not exist!", null);

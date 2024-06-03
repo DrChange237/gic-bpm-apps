@@ -2,8 +2,16 @@ package com.ccabank.feedbackservice.dto.feedback;
 
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
 
 public class AnswerDto {
 
@@ -11,6 +19,8 @@ public class AnswerDto {
 
     @NotNull(message = "question cannot be null")
     private String question;
+
+    private String label;
 
     @NotNull(message = "answer cannot be null")
     private String answer;
@@ -36,6 +46,18 @@ public class AnswerDto {
         this.question = question;
     }
 
+    public String getLabel() {
+        String label = this.getQuestion(this.question).getLabel();
+        if(label == null){
+            return "";
+        }
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public String getAnswer() {
         return answer;
     }
@@ -50,5 +72,31 @@ public class AnswerDto {
 
     public void setFeedback(FeedbackDto feedback) {
         this.feedback = feedback;
+    }
+
+    public QuestionDto getQuestion(String property){
+
+        List<QuestionDto> questionDtos = this.getAllQuestions("fr");
+        return questionDtos.stream()
+                .filter(person -> person.getProperty().equals(property))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<QuestionDto> getAllQuestions(String lang) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+
+            ClassPathResource resource = new ClassPathResource("questions/" + lang + ".json");
+
+            InputStream inputStream = resource.getInputStream();
+            List<QuestionDto> questions = objectMapper.readValue(inputStream, new TypeReference<List<QuestionDto>>() {});
+
+            return questions;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
