@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @ApiModel()
@@ -17,6 +18,10 @@ public class FeedbackDto {
     @NotNull(message = "staffUsername  cannot be null")
     @Size(min = 1, max = 150)
     private String staffUsername;
+
+    @NotNull(message = "createdAt  cannot be null")
+    private LocalDateTime createdAt;
+
 
     @NotNull(message = "fullname cannot be null")
     @Size(min = 1, max = 150)
@@ -46,6 +51,14 @@ public class FeedbackDto {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getFullname() {

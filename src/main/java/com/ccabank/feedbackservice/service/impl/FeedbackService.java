@@ -2,6 +2,8 @@ package com.ccabank.feedbackservice.service.impl;
 
 import com.ccabank.feedbackservice.constant.AppError;
 import com.ccabank.feedbackservice.domain.AppServiceResult;
+import com.ccabank.feedbackservice.dto.feedback.EvaluationItem;
+import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
 import com.ccabank.feedbackservice.entity.Answer;
@@ -82,7 +84,7 @@ public class FeedbackService implements IFeedbackService {
     @Override
     public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffAndCreatedAt(String staff, LocalDate startAt, LocalDate endAt) {
         try {
-            List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staff, startAt, endAt);
+            List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staff, startAt.atStartOfDay(), endAt.atStartOfDay());
 
             return getConvertedResult(feedbacks, "getFeedbackByStaffAndCreatedAt ");
         } catch (Exception e) {
@@ -153,35 +155,72 @@ public class FeedbackService implements IFeedbackService {
     }
 
     @Override
-    public Map<String, Map<String, Double>> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt) {
+    public AppServiceResult<EvaluationPeriodStaffDto> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt) {
 
-        List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staffUsername, startAt, endAt);
+        List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staffUsername, startAt.atStartOfDay(), endAt.atStartOfDay());
+
+        logger.error(FEEDBACK_DETAIL_SERVICE + " Feedbacks retrieve" + String.valueOf(feedbacks.size()), "" );
+
 
         Map<String, Map<String, Double>> statistics = new HashMap<>();
 
-        for (Feedback feedback : feedbacks) {
-            Map<String, Double> questionStats = statistics.getOrDefault(staffUsername, new HashMap<>());
+        EvaluationPeriodStaffDto evaluation = new EvaluationPeriodStaffDto();
+        evaluation.setUsername(staffUsername);
+        evaluation.setStartAt(startAt);
+        evaluation.setEndAt(endAt);
 
-            // Itérer sur chaque question et calculer le pourcentage
-            for (Answer answer : feedback.getAnswerCollection()) {
-                QuestionDto questionDto = questionService.getQuestion(answer.getQuestion());
-                if(questionDto.getType() != "1-5"){
-                    continue;
-                }
-                int questionScore = Integer.parseInt(answer.getAnswer());
-                String questionName = answer.getQuestion();
-                double percentage = calculatePercentage(questionScore, 5);
-                questionStats.put(questionName, percentage);
+        List<EvaluationItem> evaluations = evaluation.getEvaluations();
+
+        List<QuestionDto> questionDtos = questionService.getAllQuestions("fr");
+
+
+
+        for(QuestionDto questionDto: questionDtos){
+
+            if(!questionDto.getType().equals("1-5")){
+                continue;
             }
 
-            statistics.put(staffUsername, questionStats);
+            EvaluationItem item = new EvaluationItem();
+            item.setElement(questionDto.getProperty());
+            int score = 0;
+            int total = 0;
+            int count = 0;
+            float percentage = 0;
+
+
+            for (Feedback feedback : feedbacks) {
+                    // Itérer sur chaque question et calculer le pourcentage
+                    for (Answer answer : feedback.getAnswerCollection()) {
+
+                        if(!questionDto.getProperty().equals(answer.getQuestion())){
+                            continue;
+                        }
+
+                        score =  score + Integer.parseInt(answer.getAnswer());
+                        count = count + 1;
+                        total = total + 5;
+                    }
+                    if(total > 0){
+                        percentage = ((float) score /total) * 100;
+                    }
+            }
+
+            item.setPourcent(percentage);
+            item.setCount(count);
+
+            evaluations.add(item);
+
+            evaluation.setEvaluations(evaluations);
+
+            //statistics.put(staffUsername, questionStats);
         }
 
-        return statistics;
+        return new AppServiceResult<EvaluationPeriodStaffDto>(true, 0, "Succeed!", evaluation);
     }
 
-    private double calculatePercentage(int value, int max) {
-        return (double) value / max * 100;
+    private float calculatePercentage(int value, int max) {
+        return (float) value / max * 100;
     }
 
 

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff AND  f.createdAt BETWEEN :startDate AND :endDate")
-    List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(String staff, LocalDate startDate, LocalDate endDate);
+    List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(@Param("staff") String staff, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff")
     List<Feedback> findFeedbackByStaff(String staff);

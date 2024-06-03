@@ -46,6 +46,11 @@ public class Feedback implements Serializable {
     @Column(name = "STAFF_USERNAME")
     private String staffUsername;
 
+    @JoinColumn(name = "AGENCY", referencedColumnName = "ID")
+    @ManyToOne(optional = true)
+    private Agency agency;
+
+
     //Noms et Prénoms du Client
     @Basic(optional = false)
     @NotNull
@@ -77,6 +82,14 @@ public class Feedback implements Serializable {
      */
     public Long getId() {
         return id;
+    }
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     public LocalDateTime getCreatedAt() {

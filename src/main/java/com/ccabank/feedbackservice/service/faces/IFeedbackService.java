@@ -1,6 +1,7 @@
 package com.ccabank.feedbackservice.service.faces;
 
 import com.ccabank.feedbackservice.domain.AppServiceResult;
+import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.entity.Feedback;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,6 @@ import org.springframework.data.domain.Page;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface IFeedbackService {
     AppServiceResult<List<FeedbackDto>> getAllFeedback();
@@ -26,7 +26,7 @@ public interface IFeedbackService {
 
     AppServiceResult<List<FeedbackDto>> getFilterFeedback(String property);
 
-    Map<String, Map<String, Double>> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt);
+    AppServiceResult<EvaluationPeriodStaffDto> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt);
 
 
 

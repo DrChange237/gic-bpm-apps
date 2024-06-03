@@ -1,6 +1,7 @@
 package com.ccabank.feedbackservice.dto.feedback;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EvaluationPeriodStaffDto {
@@ -11,7 +12,7 @@ public class EvaluationPeriodStaffDto {
 
     private LocalDate endAt;
 
-    private List<EvaluationItem> evaluations;
+    private List<EvaluationItem> evaluations = new ArrayList<>();;
 
     public String getUsername() {
         return username;

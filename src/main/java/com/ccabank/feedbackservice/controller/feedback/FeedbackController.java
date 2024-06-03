@@ -5,6 +5,7 @@ import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.HttpResponse;
 import com.ccabank.feedbackservice.dto.HttpResponseError;
 import com.ccabank.feedbackservice.dto.HttpResponseSuccess;
+import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
 import com.ccabank.feedbackservice.entity.Feedback;
@@ -56,6 +57,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/feedbackDetails")
+    @CrossOrigin()
     public ResponseEntity<HttpResponse> feedbackDetails(@RequestParam(value = "id") String id) {
         AppServiceResult<FeedbackDto> result = feedbackService.getFeedbackById(id);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<FeedbackDto>(result.getData()))
@@ -74,6 +76,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/getFeedbackByStaff")
+    @CrossOrigin
     public ResponseEntity<HttpResponse> getFeedbackByStaff(@RequestParam(value = "name") String username) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffUsername(username);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
@@ -83,6 +86,7 @@ public class FeedbackController {
 
 
     @GetMapping("/getFeedbackByStaffAndCreatedAt")
+    @CrossOrigin
     public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") LocalDate startAt,  @RequestParam(value = "endAt") LocalDate endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, startAt, endAt);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
@@ -90,12 +94,13 @@ public class FeedbackController {
     }
 
     @GetMapping("/getEvaluation")
+    @CrossOrigin
     public ResponseEntity<HttpResponse> getEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
-        Map<String, Map<String, Double>> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
-        return ResponseEntity.ok(new HttpResponseSuccess<Map<String, Map<String, Double>>>(result));
+        AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+        return ResponseEntity.ok(new HttpResponseSuccess<AppServiceResult<EvaluationPeriodStaffDto>>(result));
     }
 
-    public static LocalDate convertStringToLocalDate(String dateString) {
+    public  LocalDate convertStringToLocalDate(String dateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(dateString, formatter);
     }
