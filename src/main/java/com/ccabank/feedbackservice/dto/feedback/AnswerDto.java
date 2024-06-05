@@ -22,6 +22,8 @@ public class AnswerDto {
 
     private String label;
 
+    private QuestionDto questionDto;
+
     @NotNull(message = "answer cannot be null")
     private String answer;
 
@@ -72,6 +74,19 @@ public class AnswerDto {
 
     public void setFeedback(FeedbackDto feedback) {
         this.feedback = feedback;
+    }
+
+    public QuestionDto getQuestionDto(){
+
+        List<QuestionDto> questionDtos = this.getAllQuestions("fr");
+        return questionDtos.stream()
+                .filter(question -> question.getProperty().equals(this.question))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void setQuestionDto(QuestionDto questionDto) {
+        this.questionDto = questionDto;
     }
 
     public QuestionDto getQuestion(String property){

@@ -162,8 +162,6 @@ public class FeedbackService implements IFeedbackService {
         logger.error(FEEDBACK_DETAIL_SERVICE + " Feedbacks retrieve" + String.valueOf(feedbacks.size()), "" );
 
 
-        Map<String, Map<String, Double>> statistics = new HashMap<>();
-
         EvaluationPeriodStaffDto evaluation = new EvaluationPeriodStaffDto();
         evaluation.setUsername(staffUsername);
         evaluation.setStartAt(startAt);
@@ -173,8 +171,6 @@ public class FeedbackService implements IFeedbackService {
 
         List<QuestionDto> questionDtos = questionService.getAllQuestions("fr");
 
-
-
         for(QuestionDto questionDto: questionDtos){
 
             if(!questionDto.getType().equals("1-5")){
@@ -183,6 +179,7 @@ public class FeedbackService implements IFeedbackService {
 
             EvaluationItem item = new EvaluationItem();
             item.setElement(questionDto.getProperty());
+            item.setLabel(questionDto.getLabel());
             int score = 0;
             int total = 0;
             int count = 0;
@@ -205,15 +202,10 @@ public class FeedbackService implements IFeedbackService {
                         percentage = ((float) score /total) * 100;
                     }
             }
-
             item.setPourcent(percentage);
             item.setCount(count);
-
             evaluations.add(item);
-
             evaluation.setEvaluations(evaluations);
-
-            //statistics.put(staffUsername, questionStats);
         }
 
         return new AppServiceResult<EvaluationPeriodStaffDto>(true, 0, "Succeed!", evaluation);
