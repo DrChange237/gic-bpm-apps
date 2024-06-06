@@ -6,9 +6,11 @@ import com.ccabank.feedbackservice.dto.feedback.EvaluationItem;
 import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
+import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.entity.Answer;
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
+import com.ccabank.feedbackservice.repository.AgencyRepository;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
 import com.ccabank.feedbackservice.service.faces.IFeedbackService;
 import org.slf4j.Logger;
@@ -46,6 +48,9 @@ public class FeedbackService implements IFeedbackService {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private AgencyRepository agencyRepository;
 
 
     @Override
@@ -201,6 +206,62 @@ public class FeedbackService implements IFeedbackService {
                     if(total > 0){
                         percentage = ((float) score /total) * 100;
                     }
+            }
+            item.setPourcent(percentage);
+            item.setCount(count);
+            evaluations.add(item);
+            evaluation.setEvaluations(evaluations);
+        }
+
+        return new AppServiceResult<EvaluationPeriodStaffDto>(true, 0, "Succeed!", evaluation);
+    }
+
+    @Override
+    public AppServiceResult<EvaluationPeriodStaffDto> getEvaluationAgency(String agencyCode, LocalDate startAt, LocalDate endAt) {
+
+        Agency agency = agencyRepository.findAgencyByAgencyCode(agencyCode);
+
+        List<Feedback> feedbacks = feedbackRepository.findFeedbackByAgencyAndCreatedAtBetween(agency, startAt.atStartOfDay(), endAt.atStartOfDay());
+
+        EvaluationPeriodStaffDto evaluation = new EvaluationPeriodStaffDto();
+        evaluation.setUsername(agencyCode);
+        evaluation.setStartAt(startAt);
+        evaluation.setEndAt(endAt);
+
+        List<EvaluationItem> evaluations = evaluation.getEvaluations();
+
+        List<QuestionDto> questionDtos = questionService.getAllQuestions("fr");
+
+        for(QuestionDto questionDto: questionDtos){
+
+            if(!questionDto.getType().equals("1-5")){
+                continue;
+            }
+
+            EvaluationItem item = new EvaluationItem();
+            item.setElement(questionDto.getProperty());
+            item.setLabel(questionDto.getLabel());
+            int score = 0;
+            int total = 0;
+            int count = 0;
+            float percentage = 0;
+
+
+            for (Feedback feedback : feedbacks) {
+                // Itérer sur chaque question et calculer le pourcentage
+                for (Answer answer : feedback.getAnswerCollection()) {
+
+                    if(!questionDto.getProperty().equals(answer.getQuestion())){
+                        continue;
+                    }
+
+                    score =  score + Integer.parseInt(answer.getAnswer());
+                    count = count + 1;
+                    total = total + 5;
+                }
+                if(total > 0){
+                    percentage = ((float) score /total) * 100;
+                }
             }
             item.setPourcent(percentage);
             item.setCount(count);

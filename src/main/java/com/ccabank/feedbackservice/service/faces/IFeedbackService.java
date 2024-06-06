@@ -28,6 +28,9 @@ public interface IFeedbackService {
 
     AppServiceResult<EvaluationPeriodStaffDto> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt);
 
+    AppServiceResult<EvaluationPeriodStaffDto> getEvaluationAgency(String agencyCode, LocalDate startAt, LocalDate endAt);
+
+
 
 
 

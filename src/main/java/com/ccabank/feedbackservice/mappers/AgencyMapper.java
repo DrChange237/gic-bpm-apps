@@ -1,7 +1,9 @@
 package com.ccabank.feedbackservice.mappers;
 
+import com.ccabank.feedbackservice.dto.feedback.AgencyDto;
 import com.ccabank.feedbackservice.dto.feedback.AnswerDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
+import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.entity.Answer;
 import com.ccabank.feedbackservice.entity.Feedback;
 import org.mapstruct.MapMapping;
@@ -21,15 +23,8 @@ import org.mapstruct.Named;
  * To change this template use File | Settings | File Templates.
  */
 @Mapper(componentModel = "spring")
-public interface FeedbackMapper extends EntityMapper<FeedbackDto, Feedback> {
+public interface AgencyMapper extends EntityMapper<AgencyDto, Agency> {
 
-    @Override
-    @Mapping(target = "answerCollection", qualifiedByName= "withoutId")
-    FeedbackDto toDto(Feedback feedback);
-
-    @Named("withoutId")
-    @Mapping(target = "feedback", ignore = true)
-    AnswerDto toDtoWithoutFeedback(Answer answer);
 }
 
 

@@ -9,6 +9,7 @@ import com.ccabank.feedbackservice.dto.feedback.EvaluationItem;
 import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
+import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import com.ccabank.feedbackservice.service.impl.QuestionService;
@@ -61,7 +62,7 @@ public class FeedbackController {
     private QuestionService questionService;
 
     @GetMapping("/allFeedback")
-    @CrossOrigin()
+    //@CrossOrigin()
     public ResponseEntity<HttpResponse> getAllFeedback() {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getAllFeedback();
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
@@ -69,7 +70,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/feedbackDetails")
-    @CrossOrigin()
+    //@CrossOrigin()
     public ResponseEntity<HttpResponse> feedbackDetails(@RequestParam(value = "id") String id) {
         AppServiceResult<FeedbackDto> result = feedbackService.getFeedbackById(id);
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<FeedbackDto>(result.getData()))
@@ -89,15 +90,16 @@ public class FeedbackController {
 
 
     @GetMapping("/getFeedbackByStaffAndCreatedAt")
-    @CrossOrigin
+    //@CrossOrigin
     public ResponseEntity<HttpResponse> getFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
         return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+
     @GetMapping("/exportFeedbackByStaffAndCreatedAt")
-    @CrossOrigin
+    //@CrossOrigin
     public ResponseEntity exportFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -108,6 +110,7 @@ public class FeedbackController {
 
             // Écrire l'en-tête
             Row headerRow = sheet.createRow(0);
+
             headerRow.createCell(0).setCellValue("Questions");
 
             int i = 1;

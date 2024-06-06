@@ -1,5 +1,6 @@
 package com.ccabank.feedbackservice.repository;
 
+import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.entity.Feedback;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,10 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff AND  f.createdAt BETWEEN :startDate AND :endDate")
     List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(@Param("staff") String staff, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT f FROM Feedback f WHERE f.agency = :agency AND  f.createdAt BETWEEN :startDate AND :endDate")
+    List<Feedback> findFeedbackByAgencyAndCreatedAtBetween(@Param("agency") Agency agency, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
 
     @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff")
     List<Feedback> findFeedbackByStaff(String staff);

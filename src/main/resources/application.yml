@@ -3,14 +3,32 @@ spring:
     name: feedback-service
 
   # DATASOURCE (POSTGRESSSQL)
-
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/feedback-service
+    username: admin
+    password: CCAP@ssw0rd
   # JAP
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.default_schema: public
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 
-
-
-
-
+server:
+  port: ${port:6589}
+  servlet:
+    context-path: /api
 
 
 
