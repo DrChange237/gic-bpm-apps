@@ -2,16 +2,18 @@ package com.ccabank.feedbackservice.service.impl;
 
 import com.ccabank.feedbackservice.constant.AppError;
 import com.ccabank.feedbackservice.domain.AppServiceResult;
-import com.ccabank.feedbackservice.dto.feedback.EvaluationItem;
-import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
-import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
-import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
+import com.ccabank.feedbackservice.dto.feedback.*;
 import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.entity.Answer;
 import com.ccabank.feedbackservice.entity.Feedback;
+import com.ccabank.feedbackservice.entity.Staff;
+import com.ccabank.feedbackservice.mappers.AgencyMapper;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
+import com.ccabank.feedbackservice.mappers.StaffMapper;
+import com.ccabank.feedbackservice.openfeign.UserRestClient;
 import com.ccabank.feedbackservice.repository.AgencyRepository;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
+import com.ccabank.feedbackservice.repository.StaffRepository;
 import com.ccabank.feedbackservice.service.faces.IFeedbackService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
 
@@ -47,10 +47,22 @@ public class FeedbackService implements IFeedbackService {
     private FeedbackMapper feedbackMapper;
 
     @Autowired
+    private StaffMapper staffMapper;
+
+    @Autowired
+    private AgencyMapper agencyMapper;
+
+    @Autowired
     private QuestionService questionService;
 
     @Autowired
     private AgencyRepository agencyRepository;
+
+    @Autowired
+    private StaffRepository staffRepository;
+
+    @Autowired
+    private UserRestClient userRestClient;
 
 
     @Override
@@ -64,7 +76,6 @@ public class FeedbackService implements IFeedbackService {
                     AppError.Unknown.errorMessage(), null);
         }
     }
-
 
 
     @Override
@@ -90,6 +101,19 @@ public class FeedbackService implements IFeedbackService {
     public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffAndCreatedAt(String staff, LocalDate startAt, LocalDate endAt) {
         try {
             List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staff, startAt.atStartOfDay(), endAt.atStartOfDay());
+
+            return getConvertedResult(feedbacks, "getFeedbackByStaffAndCreatedAt ");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<List<FeedbackDto>> getFeedbackByAgencyAndCreatedAt(String agencyCode, LocalDate startAt, LocalDate endAt) {
+        try {
+            List<Feedback> feedbacks = feedbackRepository.findFeedbackByAgencyAndCreatedAtBetween(agencyCode, startAt.atStartOfDay(), endAt.atStartOfDay());
 
             return getConvertedResult(feedbacks, "getFeedbackByStaffAndCreatedAt ");
         } catch (Exception e) {
@@ -128,6 +152,22 @@ public class FeedbackService implements IFeedbackService {
         try {
             logger.info(FEEDBACK_DETAIL_SERVICE + "addFeedback : methode invocation");
             Feedback feedback = feedbackMapper.toEntity(feedbackDto);
+            Staff  staff = staffRepository.findByUsername(feedbackDto.getStaff().getUsername());
+            if(staff == null) {
+                staff = staffMapper.toEntity(feedbackDto.getStaff());
+                UserRestDto userDto = userRestClient.getAgencyByStaffUsername(staff.getUsername(), "key", "secret");
+                Agency agency = agencyRepository.findAgencyByAgencyCode(userDto.getAgencyCode());
+                if(agency == null){
+                    agency = new Agency();
+                    agency.setAgencyCode(userDto.getAgencyCode());
+                    agency.setAgencyName(userDto.getAgencyName());
+                    agency = agencyRepository.save(agency);
+                }
+                staff.setPosition(userDto.getFunction());
+                staff.setAgency(agency);
+                staff = staffRepository.save(staff);
+            }
+            feedback.setStaff(staff);
             feedback.setCreatedAt(LocalDateTime.now());
             for (Answer answer : feedback.getAnswerCollection()) {
                 answer.setFeedback(feedback);
@@ -144,28 +184,13 @@ public class FeedbackService implements IFeedbackService {
         }
     }
 
-    @Override
-    public AppServiceResult<List<FeedbackDto>> getFilterFeedback(String property) {
-        try {
-            List<Feedback> feedbacks = feedbackRepository.findAll();
-
-            //List<Feedback> feeds =  feedbacks.stream().filter(entity ->  entity.getProfessionalism() == property).collect(Collectors.toList()) ;
-
-            return getConvertedResult(feedbacks, "getFilterFeedback ");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
-                    AppError.Unknown.errorMessage(), null);
-        }
-    }
 
     @Override
     public AppServiceResult<EvaluationPeriodStaffDto> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt) {
 
         List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaffUsernameAndCreatedAtBetween(staffUsername, startAt.atStartOfDay(), endAt.atStartOfDay());
 
-        logger.error(FEEDBACK_DETAIL_SERVICE + " Feedbacks retrieve" + String.valueOf(feedbacks.size()), "" );
-
+        logger.info(FEEDBACK_DETAIL_SERVICE + " Feedbacks retrieve" + String.valueOf(feedbacks.size()), "" );
 
         EvaluationPeriodStaffDto evaluation = new EvaluationPeriodStaffDto();
         evaluation.setUsername(staffUsername);
@@ -189,7 +214,6 @@ public class FeedbackService implements IFeedbackService {
             int total = 0;
             int count = 0;
             float percentage = 0;
-
 
             for (Feedback feedback : feedbacks) {
                     // Itérer sur chaque question et calculer le pourcentage
@@ -219,9 +243,7 @@ public class FeedbackService implements IFeedbackService {
     @Override
     public AppServiceResult<EvaluationPeriodStaffDto> getEvaluationAgency(String agencyCode, LocalDate startAt, LocalDate endAt) {
 
-        Agency agency = agencyRepository.findAgencyByAgencyCode(agencyCode);
-
-        List<Feedback> feedbacks = feedbackRepository.findFeedbackByAgencyAndCreatedAtBetween(agency, startAt.atStartOfDay(), endAt.atStartOfDay());
+        List<Feedback> feedbacks = feedbackRepository.findFeedbackByAgencyAndCreatedAtBetween(agencyCode, startAt.atStartOfDay(), endAt.atStartOfDay());
 
         EvaluationPeriodStaffDto evaluation = new EvaluationPeriodStaffDto();
         evaluation.setUsername(agencyCode);

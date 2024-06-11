@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -15,9 +16,12 @@ public class FeedbackDto {
 
     private String id;
 
-    @NotNull(message = "staffUsername  cannot be null")
+    private StaffDto staff;
+
+
     @Size(min = 1, max = 150)
-    private String staffUsername;
+    private String form;
+
 
     @NotNull(message = "createdAt  cannot be null")
     private LocalDateTime createdAt;
@@ -35,7 +39,6 @@ public class FeedbackDto {
     private String email;
 
     private Collection<AnswerDto> answerCollection;
-
 
     public Collection<AnswerDto> getAnswerCollection() {
         return answerCollection;
@@ -61,6 +64,14 @@ public class FeedbackDto {
         this.createdAt = createdAt;
     }
 
+    public String getForm() {
+        return form;
+    }
+
+    public void setForm(String form) {
+        this.form = form;
+    }
+
     public String getFullname() {
         return fullname;
     }
@@ -69,13 +80,6 @@ public class FeedbackDto {
         this.fullname = fullname;
     }
 
-    public String getStaffUsername() {
-        return staffUsername;
-    }
-
-    public void setStaffUsername(String staffUsername) {
-        this.staffUsername = staffUsername;
-    }
 
     public String getMobile() {
         return mobile;
@@ -93,5 +97,11 @@ public class FeedbackDto {
         this.email = email;
     }
 
+    public StaffDto getStaff() {
+        return staff;
+    }
 
+    public void setStaff(StaffDto staff) {
+        this.staff = staff;
+    }
 }

@@ -1,6 +1,5 @@
 package com.ccabank.feedbackservice.service.impl;
 
-import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
 import com.ccabank.feedbackservice.service.faces.IQuestionService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +50,22 @@ public class QuestionService implements IQuestionService {
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(FEEDBACK_DETAIL_SERVICE, "getAllQuestions : Exception ", e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<QuestionDto> getQuestions(String form, String lang) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ClassPathResource resource = new ClassPathResource("questions/" + form + "/" + lang + ".json");
+            InputStream inputStream = resource.getInputStream();
+            List<QuestionDto> questions = objectMapper.readValue(inputStream, new TypeReference<List<QuestionDto>>() {});
+            return questions;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(FEEDBACK_DETAIL_SERVICE, "getQuestions : Exception ", e.getMessage());
             return null;
         }
     }

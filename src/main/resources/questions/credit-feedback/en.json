@@ -76,16 +76,6 @@
     "property" : "professionalism"
   },
   {
-    "label" : "How satisfied are you with the product/service provided ?",
-    "type" : "1-5",
-    "property" : "productSatisfaction"
-  },
-  {
-    "label" : "How often do you use our products and services ?",
-    "type" : "1-5",
-    "property" : "productFrequency"
-  },
-  {
     "label" : "How would you rate the agent’s timeliness of response to your requests or questions ?",
     "type" : "1-5",
     "property" : "speedOfAnswer"
@@ -121,7 +111,7 @@
     "property" : "mainCleanliness"
   },
   {
-    "label" : "How will you rate the general appearance of the staff? ",
+    "label" : "How will you rate any other staff members you interacted with",
     "type" : "1-5",
     "property" : "otherStaffMember"
   },

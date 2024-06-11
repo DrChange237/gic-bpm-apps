@@ -60,4 +60,18 @@ public class QuestionController {
         }
     }
 
+    @GetMapping("/questions")
+    @CrossOrigin()
+    public ResponseEntity<HttpResponse> getQuestions(@RequestParam(value = "form") String form, @RequestParam(value = "lang") String lang) {
+
+        try{
+            List<QuestionDto> questions = questionService.getQuestions(form, lang);
+            return ResponseEntity.ok(new HttpResponseSuccess<List<QuestionDto>>(questions));
+
+        }catch (Exception exception){
+            return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
+
+        }
+    }
+
 }

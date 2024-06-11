@@ -25,8 +25,7 @@ public class Agency {
     @Size(max = 1000)
     private String agencyCode;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "agency", fetch = FetchType.LAZY)
-    private Collection<Feedback> feedbackCollection;
+
 
     public Long getId() {
         return id;
@@ -48,11 +47,4 @@ public class Agency {
         this.agencyCode = agencyCode;
     }
 
-    public Collection<Feedback> getFeedbackCollection() {
-        return feedbackCollection;
-    }
-
-    public void setFeedbackCollection(Collection<Feedback> feedbackCollection) {
-        this.feedbackCollection = feedbackCollection;
-    }
 }

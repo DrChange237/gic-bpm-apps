@@ -2,6 +2,8 @@ package com.ccabank.feedbackservice.repository;
 
 import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.entity.Feedback;
+import com.ccabank.feedbackservice.entity.Form;
+import com.ccabank.feedbackservice.entity.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,9 +12,9 @@ import java.util.List;
 
 
 @Repository
-public interface AgencyRepository extends JpaRepository<Agency, Long> {
+public interface StaffRepository extends JpaRepository<Staff, Long> {
 
-    @Query("SELECT f FROM Agency f WHERE f.agencyCode = :agencyCode")
-    Agency findAgencyByAgencyCode(String agencyCode);
+    @Query("SELECT s FROM Staff s WHERE s.username = :username")
+    Staff findByUsername(String username);
 
 }

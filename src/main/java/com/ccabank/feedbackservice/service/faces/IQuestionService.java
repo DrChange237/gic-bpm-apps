@@ -9,4 +9,9 @@ import java.util.List;
 public interface IQuestionService {
     List<QuestionDto> getAllQuestions(String lang);
 
+    List<QuestionDto> getQuestions(String form, String lang);
+
+
+
+
 }

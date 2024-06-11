@@ -12,6 +12,8 @@
   {
     "label" : "Objet de la visite",
     "type" : "choice",
+    "decision" : false,
+    "async" : true,
     "property" : "visitCause",
     "choices" : [
       {

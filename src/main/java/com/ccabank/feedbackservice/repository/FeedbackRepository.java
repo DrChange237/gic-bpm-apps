@@ -16,15 +16,17 @@ import java.util.List;
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
-    @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff AND  f.createdAt BETWEEN :startDate AND :endDate")
+    @Query("SELECT f FROM Feedback f WHERE f.staff.username = :staff AND  f.createdAt BETWEEN :startDate AND :endDate")
     List<Feedback> findFeedbackByStaffUsernameAndCreatedAtBetween(@Param("staff") String staff, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT f FROM Feedback f WHERE f.agency = :agency AND  f.createdAt BETWEEN :startDate AND :endDate")
-    List<Feedback> findFeedbackByAgencyAndCreatedAtBetween(@Param("agency") Agency agency, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query("SELECT f FROM Feedback f WHERE f.staff.agency.agencyCode = :agency AND  f.createdAt BETWEEN :startDate AND :endDate")
+    List<Feedback> findFeedbackByAgencyAndCreatedAtBetween(@Param("agency") String agency, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 
-    @Query("SELECT f FROM Feedback f WHERE f.staffUsername = :staff")
+    @Query("SELECT f FROM Feedback f WHERE f.staff.username = :staff")
     List<Feedback> findFeedbackByStaff(String staff);
+
+
 
 
     @Query("SELECT f FROM Feedback f WHERE  f.createdAt BETWEEN :startDate AND :endDate ORDER BY :property DESC ")

@@ -39,16 +39,15 @@ public class Feedback implements Serializable {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
+    //Formulaire
+    @Basic(optional = true)
+    @Column(name = "FORM")
+    private String form;
 
-    //Noms et Prénoms du Client
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STAFF_USERNAME")
-    private String staffUsername;
 
-    @JoinColumn(name = "AGENCY", referencedColumnName = "ID", nullable = true)
+    @JoinColumn(name = "STAFF", referencedColumnName = "ID", nullable = true)
     @ManyToOne(optional = true)
-    private Agency agency;
+    private Staff staff;
 
 
     //Noms et Prénoms du Client
@@ -84,13 +83,6 @@ public class Feedback implements Serializable {
         return id;
     }
 
-    public Agency getAgency() {
-        return agency;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -100,12 +92,21 @@ public class Feedback implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public String getStaffUsername() {
-        return staffUsername;
+
+    public String getForm() {
+        return form;
     }
 
-    public void setStaffUsername(String staffUsername) {
-        this.staffUsername = staffUsername;
+    public void setForm(String form) {
+        this.form = form;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
     public String getFullname() {

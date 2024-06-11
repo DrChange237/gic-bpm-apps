@@ -97,6 +97,14 @@ public class FeedbackController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @GetMapping("/getFeedbackByAgencyAndCreatedAt")
+    //@CrossOrigin
+    public ResponseEntity<HttpResponse> getFeedbackByAgencyAndCreatedAt(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+        AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByAgencyAndCreatedAt(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<FeedbackDto>>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
 
     @GetMapping("/exportFeedbackByStaffAndCreatedAt")
     //@CrossOrigin
@@ -151,16 +159,16 @@ public class FeedbackController {
 
     }
 
-    @GetMapping("/getEvaluation")
+    @GetMapping("/getStaffEvaluation")
     @CrossOrigin
-    public ResponseEntity<HttpResponse> getEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+    public ResponseEntity<HttpResponse> getStaffEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
         return ResponseEntity.ok(new HttpResponseSuccess<EvaluationPeriodStaffDto>(result.getData()));
     }
 
-    @GetMapping("/exportEvaluation")
+    @GetMapping("/exportStaffEvaluation")
     @CrossOrigin
-    public ResponseEntity exportEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+    public ResponseEntity exportStaffEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("FEEDBACK");
@@ -201,6 +209,13 @@ public class FeedbackController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/getAgencyEvaluation")
+    @CrossOrigin
+    public ResponseEntity<HttpResponse> getAgencyEvaluation(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+        AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationAgency(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+        return ResponseEntity.ok(new HttpResponseSuccess<EvaluationPeriodStaffDto>(result.getData()));
     }
 
     public  LocalDate convertStringToLocalDate(String dateString) {

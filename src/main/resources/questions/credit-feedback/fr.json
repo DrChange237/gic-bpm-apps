@@ -12,6 +12,8 @@
   {
     "label" : "Objet de la visite",
     "type" : "choice",
+    "decision" : false,
+    "async" : true,
     "property" : "visitCause",
     "choices" : [
       {
@@ -76,16 +78,6 @@
     "property" : "professionalism"
   },
   {
-    "label" : "A quel degré êtes-vous satisfait du produit/service rendu ?",
-    "type" : "1-5",
-    "property" : "productSatisfaction"
-  },
-  {
-    "label" : "A quelle fréquence utilisez-vous nos produits et services ?",
-    "type" : "1-5",
-    "property" : "productFrequency"
-  },
-  {
     "label" : "Comment évalueriez-vous la rapidité de réponse de l’agent à vos demandes ou questions ?",
     "type" : "1-5",
     "property" : "speedOfAnswer"
@@ -121,13 +113,8 @@
     "property" : "mainCleanliness"
   },
   {
-    "label" : "Comment évaluerez-vous l’allure générale du personnel ?",
+    "label" : "Comment évaluerez-vous tout autre membre du personnel avec qui vous avez interagit",
     "type" : "1-5",
-    "property" : "otherStaffMember"
-  },
-  {
-    "label" : "Quel service ou produit vous a le moins satisfait ?",
-    "type" : "text",
     "property" : "otherStaffMember"
   },
   {
