@@ -9,35 +9,26 @@ import com.ccabank.feedbackservice.dto.feedback.EvaluationItem;
 import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
 import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
-import com.ccabank.feedbackservice.entity.Agency;
-import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import com.ccabank.feedbackservice.service.impl.QuestionService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author : <a href="mailto:herve.foudjo@cca-bank.com">Herve FOUDJO</a>
@@ -114,15 +105,10 @@ public class FeedbackController {
             Sheet sheet = workbook.createSheet("FEEDBACK");
 
             List<QuestionDto> questions = questionService.getAllQuestions("fr");
-
-
             // Écrire l'en-tête
             Row headerRow = sheet.createRow(0);
-
             headerRow.createCell(0).setCellValue("Questions");
-
             int i = 1;
-
 
             for (QuestionDto questionDto : questions) {
                 headerRow.createCell(i).setCellValue(questionDto.getLabel());
@@ -178,9 +164,50 @@ public class FeedbackController {
             headerRow.createCell(0).setCellValue("Question");
             headerRow.createCell(1).setCellValue("Nombre");
             headerRow.createCell(2).setCellValue("Pourcentage");
-
             EvaluationPeriodStaffDto evaluation = result.getData();
+            int i = 1;
 
+
+            // Écrire les données
+            for (EvaluationItem item : evaluation.getEvaluations()) {
+                Row dataRow = sheet.createRow(i);
+                dataRow.createCell(0).setCellValue(item.getLabel());
+                dataRow.createCell(1).setCellValue(item.getCount());
+                dataRow.createCell(2).setCellValue(item.getPourcent());
+                i = i + 1 ;
+            }
+
+            // Écrire le fichier Excel dans un tableau d'octets
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] excelBytes = outputStream.toByteArray();
+
+            // Configurer l'en-tête HTTP pour le téléchargement
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + evaluation.getUsername() + ".xlsx");
+            headers.setContentLength(excelBytes.length);
+
+            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/exportAgencyEvaluation")
+    @CrossOrigin
+    public ResponseEntity exportAgencyEvaluation(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+        AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationAgency(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("FEEDBACK");
+
+            // Écrire l'en-tête
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Question");
+            headerRow.createCell(1).setCellValue("Nombre");
+            headerRow.createCell(2).setCellValue("Pourcentage");
+            EvaluationPeriodStaffDto evaluation = result.getData();
             int i = 1;
 
 
