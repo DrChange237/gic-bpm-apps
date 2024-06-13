@@ -223,6 +223,10 @@ public class FeedbackService implements IFeedbackService {
                             continue;
                         }
 
+                        if(answer.getAnswer() == "-1"){
+                            continue;
+                        }
+
                         score =  score + Integer.parseInt(answer.getAnswer());
                         count = count + 1;
                         total = total + 5;
@@ -274,6 +278,10 @@ public class FeedbackService implements IFeedbackService {
                 for (Answer answer : feedback.getAnswerCollection()) {
 
                     if(!questionDto.getProperty().equals(answer.getQuestion())){
+                        continue;
+                    }
+
+                    if(answer.getAnswer() == "-1"){
                         continue;
                     }
 

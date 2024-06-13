@@ -12,9 +12,9 @@ import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import com.ccabank.feedbackservice.service.impl.QuestionService;
 import io.swagger.annotations.Api;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -202,11 +202,29 @@ public class FeedbackController {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("FEEDBACK");
 
+            XSSFCellStyle cellStyle = (XSSFCellStyle) workbook.createCellStyle();
+            cellStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            XSSFFont font = (XSSFFont) workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 11);
+            font.setBold(true);
+            cellStyle.setFont(font);
+
             // Écrire l'en-tête
             Row headerRow = sheet.createRow(0);
+            // Question 0
             headerRow.createCell(0).setCellValue("Question");
+            headerRow.createCell(0).setCellStyle(cellStyle);
+
             headerRow.createCell(1).setCellValue("Nombre");
+            headerRow.createCell(1).setCellStyle(cellStyle);
+
             headerRow.createCell(2).setCellValue("Pourcentage");
+            headerRow.createCell(2).setCellStyle(cellStyle);
+
+
             EvaluationPeriodStaffDto evaluation = result.getData();
             int i = 1;
 
