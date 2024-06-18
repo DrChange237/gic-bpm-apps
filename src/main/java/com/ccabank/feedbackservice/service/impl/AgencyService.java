@@ -32,11 +32,11 @@ public class AgencyService implements IAgencyService {
 
 
     @Override
-    public AppServiceResult<AgencyDto> getFeedbackByAgencyCode(String agencyCode) {
+    public AppServiceResult<AgencyDto> findAgencyByAgencyCode(String agencyCode) {
         try {
             Agency agency = agencyRepository.findAgencyByAgencyCode(agencyCode);
             if (agency == null) {
-                logger.warn(FEEDBACK_DETAIL_SERVICE, "getFeedbackByAgencyCode",
+                logger.warn(FEEDBACK_DETAIL_SERVICE, "findAgencyByAgencyCode",
                         "Feedback not exist!, Cannot further process!");
                 return new AppServiceResult<AgencyDto>(false, AppError.Validattion.errorCode(),
                         "Feedback not exist!", null);

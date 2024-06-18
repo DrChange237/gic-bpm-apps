@@ -5,17 +5,14 @@ import com.ccabank.feedbackservice.domain.AppServiceResult;
 import com.ccabank.feedbackservice.dto.HttpResponse;
 import com.ccabank.feedbackservice.dto.HttpResponseError;
 import com.ccabank.feedbackservice.dto.HttpResponseSuccess;
-import com.ccabank.feedbackservice.dto.feedback.EvaluationItem;
-import com.ccabank.feedbackservice.dto.feedback.EvaluationPeriodStaffDto;
-import com.ccabank.feedbackservice.dto.feedback.FeedbackDto;
-import com.ccabank.feedbackservice.dto.feedback.QuestionDto;
+import com.ccabank.feedbackservice.dto.feedback.*;
+import com.ccabank.feedbackservice.entity.Agency;
+import com.ccabank.feedbackservice.service.impl.AgencyService;
 import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import com.ccabank.feedbackservice.service.impl.QuestionService;
 import io.swagger.annotations.Api;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +26,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author : <a href="mailto:herve.foudjo@cca-bank.com">Herve FOUDJO</a>
@@ -51,6 +49,10 @@ public class FeedbackController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private AgencyService agencyService;
+
 
     @GetMapping("/allFeedback")
     //@CrossOrigin()
@@ -101,163 +103,71 @@ public class FeedbackController {
     //@CrossOrigin
     public ResponseEntity exportFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("FEEDBACK");
 
-            List<QuestionDto> questions = questionService.getAllQuestions("fr");
-            // Écrire l'en-tête
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Questions");
-            int i = 1;
+        byte[] excelBytes = feedbackService.exportExcelFeedbacks(result.getData());
 
-            for (QuestionDto questionDto : questions) {
-                headerRow.createCell(i).setCellValue(questionDto.getLabel());
-                i = i + 1 ;
-            }
+        // Configurer l'en-tête HTTP pour le téléchargement
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + staff + ".xlsx");
+        headers.setContentLength(excelBytes.length);
 
-            List<FeedbackDto> feedbacks = result.getData();
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
 
-            // Écrire les données
-            /*for (FeedbackDto feedback : feedbacks) {
-                Row dataRow = sheet.createRow(i);
-                dataRow.createCell(0).setCellValue(item.getLabel());
-                dataRow.createCell(1).setCellValue(item.getCount());
-                dataRow.createCell(2).setCellValue(item.getPourcent());
-                i = i + 1 ;
-            }*/
+    }
 
-            // Écrire le fichier Excel dans un tableau d'octets
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            workbook.write(outputStream);
-            byte[] excelBytes = outputStream.toByteArray();
+    @GetMapping("/exportFeedbackByAgencyAndCreatedAt")
+    //@CrossOrigin
+    public ResponseEntity exportFeedbackByAgencyAndCreatedAt(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
+        AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByAgencyAndCreatedAt(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
 
-            // Configurer l'en-tête HTTP pour le téléchargement
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + staff + ".xlsx");
-            headers.setContentLength(excelBytes.length);
+        byte[] excelBytes = feedbackService.exportExcelFeedbacks(result.getData());
 
-            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // Configurer l'en-tête HTTP pour le téléchargement
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + agencyCode + ".xlsx");
+        headers.setContentLength(excelBytes.length);
+
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
 
     }
 
     @GetMapping("/getStaffEvaluation")
-    @CrossOrigin
+    //@CrossOrigin
     public ResponseEntity<HttpResponse> getStaffEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
         return ResponseEntity.ok(new HttpResponseSuccess<EvaluationPeriodStaffDto>(result.getData()));
     }
 
     @GetMapping("/exportStaffEvaluation")
-    @CrossOrigin
+    //@CrossOrigin
     public ResponseEntity exportStaffEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("FEEDBACK");
-
-            // Écrire l'en-tête
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Question");
-            headerRow.createCell(1).setCellValue("Nombre");
-            headerRow.createCell(2).setCellValue("Pourcentage");
-            EvaluationPeriodStaffDto evaluation = result.getData();
-            int i = 1;
-
-
-            // Écrire les données
-            for (EvaluationItem item : evaluation.getEvaluations()) {
-                Row dataRow = sheet.createRow(i);
-                dataRow.createCell(0).setCellValue(item.getLabel());
-                dataRow.createCell(1).setCellValue(item.getCount());
-                dataRow.createCell(2).setCellValue(item.getPourcent());
-                i = i + 1 ;
-            }
-
-            // Écrire le fichier Excel dans un tableau d'octets
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            workbook.write(outputStream);
-            byte[] excelBytes = outputStream.toByteArray();
-
-            // Configurer l'en-tête HTTP pour le téléchargement
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + evaluation.getUsername() + ".xlsx");
-            headers.setContentLength(excelBytes.length);
-
-            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        byte[] excelBytes = feedbackService.exportExcelEvaluationFeedbacks(result.getData());
+        // Configurer l'en-tête HTTP pour le téléchargement
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + result.getData().getUsername() + ".xlsx");
+        headers.setContentLength(excelBytes.length);
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
     }
 
     @GetMapping("/exportAgencyEvaluation")
-    @CrossOrigin
+    //@CrossOrigin
     public ResponseEntity exportAgencyEvaluation(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationAgency(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("FEEDBACK");
-
-            XSSFCellStyle cellStyle = (XSSFCellStyle) workbook.createCellStyle();
-            cellStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex());
-            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-            XSSFFont font = (XSSFFont) workbook.createFont();
-            font.setFontName("Arial");
-            font.setFontHeightInPoints((short) 11);
-            font.setBold(true);
-            cellStyle.setFont(font);
-
-            // Écrire l'en-tête
-            Row headerRow = sheet.createRow(0);
-            // Question 0
-            headerRow.createCell(0).setCellValue("Question");
-            headerRow.createCell(0).setCellStyle(cellStyle);
-
-            headerRow.createCell(1).setCellValue("Nombre");
-            headerRow.createCell(1).setCellStyle(cellStyle);
-
-            headerRow.createCell(2).setCellValue("Pourcentage");
-            headerRow.createCell(2).setCellStyle(cellStyle);
-
-
-            EvaluationPeriodStaffDto evaluation = result.getData();
-            int i = 1;
-
-
-            // Écrire les données
-            for (EvaluationItem item : evaluation.getEvaluations()) {
-                Row dataRow = sheet.createRow(i);
-                dataRow.createCell(0).setCellValue(item.getLabel());
-                dataRow.createCell(1).setCellValue(item.getCount());
-                dataRow.createCell(2).setCellValue(item.getPourcent());
-                i = i + 1 ;
-            }
-
-            // Écrire le fichier Excel dans un tableau d'octets
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            workbook.write(outputStream);
-            byte[] excelBytes = outputStream.toByteArray();
-
-            // Configurer l'en-tête HTTP pour le téléchargement
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + evaluation.getUsername() + ".xlsx");
-            headers.setContentLength(excelBytes.length);
-
-            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        byte[] excelBytes = feedbackService.exportExcelEvaluationFeedbacks(result.getData());
+        // Configurer l'en-tête HTTP pour le téléchargement
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + result.getData().getUsername() + ".xlsx");
+        headers.setContentLength(excelBytes.length);
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
     }
 
     @GetMapping("/getAgencyEvaluation")
-    @CrossOrigin
+    //@CrossOrigin
     public ResponseEntity<HttpResponse> getAgencyEvaluation(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationAgency(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
         return ResponseEntity.ok(new HttpResponseSuccess<EvaluationPeriodStaffDto>(result.getData()));

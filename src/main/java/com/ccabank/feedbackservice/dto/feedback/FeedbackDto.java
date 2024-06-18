@@ -1,15 +1,13 @@
 package com.ccabank.feedbackservice.dto.feedback;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 
 @ApiModel()
 public class FeedbackDto {
@@ -37,6 +35,11 @@ public class FeedbackDto {
 
     @Size(min = 1, max = 150)
     private String email;
+
+
+    public Optional<AnswerDto> getAnwserByProperty(String property){
+        return this.answerCollection.stream().filter(obj -> property.equals(obj.getQuestion())).findFirst();
+    }
 
     private Collection<AnswerDto> answerCollection;
 

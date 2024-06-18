@@ -126,6 +126,11 @@
     "property" : "otherStaffMember"
   },
   {
+    "label" : "Which service or product were you least satisfied with?",
+    "type" : "text",
+    "property" : "productWithoutSatisfaction"
+  },
+  {
     "label" : "Do you have any comments or suggestions?",
     "type" : "textarea",
     "property" : "comments"

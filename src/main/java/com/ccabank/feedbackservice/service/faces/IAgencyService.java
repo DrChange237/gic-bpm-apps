@@ -5,6 +5,6 @@ import com.ccabank.feedbackservice.dto.feedback.AgencyDto;
 
 public interface IAgencyService {
 
-    AppServiceResult<AgencyDto> getFeedbackByAgencyCode(String agencyCode);
+    AppServiceResult<AgencyDto> findAgencyByAgencyCode(String agencyCode);
 
 }

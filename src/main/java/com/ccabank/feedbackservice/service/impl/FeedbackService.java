@@ -15,6 +15,8 @@ import com.ccabank.feedbackservice.repository.AgencyRepository;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
 import com.ccabank.feedbackservice.repository.StaffRepository;
 import com.ccabank.feedbackservice.service.faces.IFeedbackService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
 
@@ -223,7 +228,7 @@ public class FeedbackService implements IFeedbackService {
                             continue;
                         }
 
-                        if(answer.getAnswer() == "-1"){
+                        if(answer.getAnswer().equals("-1")){
                             continue;
                         }
 
@@ -259,7 +264,6 @@ public class FeedbackService implements IFeedbackService {
         List<QuestionDto> questionDtos = questionService.getAllQuestions("fr");
 
         for(QuestionDto questionDto: questionDtos){
-
             if(!questionDto.getType().equals("1-5")){
                 continue;
             }
@@ -271,20 +275,15 @@ public class FeedbackService implements IFeedbackService {
             int total = 0;
             int count = 0;
             float percentage = 0;
-
-
             for (Feedback feedback : feedbacks) {
                 // Itérer sur chaque question et calculer le pourcentage
                 for (Answer answer : feedback.getAnswerCollection()) {
-
                     if(!questionDto.getProperty().equals(answer.getQuestion())){
                         continue;
                     }
-
                     if(answer.getAnswer() == "-1"){
                         continue;
                     }
-
                     score =  score + Integer.parseInt(answer.getAnswer());
                     count = count + 1;
                     total = total + 5;
@@ -301,6 +300,119 @@ public class FeedbackService implements IFeedbackService {
 
         return new AppServiceResult<EvaluationPeriodStaffDto>(true, 0, "Succeed!", evaluation);
     }
+
+    @Override
+    public byte[] exportExcelFeedbacks(List<FeedbackDto> feedbackDtos){
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("FEEDBACK");
+
+            CellStyle cellStyle = workbook.createCellStyle();
+            cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
+            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+
+            Font font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 11);
+            font.setBold(true);
+            font.setColor(IndexedColors.WHITE.getIndex());
+            cellStyle.setFont(font);
+
+            // Changer la forme des bords
+            cellStyle.setBorderTop(BorderStyle.THICK);
+            cellStyle.setBorderBottom(BorderStyle.THICK);
+            cellStyle.setBorderLeft(BorderStyle.THICK);
+            cellStyle.setBorderRight(BorderStyle.THICK);
+
+            List<QuestionDto> questions = questionService.getAllQuestions("fr");
+            // Écrire l'en-tête
+            Row headerRow = sheet.createRow(0);
+
+            Cell cell = headerRow.createCell(0);
+
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue("Questions");
+
+            int i = 1;
+
+            for (QuestionDto questionDto : questions) {
+                Cell cellRow = headerRow.createCell(i);
+                cellRow.setCellStyle(cellStyle);
+                cellRow.setCellValue(questionDto.getProperty());
+                i = i + 1 ;
+            }
+
+            int j = 1;
+
+            // Écrire les données
+            for (FeedbackDto feedback : feedbackDtos) {
+
+                Row dataRow = sheet.createRow(j);
+                Cell cellRow = dataRow.createCell(0);
+                cellRow.setCellValue(feedback.getFullname());
+                sheet.autoSizeColumn(0);
+
+                for (QuestionDto questionDto : questions) {
+                    sheet.autoSizeColumn(j);
+                    Optional<AnswerDto> answerDto = feedback.getAnwserByProperty(questionDto.getProperty());
+                    dataRow.createCell(j).setCellValue(answerDto.isPresent() ? answerDto.get().getAnswer() : "");
+                    j = j+1;
+                }
+            }
+
+            // Écrire le fichier Excel dans un tableau d'octets
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] excelBytes = outputStream.toByteArray();
+
+            return excelBytes;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public byte[] exportExcelEvaluationFeedbacks(EvaluationPeriodStaffDto evaluation){
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("FEEDBACK");
+
+            // Écrire l'en-tête
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Question");
+            headerRow.createCell(1).setCellValue("Nombre");
+            headerRow.createCell(2).setCellValue("Pourcentage");
+            int i = 1;
+
+
+            // Écrire les données
+            for (EvaluationItem item : evaluation.getEvaluations()) {
+                Row dataRow = sheet.createRow(i);
+                dataRow.createCell(0).setCellValue(item.getLabel());
+                dataRow.createCell(1).setCellValue(item.getCount());
+                dataRow.createCell(2).setCellValue(item.getPourcent());
+                i = i + 1 ;
+            }
+
+            // Écrire le fichier Excel dans un tableau d'octets
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            byte[] excelBytes = outputStream.toByteArray();
+
+            return excelBytes;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new byte[0];
+
+        }
+
+    }
+
+
 
     private float calculatePercentage(int value, int max) {
         return (float) value / max * 100;

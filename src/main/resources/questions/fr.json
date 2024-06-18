@@ -128,7 +128,7 @@
   {
     "label" : "Quel service ou produit vous a le moins satisfait ?",
     "type" : "text",
-    "property" : "otherStaffMember"
+    "property" : "productWithoutSatisfaction"
   },
   {
     "label" : "Avez-vous des commentaires ou des suggestions ?",

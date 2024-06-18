@@ -31,7 +31,8 @@ public interface IFeedbackService {
     AppServiceResult<EvaluationPeriodStaffDto> getEvaluationAgency(String agencyCode, LocalDate startAt, LocalDate endAt);
 
 
+    byte[] exportExcelFeedbacks(List<FeedbackDto> feedbackDtos);
 
 
-
+    byte[] exportExcelEvaluationFeedbacks(EvaluationPeriodStaffDto evaluation);
 }
