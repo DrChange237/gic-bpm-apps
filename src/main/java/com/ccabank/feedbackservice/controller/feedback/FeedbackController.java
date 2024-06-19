@@ -109,7 +109,7 @@ public class FeedbackController {
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + staff + ".xlsx");
+        headers.setContentDispositionFormData("attachment", "CCA_BANK_Feedback_Staff_" + result.getData().get(0).getStaff().getUsername() + "_" + startAt + "_" + endAt  + ".xlsx");
         headers.setContentLength(excelBytes.length);
 
         return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
@@ -126,7 +126,7 @@ public class FeedbackController {
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", "Export_Customer_Feedback_" + agencyCode + ".xlsx");
+        headers.setContentDispositionFormData("attachment", "CCA_BANK_Feedback_Agency_" + result.getData().get(0).getStaff().getAgency().getAgencyName() + "_" + startAt + "_" + endAt  + ".xlsx");
         headers.setContentLength(excelBytes.length);
 
         return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
