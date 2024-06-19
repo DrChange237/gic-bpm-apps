@@ -50,6 +50,9 @@ public class Answer {
     }
 
     public String getAnswer() {
+        if(answer == null){
+            return "";
+        }
         return answer;
     }
 

@@ -19,6 +19,7 @@ public interface IFeedbackService {
 
     AppServiceResult<List<FeedbackDto>> getFeedbackByAgencyAndCreatedAt(String agencyCode, LocalDate startAt, LocalDate endAt);
 
+
     Page<Feedback> findRank(LocalDateTime startAt, LocalDateTime endAt, String property, int limit);
 
 
@@ -31,8 +32,7 @@ public interface IFeedbackService {
     AppServiceResult<EvaluationPeriodStaffDto> getEvaluationAgency(String agencyCode, LocalDate startAt, LocalDate endAt);
 
 
-    byte[] exportExcelFeedbacks(List<FeedbackDto> feedbackDtos);
+    byte[] exportExcelFeedbacks(List<FeedbackDto> feedbackDtos, String prefixName);
 
-
-    byte[] exportExcelEvaluationFeedbacks(EvaluationPeriodStaffDto evaluation);
+    byte[] exportExcelEvaluationFeedbacks(EvaluationPeriodStaffDto evaluation, List<FeedbackDto> feedbackDtos);
 }

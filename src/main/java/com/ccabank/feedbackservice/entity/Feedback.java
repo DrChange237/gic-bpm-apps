@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -69,7 +70,7 @@ public class Feedback implements Serializable {
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedback", fetch = FetchType.LAZY)
-    private Collection<Answer> answerCollection;
+    private Collection<Answer> answerCollection = new ArrayList<>();
 
     public Feedback() {
     }

@@ -104,7 +104,7 @@ public class FeedbackController {
     public ResponseEntity exportFeedbackByStaffAndCreatedAt(@RequestParam(value = "staff") String staff, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByStaffAndCreatedAt(staff, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
 
-        byte[] excelBytes = feedbackService.exportExcelFeedbacks(result.getData());
+        byte[] excelBytes = feedbackService.exportExcelFeedbacks(result.getData(), result.getData().get(0).getStaff().getUsername() + "_" + startAt + "_" + endAt);
 
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
@@ -121,7 +121,7 @@ public class FeedbackController {
     public ResponseEntity exportFeedbackByAgencyAndCreatedAt(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<List<FeedbackDto>> result = feedbackService.getFeedbackByAgencyAndCreatedAt(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
 
-        byte[] excelBytes = feedbackService.exportExcelFeedbacks(result.getData());
+        byte[] excelBytes = feedbackService.exportExcelFeedbacks(result.getData(), result.getData().get(0).getStaff().getAgency().getAgencyName() + "_" + startAt + "_" + endAt);
 
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
@@ -144,7 +144,9 @@ public class FeedbackController {
     //@CrossOrigin
     public ResponseEntity exportStaffEvaluation(@RequestParam(value = "staffUsername") String staffUsername, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationStaff(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
-        byte[] excelBytes = feedbackService.exportExcelEvaluationFeedbacks(result.getData());
+        AppServiceResult<List<FeedbackDto>> feedbacks = feedbackService.getFeedbackByStaffAndCreatedAt(staffUsername, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+
+        byte[] excelBytes = feedbackService.exportExcelEvaluationFeedbacks(result.getData(), feedbacks.getData());
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -157,7 +159,9 @@ public class FeedbackController {
     //@CrossOrigin
     public ResponseEntity exportAgencyEvaluation(@RequestParam(value = "agencyCode") String agencyCode, @RequestParam(value = "startAt") String startAt,  @RequestParam(value = "endAt") String endAt ) {
         AppServiceResult<EvaluationPeriodStaffDto> result = feedbackService.getEvaluationAgency(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
-        byte[] excelBytes = feedbackService.exportExcelEvaluationFeedbacks(result.getData());
+        AppServiceResult<List<FeedbackDto>> feedbacks = feedbackService.getFeedbackByAgencyAndCreatedAt(agencyCode, convertStringToLocalDate(startAt), convertStringToLocalDate(endAt));
+
+        byte[] excelBytes = feedbackService.exportExcelEvaluationFeedbacks(result.getData(), feedbacks.getData());
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

@@ -16,6 +16,8 @@ public class EvaluationItem {
 
     private List<CountNoteDto> countNoteDtos = new ArrayList<CountNoteDto>();
 
+
+
     public Optional<CountNoteDto> getCountNoteDtoByNote(String note){
         return this.countNoteDtos.stream().filter(obj -> note.equals(obj.getNote())).findFirst();
     }

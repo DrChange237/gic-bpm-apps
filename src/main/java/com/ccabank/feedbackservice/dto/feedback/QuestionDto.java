@@ -12,6 +12,10 @@ public class QuestionDto {
 
     private String value;
 
+    private  boolean api;
+
+    private String url;
+
     private List<QuestionChoiceDto> choices;
 
 
@@ -53,5 +57,21 @@ public class QuestionDto {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isApi() {
+        return api;
+    }
+
+    public void setApi(boolean api) {
+        this.api = api;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

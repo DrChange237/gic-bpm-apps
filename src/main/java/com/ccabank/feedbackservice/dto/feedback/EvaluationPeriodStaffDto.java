@@ -15,7 +15,6 @@ public class EvaluationPeriodStaffDto {
     private List<EvaluationItem> evaluations = new ArrayList<>();
 
 
-
     public String getUsername() {
         return username;
     }
@@ -39,6 +38,7 @@ public class EvaluationPeriodStaffDto {
     public void setEndAt(LocalDate endAt) {
         this.endAt = endAt;
     }
+
 
     public List<EvaluationItem> getEvaluations() {
         return evaluations;

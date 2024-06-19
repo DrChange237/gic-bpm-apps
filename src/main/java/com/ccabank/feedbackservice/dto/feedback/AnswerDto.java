@@ -24,8 +24,7 @@ public class AnswerDto {
 
     private QuestionDto questionDto;
 
-    @NotNull(message = "answer cannot be null")
-    private String answer;
+    private String answer = "";
 
     @NotNull(message = "feedback cannot be null")
     @JsonIgnore

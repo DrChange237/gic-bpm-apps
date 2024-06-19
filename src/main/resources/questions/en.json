@@ -6,13 +6,16 @@
   },
   {
     "label" : "Agency where the account in question is domiciled ?",
-    "type" : "text",
-    "property" : "branchWhereAccount"
+    "type" : "choice",
+    "property" : "branchWhereAccount",
+    "api" : true,
+    "url" : "/agency/all"
   },
   {
     "label" : "Purpose of the visit",
     "type" : "choice",
     "property" : "visitCause",
+    "api" : false,
     "choices" : [
       {
         "label" : "Account opening",
