@@ -12,9 +12,11 @@ import com.ccabank.feedbackservice.mappers.FeedbackMapper;
 import com.ccabank.feedbackservice.mappers.StaffMapper;
 import com.ccabank.feedbackservice.openfeign.UserRestClient;
 import com.ccabank.feedbackservice.repository.AgencyRepository;
+import com.ccabank.feedbackservice.repository.AnswerRepository;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
 import com.ccabank.feedbackservice.repository.StaffRepository;
 import com.ccabank.feedbackservice.service.faces.IFeedbackService;
+import org.apache.poi.ss.formula.functions.Column;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -47,6 +49,9 @@ public class FeedbackService implements IFeedbackService {
 
     @Autowired
     private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private AnswerService answerService;
 
     @Autowired
     private FeedbackMapper feedbackMapper;
@@ -224,6 +229,8 @@ public class FeedbackService implements IFeedbackService {
                     // Itérer sur chaque question et calculer le pourcentage
                     for (Answer answer : feedback.getAnswerCollection()) {
 
+
+
                         if(!questionDto.getProperty().equals(answer.getQuestion())){
                             continue;
                         }
@@ -231,6 +238,9 @@ public class FeedbackService implements IFeedbackService {
                         if(answer.getAnswer().equals("-1")){
                             continue;
                         }
+
+                        item.addNote(answer.getAnswer());
+
 
                         score =  score + Integer.parseInt(answer.getAnswer());
                         count = count + 1;
@@ -284,6 +294,9 @@ public class FeedbackService implements IFeedbackService {
                     if(answer.getAnswer() == "-1"){
                         continue;
                     }
+
+                    item.addNote(answer.getAnswer());
+
                     score =  score + Integer.parseInt(answer.getAnswer());
                     count = count + 1;
                     total = total + 5;
@@ -307,23 +320,60 @@ public class FeedbackService implements IFeedbackService {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("FEEDBACK");
 
+
             CellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-
             Font font =  workbook.createFont();
             font.setFontName("Arial");
-            font.setFontHeightInPoints((short) 11);
-            font.setBold(true);
+            font.setFontHeightInPoints((short) 10);
+            font.setBold(false);
             font.setColor(IndexedColors.WHITE.getIndex());
             cellStyle.setFont(font);
 
-            // Changer la forme des bords
-            cellStyle.setBorderTop(BorderStyle.THICK);
-            cellStyle.setBorderBottom(BorderStyle.THICK);
-            cellStyle.setBorderLeft(BorderStyle.THICK);
-            cellStyle.setBorderRight(BorderStyle.THICK);
+            cellStyle.setBorderTop(BorderStyle.MEDIUM);
+            cellStyle.setBorderRight(BorderStyle.MEDIUM);
+            cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+            cellStyle.setBorderLeft(BorderStyle.MEDIUM);
+            cellStyle.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            CellStyle cellStyle2 = workbook.createCellStyle();
+            cellStyle2.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+            cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 9);
+            font.setItalic(true);
+            font.setColor(IndexedColors.VIOLET.getIndex());
+            cellStyle2.setFont(font);
+
+            cellStyle2.setBorderTop(BorderStyle.MEDIUM);
+            cellStyle2.setBorderRight(BorderStyle.MEDIUM);
+            cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+            cellStyle2.setBorderLeft(BorderStyle.MEDIUM);
+            cellStyle2.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            CellStyle cellStyle3 = workbook.createCellStyle();
+            cellStyle3.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+            cellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 9);
+            cellStyle3.setFont(font);
+
+            cellStyle3.setBorderTop(BorderStyle.MEDIUM);
+            cellStyle3.setBorderRight(BorderStyle.MEDIUM);
+            cellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+            cellStyle3.setBorderLeft(BorderStyle.MEDIUM);
+            cellStyle3.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
+
+
 
             List<QuestionDto> questions = questionService.getAllQuestions("fr");
             // Écrire l'en-tête
@@ -332,33 +382,62 @@ public class FeedbackService implements IFeedbackService {
             Cell cell = headerRow.createCell(0);
 
             cell.setCellStyle(cellStyle);
-            cell.setCellValue("Questions");
+            cell.setCellValue("Questions / Feedbacks");
+
+
+
 
             int i = 1;
 
             for (QuestionDto questionDto : questions) {
-                Cell cellRow = headerRow.createCell(i);
+                /*Cell cellRow = headerRow.createCell(i);
                 cellRow.setCellStyle(cellStyle);
-                cellRow.setCellValue(questionDto.getProperty());
+                cellRow.setCellValue(questionDto.getProperty());*/
+                headerRow = sheet.createRow(i);
+                cell = headerRow.createCell(0);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(questionDto.getLabel());
+
+                cell = headerRow.createCell(1);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(questionDto.getProperty());
+
                 i = i + 1 ;
             }
 
-            int j = 1;
+            sheet.setColumnWidth(0, 75 * 256);
+            sheet.setColumnWidth(1, 25 * 256);
+
+
+
+            int column = 2;
+
 
             // Écrire les données
-            for (FeedbackDto feedback : feedbackDtos) {
+            for (FeedbackDto feedbackDto : feedbackDtos) {
+                Row dataRow = sheet.getRow(0);
+                Cell cellRow = dataRow.createCell(column);
+                cellRow.setCellValue(feedbackDto.getFullname());
+                cellRow.setCellStyle(cellStyle2);
 
-                Row dataRow = sheet.createRow(j);
-                Cell cellRow = dataRow.createCell(0);
-                cellRow.setCellValue(feedback.getFullname());
-                sheet.autoSizeColumn(0);
+                int row = 1;
 
                 for (QuestionDto questionDto : questions) {
-                    sheet.autoSizeColumn(j);
-                    Optional<AnswerDto> answerDto = feedback.getAnwserByProperty(questionDto.getProperty());
-                    dataRow.createCell(j).setCellValue(answerDto.isPresent() ? answerDto.get().getAnswer() : "");
-                    j = j+1;
+                    Row dataRowQuestion = sheet.getRow(row);
+                    Feedback feedback =  feedbackRepository.getOne(feedbackDto.getId());
+                    Optional<Answer> answer = answerService.findByFeedbackAndQuestion(feedback, questionDto.getProperty());
+                    //Optional<AnswerDto> answerDto = feedback.getAnwserByProperty(questionDto.getProperty());
+                    Cell cellAnswer = dataRowQuestion.createCell(column);
+                    cellAnswer.setCellValue(answer.isPresent() ? answer.get().getAnswer() : "");
+                    cellAnswer.setCellStyle(cellStyle3);
+                    row++;
+
                 }
+
+                sheet.setColumnWidth(column, 25 * 256);
+
+
+                column++;
             }
 
             // Écrire le fichier Excel dans un tableau d'octets
@@ -378,24 +457,231 @@ public class FeedbackService implements IFeedbackService {
     public byte[] exportExcelEvaluationFeedbacks(EvaluationPeriodStaffDto evaluation){
 
         try (Workbook workbook = new XSSFWorkbook()) {
+
             Sheet sheet = workbook.createSheet("FEEDBACK");
 
+
+            CellStyle cellStyle = workbook.createCellStyle();
+            cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
+            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            Font font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 10);
+            font.setBold(false);
+            font.setColor(IndexedColors.WHITE.getIndex());
+            cellStyle.setFont(font);
+
+            cellStyle.setBorderTop(BorderStyle.MEDIUM);
+            cellStyle.setBorderRight(BorderStyle.MEDIUM);
+            cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+            cellStyle.setBorderLeft(BorderStyle.MEDIUM);
+            cellStyle.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            CellStyle cellStyle2 = workbook.createCellStyle();
+            cellStyle2.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+            cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 9);
+            font.setItalic(true);
+            font.setColor(IndexedColors.VIOLET.getIndex());
+            cellStyle2.setFont(font);
+
+            cellStyle2.setBorderTop(BorderStyle.MEDIUM);
+            cellStyle2.setBorderRight(BorderStyle.MEDIUM);
+            cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+            cellStyle2.setBorderLeft(BorderStyle.MEDIUM);
+            cellStyle2.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            CellStyle cellStyle3 = workbook.createCellStyle();
+            cellStyle3.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+            cellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 9);
+            cellStyle3.setFont(font);
+
+            cellStyle3.setBorderTop(BorderStyle.MEDIUM);
+            cellStyle3.setBorderRight(BorderStyle.MEDIUM);
+            cellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+            cellStyle3.setBorderLeft(BorderStyle.MEDIUM);
+            cellStyle3.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
+
+
+
+            List<QuestionDto> questions = questionService.getAllQuestions("fr");
             // Écrire l'en-tête
             Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Question");
-            headerRow.createCell(1).setCellValue("Nombre");
-            headerRow.createCell(2).setCellValue("Pourcentage");
-            int i = 1;
+
+            Cell cell = headerRow.createCell(0);
+
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue("Questions");
+
+            cell = headerRow.createCell(1);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("Valeur");
+
+            cell = headerRow.createCell(2);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("Nombres");
+
+            cell = headerRow.createCell(3);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("Pourcentages");
+
+            cell = headerRow.createCell(4);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("0");
+
+            cell = headerRow.createCell(5);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("1");
+
+            cell = headerRow.createCell(6);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("2");
+
+            cell = headerRow.createCell(7);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("3");
+
+            cell = headerRow.createCell(8);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("4");
+
+            cell = headerRow.createCell(9);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue("5");
+
+
+            /*int i = 1;
+
+            for (QuestionDto questionDto : questions) {
+                /*Cell cellRow = headerRow.createCell(i);
+                cellRow.setCellStyle(cellStyle);
+                cellRow.setCellValue(questionDto.getProperty());
+                headerRow = sheet.createRow(i);
+                cell = headerRow.createCell(0);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(questionDto.getLabel());
+
+                cell = headerRow.createCell(1);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(questionDto.getProperty());
+
+                i = i + 1 ;
+            }*/
+
+
+
+
+
+            int column = 0;
+            int row = 1;
+
 
 
             // Écrire les données
             for (EvaluationItem item : evaluation.getEvaluations()) {
-                Row dataRow = sheet.createRow(i);
+
+
+                headerRow = sheet.createRow(row);
+                cell = headerRow.createCell(column);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(item.getLabel());
+
+                cell = headerRow.createCell(column + 1);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(item.getElement());
+
+                cell = headerRow.createCell(column + 2);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(item.getCount());
+
+                cell = headerRow.createCell(column + 3);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(item.getPourcent());
+
+                cell = headerRow.createCell(column + 4);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(0);
+                Optional<CountNoteDto> optional = item.getCountNoteDtoByNote("0");
+                if(optional.isPresent()){
+                    int count = optional.get().getCount();
+                    cell.setCellValue(count);
+                }
+
+                cell = headerRow.createCell(column + 5);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(0);
+                optional = item.getCountNoteDtoByNote("1");
+                if(optional.isPresent()){
+                    int count = optional.get().getCount();
+                    cell.setCellValue(count);
+                }
+
+                cell = headerRow.createCell(column + 6);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(0);
+                optional = item.getCountNoteDtoByNote("2");
+                if(optional.isPresent()){
+                    int count = optional.get().getCount();
+                    cell.setCellValue(count);
+                }
+
+                cell = headerRow.createCell(column + 7);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(0);
+                optional = item.getCountNoteDtoByNote("3");
+                if(optional.isPresent()){
+                    int count = optional.get().getCount();
+                    cell.setCellValue(count);
+                }
+
+                cell = headerRow.createCell(column + 8);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(0);
+                optional = item.getCountNoteDtoByNote("4");
+                if(optional.isPresent()){
+                    int count = optional.get().getCount();
+                    cell.setCellValue(count);
+                }
+
+                cell = headerRow.createCell(column + 9);
+                cell.setCellStyle(cellStyle2);
+                cell.setCellValue(0);
+                optional = item.getCountNoteDtoByNote("5");
+                if(optional.isPresent()){
+                    int count = optional.get().getCount();
+                    cell.setCellValue(count);
+                }
+
+                row++;
+
+               /* Row dataRow = sheet.createRow(i);
                 dataRow.createCell(0).setCellValue(item.getLabel());
                 dataRow.createCell(1).setCellValue(item.getCount());
                 dataRow.createCell(2).setCellValue(item.getPourcent());
-                i = i + 1 ;
+                i = i + 1 ;*/
             }
+
+            sheet.setColumnWidth(0, 75 * 256);
+            sheet.setColumnWidth(1, 25 * 256);
+            sheet.setColumnWidth(2, 15 * 256);
+            sheet.setColumnWidth(3, 15 * 256);
+            sheet.setColumnWidth(4, 5 * 256);
+            sheet.setColumnWidth(5, 5 * 256);
+            sheet.setColumnWidth(6, 5 * 256);
+            sheet.setColumnWidth(7, 5 * 256);
+            sheet.setColumnWidth(8, 5 * 256);
+            sheet.setColumnWidth(9, 5 * 256);
 
             // Écrire le fichier Excel dans un tableau d'octets
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

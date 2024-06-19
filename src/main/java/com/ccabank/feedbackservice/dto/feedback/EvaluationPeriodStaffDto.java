@@ -12,7 +12,9 @@ public class EvaluationPeriodStaffDto {
 
     private LocalDate endAt;
 
-    private List<EvaluationItem> evaluations = new ArrayList<>();;
+    private List<EvaluationItem> evaluations = new ArrayList<>();
+
+
 
     public String getUsername() {
         return username;
