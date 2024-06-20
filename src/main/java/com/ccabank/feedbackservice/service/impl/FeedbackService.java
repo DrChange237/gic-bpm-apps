@@ -232,6 +232,8 @@ public class FeedbackService implements IFeedbackService {
         evaluation.setUsername(staffUsername);
         evaluation.setStartAt(startAt);
         evaluation.setEndAt(endAt);
+        evaluation.setTotal(feedbacks.size());
+
 
 
         List<EvaluationItem> evaluations = evaluation.getEvaluations();
@@ -302,6 +304,7 @@ public class FeedbackService implements IFeedbackService {
         evaluation.setUsername(agencyCode);
         evaluation.setStartAt(startAt);
         evaluation.setEndAt(endAt);
+        evaluation.setTotal(feedbacks.size());
 
         List<EvaluationItem> evaluations = evaluation.getEvaluations();
         List<QuestionDto> questionDtos = questionService.getAllQuestions("fr");
@@ -337,11 +340,15 @@ public class FeedbackService implements IFeedbackService {
                             continue;
                         }
                         item.addNote(answer.getAnswer());
-                        score =  score + Integer.parseInt(answer.getAnswer());
-                        total = total + 5;
+                        try {
+                            score =  score + Integer.parseInt(answer.getAnswer());
+                        } catch (NumberFormatException e) {
+                            logger.info(FEEDBACK_DETAIL_SERVICE + e.getMessage());
+                        }
                     }
 
                     count = count + 1;
+                    total = total + 5;
 
                 }
             }
@@ -385,6 +392,9 @@ public class FeedbackService implements IFeedbackService {
         workbook = sheetExcelGenerator.generateFeedbackListing(workbook, feedbackDtos, "LISTING");
 
         workbook = sheetExcelGenerator.generateFeedbackChoiceOccurences(workbook, feedbackDtos, "visitCause", "OBJET DE VISITE");
+
+        workbook = sheetExcelGenerator.generateFeedbackChoiceOccurences(workbook, feedbackDtos, "branchWhereAccount", "DOMICILIATION DU COMPTE");
+
 
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

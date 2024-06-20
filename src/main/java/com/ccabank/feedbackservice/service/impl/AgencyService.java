@@ -7,6 +7,7 @@ import com.ccabank.feedbackservice.dto.feedback.AgencyRestDto;
 import com.ccabank.feedbackservice.dto.feedback.QuestionChoiceDto;
 import com.ccabank.feedbackservice.entity.Agency;
 import com.ccabank.feedbackservice.mappers.AgencyMapper;
+import com.ccabank.feedbackservice.openfeign.EntityRestClient;
 import com.ccabank.feedbackservice.openfeign.UserRestClient;
 import com.ccabank.feedbackservice.repository.AgencyRepository;
 import com.ccabank.feedbackservice.service.faces.IAgencyService;
@@ -35,7 +36,7 @@ public class AgencyService implements IAgencyService {
     AgencyMapper agencyMapper;
 
     @Autowired
-    UserRestClient userRestClient;
+    EntityRestClient entityRestClient;
 
     private static final Logger logger = LoggerFactory.getLogger(FeedbackService.class);
 
@@ -62,14 +63,14 @@ public class AgencyService implements IAgencyService {
     @Override
     public AppServiceResult<List<QuestionChoiceDto>> getAllAgencies() {
         try {
-            List<AgencyRestDto> agencies = userRestClient.getAgencies();
+            List<AgencyRestDto> agencies = entityRestClient.getAgencies();
 
             List<QuestionChoiceDto> choices = new ArrayList<>();
 
             for (AgencyRestDto agency : agencies) {
                 QuestionChoiceDto choiceDto = new QuestionChoiceDto();
                 choiceDto.setLabel(agency.getName());
-                choiceDto.setValue(agency.getCode());
+                choiceDto.setValue(agency.getName());
                 choices.add(choiceDto);
             }
 

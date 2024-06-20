@@ -47,7 +47,6 @@ public class QuestionController {
 
 
     @GetMapping("/allQuestions")
-    @CrossOrigin()
     public ResponseEntity<HttpResponse> getAllQuestions(@RequestParam(value = "lang") String lang) {
 
         try{
@@ -61,7 +60,6 @@ public class QuestionController {
     }
 
     @GetMapping("/questions")
-    @CrossOrigin()
     public ResponseEntity<HttpResponse> getQuestions(@RequestParam(value = "form") String form, @RequestParam(value = "lang") String lang) {
 
         try{

@@ -24,18 +24,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 //@FeignClient(value = "entityRestClient", url = "https://developer.ccabank-app.com/sandbox", configuration = FeignClientProperties.FeignClientConfiguration.class)
-@FeignClient(name = "USER-SERVICE", configuration = FeignClientProperties.FeignClientConfiguration.class)
-public interface UserRestClient {
-
-
-    @GetMapping(path = "/api/users/exposed/findByUsername/{username}")
-    @Headers({
-            "x-api-key: key",
-            "secret : secret"
-    })
-    UserRestDto getAgencyByStaffUsername(@PathVariable("username") String username,
-                                         @RequestHeader("x-api-key") String token,
-                                         @RequestHeader("secret") String customValue);
+@FeignClient(name = "ENTITY-SERVICE", configuration = FeignClientProperties.FeignClientConfiguration.class)
+public interface EntityRestClient {
 
     @GetMapping(path = "/api/entities/exposed/getAllAgencies")
     @Headers({

@@ -29,6 +29,7 @@ public class Answer {
     private String answer;
 
 
+
     public Long getId() {
         return id;
     }
@@ -59,4 +60,5 @@ public class Answer {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
+
 }

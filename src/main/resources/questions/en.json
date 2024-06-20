@@ -9,7 +9,7 @@
     "type" : "choice",
     "property" : "branchWhereAccount",
     "api" : true,
-    "url" : "/agency/all"
+    "url" : "/allAgencies"
   },
   {
     "label" : "Purpose of the visit",

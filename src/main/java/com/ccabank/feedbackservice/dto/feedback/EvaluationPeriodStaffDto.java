@@ -12,8 +12,17 @@ public class EvaluationPeriodStaffDto {
 
     private LocalDate endAt;
 
+    private int total;
+
     private List<EvaluationItem> evaluations = new ArrayList<>();
 
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
 
     public String getUsername() {
         return username;

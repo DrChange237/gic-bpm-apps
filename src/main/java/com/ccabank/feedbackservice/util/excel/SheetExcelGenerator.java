@@ -6,20 +6,25 @@ import com.ccabank.feedbackservice.entity.Feedback;
 import com.ccabank.feedbackservice.mappers.AgencyMapper;
 import com.ccabank.feedbackservice.mappers.FeedbackMapper;
 import com.ccabank.feedbackservice.mappers.StaffMapper;
+import com.ccabank.feedbackservice.openfeign.QuestionChoiceRestClient;
 import com.ccabank.feedbackservice.openfeign.UserRestClient;
 import com.ccabank.feedbackservice.repository.AgencyRepository;
 import com.ccabank.feedbackservice.repository.FeedbackRepository;
 import com.ccabank.feedbackservice.repository.StaffRepository;
 import com.ccabank.feedbackservice.service.impl.AnswerService;
+import com.ccabank.feedbackservice.service.impl.FeedbackService;
 import com.ccabank.feedbackservice.service.impl.QuestionService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,25 +43,13 @@ public class SheetExcelGenerator {
     private AnswerService answerService;
 
     @Autowired
-    private FeedbackMapper feedbackMapper;
-
-    @Autowired
-    private StaffMapper staffMapper;
-
-    @Autowired
-    private AgencyMapper agencyMapper;
-
-    @Autowired
     private QuestionService questionService;
 
     @Autowired
-    private AgencyRepository agencyRepository;
+    private QuestionChoiceRestClient questionChoiceRestClient;
 
-    @Autowired
-    private StaffRepository staffRepository;
+    private static final Logger logger = LoggerFactory.getLogger(SheetExcelGenerator.class);
 
-    @Autowired
-    private UserRestClient userRestClient;
 
     public XSSFWorkbook generateFeedbackChoiceOccurences(XSSFWorkbook workbook, List<FeedbackDto> feedbackDtos, String property , String sheetName){
 
@@ -123,11 +116,11 @@ public class SheetExcelGenerator {
         Cell cell = headerRow.createCell(0);
 
         cell.setCellStyle(cellStyle);
-        cell.setCellValue("Valeurs ");
+        cell.setCellValue("Choix");
 
         cell = headerRow.createCell(1);
         cell.setCellStyle(cellStyle2);
-        cell.setCellValue("Propriétés");
+        cell.setCellValue("Valeurs");
 
         cell = headerRow.createCell(2);
         cell.setCellStyle(cellStyle2);
@@ -136,7 +129,34 @@ public class SheetExcelGenerator {
 
         int i = 1 ;
 
-        for(QuestionChoiceDto choice : question.getChoices()){
+        List <QuestionChoiceDto> choices = question.getChoices();
+
+        if(question.isApi()){
+
+            logger.debug(FEEDBACK_DETAIL_SERVICE + " Question API");
+
+
+            List<String> answersDistinct =  answerService.findDistinctByQuestion(property);
+
+              choices = new ArrayList<>();
+
+              for(String possible : answersDistinct){
+
+                   logger.debug(FEEDBACK_DETAIL_SERVICE + "Boucle Possible " + possible);
+
+                  QuestionChoiceDto choiceDto = new QuestionChoiceDto();
+                    choiceDto.setValue(possible);
+                    choiceDto.setLabel(possible);
+                    choices.add(choiceDto);
+              }
+
+              //choices = questionChoiceRestClient.getChoices(question.getUrl()).getData();
+        }
+
+        for(QuestionChoiceDto choice : choices){
+
+            logger.debug(FEEDBACK_DETAIL_SERVICE + "Boucle Choices ");
+
 
             headerRow = sheet.createRow(i);
             cell = headerRow.createCell(0);
@@ -152,9 +172,17 @@ public class SheetExcelGenerator {
             for (FeedbackDto feedbackDto : feedbackDtos) {
                 for (AnswerDto answerDto : feedbackDto.getAnswerCollection()){
 
-                    if(!answerDto.getQuestion().equals("visitCause")){
+                    logger.debug(FEEDBACK_DETAIL_SERVICE + "Boucle Anwser Dto");
+
+
+                    if(!answerDto.getQuestion().equals(property)){
                         continue;
                     }
+
+                    if(answerDto.getAnswer() == null){
+                        continue;
+                    }
+
                     if(answerDto.getAnswer().equals(choice.getValue())){
                         nbChoice++;
                     }
@@ -258,7 +286,7 @@ public class SheetExcelGenerator {
 
         cell = headerRow.createCell(2);
         cell.setCellStyle(cellStyle2);
-        cell.setCellValue("Nombres");
+        cell.setCellValue("Nombres (" + evaluation.getTotal() + ")");
 
         cell = headerRow.createCell(3);
         cell.setCellStyle(cellStyle2);
@@ -499,6 +527,10 @@ public class SheetExcelGenerator {
                 //Optional<AnswerDto> answerDto = feedback.getAnwserByProperty(questionDto.getProperty());
                 Cell cellAnswer = dataRowQuestion.createCell(column);
                 cellAnswer.setCellValue(answer.isPresent() ? answer.get().getAnswer() : "");
+                if (questionDto.getType().equals("choice") & !questionDto.isApi()){
+                    Optional<QuestionChoiceDto> choix = questionDto.getChoices().stream().filter(obj -> obj.getValue().equals(answer.get().getAnswer())).findFirst();
+                    cellAnswer.setCellValue(answer.isPresent() ? choix.get().getLabel() : "");
+                }
                 cellAnswer.setCellStyle(cellStyle3);
                 row++;
 

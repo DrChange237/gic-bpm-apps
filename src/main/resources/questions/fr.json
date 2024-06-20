@@ -10,7 +10,7 @@
     "property" : "branchWhereAccount",
     "choices" : [],
     "api" : true,
-    "url" : "/agency/all"
+    "url" : "/allAgencies"
   },
   {
     "label" : "Objet de la visite",

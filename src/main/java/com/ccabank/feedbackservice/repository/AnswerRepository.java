@@ -16,4 +16,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     Optional<Answer> findOneByFeedbackAndQuestion(@Param("feedback") Feedback feedback, @Nullable @Param("question") String question);
 
+    @Query("SELECT DISTINCT a.answer FROM Answer a WHERE a.question =:question")
+    List<String> findDistinctByQuestion(@Param("question") String question);
+
 }

@@ -41,15 +41,14 @@ import java.util.List;
  */
 @Api(tags = "Feedback")
 @RestController
-@RequestMapping("/agency")
+@RequestMapping("/feedback")
 public class AgencyController {
 
     @Autowired
     private AgencyService agencyService;
 
 
-    @GetMapping("/all")
-    @CrossOrigin()
+    @GetMapping("/allAgencies")
     public ResponseEntity<HttpResponse> getAllAgencies() {
 
         try{
