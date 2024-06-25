@@ -20,11 +20,6 @@ public interface IFeedbackService {
     AppServiceResult<List<FeedbackDto>> getFeedbackByAgencyAndCreatedAt(String agencyCode, LocalDate startAt, LocalDate endAt);
 
 
-    Page<Feedback> findRank(LocalDateTime startAt, LocalDateTime endAt, String property, int limit);
-
-
-    AppServiceResult<List<FeedbackDto>> getFeedbackByStaffUsername(String staffUsername);
-
     AppServiceResult<FeedbackDto> addFeedback(FeedbackDto feedbackDto);
 
     AppServiceResult<EvaluationPeriodStaffDto> getEvaluationStaff(String staffUsername, LocalDate startAt, LocalDate endAt);

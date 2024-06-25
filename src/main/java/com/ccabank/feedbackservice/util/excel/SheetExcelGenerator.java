@@ -338,8 +338,26 @@ public class SheetExcelGenerator {
             cell.setCellValue(item.getCount());
 
             cell = headerRow.createCell(column + 3);
-            cell.setCellStyle(cellStyle2);
-            cell.setCellValue(item.getPourcent());
+
+            CellStyle percentageStyle = workbook.createCellStyle();
+
+            font =  workbook.createFont();
+            font.setFontName("Arial");
+            font.setFontHeightInPoints((short) 9);
+            font.setBold(true);
+            percentageStyle.setFont(font);
+
+            percentageStyle.setBorderTop(BorderStyle.MEDIUM);
+            percentageStyle.setBorderRight(BorderStyle.MEDIUM);
+            percentageStyle.setBorderBottom(BorderStyle.MEDIUM);
+            percentageStyle.setBorderLeft(BorderStyle.MEDIUM);
+            percentageStyle.setAlignment(HorizontalAlignment.LEFT);
+            percentageStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            percentageStyle.setDataFormat(workbook.createDataFormat().getFormat("0.00%"));
+            cell.setCellStyle(percentageStyle);
+            cell.setCellValue(item.getPourcent()/100);
+
+
 
             cell = headerRow.createCell(column + 4);
             cell.setCellStyle(cellStyle2);
@@ -528,8 +546,10 @@ public class SheetExcelGenerator {
                 Cell cellAnswer = dataRowQuestion.createCell(column);
                 cellAnswer.setCellValue(answer.isPresent() ? answer.get().getAnswer() : "");
                 if (questionDto.getType().equals("choice") & !questionDto.isApi()){
-                    Optional<QuestionChoiceDto> choix = questionDto.getChoices().stream().filter(obj -> obj.getValue().equals(answer.get().getAnswer())).findFirst();
-                    cellAnswer.setCellValue(answer.isPresent() ? choix.get().getLabel() : "");
+                    if(answer.isPresent()){
+                        Optional<QuestionChoiceDto> choix = questionDto.getChoices().stream().filter(obj -> obj.getValue().equals(answer.get().getAnswer())).findFirst();
+                        cellAnswer.setCellValue(choix.isPresent() ? choix.get().getLabel() : "");
+                    }
                 }
                 cellAnswer.setCellStyle(cellStyle3);
                 row++;

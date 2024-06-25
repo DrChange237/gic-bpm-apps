@@ -1,15 +1,20 @@
 [
   {
-    "label" : "Do you have an account with CCA-BANK ?",
-    "type" : "bool",
-    "property" : "haveAccount"
+    "label" : "Agency where you are located",
+    "type" : "choice",
+    "property" : "branch",
+    "choices" : [],
+    "api" : true,
+    "url" : "/allAgencies",
+    "sort" :  true
   },
   {
-    "label" : "Agency where the account in question is domiciled ?",
-    "type" : "choice",
-    "property" : "branchWhereAccount",
-    "api" : true,
-    "url" : "/allAgencies"
+    "label" : "Do you have an account with CCA-BANK ?",
+    "type" : "bool",
+    "property" : "haveAccount",
+    "haveSubQuestions" : true,
+    "yesQuestions" : "haveAccount",
+    "noQuestions" : null
   },
   {
     "label" : "Purpose of the visit",

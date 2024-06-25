@@ -159,29 +159,6 @@ public class FeedbackService implements IFeedbackService {
         return null;
     }
 
-    @Override
-    public Page<Feedback> findRank(LocalDateTime startAt, LocalDateTime endAt, String property, int limit) {
-        Pageable pageable = PageRequest.of(1, limit);
-        try {
-            Page<Feedback> feedbacks = feedbackRepository.findRank(pageable, startAt, endAt, property);
-            return feedbacks;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public AppServiceResult<List<FeedbackDto>> getFeedbackByStaffUsername(String staffUsername) {
-        try {
-            List<Feedback> feedbacks = feedbackRepository.findFeedbackByStaff(staffUsername);
-            return getConvertedResult(feedbacks, "getFeedbackByStaffUsername");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new AppServiceResult<List<FeedbackDto>>(false, AppError.Unknown.errorCode(),
-                    AppError.Unknown.errorMessage(), null);
-        }
-    }
 
     @Override
     public AppServiceResult<FeedbackDto> addFeedback(FeedbackDto feedbackDto) {

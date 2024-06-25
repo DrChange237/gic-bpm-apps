@@ -1,5 +1,7 @@
 package com.ccabank.feedbackservice.dto.feedback;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class QuestionDto {
@@ -16,8 +18,24 @@ public class QuestionDto {
 
     private String url;
 
+    private boolean sort;
+
+    private boolean haveSubQuestions = false;
+
+    private String yesQuestions;
+
+    private String noQuestions;
+
+
     private List<QuestionChoiceDto> choices;
 
+    public boolean isSort() {
+        return sort;
+    }
+
+    public void setSort(boolean sort) {
+        this.sort = sort;
+    }
 
     public String getProperty() {
         return property;
@@ -44,6 +62,12 @@ public class QuestionDto {
     }
 
     public List<QuestionChoiceDto> getChoices() {
+        if (this.sort){
+            //return this.choices.stream().sorted();
+            this.choices.sort(Comparator.comparing(QuestionChoiceDto::getLabel));
+            return this.choices;
+
+        }
         return choices;
     }
 
@@ -73,5 +97,29 @@ public class QuestionDto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isHaveSubQuestions() {
+        return haveSubQuestions;
+    }
+
+    public void setHaveSubQuestions(boolean haveSubQuestions) {
+        this.haveSubQuestions = haveSubQuestions;
+    }
+
+    public String getYesQuestions() {
+        return yesQuestions;
+    }
+
+    public void setYesQuestions(String yesQuestions) {
+        this.yesQuestions = yesQuestions;
+    }
+
+    public String getNoQuestions() {
+        return noQuestions;
+    }
+
+    public void setNoQuestions(String noQuestions) {
+        this.noQuestions = noQuestions;
     }
 }

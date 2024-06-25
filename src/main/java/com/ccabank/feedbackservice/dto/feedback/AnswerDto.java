@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
@@ -76,14 +77,6 @@ public class AnswerDto {
         this.feedback = feedback;
     }
 
-    public QuestionDto getQuestionDto(){
-
-        List<QuestionDto> questionDtos = this.getAllQuestions("fr");
-        return questionDtos.stream()
-                .filter(question -> question.getProperty().equals(this.question))
-                .findFirst()
-                .orElse(null);
-    }
 
     public void setQuestionDto(QuestionDto questionDto) {
         this.questionDto = questionDto;
@@ -92,10 +85,41 @@ public class AnswerDto {
     public QuestionDto getQuestion(String property){
 
         List<QuestionDto> questionDtos = this.getAllQuestions("fr");
+        List<QuestionDto> subQuestions = new ArrayList<>();
+
+        for(QuestionDto question : questionDtos) {
+
+            if(question.isHaveSubQuestions()){
+                if(question.getYesQuestions() != null){
+                    subQuestions.addAll(this.getQuestions(question.getYesQuestions(), "fr"));
+                }
+                if(question.getNoQuestions() != null){
+                    subQuestions.addAll(this.getQuestions(question.getNoQuestions(), "fr"));
+                }
+
+            }
+        }
+
+        questionDtos.addAll(subQuestions);
+
         return questionDtos.stream()
                 .filter(person -> person.getProperty().equals(property))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<QuestionDto> getQuestions(String form, String lang) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ClassPathResource resource = new ClassPathResource("questions/" + form + "/" + lang + ".json");
+            InputStream inputStream = resource.getInputStream();
+            List<QuestionDto> questions = objectMapper.readValue(inputStream, new TypeReference<List<QuestionDto>>() {});
+            return questions;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<QuestionDto> getAllQuestions(String lang) {

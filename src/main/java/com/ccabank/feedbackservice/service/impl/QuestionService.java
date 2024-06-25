@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ccabank.feedbackservice.constant.BeanIdConstant.FEEDBACK_DETAIL_SERVICE;
@@ -48,6 +49,22 @@ public class QuestionService implements IQuestionService {
 
             InputStream inputStream = resource.getInputStream();
             List<QuestionDto> questions = objectMapper.readValue(inputStream, new TypeReference<List<QuestionDto>>() {});
+
+            for(QuestionDto question : questions) {
+                logger.error(FEEDBACK_DETAIL_SERVICE, "getQuestions : Exception ", question.getLabel());
+
+                if(question.getType() == "bool" && question.isHaveSubQuestions()){
+                    List<QuestionDto> subQuestions = new ArrayList<>();
+                    if(question.getYesQuestions() != null){
+                        subQuestions = this.getQuestions(question.getYesQuestions(), lang);
+                        questions.addAll(subQuestions);
+                    }
+                    if(question.getNoQuestions() != null){
+                        subQuestions = this.getQuestions(question.getNoQuestions(), lang);
+                        questions.addAll(subQuestions);
+                    }
+                }
+            }
 
             return questions;
 

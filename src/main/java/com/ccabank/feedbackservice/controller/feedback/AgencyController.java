@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,10 +50,13 @@ public class AgencyController {
 
 
     @GetMapping("/allAgencies")
-    public ResponseEntity<HttpResponse> getAllAgencies() {
+    public ResponseEntity<HttpResponse> getAllAgencies(@RequestParam(value = "sort", required = false, defaultValue = "false") boolean sort) {
 
         try{
             List<QuestionChoiceDto> choices = agencyService.getAllAgencies().getData();
+            if(sort){
+                choices.sort(Comparator.comparing(QuestionChoiceDto::getLabel));
+            }
             return ResponseEntity.ok(new HttpResponseSuccess<List<QuestionChoiceDto>>(choices));
 
         }catch (Exception exception){
