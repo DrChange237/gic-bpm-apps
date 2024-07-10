@@ -1,6 +1,6 @@
 spring:
   application:
-    name: feedback-service
+    name: sign-service
 
   # JAP
   jpa:
@@ -12,6 +12,17 @@ spring:
       hibernate.default_schema: public
 
 
+  # DATASOURCE (POSTGRESSSQL)
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/feedback-service
+    username: admin
+    password: CCAP@ssw0rd
 
+
+  server:
+    port: ${port:6500}
+    servlet:
+      context-path: /api
 
 

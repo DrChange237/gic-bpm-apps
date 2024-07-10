@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Artifact ID -->
-    <artifactId>feedback-service</artifactId>
+    <artifactId>sign-service</artifactId>
 
     <!-- Project description -->
-    <description>Project for Feedback Customer</description>
+    <description>Project for Sign</description>
 
     <!-- gestion de build -->
     <build>
@@ -108,6 +108,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${io.springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>2.0.2</version>
         </dependency>
 
         <dependency>
