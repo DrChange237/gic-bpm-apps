@@ -1,0 +1,13 @@
+package com.ccabank.memoservice.constant;
+
+public class DocumentTypeConstant {
+
+    public final static String DOCUMENT_TYPE_VACATION = "vacation";
+
+    public final static String DOCUMENT_TYPE_ABSENSE = "absence";
+
+    public final static String DOCUMENT_TYPE_MISSION = "mission";
+
+    public final static String DOCUMENT_TYPE_RESUMPTION = "resumption";
+
+}

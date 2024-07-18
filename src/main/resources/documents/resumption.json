@@ -1,0 +1,59 @@
+{
+  "name" : "Fiche de reprise de service",
+  "generateUrl" : "",
+  "fields" : [
+    {
+      "key" : "lastVacationDate",
+      "name" : "Derniers Jours de Vacance",
+      "type" : "date"
+    },
+    {
+      "key" : "startDate",
+      "name" : "Date de Debut",
+      "type" : "date"
+    },
+    {
+      "key" : "endDate",
+      "name" : "Date de Fin",
+      "type" : "date"
+    },
+    {
+      "key" : "realEndDate",
+      "name" : "Date réelle de reprise de fonction",
+      "type" : "date"
+    },
+    {
+      "key" : "reason",
+      "name" : "Raison",
+      "type" : "choice",
+      "choices" : [
+        {
+          "label" : "Congés Annuels",
+          "value" : "ANNUAL"
+        },
+        {
+          "label" : "Maternité",
+          "value" : "MATERNITY"
+        },
+        {
+          "label" : "Médical",
+          "value" : "MEDICAL"
+        },
+        {
+          "label" : "Absence",
+          "value" : "ABSENCE"
+        }
+      ]
+    },
+    {
+      "key" : "supervisor",
+      "name" : "Supérieur (N+1)",
+      "type" : "Employee"
+    },
+    {
+      "key" : "supervisorNext",
+      "name" : "Supérieur (N+2)",
+      "type" : "Employee"
+    }
+  ]
+}

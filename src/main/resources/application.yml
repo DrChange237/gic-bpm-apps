@@ -1,6 +1,7 @@
 spring:
   application:
-    name: sign-service
+    name: paperless-service
+
 
   # JAP
   jpa:
@@ -11,18 +12,14 @@ spring:
     properties:
       hibernate.default_schema: public
 
-
   # DATASOURCE (POSTGRESSSQL)
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/feedback-service
+    url: jdbc:postgresql://localhost:5432/memo-service
     username: admin
     password: CCAP@ssw0rd
 
 
-  server:
-    port: ${port:6500}
-    servlet:
-      context-path: /api
+
 
 

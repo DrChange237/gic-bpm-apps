@@ -1,0 +1,56 @@
+{
+  "name" : "Ordre de mission",
+  "generateUrl" : "",
+  "fields" : [
+    {
+      "key" : "object",
+      "name" : "Objet de la mission",
+      "type" : "text"
+    },
+    {
+      "key" : "location",
+      "name" : "Lieu de la mission",
+      "type" : "text"
+    },
+    {
+      "key" : "nights",
+      "name" : "Nombre de nuitées",
+      "type" : "number"
+    },
+    {
+      "key" : "accountNumber",
+      "name" : "Numero de compte courrant ",
+      "type" : "number"
+    },
+    {
+      "key" : "lastVacationDate",
+      "name" : "Derniers Jours de Vacance",
+      "type" : "date"
+    },
+    {
+      "key" : "startDate",
+      "name" : "Date de Debut",
+      "type" : "date"
+    },
+    {
+      "key" : "endDate",
+      "name" : "Date de Fin",
+      "type" : "date"
+    },
+    {
+      "key" : "interim",
+      "name" : "Intérimaire",
+      "type" : "Employee"
+    },
+    {
+      "key" : "supervisor",
+      "name" : "Supérieur (N+1)",
+      "type" : "Employee"
+    },
+    {
+      "key" : "supervisorNext",
+      "name" : "Supérieur (N+2)",
+      "type" : "Employee"
+    }
+  ]
+}

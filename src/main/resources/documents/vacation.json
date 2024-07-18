@@ -1,0 +1,36 @@
+{
+  "name" : "Demande de congé annuel",
+  "generateUrl" : "",
+  "fields" : [
+    {
+      "key" : "lastVacationDate",
+      "name" : "Derniers Jours de Vacance",
+      "type" : "date"
+    },
+    {
+      "key" : "startDate",
+      "name" : "Date de Debut",
+      "type" : "date"
+    },
+    {
+      "key" : "endDate",
+      "name" : "Date de Fin",
+      "type" : "date"
+    },
+    {
+      "key" : "interim",
+      "name" : "Intérimaire",
+      "type" : "Employee"
+    },
+    {
+      "key" : "supervisor",
+      "name" : "Supérieur (N+1)",
+      "type" : "Employee"
+    },
+    {
+      "key" : "supervisorNext",
+      "name" : "Supérieur (N+2)",
+      "type" : "Employee"
+    }
+  ]
+}
