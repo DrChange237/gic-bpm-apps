@@ -106,45 +106,42 @@ public class MapToReportServiceImpl implements MapToReportService {
     @Override
     public ResumptionForm constructResumptionRequest(Request request){
 
-        ResumptionForm vacationForm = new ResumptionForm();
-        vacationForm.setDate(LocalDate.from(request.getCreatedAt()));
+        ResumptionForm resumptionForm = new ResumptionForm();
+        resumptionForm.setDate(LocalDate.from(request.getCreatedAt()));
 
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
-        vacationForm.setFunction(staff.getFunction());
-        vacationForm.setName(staff.getUsername());
-        vacationForm.setMatricule(staff.getMatricule());
-        vacationForm.setUnity(staff.getDepartment());
+        resumptionForm.setFunction(staff.getFunction());
+        resumptionForm.setName(staff.getUsername());
+        resumptionForm.setMatricule(staff.getMatricule());
+        resumptionForm.setUnity(staff.getDepartment());
 
 
         //StartDate
-        String lastVacationDateString = FieldUtils.getValueOfField(request,"startDate");
-        if(lastVacationDateString != null){
-            vacationForm.setStartDate(LocalDate.parse(lastVacationDateString));
+        String startDate = FieldUtils.getValueOfField(request,"startDate");
+        if(startDate != null){
+            resumptionForm.setStartDate(LocalDate.parse(startDate));
         }
 
 
         //EndDate
-        lastVacationDateString = FieldUtils.getValueOfField(request,"endDate");
-        if(lastVacationDateString != null){
-            vacationForm.setEndDate(LocalDate.parse(lastVacationDateString));
+        String endDate = FieldUtils.getValueOfField(request,"endDate");
+        if(endDate != null){
+            resumptionForm.setEndDate(LocalDate.parse(endDate));
         }
 
 
         //Supervisor
-        lastVacationDateString = FieldUtils.getValueOfField(request,"supervisor");
-
-        ResumptionForm.Signatory supervisor = new ResumptionForm.Signatory();
-
-
-        if(lastVacationDateString != null){
-            staff = userRestClient.getAgencyByStaffUsername(lastVacationDateString, "key", "secret");
-            supervisor.setName(staff.getUsername());
-            vacationForm.setSupervisor(supervisor);
+        ResumptionForm.Signatory signatory = new ResumptionForm.Signatory();
+        String supervisor = request.getApprovalByPosition(1).getStaff();
+        if(supervisor != null){
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
+            signatory.setName(staff.getUsername());
+            resumptionForm.setSupervisor(signatory);
         }
 
 
-        return vacationForm;
+        return resumptionForm;
 
     }
 
@@ -196,25 +193,22 @@ public class MapToReportServiceImpl implements MapToReportService {
         vacationForm.setInterim(interim);
 
         //Supervisor
-        lastVacationDateString = FieldUtils.getValueOfField(request,"supervisor");
-
-        VacationForm.Signatory supervisor = new VacationForm.Signatory();
-
-
-        if(lastVacationDateString != null){
-            staff = userRestClient.getAgencyByStaffUsername(lastVacationDateString, "key", "secret");
-            supervisor.setName(staff.getUsername());
-            vacationForm.setSupervisor(supervisor);
+        VacationForm.Signatory signatory = new VacationForm.Signatory();
+        String supervisor = request.getApprovalByPosition(1).getStaff();
+        if(supervisor != null){
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
+            signatory.setName(staff.getUsername());
+            vacationForm.setSupervisor(signatory);
         }
 
 
-
         //SupervisorNext
-        lastVacationDateString = FieldUtils.getValueOfField(request,"supervisorNext");
-        if(lastVacationDateString != null){
+        signatory = new VacationForm.Signatory();
+        supervisor = request.getApprovalByPosition(2).getStaff();
+        if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(lastVacationDateString, "key", "secret");
-            supervisor.setName(staff.getUsername());
-            vacationForm.setSupervisorNext(supervisor);
+            signatory.setName(staff.getUsername());
+            vacationForm.setSupervisorNext(signatory);
         }
 
 

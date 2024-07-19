@@ -12,6 +12,8 @@ public class DocumentStructure {
 
     private List<FieldDto> fields;
 
+    private List<ApprovalDto> approvals;
+
     public String getName() {
         return name;
     }
@@ -34,5 +36,13 @@ public class DocumentStructure {
 
     public void setFields(List<FieldDto> fields) {
         this.fields = fields;
+    }
+
+    public List<ApprovalDto> getApprovals() {
+        return approvals;
+    }
+
+    public void setApprovals(List<ApprovalDto> approvals) {
+        this.approvals = approvals;
     }
 }

@@ -1,6 +1,34 @@
 {
   "name" : "Ordre de mission",
   "generateUrl" : "",
+  "approvals" : [
+    {
+      "position" : 1,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Hiérarchie N + 1"
+    },
+    {
+      "position" : 2,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Hiérarchie N + 2"
+    },
+    {
+      "position" : 3,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "RH",
+      "role" : "CAPITAL HUMAIN",
+      "fields" : [
+        {
+          "key" : "object",
+          "name" : "Objet de la mission",
+          "type" : "text"
+        }
+      ]
+    }
+  ],
   "fields" : [
     {
       "key" : "object",
@@ -40,16 +68,6 @@
     {
       "key" : "interim",
       "name" : "Intérimaire",
-      "type" : "Employee"
-    },
-    {
-      "key" : "supervisor",
-      "name" : "Supérieur (N+1)",
-      "type" : "Employee"
-    },
-    {
-      "key" : "supervisorNext",
-      "name" : "Supérieur (N+2)",
       "type" : "Employee"
     }
   ]

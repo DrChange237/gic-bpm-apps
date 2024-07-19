@@ -1,8 +1,11 @@
 package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.entity.ApprovalStatus;
+import com.ccabank.memoservice.entity.ApprovalType;
+import com.ccabank.memoservice.entity.ProcessUnity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ApprovalDto {
 
@@ -13,11 +16,19 @@ public class ApprovalDto {
 
     private String staff;
 
+    private  String role;
+
+    private ApprovalType type;
+
     private LocalDateTime approvalDate;
 
     private ApprovalStatus status;
 
     private String comments;
+
+    private String unity;
+
+    private List<FieldDto> fields;
 
 
     public Long getId() {
@@ -42,6 +53,40 @@ public class ApprovalDto {
 
     public void setStaff(String staff) {
         this.staff = staff;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public ApprovalType getType() {
+        return type;
+    }
+
+    public void setType(ApprovalType type) {
+        this.type = type;
+    }
+
+    public String getUnity() {
+        return unity;
+    }
+
+    public void setUnity(String unity) {
+        this.unity = unity;
+    }
+
+
+
+    public List<FieldDto> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<FieldDto> fields) {
+        this.fields = fields;
     }
 
     public LocalDateTime getApprovalDate() {

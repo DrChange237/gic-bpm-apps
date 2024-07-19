@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DocumentTypeService {
     AppServiceResult<List<DocumentTypeDto>> getDocumentTypes();
+
+    AppServiceResult<DocumentTypeDto> getDocumentType(String structure);
 }

@@ -15,8 +15,12 @@ public class Field {
     private Long id;
 
     @JoinColumn(name = "REQUEST", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Request request;
+
+    @JoinColumn(name = "APPROVAL", referencedColumnName = "ID")
+    @ManyToOne(optional = true)
+    private Request approval;
 
     @Column(name = "KEY")
     private String key;
@@ -34,6 +38,14 @@ public class Field {
 
     public void setRequest(Request request) {
         this.request = request;
+    }
+
+    public Request getApproval() {
+        return approval;
+    }
+
+    public void setApproval(Request approval) {
+        this.approval = approval;
     }
 
     public String getKey() {

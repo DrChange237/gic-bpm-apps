@@ -26,12 +26,24 @@ public class DocumentTypeController {
     @Autowired
     private DocumentTypeService documentTypeService;
 
-    @GetMapping("/allTypes")
-    public ResponseEntity<HttpResponse> allTypes() {
+    @GetMapping("/getTypes")
+    public ResponseEntity<HttpResponse> getTypes() {
 
         try{
             List<DocumentTypeDto> documentTypeDtos = documentTypeService.getDocumentTypes().getData();
             return ResponseEntity.ok(new HttpResponseSuccess<List<DocumentTypeDto>>(documentTypeDtos));
+        }catch (Exception exception){
+            return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
+
+        }
+    }
+
+    @GetMapping("/getTypeDetails")
+    public ResponseEntity<HttpResponse> getTypeDetails(@RequestParam(value = "name") String name) {
+
+        try{
+            DocumentTypeDto documentTypeDto = documentTypeService.getDocumentType(name).getData();
+            return ResponseEntity.ok(new HttpResponseSuccess<DocumentTypeDto>(documentTypeDto));
         }catch (Exception exception){
             return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
 

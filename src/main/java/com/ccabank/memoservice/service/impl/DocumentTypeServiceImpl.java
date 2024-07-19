@@ -36,7 +36,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 DocumentTypeDto dto = new DocumentTypeDto();
                 dto.setName(type.getStructure());
                 dto.setDescription(type.getName());
-                dto.setStructure(FieldUtils.getStructure(type.getStructure()));
+                //dto.setStructure(FieldUtils.getStructure(type.getStructure()));
                 documentsDto.add(dto);
             }
 
@@ -45,6 +45,25 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         } catch (Exception e) {
             e.printStackTrace();
             return new AppServiceResult<List<DocumentTypeDto>>(false, AppError.Unknown.errorCode(),
+                    AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<DocumentTypeDto> getDocumentType(String structure) {
+        try {
+            DocumentType type = documentTypeRepository.findOneByStructure(structure);
+
+            DocumentTypeDto dto = new DocumentTypeDto();
+            dto.setName(type.getStructure());
+            dto.setDescription(type.getName());
+            dto.setStructure(FieldUtils.getStructure(type.getStructure()));
+
+            return new AppServiceResult<DocumentTypeDto>(true, 0, "Succeed!", dto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new AppServiceResult<DocumentTypeDto>(false, AppError.Unknown.errorCode(),
                     AppError.Unknown.errorMessage(), null);
         }
     }

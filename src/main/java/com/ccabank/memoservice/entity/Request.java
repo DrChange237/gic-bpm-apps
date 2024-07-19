@@ -44,6 +44,10 @@ public class Request {
         return id;
     }
 
+    public Approval getApprovalByPosition(int position){
+        return this.approvals.stream().filter(obj -> obj.getPosition() == position).findFirst().get();
+    }
+
     public RequestStatus getStatus() {
         return status;
     }
