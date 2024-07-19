@@ -14,6 +14,16 @@ public class FieldDto {
 
     private String type;
 
+    private boolean required = true;
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
     public String getType() {
         return type;
     }

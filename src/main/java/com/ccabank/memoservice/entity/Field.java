@@ -1,6 +1,8 @@
 package com.ccabank.memoservice.entity;
 
 
+import com.sun.jersey.core.impl.provider.entity.XMLRootObjectProvider;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -20,7 +22,7 @@ public class Field {
 
     @JoinColumn(name = "APPROVAL", referencedColumnName = "ID")
     @ManyToOne(optional = true)
-    private Request approval;
+    private Approval approval;
 
     @Column(name = "KEY")
     private String key;
@@ -40,11 +42,11 @@ public class Field {
         this.request = request;
     }
 
-    public Request getApproval() {
+    public Approval getApproval() {
         return approval;
     }
 
-    public void setApproval(Request approval) {
+    public void setApproval(Approval approval) {
         this.approval = approval;
     }
 

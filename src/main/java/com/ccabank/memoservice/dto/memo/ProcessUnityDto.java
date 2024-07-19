@@ -1,30 +1,22 @@
-package com.ccabank.memoservice.entity;
+package com.ccabank.memoservice.dto.memo;
 
+public class ProcessUnityDto {
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "T_PROCESS_UNITY")
-public class ProcessUnity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID", columnDefinition = "serial")
     private Long id;
 
-    @Column(name = "CODE")
     private String code;
 
-    @Column(name = "NAME")
     private String name;
+
+    private String staffList;
 
     public Long getId() {
         return id;
     }
 
-    @Column(name = "STAFF_LIST")
-    private String StaffList;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCode() {
         return code;
@@ -43,10 +35,10 @@ public class ProcessUnity {
     }
 
     public String getStaffList() {
-        return StaffList;
+        return staffList;
     }
 
     public void setStaffList(String staffList) {
-        StaffList = staffList;
+        this.staffList = staffList;
     }
 }

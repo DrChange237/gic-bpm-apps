@@ -30,6 +30,8 @@ public class ApprovalDto {
 
     private List<FieldDto> fields;
 
+    private boolean required;
+
 
     public Long getId() {
         return id;
@@ -54,6 +56,7 @@ public class ApprovalDto {
     public void setStaff(String staff) {
         this.staff = staff;
     }
+
 
     public String getRole() {
         return role;
@@ -111,5 +114,13 @@ public class ApprovalDto {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 }

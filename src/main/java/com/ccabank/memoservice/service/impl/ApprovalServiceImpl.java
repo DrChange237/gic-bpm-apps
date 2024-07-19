@@ -2,13 +2,13 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
+import com.ccabank.memoservice.dto.memo.AcceptedApprovalDto;
 import com.ccabank.memoservice.dto.memo.ApprovalDto;
-import com.ccabank.memoservice.entity.Approval;
-import com.ccabank.memoservice.entity.ApprovalStatus;
-import com.ccabank.memoservice.entity.Request;
-import com.ccabank.memoservice.entity.RequestStatus;
+import com.ccabank.memoservice.dto.memo.FieldDto;
+import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
 import com.ccabank.memoservice.repository.ApprovalRepository;
+import com.ccabank.memoservice.repository.FieldRepository;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import org.slf4j.Logger;
@@ -43,6 +43,8 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Autowired
     private RequestRepository requestRepository;
 
+    private FieldRepository fieldRepository;
+
     @Override
     public Approval getNextPendingApproval(Request request){
 
@@ -76,10 +78,10 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 
     @Override
-    public AppServiceResult<ApprovalDto> approve(Long id) {
+    public AppServiceResult<ApprovalDto> approve(AcceptedApprovalDto acceptedApprovalDto) {
         try {
             logger.info(MEMO_SERVICE + "approve : methode invocation");
-            Approval approval = approvalRepository.getOne(id);
+            Approval approval = approvalRepository.getOne(acceptedApprovalDto.getIdApproval());
 
             if(!approval.getStatus().equals(ApprovalStatus.WAITING)){
                 throw new Exception("Cette requete ne peut pas etre approuvée");
@@ -88,6 +90,14 @@ public class ApprovalServiceImpl implements ApprovalService {
             approval.setApprovalDate(LocalDateTime.now());
             approval.setStatus(ApprovalStatus.ACCEPTED);
             approval = approvalRepository.save(approval);
+
+            for(FieldDto fieldDto : acceptedApprovalDto.getFields()){
+                Field field = new Field();
+                field.setKey(fieldDto.getKey());
+                field.setValue(fieldDto.getValue());
+                field.setApproval(approval);
+                fieldRepository.save(field);
+            }
 
             Request request = approval.getRequest();
 
@@ -113,10 +123,10 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
-    public AppServiceResult<ApprovalDto> rejected(Long id) {
+    public AppServiceResult<ApprovalDto> rejected(AcceptedApprovalDto acceptedApprovalDto) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
-            Approval approval = approvalRepository.getOne(id);
+            Approval approval = approvalRepository.getOne(acceptedApprovalDto.getIdApproval());
 
             if(!approval.getStatus().equals(ApprovalStatus.WAITING)){
                 throw new Exception("Cette requete ne peut pas etre approuvée");
@@ -124,7 +134,16 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             approval.setApprovalDate(LocalDateTime.now());
             approval.setStatus(ApprovalStatus.REJECTED);
+            approval.setComments(acceptedApprovalDto.getComments());
             approval = approvalRepository.save(approval);
+
+            for(FieldDto fieldDto : acceptedApprovalDto.getFields()){
+                Field field = new Field();
+                field.setKey(fieldDto.getKey());
+                field.setValue(fieldDto.getValue());
+                field.setApproval(approval);
+                fieldRepository.save(field);
+            }
 
 
             Request request = approval.getRequest();

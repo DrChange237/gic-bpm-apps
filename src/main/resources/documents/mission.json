@@ -6,25 +6,78 @@
       "position" : 1,
       "staff" : "",
       "type" : "OPEN",
-      "role" : "Hiérarchie N + 1"
+      "role" : "Hiérarchie N + 1",
+      "required" : true
     },
     {
       "position" : 2,
       "staff" : "",
       "type" : "OPEN",
-      "role" : "Hiérarchie N + 2"
+      "role" : "Hiérarchie N + 2",
+      "required" : true
     },
     {
       "position" : 3,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "DG",
+      "role" : "DIRECTION GENERALE",
+      "required" : false,
+      "fields" : [
+        {
+          "key" : "avis",
+          "name" : "Avis",
+          "type" : "choice",
+          "required": true,
+          "choices" : [
+            {
+              "label" : "Favorable",
+              "value" : "FAVORABLE"
+            },
+            {
+              "label" : "Non Favorable",
+              "value" : "NOT_FAVORABLE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "position" : 4,
       "staff" : null,
       "type" : "STATIC",
       "unity" : "RH",
       "role" : "CAPITAL HUMAIN",
       "fields" : [
         {
-          "key" : "object",
-          "name" : "Objet de la mission",
-          "type" : "text"
+          "key" : "chargeSupport",
+          "name" : "Montant du Support de charge (F CFA)",
+          "type" : "number",
+          "required" : true
+        },
+        {
+          "key" : "missionFees",
+          "name" : "Montant des Frais de mission (F CFA)",
+          "type" : "number",
+          "required" : true
+        },
+        {
+          "key" : "transportFees",
+          "name" : "Montant des Frais de transport (F CFA)",
+          "type" : "number",
+          "required" : true
+        },
+        {
+          "key" : "authorisationNumber",
+          "name" : "Numero Autorisation",
+          "type" : "text",
+          "required" : true
+        },
+        {
+          "key" : "receiptNumber",
+          "name" : "Numéro Réception",
+          "type" : "text",
+          "required" : true
         }
       ]
     }
@@ -33,42 +86,66 @@
     {
       "key" : "object",
       "name" : "Objet de la mission",
-      "type" : "text"
+      "type" : "text",
+      "required" : true
     },
     {
       "key" : "location",
       "name" : "Lieu de la mission",
-      "type" : "text"
+      "type" : "text",
+      "required" : true
     },
     {
       "key" : "nights",
       "name" : "Nombre de nuitées",
-      "type" : "number"
+      "type" : "number",
+      "required" : true
     },
     {
       "key" : "accountNumber",
       "name" : "Numero de compte courrant ",
-      "type" : "number"
-    },
-    {
-      "key" : "lastVacationDate",
-      "name" : "Derniers Jours de Vacance",
-      "type" : "date"
+      "type" : "text",
+      "required" : true
     },
     {
       "key" : "startDate",
-      "name" : "Date de Debut",
-      "type" : "date"
+      "name" : "Date de Départ",
+      "type" : "date",
+      "required" : true
     },
     {
       "key" : "endDate",
-      "name" : "Date de Fin",
-      "type" : "date"
+      "name" : "Date de Retour",
+      "type" : "date",
+      "required" : true
     },
     {
-      "key" : "interim",
-      "name" : "Intérimaire",
-      "type" : "Employee"
+      "key" : "transport",
+      "name" : "Moyen de Transport Utilisé",
+      "type" : "choice",
+      "required" : true,
+      "choices" : [
+        {
+          "label" : "Transport en Commun",
+          "value" : "TRANSPORT_COMMUN"
+        },
+        {
+          "label" : "Véhicule de Service",
+          "value" : "TRANSPORT_SERVICE"
+        }
+      ]
+    },
+    {
+      "key" : "immatriculation",
+      "name" : "Immatriculation du véhicule",
+      "type" : "text",
+      "required" : false
+    },
+    {
+      "key" : "coursier",
+      "name" : "Coursier",
+      "type" : "text",
+      "required" : false
     }
   ]
 }

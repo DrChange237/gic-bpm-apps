@@ -104,6 +104,62 @@ public class MapToReportServiceImpl implements MapToReportService {
     }
 
     @Override
+    public MissionForm constructMissionRequest(Request request){
+
+        MissionForm missionForm = new MissionForm();
+        missionForm.setDate(LocalDate.from(request.getCreatedAt()));
+
+        UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+
+        missionForm.setFunction(staff.getFunction());
+        missionForm.setName(staff.getUsername());
+        missionForm.setUnity(staff.getDepartment());
+
+        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        missionForm.setSignature(signature);
+
+
+        //StartDate
+        String startDate = FieldUtils.getValueOfField(request,"startDate");
+        if(startDate != null){
+            missionForm.setStartDate(LocalDate.parse(startDate));
+        }
+
+
+        //EndDate
+        String endDate = FieldUtils.getValueOfField(request,"endDate");
+        if(endDate != null){
+            missionForm.setEndDate(LocalDate.parse(endDate));
+        }
+
+
+        //Supervisor
+        MissionForm.Signatory signatory = new MissionForm.Signatory();
+        String supervisor = request.getApprovalByPosition(1).getStaff();
+        if(supervisor != null){
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
+            signatory.setName(staff.getUsername());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            missionForm.setSupervisor(signatory);
+
+        }
+
+        //SupervisorNext
+        signatory = new MissionForm.Signatory();
+        supervisor = request.getApprovalByPosition(2).getStaff();
+        if(supervisor != null){
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
+            signatory.setName(staff.getUsername());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            missionForm.setSupervisorNext(signatory);
+        }
+
+
+        return missionForm;
+
+    }
+
+    @Override
     public ResumptionForm constructResumptionRequest(Request request){
 
         ResumptionForm resumptionForm = new ResumptionForm();
@@ -115,6 +171,9 @@ public class MapToReportServiceImpl implements MapToReportService {
         resumptionForm.setName(staff.getUsername());
         resumptionForm.setMatricule(staff.getMatricule());
         resumptionForm.setUnity(staff.getDepartment());
+
+        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        resumptionForm.setSignature(signature);
 
 
         //StartDate
@@ -137,7 +196,9 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
             resumptionForm.setSupervisor(signatory);
+
         }
 
 
@@ -159,6 +220,9 @@ public class MapToReportServiceImpl implements MapToReportService {
         vacationForm.setName(staff.getUsername());
         vacationForm.setMatricule(staff.getMatricule());
         vacationForm.setUnity(staff.getDepartment());
+
+        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        vacationForm.setSignature(signature);
 
         //LastVacationDate
         String lastVacationDateString = FieldUtils.getValueOfField(request,"lastVacationDate");
@@ -198,6 +262,7 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
             vacationForm.setSupervisor(signatory);
         }
 
@@ -206,12 +271,11 @@ public class MapToReportServiceImpl implements MapToReportService {
         signatory = new VacationForm.Signatory();
         supervisor = request.getApprovalByPosition(2).getStaff();
         if(supervisor != null){
-            staff = userRestClient.getAgencyByStaffUsername(lastVacationDateString, "key", "secret");
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
             vacationForm.setSupervisorNext(signatory);
         }
-
-
 
         return vacationForm;
 

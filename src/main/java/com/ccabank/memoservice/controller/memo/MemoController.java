@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.InputStream;
 import java.util.List;
 
-@Api(tags = "Memo")
+@Api(tags = "Paperless")
 @RestController
 @RequestMapping("/request")
 public class MemoController {
@@ -28,7 +28,7 @@ public class MemoController {
     @Autowired
     private RequestService requestService;
 
-    @PostMapping("/new")
+    @PostMapping("/create")
     @CrossOrigin()
     public ResponseEntity<HttpResponse> newRequest(@RequestBody RequestDto requestDto) {
         AppBaseResult result = requestService.newRequest(requestDto);

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Comparator;
 import java.util.List;
 
-@Api(tags = "Memo")
+@Api(tags = "Paperless")
 @RestController
 @RequestMapping("/document-type")
 public class DocumentTypeController {

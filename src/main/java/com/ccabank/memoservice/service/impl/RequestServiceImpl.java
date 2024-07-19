@@ -7,10 +7,7 @@ import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
-import com.ccabank.memoservice.repository.ApprovalRepository;
-import com.ccabank.memoservice.repository.DocumentTypeRepository;
-import com.ccabank.memoservice.repository.FieldRepository;
-import com.ccabank.memoservice.repository.RequestRepository;
+import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import com.ccabank.memoservice.service.faces.MapToReportService;
 import com.ccabank.memoservice.service.faces.RequestService;
@@ -53,6 +50,9 @@ public class RequestServiceImpl implements RequestService {
     private FieldRepository fieldRepository;
 
     @Autowired
+    private ProcessUnityRepository processUnityRepository;
+
+    @Autowired
     private MapToReportService mapToReportService;
 
     @Override
@@ -86,6 +86,9 @@ public class RequestServiceImpl implements RequestService {
                 approval.setPosition(approvalDto.getPosition());
                 approval.setStatus(ApprovalStatus.PENDING);
                 approval.setStaff(approvalDto.getStaff());
+                approval.setRole(approvalDto.getRole());
+                ProcessUnity processUnity = processUnityRepository.findOneByCode(approvalDto.getUnity());
+                approval.setProcessUnity(processUnity);
                 approval.setRequest(request);
                 approvalRepository.save(approval);
             }
