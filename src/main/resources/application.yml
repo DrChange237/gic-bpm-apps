@@ -12,12 +12,7 @@ spring:
     properties:
       hibernate.default_schema: public
 
-  # DATASOURCE (POSTGRESSSQL)
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/memo-service
-    username: admin
-    password: CCAP@ssw0rd
+  
 
 
 
