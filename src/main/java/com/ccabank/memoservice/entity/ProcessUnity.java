@@ -13,7 +13,7 @@ public class ProcessUnity {
     @Column(name = "ID", columnDefinition = "serial")
     private Long id;
 
-    @Column(name = "CODE")
+    @Column(name = "CODE", unique = true)
     private String code;
 
     @Column(name = "NAME")
@@ -24,7 +24,7 @@ public class ProcessUnity {
     }
 
     @Column(name = "STAFF_LIST")
-    private String StaffList;
+    private String staffList;
 
     public String getCode() {
         return code;
@@ -43,10 +43,10 @@ public class ProcessUnity {
     }
 
     public String getStaffList() {
-        return StaffList;
+        return staffList;
     }
 
     public void setStaffList(String staffList) {
-        StaffList = staffList;
+        this.staffList = staffList;
     }
 }

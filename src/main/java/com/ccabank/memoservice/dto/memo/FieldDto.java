@@ -3,6 +3,8 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FieldDto {
 
@@ -13,6 +15,8 @@ public class FieldDto {
     private String  name;
 
     private String type;
+
+    private List<ChoiceDto> choices;
 
     private boolean required = true;
 
@@ -54,5 +58,13 @@ public class FieldDto {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public List<ChoiceDto> getChoices() {
+        return choices;
+    }
+
+    public void setChoices(List<ChoiceDto> choices) {
+        this.choices = choices;
     }
 }

@@ -2,7 +2,10 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
+import com.ccabank.memoservice.dto.memo.ApprovalDto;
+import com.ccabank.memoservice.dto.memo.DocumentStructure;
 import com.ccabank.memoservice.dto.memo.DocumentTypeDto;
+import com.ccabank.memoservice.entity.ApprovalType;
 import com.ccabank.memoservice.entity.DocumentType;
 import com.ccabank.memoservice.repository.DocumentTypeRepository;
 import com.ccabank.memoservice.service.faces.DocumentTypeService;
@@ -65,6 +68,26 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
             e.printStackTrace();
             return new AppServiceResult<DocumentTypeDto>(false, AppError.Unknown.errorCode(),
                     AppError.Unknown.errorMessage(), null);
+        }
+    }
+
+    @Override
+    public List<ApprovalDto> getStaticApprobals(String name) {
+        try {
+            DocumentStructure structure = FieldUtils.getStructure(name);
+            List<ApprovalDto> approvalDtos = structure.getApprovals();
+            List<ApprovalDto> staticApprobals = new ArrayList<>();
+
+            for(ApprovalDto approbalDto: approvalDtos){
+                if(approbalDto.getType() == ApprovalType.STATIC){
+                    staticApprobals.add(approbalDto);
+                }
+            }
+
+            return  staticApprobals;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
         }
     }
 }

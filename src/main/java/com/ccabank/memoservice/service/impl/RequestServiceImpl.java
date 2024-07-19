@@ -3,15 +3,13 @@ package com.ccabank.memoservice.service.impl;
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.ApprovalDto;
+import com.ccabank.memoservice.dto.memo.DocumentStructure;
 import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.*;
-import com.ccabank.memoservice.service.faces.ApprovalService;
-import com.ccabank.memoservice.service.faces.EmailService;
-import com.ccabank.memoservice.service.faces.MapToReportService;
-import com.ccabank.memoservice.service.faces.RequestService;
+import com.ccabank.memoservice.service.faces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private ApprovalService approvalService;
+
+    @Autowired
+    private DocumentTypeService documentTypeService;
 
     @Autowired
     private DocumentTypeRepository documentTypeRepository;
@@ -85,6 +86,7 @@ public class RequestServiceImpl implements RequestService {
                 fieldRepository.save(field);
             }
 
+            //Approval User
             for(ApprovalDto approvalDto : requestDto.getApprovals()){
                 Approval approval = new Approval();
                 approval.setPosition(approvalDto.getPosition());
@@ -96,6 +98,25 @@ public class RequestServiceImpl implements RequestService {
                 approval.setRequest(request);
                 approvalRepository.save(approval);
             }
+
+            //Approval Static
+            List<ApprovalDto> staticApprobals = documentTypeService.getStaticApprobals(type.getStructure());
+            for(ApprovalDto approvalDto : staticApprobals){
+                Approval approval = new Approval();
+                approval.setPosition(approvalDto.getPosition());
+                approval.setStatus(ApprovalStatus.PENDING);
+                approval.setStaff(approvalDto.getStaff());
+                approval.setRole(approvalDto.getRole());
+                approval.setType(ApprovalType.STATIC);
+                ProcessUnity processUnity = processUnityRepository.findOneByCode(approvalDto.getUnity());
+                approval.setProcessUnity(processUnity);
+                approval.setRequest(request);
+                approvalRepository.save(approval);
+            }
+
+
+
+
 
             return new AppServiceResult<Request>(true, 0, "Succeed!", request );
 

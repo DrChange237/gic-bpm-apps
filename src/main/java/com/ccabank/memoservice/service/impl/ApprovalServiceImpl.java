@@ -7,12 +7,14 @@ import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
+import com.ccabank.memoservice.mappers.FieldMapper;
 import com.ccabank.memoservice.repository.ApprovalRepository;
 import com.ccabank.memoservice.repository.FieldRepository;
 import com.ccabank.memoservice.repository.ProcessUnityRepository;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import com.ccabank.memoservice.service.faces.EmailService;
+import com.ccabank.memoservice.util.field.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,9 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Autowired
     private EmailService  emailService;
+
+    @Autowired
+    private FieldMapper fieldMapper;
 
     @Autowired
     private ProcessUnityRepository processUnityRepository;
@@ -93,21 +98,48 @@ public class ApprovalServiceImpl implements ApprovalService {
                 throw new Exception("Cette requete ne peut pas etre approuvée");
             }
 
+
+
+
+            String type = approval.getRequest().getType().getStructure();
+            List<FieldDto> stuctureFields = FieldUtils.getFieldsOfTypeAndPosition(type, approval.getPosition());
+
+            List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
+
+            if(stuctureFields != null){
+                for(FieldDto fieldDto : stuctureFields){
+                    if(fieldDto.isRequired()){
+                        if(incommingFields == null){
+                            throw new Exception("champ : " + fieldDto.getKey() + " requis");
+                        }
+                        Optional<FieldDto> fTmp = incommingFields.stream().filter(obj -> obj.getKey().equals(fieldDto.getKey())).findFirst();
+                        if(fTmp.isEmpty()){
+                            throw new Exception("champ : " + fieldDto.getKey() + " requis");
+                        }
+                    }
+                }
+            }
+
+
+            if(incommingFields != null){
+                for(FieldDto fieldDto : incommingFields){
+                    Field field = new Field();
+                    field.setKey(fieldDto.getKey());
+                    field.setValue(fieldDto.getValue());
+                    field.setApproval(approval);
+                    field.setRequest(approval.getRequest());
+                    fieldRepository.save(field);
+                }
+            }
+
             approval.setApprovalDate(LocalDateTime.now());
             approval.setStatus(ApprovalStatus.ACCEPTED);
+            approval.setComments(acceptedApprovalDto.getComments());
             approval = approvalRepository.save(approval);
-
-            for(FieldDto fieldDto : acceptedApprovalDto.getFields()){
-                Field field = new Field();
-                field.setKey(fieldDto.getKey());
-                field.setValue(fieldDto.getValue());
-                field.setApproval(approval);
-                fieldRepository.save(field);
-            }
 
             Request request = approval.getRequest();
 
-            request.setApprobationLevel(request.getApprobationLevel() + 1);
+            request.setApprobationLevel(approval.getPosition());
 
             request = requestRepository.save(request);
 
@@ -117,27 +149,26 @@ public class ApprovalServiceImpl implements ApprovalService {
             Approval nextApproval = this.getNextPendingApproval(approval.getRequest());
 
             if(nextApproval == null){
+                emailService.sendConfirmRequest(request);
                 request.setStatus(RequestStatus.ACCEPTED);
                 requestRepository.save(request);
-            }
-
-            nextApproval.setStatus(ApprovalStatus.WAITING);
-            if(nextApproval.getType() == ApprovalType.STATIC){
-                if(nextApproval.getProcessUnity() != null){
-                    ProcessUnity unity = nextApproval.getProcessUnity();
-                    String staffList = unity.getStaffList();
-                    List<String> list = Arrays.asList(staffList.split(";"));
-                    Random random = new Random();
-                    int randomIndex = random.nextInt(list.size());
-                    String staff = list.get(randomIndex);
-                    nextApproval.setStaff(staff);
+            }else{
+                nextApproval.setStatus(ApprovalStatus.WAITING);
+                if(nextApproval.getType() == ApprovalType.STATIC){
+                    if(nextApproval.getProcessUnity() != null){
+                        ProcessUnity unity = nextApproval.getProcessUnity();
+                        String staffList = unity.getStaffList();
+                        List<String> list = Arrays.asList(staffList.split(";"));
+                        Random random = new Random();
+                        int randomIndex = random.nextInt(list.size());
+                        String staff = list.get(randomIndex);
+                        nextApproval.setStaff(staff);
+                    }
                 }
+                nextApproval = approvalRepository.save(nextApproval);
+                emailService.sendAskApproval(request,nextApproval);
+
             }
-
-            nextApproval = approvalRepository.save(nextApproval);
-
-            emailService.sendAskApproval(request,nextApproval);
-
 
             ApprovalDto dto = approvalMapper.toDto(approval);
             return new AppServiceResult<ApprovalDto>(true, 0, "Succeed!", dto);
@@ -201,12 +232,38 @@ public class ApprovalServiceImpl implements ApprovalService {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
             List<Approval> approvals = approvalRepository.findByStaffAndStatus(staff, ApprovalStatus.valueOf(status));
+
             return getConvertedResult(approvals, "getApprovalByStaff ");
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
             return new AppServiceResult<List<ApprovalDto>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
+    }
+
+    @Override
+    public AppServiceResult<ApprovalDto> getApprovalDetail(Long id) {
+        try {
+            logger.info(MEMO_SERVICE + "getApprovalDetail : methode invocation");
+            Approval approval = approvalRepository.getOne(id);
+
+            String type = approval.getRequest().getType().getStructure();
+
+            ApprovalDto approvalDto = approvalMapper.toDto(approval);
+
+            if(approvalDto.getType() == ApprovalType.STATIC){
+                approvalDto.setFields(FieldUtils.getFieldsOfTypeAndPosition(type, approvalDto.getPosition()));
+            }
+
+            return new AppServiceResult<ApprovalDto>(true, 0, "Succeed!", approvalDto );
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
+            return new AppServiceResult<ApprovalDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }

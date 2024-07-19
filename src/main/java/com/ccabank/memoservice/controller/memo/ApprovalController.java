@@ -41,6 +41,14 @@ public class ApprovalController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @GetMapping("/getDetails")
+    //@CrossOrigin()
+    public ResponseEntity<HttpResponse> getDetails(@RequestParam(value = "id") Long id) {
+        AppServiceResult<ApprovalDto> result = approvalService.getApprovalDetail(id);
+        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<ApprovalDto>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
     @GetMapping("/getApprovalByStaffAndStatus")
     //@CrossOrigin()
     public ResponseEntity<HttpResponse> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {

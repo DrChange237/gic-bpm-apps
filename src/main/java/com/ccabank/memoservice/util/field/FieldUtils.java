@@ -1,7 +1,9 @@
 package com.ccabank.memoservice.util.field;
 
+import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.DocumentStructure;
 import com.ccabank.memoservice.dto.memo.FieldDto;
+import com.ccabank.memoservice.entity.Approval;
 import com.ccabank.memoservice.entity.Field;
 import com.ccabank.memoservice.entity.Request;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,6 +18,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class FieldUtils {
+
+
+    public static List<FieldDto> getFieldsOfTypeAndPosition(String type, int position){
+
+        DocumentStructure structure = getStructure(type);
+        List<ApprovalDto> approvalDtos = structure.getApprovals();
+
+        ApprovalDto approvalDto = approvalDtos.stream().filter(obj -> obj.getPosition() == position).findFirst().get();
+
+        if(approvalDto == null){
+            return null;
+        }
+
+        return approvalDto.getFields();
+    }
 
     public static DocumentStructure getStructure(String type) {
         ObjectMapper objectMapper = new ObjectMapper();

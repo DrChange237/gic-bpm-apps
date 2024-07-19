@@ -127,11 +127,11 @@
       "choices" : [
         {
           "label" : "Transport en Commun",
-          "value" : "TRANSPORT_COMMUN"
+          "value" : "TRANSPORT COMMUN"
         },
         {
           "label" : "Véhicule de Service",
-          "value" : "TRANSPORT_SERVICE"
+          "value" : "TRANSPORT SERVICE"
         }
       ]
     },

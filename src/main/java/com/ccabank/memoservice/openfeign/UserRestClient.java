@@ -36,6 +36,10 @@ public interface UserRestClient {
                                          @RequestHeader("secret") String customValue);
 
     @GetMapping(path = "/api/users/employees/getEmployeeSignatureB64/{username}")
+    @Headers({
+            "x-api-key: key",
+            "secret : secret"
+    })
     String getEmployeeSignature(@PathVariable("username") String username);
 
 

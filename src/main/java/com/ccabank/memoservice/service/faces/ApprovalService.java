@@ -18,4 +18,6 @@ public interface ApprovalService {
     AppServiceResult<ApprovalDto> rejected(AcceptedApprovalDto acceptedApprovalDto);
 
     AppServiceResult<List<ApprovalDto>> getApprovalByStaff(String staff, String status);
+
+    AppServiceResult<ApprovalDto> getApprovalDetail(Long id);
 }

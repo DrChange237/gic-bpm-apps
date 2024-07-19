@@ -16,12 +16,12 @@ public class Field {
     @Column(name = "ID", columnDefinition = "serial")
     private Long id;
 
-    @JoinColumn(name = "REQUEST", referencedColumnName = "ID")
-    @ManyToOne(optional = true)
+    @JoinColumn(name = "REQUEST", referencedColumnName = "ID",  nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Request request;
 
-    @JoinColumn(name = "APPROVAL", referencedColumnName = "ID")
-    @ManyToOne(optional = true)
+    @JoinColumn(name = "APPROVAL", referencedColumnName = "ID", nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Approval approval;
 
     @Column(name = "KEY")

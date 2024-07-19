@@ -73,7 +73,7 @@ public class MapToReportServiceImpl implements MapToReportService {
 
             case DOCUMENT_TYPE_MISSION:
 
-                MissionForm missionForm = new MissionForm();
+                MissionForm missionForm = this.constructMissionRequest(request);
 
                 logger.info("Received : {}", missionForm);
 

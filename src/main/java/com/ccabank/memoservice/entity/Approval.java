@@ -30,8 +30,8 @@ public class Approval {
     @ManyToOne(optional = false)
     private Request request;
 
-    @JoinColumn(name = "PROCESS_UNITY", referencedColumnName = "ID")
-    @ManyToOne(optional = true)
+    @JoinColumn(name = "PROCESS_UNITY", referencedColumnName = "ID", nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private ProcessUnity processUnity;
 
 
@@ -57,8 +57,9 @@ public class Approval {
     @Size(max = 1000)
     private String comments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "request", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "approval", fetch = FetchType.LAZY)
     private Collection<Field> fields = new ArrayList<>();
+
 
     public Long getId() {
         return id;
