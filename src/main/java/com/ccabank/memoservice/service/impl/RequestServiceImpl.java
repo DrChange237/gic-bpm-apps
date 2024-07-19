@@ -9,6 +9,7 @@ import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.ApprovalService;
+import com.ccabank.memoservice.service.faces.EmailService;
 import com.ccabank.memoservice.service.faces.MapToReportService;
 import com.ccabank.memoservice.service.faces.RequestService;
 import org.slf4j.Logger;
@@ -54,6 +55,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private MapToReportService mapToReportService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public AppServiceResult<Request> newRequest(RequestDto requestDto) {
@@ -150,6 +154,8 @@ public class RequestServiceImpl implements RequestService {
             approval = approvalRepository.save(approval);
             request.setStatus(RequestStatus.PENDING);
             request = requestRepository.save(request);
+
+            emailService.sendAskApproval(request, approval);
 
             //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
 

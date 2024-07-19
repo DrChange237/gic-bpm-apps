@@ -9,8 +9,10 @@ import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
 import com.ccabank.memoservice.repository.ApprovalRepository;
 import com.ccabank.memoservice.repository.FieldRepository;
+import com.ccabank.memoservice.repository.ProcessUnityRepository;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.ApprovalService;
+import com.ccabank.memoservice.service.faces.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -43,7 +42,14 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Autowired
     private RequestRepository requestRepository;
 
+    @Autowired
     private FieldRepository fieldRepository;
+
+    @Autowired
+    private EmailService  emailService;
+
+    @Autowired
+    private ProcessUnityRepository processUnityRepository;
 
     @Override
     public Approval getNextPendingApproval(Request request){
@@ -103,12 +109,35 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             request.setApprobationLevel(request.getApprobationLevel() + 1);
 
+            request = requestRepository.save(request);
+
+            emailService.sendConfirmApproval(request, approval);
+
 
             Approval nextApproval = this.getNextPendingApproval(approval.getRequest());
+
             if(nextApproval == null){
                 request.setStatus(RequestStatus.ACCEPTED);
                 requestRepository.save(request);
             }
+
+            nextApproval.setStatus(ApprovalStatus.WAITING);
+            if(nextApproval.getType() == ApprovalType.STATIC){
+                if(nextApproval.getProcessUnity() != null){
+                    ProcessUnity unity = nextApproval.getProcessUnity();
+                    String staffList = unity.getStaffList();
+                    List<String> list = Arrays.asList(staffList.split(";"));
+                    Random random = new Random();
+                    int randomIndex = random.nextInt(list.size());
+                    String staff = list.get(randomIndex);
+                    nextApproval.setStaff(staff);
+                }
+            }
+
+            nextApproval = approvalRepository.save(nextApproval);
+
+            emailService.sendAskApproval(request,nextApproval);
+
 
             ApprovalDto dto = approvalMapper.toDto(approval);
             return new AppServiceResult<ApprovalDto>(true, 0, "Succeed!", dto);
@@ -149,6 +178,9 @@ public class ApprovalServiceImpl implements ApprovalService {
             Request request = approval.getRequest();
             request.setStatus(RequestStatus.REJECTED);
             requestRepository.save(request);
+
+            emailService.sendRejectedApproval(request, approval);
+
 
 
             ApprovalDto dto = approvalMapper.toDto(approval);

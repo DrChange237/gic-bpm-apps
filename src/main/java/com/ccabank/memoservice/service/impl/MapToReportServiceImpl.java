@@ -207,8 +207,6 @@ public class MapToReportServiceImpl implements MapToReportService {
     }
 
 
-
-
     public  VacationForm constructVacationRequest(Request request){
 
         VacationForm vacationForm = new VacationForm();
