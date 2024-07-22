@@ -17,9 +17,18 @@ public class DocumentType {
     @Size(max = 1000)
     private String name;
 
-    @Column(name = "STRUCTURE")
+    @Column(name = "STRUCTURE", unique = true)
     @Size(max = 1000)
     private String structure;
+
+    public DocumentType(String name, String structure) {
+        this.name = name;
+        this.structure = structure;
+    }
+
+    public DocumentType() {
+
+    }
 
     public Long getId() {
         return id;

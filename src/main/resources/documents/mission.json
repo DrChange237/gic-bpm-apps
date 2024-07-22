@@ -50,6 +50,12 @@
       "role" : "CAPITAL HUMAIN",
       "fields" : [
         {
+          "key" : "orderGive",
+          "name" : "Donneur D'ordre",
+          "type" : "text",
+          "required" : true
+        },
+        {
           "key" : "chargeSupport",
           "name" : "Montant du Support de charge (F CFA)",
           "type" : "number",

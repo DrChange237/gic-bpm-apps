@@ -109,14 +109,28 @@ public class MapToReportServiceImpl implements MapToReportService {
         MissionForm missionForm = new MissionForm();
         missionForm.setDate(LocalDate.from(request.getCreatedAt()));
 
+
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         missionForm.setFunction(staff.getFunction());
         missionForm.setName(staff.getUsername());
         missionForm.setUnity(staff.getDepartment());
+        missionForm.setPlace(staff.getAgencyName());
 
         String signature = userRestClient.getEmployeeSignature(staff.getUsername());
         missionForm.setSignature(signature);
+
+        //Object
+        String object = FieldUtils.getValueOfField(request,"object");
+        if(object != null){
+            missionForm.setObject(object);
+        }
+
+        //Location
+        String location = FieldUtils.getValueOfField(request,"location");
+        if(location != null){
+            missionForm.setLocation(location);
+        }
 
 
         //StartDate
@@ -132,6 +146,38 @@ public class MapToReportServiceImpl implements MapToReportService {
             missionForm.setEndDate(LocalDate.parse(endDate));
         }
 
+        //nights
+        String nights = FieldUtils.getValueOfField(request,"nights");
+        if(nights != null){
+            missionForm.setNights(Integer.valueOf(nights));
+        }
+
+
+        //Transport
+
+        MissionForm.Transport transport = new MissionForm.Transport();
+
+        transport.setCommon(true);
+
+        //Coursier
+        String coursier = FieldUtils.getValueOfField(request,"coursier");
+        if(coursier != null){
+            transport.setCourier(coursier);
+        }
+
+        //Immatriculation
+        String immatriculation = FieldUtils.getValueOfField(request,"immatriculation");
+        if(coursier != null){
+            transport.setImmatriculation(immatriculation);
+        }
+
+        missionForm.setTransport(transport);
+
+        //AccountNumber
+        String accountNumber = FieldUtils.getValueOfField(request,"accountNumber");
+        if(accountNumber != null){
+            transport.setImmatriculation(accountNumber);
+        }
 
         //Supervisor
         MissionForm.Signatory signatory = new MissionForm.Signatory();

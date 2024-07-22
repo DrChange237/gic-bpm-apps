@@ -221,7 +221,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project name -->
-    <name>feedback-service</name>
+    <name>paperless-service</name>
 
     <!-- Project Packaging -->
     <packaging>jar</packaging>
