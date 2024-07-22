@@ -114,10 +114,6 @@ public class RequestServiceImpl implements RequestService {
                 approvalRepository.save(approval);
             }
 
-
-
-
-
             return new AppServiceResult<Request>(true, 0, "Succeed!", request );
 
         } catch (Exception e) {
@@ -188,6 +184,8 @@ public class RequestServiceImpl implements RequestService {
             return new AppServiceResult<Request>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
+
+
     }
 
     @Override

@@ -12,7 +12,11 @@ spring:
     properties:
       hibernate.default_schema: public
 
-  
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://10.4.4.111:9100/api/user
 
 
 

@@ -13,6 +13,10 @@ public class UserRestDto {
 
     private String department;
 
+    public String getEmail(){
+        return  this.getUsername() + "@cca-bank.com";
+    }
+
 
     public String getUsername() {
         return username;
