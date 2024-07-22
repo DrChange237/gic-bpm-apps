@@ -154,10 +154,9 @@ public class MapToReportServiceImpl implements MapToReportService {
 
 
         //Transport
-
         MissionForm.Transport transport = new MissionForm.Transport();
-
         transport.setCommon(true);
+
 
         //Coursier
         String coursier = FieldUtils.getValueOfField(request,"coursier");
@@ -199,6 +198,55 @@ public class MapToReportServiceImpl implements MapToReportService {
             signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
             missionForm.setSupervisorNext(signatory);
         }
+
+        //UCH
+        signatory = new MissionForm.Signatory();
+        supervisor = request.getApprovalByPosition(4).getStaff();
+        if(supervisor != null){
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
+            signatory.setName(staff.getUsername());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            missionForm.setUch(signatory);
+            missionForm.setRequesterSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+        }
+
+        //decision
+        String decision = FieldUtils.getValueOfField(request,"avis");
+        if(decision != null){
+            missionForm.setDecision(decision);
+        }
+
+        //decision
+        String chargeSupport = FieldUtils.getValueOfField(request,"chargeSupport");
+        if(chargeSupport != null){
+            missionForm.setChargeSupport(Double.valueOf(chargeSupport));
+        }
+
+        //decision
+        String missionFees = FieldUtils.getValueOfField(request,"missionFees");
+        if(missionFees != null){
+            missionForm.setMissionFees(Double.valueOf(missionFees));
+        }
+
+        //decision
+        String transportFees = FieldUtils.getValueOfField(request,"transportFees");
+        if(transportFees != null){
+            missionForm.setTransportFees(Double.valueOf(transportFees));
+        }
+
+        //decision
+        String authorisationNumber = FieldUtils.getValueOfField(request,"authorisationNumber");
+        if(authorisationNumber != null){
+            missionForm.setAuthorisationNumber(authorisationNumber);
+        }
+
+        //decision
+        String receiptNumber = FieldUtils.getValueOfField(request,"receiptNumber");
+        if(receiptNumber != null){
+            missionForm.setReceiptNumber(receiptNumber);
+        }
+
+
 
 
         return missionForm;
