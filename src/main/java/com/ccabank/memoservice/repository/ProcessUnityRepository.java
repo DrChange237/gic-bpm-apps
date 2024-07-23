@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProcessUnityRepository extends JpaRepository<ProcessUnity, Long> {
     ProcessUnity findOneByCode(String code);
+
+    boolean existsByCode(String code);
+
 }

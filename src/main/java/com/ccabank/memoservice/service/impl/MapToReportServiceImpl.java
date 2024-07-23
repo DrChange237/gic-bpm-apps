@@ -10,6 +10,7 @@ import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.service.faces.MapToReportService;
 import com.ccabank.memoservice.util.field.FieldUtils;
+import com.ccabank.memoservice.util.file.FileReader;
 import feign.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ public class MapToReportServiceImpl implements MapToReportService {
     @Autowired
     private ReportingRestClient reportingRestClient;
 
+    @Autowired
+    private  FileReader fileReader;
+
     @Override
     public InputStream reportRequest(Request request){
 
@@ -59,7 +63,7 @@ public class MapToReportServiceImpl implements MapToReportService {
 
             case DOCUMENT_TYPE_ABSENSE:
 
-                AbsenceForm absenceForm = new AbsenceForm();
+                AbsenceForm absenceForm = this.constructAbsenceRequest(request);
 
                 logger.info("Received : {}", absenceForm);
 
@@ -104,10 +108,33 @@ public class MapToReportServiceImpl implements MapToReportService {
     }
 
     @Override
+    public AbsenceForm constructAbsenceRequest(Request request){
+
+        AbsenceForm absenceForm = new AbsenceForm();
+        absenceForm.setDate(LocalDate.now());
+
+        UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+
+        absenceForm.setFunction(staff.getFunction());
+        absenceForm.setName(staff.getUsername());
+        absenceForm.setUnity(staff.getDepartment());
+        absenceForm.setPlace(staff.getAgencyName());
+
+        //String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        String signature = this.getFictifSignature();
+        absenceForm.setSignature(signature);
+
+
+
+
+        return absenceForm;
+    }
+
+    @Override
     public MissionForm constructMissionRequest(Request request){
 
         MissionForm missionForm = new MissionForm();
-        missionForm.setDate(LocalDate.from(request.getCreatedAt()));
+        missionForm.setDate(LocalDate.now());
 
 
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
@@ -117,7 +144,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         missionForm.setUnity(staff.getDepartment());
         missionForm.setPlace(staff.getAgencyName());
 
-        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        //String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        String signature = this.getFictifSignature();
         missionForm.setSignature(signature);
 
         //Object
@@ -184,7 +212,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            signatory.setSignature(getFictifSignature());
             missionForm.setSupervisor(signatory);
 
         }
@@ -195,7 +224,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            signatory.setSignature(getFictifSignature());
             missionForm.setSupervisorNext(signatory);
         }
 
@@ -205,9 +235,11 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            signatory.setSignature(getFictifSignature());
             missionForm.setUch(signatory);
-            missionForm.setRequesterSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //missionForm.setRequesterSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            missionForm.setRequesterSignature(this.getFictifSignature());
         }
 
         //decision
@@ -246,9 +278,6 @@ public class MapToReportServiceImpl implements MapToReportService {
             missionForm.setReceiptNumber(receiptNumber);
         }
 
-
-
-
         return missionForm;
 
     }
@@ -257,7 +286,7 @@ public class MapToReportServiceImpl implements MapToReportService {
     public ResumptionForm constructResumptionRequest(Request request){
 
         ResumptionForm resumptionForm = new ResumptionForm();
-        resumptionForm.setDate(LocalDate.from(request.getCreatedAt()));
+        resumptionForm.setDate(LocalDate.now());
 
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
@@ -276,6 +305,12 @@ public class MapToReportServiceImpl implements MapToReportService {
             resumptionForm.setStartDate(LocalDate.parse(startDate));
         }
 
+
+        //realEndDate
+        String realEndDate = FieldUtils.getValueOfField(request,"realEndDate");
+        if(realEndDate != null){
+            resumptionForm.setRealEndDate(LocalDate.parse(realEndDate));
+        }
 
         //EndDate
         String endDate = FieldUtils.getValueOfField(request,"endDate");
@@ -304,7 +339,7 @@ public class MapToReportServiceImpl implements MapToReportService {
     public  VacationForm constructVacationRequest(Request request){
 
         VacationForm vacationForm = new VacationForm();
-        vacationForm.setDate(LocalDate.from(request.getCreatedAt()));
+        vacationForm.setDate(LocalDate.now());
 
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
@@ -371,5 +406,10 @@ public class MapToReportServiceImpl implements MapToReportService {
 
         return vacationForm;
 
+    }
+
+    String getFictifSignature(){
+
+        return fileReader.readDataFromFile();
     }
 }

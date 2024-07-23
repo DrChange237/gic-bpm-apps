@@ -40,4 +40,3 @@ public class FeignClientConfiguration {
         return new CustomErrorDecoder();
     }
 }
-

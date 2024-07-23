@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
 
         String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
 
-        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         UserRestDto approver = userRestClient.getAgencyByStaffUsername(approval.getStaff(), "key", "secret");
 
@@ -55,7 +55,7 @@ public class EmailServiceImpl implements EmailService {
         emailDto.setMessage(message);
         emailDto.setbCC(bCC);
 
-        emailRestClient.send(emailDto);
+        emailRestClient.send(emailDto);*/
 
         return true;
     }
@@ -72,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
 
         String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
 
-        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         UserRestDto approver = userRestClient.getAgencyByStaffUsername(approval.getStaff(), "key", "secret");
 
@@ -89,7 +89,7 @@ public class EmailServiceImpl implements EmailService {
         emailDto.setMessage(message);
         emailDto.setbCC(bCC);
 
-        emailRestClient.send(emailDto);
+        emailRestClient.send(emailDto);*/
 
         return true;
     }
@@ -105,7 +105,7 @@ public class EmailServiceImpl implements EmailService {
 
         String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
 
-        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         UserRestDto approver = userRestClient.getAgencyByStaffUsername(approval.getStaff(), "key", "secret");
 
@@ -122,7 +122,7 @@ public class EmailServiceImpl implements EmailService {
         emailDto.setMessage(message);
         emailDto.setbCC(bCC);
 
-        emailRestClient.send(emailDto);
+        emailRestClient.send(emailDto);*/
 
         return true;
     }
@@ -138,7 +138,7 @@ public class EmailServiceImpl implements EmailService {
 
         String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
 
-        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         String to = sender.getEmail() ;
 
@@ -153,7 +153,7 @@ public class EmailServiceImpl implements EmailService {
         emailDto.setMessage(message);
         emailDto.setbCC(bCC);
 
-        emailRestClient.send(emailDto);
+        emailRestClient.send(emailDto);*/
 
         return true;
     }

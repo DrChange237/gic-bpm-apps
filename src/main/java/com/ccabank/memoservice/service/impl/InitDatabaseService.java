@@ -1,7 +1,9 @@
 package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.entity.DocumentType;
+import com.ccabank.memoservice.entity.ProcessUnity;
 import com.ccabank.memoservice.repository.DocumentTypeRepository;
+import com.ccabank.memoservice.repository.ProcessUnityRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,11 @@ public class InitDatabaseService implements CommandLineRunner {
 
     private final DocumentTypeRepository documentTypeRepository;
 
-    public InitDatabaseService(DocumentTypeRepository documentTypeRepository) {
+    private final ProcessUnityRepository processUnityRepository;
+
+    public InitDatabaseService(DocumentTypeRepository documentTypeRepository, ProcessUnityRepository processUnityRepository) {
         this.documentTypeRepository = documentTypeRepository;
+        this.processUnityRepository = processUnityRepository;
     }
 
     @Override
@@ -28,6 +33,13 @@ public class InitDatabaseService implements CommandLineRunner {
                 new DocumentType("Fiche de reprise de service","resumption"),
                 new DocumentType("Demande d'autorisation d'absence","absence")
         ).filter(documentType -> !documentTypeRepository.existsByStructure(documentType.getStructure())).collect(Collectors.toList());
+
+        documentTypeRepository.saveAll(documentTypes);
+
+        List<ProcessUnity> processUnities = Stream.of(
+                new ProcessUnity("RH","Capital Humain", ""),
+                new ProcessUnity("DG","Direction Générale", "")
+        ).filter(processUnity -> !processUnityRepository.existsByCode(processUnity.getCode())).collect(Collectors.toList());
 
         documentTypeRepository.saveAll(documentTypes);
 

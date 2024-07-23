@@ -23,6 +23,12 @@ public class ProcessUnity {
         return id;
     }
 
+    public ProcessUnity(String code, String name, String staffList) {
+        this.code = code;
+        this.name = name;
+        this.staffList = staffList;
+    }
+
     @Column(name = "STAFF_LIST")
     private String staffList;
 

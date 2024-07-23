@@ -1,25 +1,29 @@
 {
   "name" : "Fiche de reprise de service",
   "generateUrl" : "",
+  "approvals" : [
+    {
+      "position" : 1,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Superieur Hiérarchique",
+      "required" : true
+    }
+  ],
   "fields" : [
     {
-      "key" : "lastVacationDate",
-      "name" : "Derniers Jours de Vacance",
-      "type" : "date"
-    },
-    {
       "key" : "startDate",
-      "name" : "Date de Debut",
+      "name" : "Date de Départ",
       "type" : "date"
     },
     {
       "key" : "endDate",
-      "name" : "Date de Fin",
+      "name" : "Date de Reprise Prévue",
       "type" : "date"
     },
     {
       "key" : "realEndDate",
-      "name" : "Date réelle de reprise de fonction",
+      "name" : "Date de reprise effective",
       "type" : "date"
     },
     {
@@ -48,11 +52,6 @@
     {
       "key" : "supervisor",
       "name" : "Supérieur (N+1)",
-      "type" : "Employee"
-    },
-    {
-      "key" : "supervisorNext",
-      "name" : "Supérieur (N+2)",
       "type" : "Employee"
     }
   ]

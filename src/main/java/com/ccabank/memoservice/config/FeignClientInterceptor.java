@@ -7,6 +7,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author : <a href="mailto:marcelin.hamidou@cca-bank.com">Marcelin HAMIDOU NDAM</a>
+ * @project : email-service
+ * @Package : com.ccabank.userservice.config
+ * <p>
+ * @date: 29/04/2024
+ * @time: 17:29
+ * <p>
+ * Created with IntelliJ IDEA
+ * To change this template use File | Settings | File Templates.
+ */
 @Component
 public class FeignClientInterceptor implements RequestInterceptor {
 
