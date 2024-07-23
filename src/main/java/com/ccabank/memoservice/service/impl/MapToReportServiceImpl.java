@@ -120,8 +120,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         absenceForm.setUnity(staff.getDepartment());
         absenceForm.setPlace(staff.getAgencyName());
 
-        //String signature = userRestClient.getEmployeeSignature(staff.getUsername());
-        String signature = this.getFictifSignature();
+        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        //String signature = this.getFictifSignature();
         absenceForm.setSignature(signature);
 
 
@@ -144,8 +144,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         missionForm.setUnity(staff.getDepartment());
         missionForm.setPlace(staff.getAgencyName());
 
-        //String signature = userRestClient.getEmployeeSignature(staff.getUsername());
-        String signature = this.getFictifSignature();
+        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        //String signature = this.getFictifSignature();
         missionForm.setSignature(signature);
 
         //Object
@@ -212,8 +212,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
-            //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            signatory.setSignature(getFictifSignature());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //signatory.setSignature(getFictifSignature());
             missionForm.setSupervisor(signatory);
 
         }
@@ -224,8 +224,8 @@ public class MapToReportServiceImpl implements MapToReportService {
         if(supervisor != null){
             staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
             signatory.setName(staff.getUsername());
-            //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            signatory.setSignature(getFictifSignature());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //signatory.setSignature(getFictifSignature());
             missionForm.setSupervisorNext(signatory);
         }
 
@@ -238,8 +238,8 @@ public class MapToReportServiceImpl implements MapToReportService {
             //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
             signatory.setSignature(getFictifSignature());
             missionForm.setUch(signatory);
-            //missionForm.setRequesterSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            missionForm.setRequesterSignature(this.getFictifSignature());
+            missionForm.setRequesterSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            //missionForm.setRequesterSignature(this.getFictifSignature());
         }
 
         //decision
