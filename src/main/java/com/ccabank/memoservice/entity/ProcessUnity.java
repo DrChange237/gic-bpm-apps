@@ -23,6 +23,10 @@ public class ProcessUnity {
         return id;
     }
 
+
+    public ProcessUnity() {
+    }
+
     public ProcessUnity(String code, String name, String staffList) {
         this.code = code;
         this.name = name;

@@ -8,11 +8,12 @@ import com.ccabank.memoservice.dto.reporting.VacationForm;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientProperties;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 
-//@FeignClient(value = "reportingRestClient", url = "https://developer.ccabank-app.com/sandbox", configuration = FeignClientProperties.FeignClientConfiguration.class)
-@FeignClient(name = "REPORTING-SERVICE")
+@FeignClient(value = "reportingRestClient", url = "https://developer.ccabank-app.com/sandbox", configuration = FeignClientProperties.FeignClientConfiguration.class)
+//@FeignClient(name = "REPORTING-SERVICE")
 public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/vacation/sheet")
@@ -22,7 +23,7 @@ public interface ReportingRestClient {
     Response resumption(@RequestBody ResumptionForm form);
 
     @PostMapping(path = "/api/reporting/mission/order")
-    Response mission(@RequestBody MissionForm form);
+    ByteArrayResource mission(@RequestBody MissionForm form);
 
     @PostMapping(path = "/api/reporting/absence/authorization")
     Response absence(@RequestBody AbsenceForm form);

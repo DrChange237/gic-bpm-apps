@@ -15,6 +15,9 @@ public class AcceptedApprovalDto {
     @Schema(example = "Favorable")
     private String comments;
 
+    @Schema(example = "true")
+    private boolean decision;
+
     public Long getIdApproval() {
         return idApproval;
     }
@@ -37,5 +40,13 @@ public class AcceptedApprovalDto {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public boolean isDecision() {
+        return decision;
+    }
+
+    public void setDecision(boolean decision) {
+        this.decision = decision;
     }
 }

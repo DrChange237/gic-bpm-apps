@@ -4,12 +4,11 @@ import com.ccabank.memoservice.dto.reporting.AbsenceForm;
 import com.ccabank.memoservice.dto.reporting.MissionForm;
 import com.ccabank.memoservice.dto.reporting.ResumptionForm;
 import com.ccabank.memoservice.entity.Request;
-
-import java.io.InputStream;
+import org.springframework.core.io.ByteArrayResource;
 
 public interface MapToReportService {
 
-    InputStream reportRequest(Request request);
+    ByteArrayResource reportRequest(Request request);
 
     AbsenceForm constructAbsenceRequest(Request request);
 

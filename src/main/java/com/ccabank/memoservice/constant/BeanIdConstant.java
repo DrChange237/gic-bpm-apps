@@ -12,6 +12,6 @@ package com.ccabank.memoservice.constant;
  */
 public class BeanIdConstant {
 
-    public final static String MEMO_SERVICE = "signService";
+    public final static String MEMO_SERVICE = "PaperLess Service";
 
 }

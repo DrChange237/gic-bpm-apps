@@ -19,19 +19,18 @@ import java.util.List;
 
 @Api(tags = "Paperless")
 @RestController
-@RequestMapping("/process-unity")
+@RequestMapping("/paperless")
 public class ProcessUnityController {
 
     @Autowired
     private ProcessUnityService processUnityService;
 
 
-    @GetMapping("/getAll")
-    @CrossOrigin()
-    public ResponseEntity<HttpResponse> getAll() {
+    @GetMapping("/process-unity/getAll")
+    public ResponseEntity<?> getAll() {
         try{
             List<ProcessUnityDto> processUnityDtos = processUnityService.getAll().getData();
-            return ResponseEntity.ok(new HttpResponseSuccess<List<ProcessUnityDto>>(processUnityDtos));
+            return ResponseEntity.ok(processUnityDtos);
         }catch (Exception exception){
             return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
 
@@ -39,12 +38,12 @@ public class ProcessUnityController {
     }
 
 
-    @GetMapping("/getDetails")
-    public ResponseEntity<HttpResponse> getTypeDetails(@RequestParam(value = "id") Long id) {
+    @GetMapping("/process-unity/getDetails")
+    public ResponseEntity<?> getTypeDetails(@RequestParam(value = "id") Long id) {
 
         try{
             ProcessUnityDto processUnityDto = processUnityService.getDetail(id).getData();
-            return ResponseEntity.ok(new HttpResponseSuccess<ProcessUnityDto>(processUnityDto));
+            return ResponseEntity.ok(processUnityDto);
         }catch (Exception exception){
             return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
 
@@ -52,18 +51,18 @@ public class ProcessUnityController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/process-unity/create")
     @CrossOrigin()
-    public ResponseEntity<HttpResponse> create(@RequestBody ProcessUnityDto processUnityDto) {
+    public ResponseEntity<?> create(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.create(processUnityDto);
         return result.isSuccess()
                 ? ResponseEntity.ok(new HttpResponseSuccess<String>("Process Unity successfully added"))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @PostMapping("/update")
+    @PostMapping("/process-unity/update")
     @CrossOrigin()
-    public ResponseEntity<HttpResponse> update(@RequestBody ProcessUnityDto processUnityDto) {
+    public ResponseEntity<?> update(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.update(processUnityDto);
         return result.isSuccess()
                 ? ResponseEntity.ok(new HttpResponseSuccess<String>("Process Unity successfully updated"))

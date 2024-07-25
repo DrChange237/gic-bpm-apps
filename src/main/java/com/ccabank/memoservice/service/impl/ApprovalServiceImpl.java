@@ -7,13 +7,13 @@ import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
-import com.ccabank.memoservice.mappers.FieldMapper;
 import com.ccabank.memoservice.repository.ApprovalRepository;
 import com.ccabank.memoservice.repository.FieldRepository;
 import com.ccabank.memoservice.repository.ProcessUnityRepository;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import com.ccabank.memoservice.service.faces.EmailService;
+import com.ccabank.memoservice.service.faces.SaveDocumentService;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     private EmailService  emailService;
 
     @Autowired
-    private FieldMapper fieldMapper;
+    private SaveDocumentService saveDocumentService;
 
     @Autowired
     private ProcessUnityRepository processUnityRepository;
@@ -85,6 +85,16 @@ public class ApprovalServiceImpl implements ApprovalService {
             return null;
         }
         return currentApproval.get();
+    }
+
+    @Override
+    public AppServiceResult<ApprovalDto> decision(AcceptedApprovalDto acceptedApprovalDto) {
+
+          if(acceptedApprovalDto.isDecision()){
+              return this.approve(acceptedApprovalDto);
+          }
+
+          return this.rejected(acceptedApprovalDto);
     }
 
 
@@ -151,7 +161,8 @@ public class ApprovalServiceImpl implements ApprovalService {
             if(nextApproval == null){
                 emailService.sendConfirmRequest(request);
                 request.setStatus(RequestStatus.ACCEPTED);
-                requestRepository.save(request);
+                request = requestRepository.save(request);
+                saveDocumentService.saveDocument(request);
             }else{
                 nextApproval.setStatus(ApprovalStatus.WAITING);
                 if(nextApproval.getType() == ApprovalType.STATIC){

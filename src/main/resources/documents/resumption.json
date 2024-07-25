@@ -48,11 +48,6 @@
           "value" : "ABSENCE"
         }
       ]
-    },
-    {
-      "key" : "supervisor",
-      "name" : "Supérieur (N+1)",
-      "type" : "Employee"
     }
   ]
 }

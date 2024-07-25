@@ -37,16 +37,6 @@
       "key" : "interim",
       "name" : "Intérimaire",
       "type" : "Employee"
-    },
-    {
-      "key" : "supervisor",
-      "name" : "Supérieur (N+1)",
-      "type" : "Employee"
-    },
-    {
-      "key" : "supervisorNext",
-      "name" : "Supérieur (N+2)",
-      "type" : "Employee"
     }
   ]
 }

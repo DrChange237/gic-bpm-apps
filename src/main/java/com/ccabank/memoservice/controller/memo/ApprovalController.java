@@ -19,41 +19,33 @@ import java.util.List;
 
 @Api(tags = "Paperless")
 @RestController
-@RequestMapping("/approval")
+@RequestMapping("/paperless")
 public class ApprovalController {
 
     @Autowired
     private ApprovalService approvalService;
 
-    @PostMapping("/accepted")
+    @PostMapping("/approval/decision")
     //@CrossOrigin()
-    public ResponseEntity<HttpResponse> accepted(@RequestBody AcceptedApprovalDto acceptedApprovalDto) {
-        AppServiceResult<ApprovalDto> result = approvalService.approve(acceptedApprovalDto);
-        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<ApprovalDto>(result.getData()))
+    public ResponseEntity<?> decision(@RequestBody AcceptedApprovalDto acceptedApprovalDto) {
+        AppServiceResult<ApprovalDto> result = approvalService.decision(acceptedApprovalDto);
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @PostMapping("/rejected")
+    @GetMapping("/approval/getDetails")
     //@CrossOrigin()
-    public ResponseEntity<HttpResponse> rejected(@RequestBody AcceptedApprovalDto acceptedApprovalDto) {
-        AppServiceResult<ApprovalDto> result = approvalService.rejected(acceptedApprovalDto);
-        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<ApprovalDto>(result.getData()))
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
-    }
-
-    @GetMapping("/getDetails")
-    //@CrossOrigin()
-    public ResponseEntity<HttpResponse> getDetails(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<?> getDetails(@RequestParam(value = "id") Long id) {
         AppServiceResult<ApprovalDto> result = approvalService.getApprovalDetail(id);
-        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<ApprovalDto>(result.getData()))
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @GetMapping("/getApprovalByStaffAndStatus")
+    @GetMapping("/approval/getApprovalByStaffAndStatus")
     //@CrossOrigin()
-    public ResponseEntity<HttpResponse> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
+    public ResponseEntity<?> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
         AppServiceResult<List<ApprovalDto>> result = approvalService.getApprovalByStaff(staff, status);
-        return result.isSuccess() ? ResponseEntity.ok(new HttpResponseSuccess<List<ApprovalDto>>(result.getData()))
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 

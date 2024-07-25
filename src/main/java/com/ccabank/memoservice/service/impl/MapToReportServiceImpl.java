@@ -6,20 +6,23 @@ import com.ccabank.memoservice.dto.reporting.ResumptionForm;
 import com.ccabank.memoservice.dto.reporting.VacationForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.entity.documenttype.OrdreMission;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.repository.OrdreMissionRepository;
 import com.ccabank.memoservice.service.faces.MapToReportService;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import com.ccabank.memoservice.util.file.FileReader;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.InputStream;
 import java.time.LocalDate;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -31,7 +34,7 @@ import static com.ccabank.memoservice.constant.DocumentTypeConstant.*;
 @Qualifier(MEMO_SERVICE)
 public class MapToReportServiceImpl implements MapToReportService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApprovalServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MapToReportServiceImpl.class);
 
 
     @Autowired
@@ -43,8 +46,11 @@ public class MapToReportServiceImpl implements MapToReportService {
     @Autowired
     private  FileReader fileReader;
 
+    @Autowired
+    private OrdreMissionRepository ordreMissionRepository;
+
     @Override
-    public InputStream reportRequest(Request request){
+    public ByteArrayResource reportRequest(Request request){
 
         switch (request.getType().getStructure()){
 
@@ -54,9 +60,11 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 logger.info("Received : {}", vacationForm);
 
-                Response response = this.reportingRestClient.vacation(vacationForm);
                 try {
-                    return response.body().asInputStream();
+
+                    Response response = this.reportingRestClient.vacation(vacationForm);
+
+                    //return response.body().asInputStream();
                 } catch (Exception e) {
                     throw new RuntimeException("Error downloading PDF file: vacation", e);
                 }
@@ -67,12 +75,17 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 logger.info("Received : {}", absenceForm);
 
-                Response responseAbsence = this.reportingRestClient.absence(absenceForm);
                 try {
-                    return responseAbsence.body().asInputStream();
+
+                    Response responseAbsence = this.reportingRestClient.absence(absenceForm);
+
+                    //return responseAbsence.body().asInputStream();
                 } catch (Exception e) {
-                    throw new RuntimeException("Error downloading PDF file: absence", e);
+                    logger.error("Error downloading PDF file: mission", e);
+
                 }
+
+                break;
 
 
             case DOCUMENT_TYPE_MISSION:
@@ -81,12 +94,22 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 logger.info("Received : {}", missionForm);
 
-                Response responseMission = this.reportingRestClient.mission(missionForm);
                 try {
-                    return responseMission.body().asInputStream();
+
+                    logger.info("Mission Form : " + missionForm.toString() , missionForm.toString());
+
+
+                    ByteArrayResource responseMission = this.reportingRestClient.mission(missionForm);
+
+                    return responseMission;
+
                 } catch (Exception e) {
-                    throw new RuntimeException("Error downloading PDF file: mission", e);
+
+                    logger.error("Error downloading PDF file: mission", e);
+
                 }
+
+                break;
 
             case DOCUMENT_TYPE_RESUMPTION:
 
@@ -94,12 +117,17 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 logger.info("Received : {}", resumptionForm);
 
-                Response responseResumption = this.reportingRestClient.resumption(resumptionForm);
                 try {
-                    return responseResumption.body().asInputStream();
+                    Response responseResumption = this.reportingRestClient.resumption(resumptionForm);
+
+                   // return responseResumption.body().asInputStream();
                 } catch (Exception e) {
-                    throw new RuntimeException("Error downloading PDF file: resumption", e);
+
+                    logger.error("Error downloading PDF file: mission", e);
+
                 }
+
+                break;
 
 
         }
@@ -133,153 +161,96 @@ public class MapToReportServiceImpl implements MapToReportService {
     @Override
     public MissionForm constructMissionRequest(Request request){
 
+
+        OrdreMission ordreMission = ordreMissionRepository.getOne(request.getDocumentId());
+
         MissionForm missionForm = new MissionForm();
-        missionForm.setDate(LocalDate.now());
+        missionForm.setDate(ordreMission.getDate());
 
+        missionForm.setFunction(ordreMission.getRequester().getFunction());
+        missionForm.setName(ordreMission.getRequester().getName());
+        missionForm.setUnity(ordreMission.getRequester().getUnity());
+        missionForm.setPlace(ordreMission.getPlace());
 
-        UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
-
-        missionForm.setFunction(staff.getFunction());
-        missionForm.setName(staff.getUsername());
-        missionForm.setUnity(staff.getDepartment());
-        missionForm.setPlace(staff.getAgencyName());
-
-        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
-        //String signature = this.getFictifSignature();
-        missionForm.setSignature(signature);
+        missionForm.setSignature(ordreMission.getOwner().getSignature());
 
         //Object
-        String object = FieldUtils.getValueOfField(request,"object");
-        if(object != null){
-            missionForm.setObject(object);
-        }
+        missionForm.setObject(ordreMission.getObject());
 
         //Location
-        String location = FieldUtils.getValueOfField(request,"location");
-        if(location != null){
-            missionForm.setLocation(location);
-        }
-
+        missionForm.setLocation(ordreMission.getLocation());
 
         //StartDate
-        String startDate = FieldUtils.getValueOfField(request,"startDate");
-        if(startDate != null){
-            missionForm.setStartDate(LocalDate.parse(startDate));
-        }
-
+        missionForm.setStartDate(ordreMission.getStartDate());
 
         //EndDate
-        String endDate = FieldUtils.getValueOfField(request,"endDate");
-        if(endDate != null){
-            missionForm.setEndDate(LocalDate.parse(endDate));
-        }
+        missionForm.setEndDate(ordreMission.getEndDate());
 
         //nights
-        String nights = FieldUtils.getValueOfField(request,"nights");
-        if(nights != null){
-            missionForm.setNights(Integer.valueOf(nights));
-        }
-
+        missionForm.setNights(ordreMission.getNights());
 
         //Transport
         MissionForm.Transport transport = new MissionForm.Transport();
-        transport.setCommon(true);
-
+        transport.setCommon(ordreMission.getTransport().getCommon());
 
         //Coursier
-        String coursier = FieldUtils.getValueOfField(request,"coursier");
-        if(coursier != null){
-            transport.setCourier(coursier);
-        }
+        transport.setCourier(ordreMission.getTransport().getCoursier());
 
         //Immatriculation
-        String immatriculation = FieldUtils.getValueOfField(request,"immatriculation");
-        if(coursier != null){
-            transport.setImmatriculation(immatriculation);
-        }
+        transport.setImmatriculation(ordreMission.getTransport().getImmatriculation());
 
         missionForm.setTransport(transport);
 
         //AccountNumber
-        String accountNumber = FieldUtils.getValueOfField(request,"accountNumber");
-        if(accountNumber != null){
-            transport.setImmatriculation(accountNumber);
-        }
+        transport.setImmatriculation(ordreMission.getAccountNumber());
 
         //Supervisor
         MissionForm.Signatory signatory = new MissionForm.Signatory();
-        String supervisor = request.getApprovalByPosition(1).getStaff();
-        if(supervisor != null){
-            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
-            signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            //signatory.setSignature(getFictifSignature());
-            missionForm.setSupervisor(signatory);
 
-        }
+        signatory.setName(ordreMission.getSupervisor().getOwner().getName());
+        signatory.setSignature(ordreMission.getSupervisor().getSignature());
+        missionForm.setSupervisor(signatory);
+
+        logger.info("Get Supervisor Staff Ok");
 
         //SupervisorNext
         signatory = new MissionForm.Signatory();
-        supervisor = request.getApprovalByPosition(2).getStaff();
-        if(supervisor != null){
-            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
-            signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            //signatory.setSignature(getFictifSignature());
-            missionForm.setSupervisorNext(signatory);
-        }
+        signatory.setName(ordreMission.getSupervisorNext().getOwner().getName());
+        signatory.setSignature(ordreMission.getSupervisorNext().getSignature());
+        missionForm.setSupervisorNext(signatory);
+
+        logger.info("Get Supervisor Next Staff Ok");
 
         //UCH
         signatory = new MissionForm.Signatory();
-        supervisor = request.getApprovalByPosition(4).getStaff();
-        if(supervisor != null){
-            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
-            signatory.setName(staff.getUsername());
-            //signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            signatory.setSignature(getFictifSignature());
-            missionForm.setUch(signatory);
-            missionForm.setRequesterSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            //missionForm.setRequesterSignature(this.getFictifSignature());
-        }
+        signatory.setName(ordreMission.getUch().getOwner().getName());
+        signatory.setSignature(ordreMission.getUch().getSignature());
+        //signatory.setSignature(getFictifSignature());
+        missionForm.setUch(signatory);
+        missionForm.setRequesterSignature(ordreMission.getUch().getSignature());
+        logger.info("Get Supervisor UCH Ok");
 
         //decision
-        String decision = FieldUtils.getValueOfField(request,"avis");
-        if(decision != null){
-            missionForm.setDecision(decision);
-        }
+        missionForm.setDecision(ordreMission.getDecision());
 
-        //decision
-        String chargeSupport = FieldUtils.getValueOfField(request,"chargeSupport");
-        if(chargeSupport != null){
-            missionForm.setChargeSupport(Double.valueOf(chargeSupport));
-        }
+        //chargeSupport
+        missionForm.setChargeSupport(ordreMission.getChargeSupport());
 
-        //decision
-        String missionFees = FieldUtils.getValueOfField(request,"missionFees");
-        if(missionFees != null){
-            missionForm.setMissionFees(Double.valueOf(missionFees));
-        }
+        //missionFees
+        missionForm.setMissionFees(ordreMission.getMissionFees());
 
-        //decision
-        String transportFees = FieldUtils.getValueOfField(request,"transportFees");
-        if(transportFees != null){
-            missionForm.setTransportFees(Double.valueOf(transportFees));
-        }
+        //transportFees
+        missionForm.setTransportFees(ordreMission.getTransportFees());
 
-        //decision
-        String authorisationNumber = FieldUtils.getValueOfField(request,"authorisationNumber");
-        if(authorisationNumber != null){
-            missionForm.setAuthorisationNumber(authorisationNumber);
-        }
+        //authorisationNumber
+        missionForm.setAuthorisationNumber(ordreMission.getAuthorisationNumber());
 
-        //decision
-        String receiptNumber = FieldUtils.getValueOfField(request,"receiptNumber");
-        if(receiptNumber != null){
-            missionForm.setReceiptNumber(receiptNumber);
-        }
+        //receiptNumber
+        missionForm.setReceiptNumber(ordreMission.getReceiptNumber());
+
+        logger.info("Complete Map");
 
         return missionForm;
-
     }
 
     @Override

@@ -41,7 +41,7 @@ public class InitDatabaseService implements CommandLineRunner {
                 new ProcessUnity("DG","Direction Générale", "")
         ).filter(processUnity -> !processUnityRepository.existsByCode(processUnity.getCode())).collect(Collectors.toList());
 
-        documentTypeRepository.saveAll(documentTypes);
+        processUnityRepository.saveAll(processUnities);
 
 
     }

@@ -328,4 +328,33 @@ public class MissionForm {
     public void setReceiptNumber(String receiptNumber) {
         this.receiptNumber = receiptNumber;
     }
+
+    @Override
+    public String toString() {
+        return "MissionForm{" +
+                "place='" + place + '\'' +
+                ", date=" + date +
+                ", name='" + name + '\'' +
+                ", function='" + function + '\'' +
+                ", unity='" + unity + '\'' +
+                ", object='" + object + '\'' +
+                ", location='" + location + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", nights=" + nights +
+                ", transport=" + transport +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", supervisor=" + supervisor +
+                ", supervisorNext=" + supervisorNext +
+                ", uch=" + uch +
+                ", decision='" + decision + '\'' +
+                ", signature='" + signature + '\'' +
+                ", requesterSignature='" + requesterSignature + '\'' +
+                ", chargeSupport=" + chargeSupport +
+                ", missionFees=" + missionFees +
+                ", transportFees=" + transportFees +
+                ", authorisationNumber='" + authorisationNumber + '\'' +
+                ", receiptNumber='" + receiptNumber + '\'' +
+                '}';
+    }
 }

@@ -3,7 +3,6 @@ package com.ccabank.memoservice.service.impl;
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.ApprovalDto;
-import com.ccabank.memoservice.dto.memo.DocumentStructure;
 import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.*;
@@ -14,10 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -125,9 +124,9 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public InputStream downloadRequest(Long id) {
+    public ByteArrayResource downloadRequest(Long id) {
         try {
-            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+            logger.info(MEMO_SERVICE + "downloadRequest : methode invocation");
 
             Request request = requestRepository.getOne(id);
 
@@ -139,13 +138,13 @@ public class RequestServiceImpl implements RequestService {
                 throw new Exception("Cette requete n'est pas validée");
             }
 
-            InputStream input = mapToReportService.reportRequest(request);
+            ByteArrayResource input = mapToReportService.reportRequest(request);
 
             return input;
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
+            logger.error(MEMO_SERVICE + " downloadRequest : Exception {}", e.getMessage());
             return null;
 
         }

@@ -13,6 +13,8 @@ public interface ApprovalService {
 
     Approval getCurrentApproval(Request request);
 
+    AppServiceResult<ApprovalDto> decision(AcceptedApprovalDto acceptedApprovalDto);
+
     AppServiceResult<ApprovalDto> approve(AcceptedApprovalDto acceptedApprovalDto);
 
     AppServiceResult<ApprovalDto> rejected(AcceptedApprovalDto acceptedApprovalDto);

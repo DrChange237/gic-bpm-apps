@@ -109,7 +109,7 @@
     },
     {
       "key" : "accountNumber",
-      "name" : "Numero de compte courrant ",
+      "name" : "Numero de compte courant ",
       "type" : "text",
       "required" : true
     },

@@ -39,6 +39,11 @@ public class Request {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request", fetch = FetchType.LAZY)
     private Collection<Field> fields = new ArrayList<>();
 
+    @Basic(optional = true)
+    @Column(name = "DOCUMENT_ID")
+    private Long documentId;
+
+
 
     public Long getId() {
         return id;
@@ -104,4 +109,11 @@ public class Request {
         this.fields = fields;
     }
 
+    public Long getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(Long documentId) {
+        this.documentId = documentId;
+    }
 }
