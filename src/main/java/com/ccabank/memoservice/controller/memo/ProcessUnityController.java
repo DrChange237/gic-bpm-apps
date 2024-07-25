@@ -26,7 +26,7 @@ public class ProcessUnityController {
     private ProcessUnityService processUnityService;
 
 
-    @GetMapping("/process-unity/getAll")
+    @GetMapping("/processUnity/getAll")
     public ResponseEntity<?> getAll() {
         try{
             List<ProcessUnityDto> processUnityDtos = processUnityService.getAll().getData();
@@ -38,7 +38,7 @@ public class ProcessUnityController {
     }
 
 
-    @GetMapping("/process-unity/getDetails")
+    @GetMapping("/processUnity/getDetails")
     public ResponseEntity<?> getTypeDetails(@RequestParam(value = "id") Long id) {
 
         try{
@@ -51,7 +51,7 @@ public class ProcessUnityController {
     }
 
 
-    @PostMapping("/process-unity/create")
+    @PostMapping("/processUnity/create")
     @CrossOrigin()
     public ResponseEntity<?> create(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.create(processUnityDto);
@@ -60,7 +60,7 @@ public class ProcessUnityController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @PostMapping("/process-unity/update")
+    @PostMapping("/processUnity/update")
     @CrossOrigin()
     public ResponseEntity<?> update(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.update(processUnityDto);

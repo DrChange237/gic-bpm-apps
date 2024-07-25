@@ -1,4 +1,4 @@
-package com.ccabank.memoservice.entity.documenttype;
+package com.ccabank.memoservice.entity.documenttype.sub;
 
 
 import javax.persistence.*;

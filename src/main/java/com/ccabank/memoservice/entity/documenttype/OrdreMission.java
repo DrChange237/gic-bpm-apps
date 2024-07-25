@@ -1,12 +1,13 @@
 package com.ccabank.memoservice.entity.documenttype;
 
 
-import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
+import com.ccabank.memoservice.entity.documenttype.sub.Staff;
+import com.ccabank.memoservice.entity.documenttype.sub.Transport;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "T_ORDRE_MISSION")

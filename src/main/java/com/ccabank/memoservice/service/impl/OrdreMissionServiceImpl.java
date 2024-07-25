@@ -1,12 +1,11 @@
 package com.ccabank.memoservice.service.impl;
 
-import com.ccabank.memoservice.dto.reporting.MissionForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.OrdreMission;
-import com.ccabank.memoservice.entity.documenttype.Signatory;
-import com.ccabank.memoservice.entity.documenttype.Staff;
-import com.ccabank.memoservice.entity.documenttype.Transport;
+import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
+import com.ccabank.memoservice.entity.documenttype.sub.Staff;
+import com.ccabank.memoservice.entity.documenttype.sub.Transport;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.OrdreMissionRepository;
 import com.ccabank.memoservice.repository.SignatoryRepository;
