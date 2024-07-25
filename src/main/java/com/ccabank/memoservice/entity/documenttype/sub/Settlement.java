@@ -16,7 +16,7 @@ public class Settlement {
     @Column(name = "PAID", nullable = false)
     private Double paid;
 
-    @Column(name = "PAID", nullable = false)
+    @Column(name = "UNPAID", nullable = false)
     private Double unpaid;
 
     public Long getId() {

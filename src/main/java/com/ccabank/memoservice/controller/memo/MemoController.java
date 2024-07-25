@@ -29,7 +29,7 @@ public class MemoController {
     private RequestService requestService;
 
     @PostMapping("/request/create")
-    @CrossOrigin()
+    //@CrossOrigin()
     public ResponseEntity<?> newRequest(@RequestBody RequestDto requestDto) {
         AppBaseResult result = requestService.newRequest(requestDto);
         return result.isSuccess()

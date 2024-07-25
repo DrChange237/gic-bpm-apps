@@ -52,7 +52,7 @@ public class ProcessUnityController {
 
 
     @PostMapping("/processUnity/create")
-    @CrossOrigin()
+    //@CrossOrigin()
     public ResponseEntity<?> create(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.create(processUnityDto);
         return result.isSuccess()
@@ -61,7 +61,7 @@ public class ProcessUnityController {
     }
 
     @PostMapping("/processUnity/update")
-    @CrossOrigin()
+   // @CrossOrigin()
     public ResponseEntity<?> update(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.update(processUnityDto);
         return result.isSuccess()

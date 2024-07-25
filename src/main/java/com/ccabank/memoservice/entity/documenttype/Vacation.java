@@ -25,6 +25,10 @@ public class Vacation {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Staff requester;
 
+    @JoinColumn(name = "OWNER", referencedColumnName = "ID",  nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    private Signatory owner;
+
     @Column(name = "PLACE")
     @Size(max = 100)
     private String place;
@@ -61,6 +65,14 @@ public class Vacation {
 
     public Staff getRequester() {
         return requester;
+    }
+
+    public Signatory getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Signatory owner) {
+        this.owner = owner;
     }
 
     public void setRequester(Staff requester) {

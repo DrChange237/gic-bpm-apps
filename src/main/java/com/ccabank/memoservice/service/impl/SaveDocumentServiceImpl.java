@@ -2,10 +2,12 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.OrdreMission;
+import com.ccabank.memoservice.entity.documenttype.Vacation;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.OrdreMissionService;
 import com.ccabank.memoservice.service.faces.SaveDocumentService;
+import com.ccabank.memoservice.service.faces.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
     private OrdreMissionService ordreMissionService;
 
     @Autowired
+    private VacationService vacationService;
+
+    @Autowired
     private RequestRepository requestRepository;
 
     @Override
@@ -39,6 +44,10 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
         switch (request.getType().getStructure()){
 
             case DOCUMENT_TYPE_VACATION :
+
+                Vacation vacation = this.vacationService.save(request);
+                request.setDocumentId(vacation.getId());
+                this.requestRepository.save(request);
 
                 break;
 

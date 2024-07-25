@@ -7,10 +7,15 @@ import com.ccabank.memoservice.dto.reporting.VacationForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.OrdreMission;
+import com.ccabank.memoservice.entity.documenttype.Vacation;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.repository.AbsenceRepository;
 import com.ccabank.memoservice.repository.OrdreMissionRepository;
+import com.ccabank.memoservice.repository.ResumptionRepository;
+import com.ccabank.memoservice.repository.VacationRepository;
 import com.ccabank.memoservice.service.faces.MapToReportService;
+import com.ccabank.memoservice.service.faces.VacationService;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import com.ccabank.memoservice.util.file.FileReader;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +54,13 @@ public class MapToReportServiceImpl implements MapToReportService {
     @Autowired
     private OrdreMissionRepository ordreMissionRepository;
 
+    @Autowired
+    private VacationRepository vacationRepository;
+
+    private ResumptionRepository resumptionRepository;
+
+    private AbsenceRepository absenceRepository;
+
     @Override
     public ByteArrayResource reportRequest(Request request){
 
@@ -62,7 +74,9 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 try {
 
-                    Response response = this.reportingRestClient.vacation(vacationForm);
+                    ByteArrayResource response = this.reportingRestClient.vacation(vacationForm);
+
+                    return response;
 
                     //return response.body().asInputStream();
                 } catch (Exception e) {
@@ -77,7 +91,9 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 try {
 
-                    Response responseAbsence = this.reportingRestClient.absence(absenceForm);
+                    ByteArrayResource responseAbsence = this.reportingRestClient.absence(absenceForm);
+
+                    return responseAbsence;
 
                     //return responseAbsence.body().asInputStream();
                 } catch (Exception e) {
@@ -118,7 +134,9 @@ public class MapToReportServiceImpl implements MapToReportService {
                 logger.info("Received : {}", resumptionForm);
 
                 try {
-                    Response responseResumption = this.reportingRestClient.resumption(resumptionForm);
+                    ByteArrayResource responseResumption = this.reportingRestClient.resumption(resumptionForm);
+
+                    return  responseResumption;
 
                    // return responseResumption.body().asInputStream();
                 } catch (Exception e) {
@@ -153,13 +171,11 @@ public class MapToReportServiceImpl implements MapToReportService {
         absenceForm.setSignature(signature);
 
 
-
-
         return absenceForm;
     }
 
     @Override
-    public MissionForm constructMissionRequest(Request request){
+    public MissionForm constructMissionRequest(Request request) {
 
 
         OrdreMission ordreMission = ordreMissionRepository.getOne(request.getDocumentId());
@@ -309,71 +325,50 @@ public class MapToReportServiceImpl implements MapToReportService {
 
     public  VacationForm constructVacationRequest(Request request){
 
+        Vacation vacation = vacationRepository.getOne(request.getDocumentId());
         VacationForm vacationForm = new VacationForm();
-        vacationForm.setDate(LocalDate.now());
+        vacationForm.setDate(vacation.getDate());
 
-        UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        vacationForm.setFunction(vacation.getRequester().getFunction());
+        vacationForm.setName(vacation.getRequester().getName());
+        vacationForm.setMatricule(vacation.getRequester().getMatricule());
+        vacationForm.setUnity(vacation.getRequester().getUnity());
 
-        vacationForm.setFunction(staff.getFunction());
-        vacationForm.setName(staff.getUsername());
-        vacationForm.setMatricule(staff.getMatricule());
-        vacationForm.setUnity(staff.getDepartment());
+        vacationForm.setSignature(vacation.getOwner().getSignature());
 
-        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
-        vacationForm.setSignature(signature);
 
-        //LastVacationDate
-        String lastVacationDateString = FieldUtils.getValueOfField(request,"lastVacationDate");
-
-        if(lastVacationDateString != null){
-            vacationForm.setLastVacationDate(LocalDate.parse(lastVacationDateString));
-        }
 
         //StartDate
-        lastVacationDateString = FieldUtils.getValueOfField(request,"startDate");
-        if(lastVacationDateString != null){
-            vacationForm.setStartDate(LocalDate.parse(lastVacationDateString));
-        }
-
+        vacationForm.setStartDate(vacation.getStartDate());
 
         //EndDate
-        lastVacationDateString = FieldUtils.getValueOfField(request,"endDate");
-        if(lastVacationDateString != null){
-            vacationForm.setEndDate(LocalDate.parse(lastVacationDateString));
-        }
-
-
+        vacationForm.setEndDate(vacation.getEndDate());
 
         // Interim
-        lastVacationDateString = FieldUtils.getValueOfField(request,"interim");
-        staff = userRestClient.getAgencyByStaffUsername(lastVacationDateString, "key", "secret");
 
         VacationForm.Interim interim = new VacationForm.Interim();
-        interim.setName(staff.getUsername());
-        interim.setFunction(staff.getFunction());
+        interim.setName(vacation.getInterim().getName());
+        interim.setFunction(vacation.getInterim().getFunction());
 
         vacationForm.setInterim(interim);
 
         //Supervisor
+
+
+
+        //Supervisor
         VacationForm.Signatory signatory = new VacationForm.Signatory();
-        String supervisor = request.getApprovalByPosition(1).getStaff();
-        if(supervisor != null){
-            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
-            signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            vacationForm.setSupervisor(signatory);
-        }
+        signatory.setName(vacation.getSupervisor().getOwner().getName());
+        signatory.setSignature(vacation.getSupervisor().getSignature());
+        vacationForm.setSupervisor(signatory);
 
 
         //SupervisorNext
         signatory = new VacationForm.Signatory();
-        supervisor = request.getApprovalByPosition(2).getStaff();
-        if(supervisor != null){
-            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
-            signatory.setName(staff.getUsername());
-            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-            vacationForm.setSupervisorNext(signatory);
-        }
+        signatory.setName(vacation.getSupervisor().getOwner().getName());
+        signatory.setSignature(vacation.getSupervisor().getSignature());
+        vacationForm.setSupervisorNext(signatory);
+
 
         return vacationForm;
 

@@ -12,6 +12,7 @@ import com.ccabank.memoservice.repository.SignatoryRepository;
 import com.ccabank.memoservice.repository.StaffRepository;
 import com.ccabank.memoservice.repository.TransportRepository;
 import com.ccabank.memoservice.service.faces.OrdreMissionService;
+import com.ccabank.memoservice.service.faces.SignatoryService;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,23 +47,8 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
 
     private static final Logger logger = LoggerFactory.getLogger(SaveDocumentServiceImpl.class);
 
-    public Signatory getSignatory(String username){
-
-        Signatory supervisor = new Signatory();
-
-        UserRestDto staff = userRestClient.getAgencyByStaffUsername(username, "key", "secret");
-        Staff requester = new Staff();
-        requester.setFunction(staff.getFunction());
-        requester.setName(staff.getUsername());
-        requester.setUnity(staff.getDepartment());
-        requester.setMatricule(staff.getMatricule());
-        requester = staffRepository.save(requester);
-
-        supervisor.setOwner(requester);
-        supervisor.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-
-        return supervisor;
-    }
+    @Autowired
+    private SignatoryService signatoryService;
 
 
     @Override
@@ -147,19 +133,19 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
 
         //Supervisor
         String username = request.getApprovalByPosition(1).getStaff();
-        Signatory supervisor = this.getSignatory(username);
+        Signatory supervisor = signatoryService.getSignatory(username);
         ordreMission.setSupervisor(supervisor);
 
 
         //SupervisorNext
         username = request.getApprovalByPosition(2).getStaff();
-        supervisor = this.getSignatory(username);
+        supervisor = signatoryService.getSignatory(username);
         ordreMission.setSupervisorNext(supervisor);
 
 
         //UCH
         username = request.getApprovalByPosition(4).getStaff();
-        supervisor = this.getSignatory(username);
+        supervisor = signatoryService.getSignatory(username);
         ordreMission.setUch(supervisor);
 
         ordreMission.setOrderGiven(supervisor);

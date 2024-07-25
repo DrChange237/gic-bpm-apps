@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/vacation/sheet")
-    Response vacation(@RequestBody VacationForm form);
+    ByteArrayResource vacation(@RequestBody VacationForm form);
 
     @PostMapping(path = "/api/reporting/service/resumption")
-    Response resumption(@RequestBody ResumptionForm form);
+    ByteArrayResource resumption(@RequestBody ResumptionForm form);
 
     @PostMapping(path = "/api/reporting/mission/order")
     ByteArrayResource mission(@RequestBody MissionForm form);
 
     @PostMapping(path = "/api/reporting/absence/authorization")
-    Response absence(@RequestBody AbsenceForm form);
+    ByteArrayResource absence(@RequestBody AbsenceForm form);
 
 
 }
