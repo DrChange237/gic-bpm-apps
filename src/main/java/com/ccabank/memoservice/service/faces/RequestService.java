@@ -15,6 +15,9 @@ public interface RequestService {
 
     AppServiceResult<Request> validateRequest(Long id);
 
+    AppServiceResult<RequestDto> details(Long id);
+
     AppServiceResult<List<RequestDto>> getRequestByStaff(String staff, String status);
 
+    AppServiceResult<List<RequestDto>> getRequestAll(String staff);
 }

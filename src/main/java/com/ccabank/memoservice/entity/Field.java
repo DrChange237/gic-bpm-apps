@@ -1,7 +1,9 @@
 package com.ccabank.memoservice.entity;
 
 
+import com.ccabank.memoservice.util.field.FieldUtils;
 import com.sun.jersey.core.impl.provider.entity.XMLRootObjectProvider;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -30,8 +32,23 @@ public class Field {
     @Column(name = "VALUE")
     private String value;
 
+    @Transient
+    private String name;
+
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        String name = FieldUtils.getNameOfField(this.request.getType().getStructure(), this.getKey());
+        if(name == null){
+            return "";
+        }
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = StringUtils.defaultString(name);
     }
 
     public Request getRequest() {

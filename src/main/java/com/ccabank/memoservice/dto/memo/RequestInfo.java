@@ -2,13 +2,10 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.entity.RequestStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class RequestDto {
-
-
+public class RequestInfo {
     private Long id;
 
     private String staff;
@@ -21,18 +18,7 @@ public class RequestDto {
 
     private RequestStatus status;
 
-    private List<ApprovalDto> approvals;
-
     private List<FieldDto> fields;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getStaff() {
         return staff;
@@ -40,6 +26,14 @@ public class RequestDto {
 
     public void setStaff(String staff) {
         this.staff = staff;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public int getApprobationLevel() {
@@ -58,12 +52,12 @@ public class RequestDto {
         this.documentType = documentType;
     }
 
-    public List<ApprovalDto> getApprovals() {
-        return approvals;
+    public RequestStatus getStatus() {
+        return status;
     }
 
-    public void setApprovals(List<ApprovalDto> approvals) {
-        this.approvals = approvals;
+    public void setStatus(RequestStatus status) {
+        this.status = status;
     }
 
     public List<FieldDto> getFields() {
@@ -73,21 +67,4 @@ public class RequestDto {
     public void setFields(List<FieldDto> fields) {
         this.fields = fields;
     }
-
-    public RequestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
 }

@@ -150,6 +150,8 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+
+
     @Override
     public AppServiceResult<Request> validateRequest(Long id) {
         try {
@@ -188,6 +190,29 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public AppServiceResult<RequestDto> details(Long id) {
+        try {
+            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+
+            Request request = requestRepository.getOne(id);
+
+            RequestDto dto = requestMapper.toDto(request);
+
+            //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
+
+            return new AppServiceResult<RequestDto>(true, 0, "Succeed!", dto );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
+            return new AppServiceResult<RequestDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
+
+
+    }
+
+    @Override
     public AppServiceResult<List<RequestDto>> getRequestByStaff(String staff, String status) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
@@ -195,6 +220,24 @@ public class RequestServiceImpl implements RequestService {
             List<Request> requests = requestRepository.findByStaffAndStatus(staff, RequestStatus.valueOf(status));
 
             return getConvertedResult(requests, "getRequestByStaff ");
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
+            return new AppServiceResult<List<RequestDto>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
+    }
+
+    @Override
+    public AppServiceResult<List<RequestDto>> getRequestAll(String staff) {
+        try {
+            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+
+            List<Request> requests = requestRepository.findByStaff(staff);
+
+            return getConvertedResult(requests, "getRequestAll ");
 
 
         } catch (Exception e) {
@@ -215,7 +258,9 @@ public class RequestServiceImpl implements RequestService {
         List<RequestDto> result =  new ArrayList<RequestDto>();
         if (requests.size() > 0) {
             for (Request request : requests) {
-                result.add(requestMapper.toDto(request));
+                RequestDto dto = requestMapper.toDto(request);
+                dto.setDocumentType(request.getType().getName());
+                result.add(dto);
             }
         }
         return new AppServiceResult<List<RequestDto>>(true, 0, "Succeed!", result);

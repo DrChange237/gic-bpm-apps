@@ -1,6 +1,7 @@
 package com.ccabank.memoservice.dto.memo;
 
 
+import com.ccabank.memoservice.util.field.FieldUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class FieldDto {
     }
 
     public String getName() {
+
         return name;
     }
 

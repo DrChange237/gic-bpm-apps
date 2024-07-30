@@ -7,6 +7,7 @@ import com.ccabank.memoservice.dto.HttpResponse;
 import com.ccabank.memoservice.dto.HttpResponseError;
 import com.ccabank.memoservice.dto.HttpResponseSuccess;
 import com.ccabank.memoservice.dto.memo.RequestDto;
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.service.faces.RequestService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,15 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @GetMapping("/request/details")
+    //@CrossOrigin()
+    public ResponseEntity<?> details(@RequestParam(value = "id") Long id) {
+        AppServiceResult<RequestDto> result = requestService.details(id);
+        return result.isSuccess()
+                ? ResponseEntity.ok(new HttpResponseSuccess<RequestDto>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
     @GetMapping("/request/validate")
     //@CrossOrigin()
     public ResponseEntity<?> validate(@RequestParam(value = "id") Long id) {
@@ -63,6 +73,14 @@ public class MemoController {
     //@CrossOrigin()
     public ResponseEntity<?> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
         AppServiceResult<List<RequestDto>> result = requestService.getRequestByStaff(staff, status);
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @GetMapping("/request/getAll")
+    //@CrossOrigin()
+    public ResponseEntity<?> getAll(@RequestParam(value = "staff") String staff) {
+        AppServiceResult<List<RequestDto>> result = requestService.getRequestAll(staff);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }

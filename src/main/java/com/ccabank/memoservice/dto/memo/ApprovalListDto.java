@@ -2,13 +2,11 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.entity.ApprovalStatus;
 import com.ccabank.memoservice.entity.ApprovalType;
-import com.ccabank.memoservice.entity.ProcessUnity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ApprovalDto {
-
+public class ApprovalListDto {
 
     private  Long id;
 
@@ -31,14 +29,10 @@ public class ApprovalDto {
     private List<FieldDto> fields;
 
 
-    private Long requestId;
-
-
-    private RequestInfo parent;
+    private RequestInfo request;
 
 
     private boolean required;
-
 
     public Long getId() {
         return id;
@@ -64,7 +58,6 @@ public class ApprovalDto {
         this.staff = staff;
     }
 
-
     public String getRole() {
         return role;
     }
@@ -79,24 +72,6 @@ public class ApprovalDto {
 
     public void setType(ApprovalType type) {
         this.type = type;
-    }
-
-    public String getUnity() {
-        return unity;
-    }
-
-    public void setUnity(String unity) {
-        this.unity = unity;
-    }
-
-
-
-    public List<FieldDto> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<FieldDto> fields) {
-        this.fields = fields;
     }
 
     public LocalDateTime getApprovalDate() {
@@ -123,27 +98,35 @@ public class ApprovalDto {
         this.comments = comments;
     }
 
+    public String getUnity() {
+        return unity;
+    }
+
+    public void setUnity(String unity) {
+        this.unity = unity;
+    }
+
+    public List<FieldDto> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<FieldDto> fields) {
+        this.fields = fields;
+    }
+
+    public RequestInfo getRequest() {
+        return request;
+    }
+
+    public void setRequest(RequestInfo request) {
+        this.request = request;
+    }
+
     public boolean isRequired() {
         return required;
     }
 
     public void setRequired(boolean required) {
         this.required = required;
-    }
-
-    public Long getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(Long requestId) {
-        this.requestId = requestId;
-    }
-
-    public RequestInfo getParent() {
-        return parent;
-    }
-
-    public void setParent(RequestInfo parent) {
-        this.parent = parent;
     }
 }

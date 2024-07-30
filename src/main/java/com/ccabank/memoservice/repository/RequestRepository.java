@@ -12,4 +12,6 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
     List<Request> findByStaffAndStatus(String staff, RequestStatus status);
+
+    List<Request> findByStaff(String staff);
 }

@@ -1,6 +1,8 @@
 package com.ccabank.memoservice.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -26,6 +28,7 @@ public class Approval {
     @Column(name = "APPROVAL_DATE", nullable = true)
     private LocalDateTime approvalDate;
 
+    @JsonIgnoreProperties
     @JoinColumn(name = "REQUEST", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Request request;

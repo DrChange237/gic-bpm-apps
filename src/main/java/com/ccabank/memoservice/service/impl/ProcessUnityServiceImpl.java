@@ -63,8 +63,8 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
             ProcessUnity processUnity = processUnityRepository.findById(processUnityDto.getId()).orElse(null);
 
             if (processUnity == null) {
-                logger.warn("update : department not found -> " + processUnityDto.getId());
-                return new AppServiceResult<ProcessUnity>(false, HttpStatus.NOT_FOUND.value(), "department not found!", null);
+                logger.warn("update : process unity not found -> " + processUnityDto.getId());
+                return new AppServiceResult<ProcessUnity>(false, HttpStatus.NOT_FOUND.value(), "process unity not found!", null);
             }
 
             processUnity.setCode(processUnityDto.getCode());

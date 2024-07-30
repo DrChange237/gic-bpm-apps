@@ -59,4 +59,26 @@ public class FieldUtils {
         return field.get().getValue();
     }
 
+    public static  String getNameOfField(String type, String key){
+
+        System.out.println(type);
+
+        System.out.println(key);
+
+
+        DocumentStructure structure = getStructure(type);
+        List<FieldDto> fieldDtos = structure.getFields();
+
+        Optional<FieldDto> fieldDto = fieldDtos.stream().filter(obj -> obj.getKey().equals(key)).findFirst();
+
+        if(fieldDto.isEmpty()){
+            return null;
+        }
+
+        System.out.println("Name : " +  fieldDto.get().getName());
+
+
+        return fieldDto.get().getName();
+    }
+
 }

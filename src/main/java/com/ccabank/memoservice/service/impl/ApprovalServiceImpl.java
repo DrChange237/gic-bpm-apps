@@ -2,11 +2,12 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
-import com.ccabank.memoservice.dto.memo.AcceptedApprovalDto;
-import com.ccabank.memoservice.dto.memo.ApprovalDto;
-import com.ccabank.memoservice.dto.memo.FieldDto;
+import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.entity.*;
+import com.ccabank.memoservice.mappers.ApprovalListMapper;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
+import com.ccabank.memoservice.mappers.RequestInfoMapper;
+import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.ApprovalRepository;
 import com.ccabank.memoservice.repository.FieldRepository;
 import com.ccabank.memoservice.repository.ProcessUnityRepository;
@@ -39,6 +40,12 @@ public class ApprovalServiceImpl implements ApprovalService {
     private ApprovalMapper approvalMapper;
 
     @Autowired
+    private RequestMapper requestMapper;
+
+    @Autowired
+    private RequestInfoMapper requestInfoMapper;
+
+    @Autowired
     private ApprovalRepository approvalRepository;
 
     @Autowired
@@ -52,6 +59,9 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Autowired
     private SaveDocumentService saveDocumentService;
+
+    @Autowired
+    private ApprovalListMapper approvalListMapper;
 
     @Autowired
     private ProcessUnityRepository processUnityRepository;
@@ -239,17 +249,26 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 
     @Override
-    public AppServiceResult<List<ApprovalDto>> getApprovalByStaff(String staff, String status) {
+    public AppServiceResult<List<ApprovalListDto>> getApprovalByStaff(String staff, String status) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
             List<Approval> approvals = approvalRepository.findByStaffAndStatus(staff, ApprovalStatus.valueOf(status));
 
-            return getConvertedResult(approvals, "getApprovalByStaff ");
+            List<ApprovalListDto> approvalDtos = new ArrayList<>();
+            for (Approval approval : approvals) {
+                ApprovalListDto dto = approvalListMapper.toDto(approval);
+                RequestInfo info = requestInfoMapper.toDto(approval.getRequest());
+                info.setDocumentType(approval.getRequest().getType().getName());
+                dto.setRequest(info);
+                approvalDtos.add(dto);
+            }
+
+            return new AppServiceResult<List<ApprovalListDto>>(true, 0, "Succeed!", approvalDtos);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<List<ApprovalDto>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<List<ApprovalListDto>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -268,6 +287,14 @@ public class ApprovalServiceImpl implements ApprovalService {
                 approvalDto.setFields(FieldUtils.getFieldsOfTypeAndPosition(type, approvalDto.getPosition()));
             }
 
+            approvalDto.setRequestId(approval.getRequest().getId());
+
+            RequestInfo dto = requestInfoMapper.toDto(approval.getRequest());
+
+            dto.setDocumentType(approval.getRequest().getType().getName());
+
+            approvalDto.setParent(dto);
+
             return new AppServiceResult<ApprovalDto>(true, 0, "Succeed!", approvalDto );
 
 
@@ -284,14 +311,16 @@ public class ApprovalServiceImpl implements ApprovalService {
     private AppServiceResult<List<ApprovalDto>> getConvertedResult(List<Approval> approvals, String functionName) {
         if (approvals == null) {
             logger.warn(MEMO_SERVICE, functionName,
-                    "Feedback not exist!, Cannot further process!");
+                    "Approval not exist!, Cannot further process!");
             return new AppServiceResult<List<ApprovalDto>>(false, AppError.Validattion.errorCode(),
-                    "Feedback not exist!", null);
+                    "Approval not exist!", null);
         }
         List<ApprovalDto> result =  new ArrayList<ApprovalDto>();
         if (approvals.size() > 0) {
             for (Approval approval : approvals) {
-                result.add(approvalMapper.toDto(approval));
+                ApprovalDto dto = approvalMapper.toDto(approval);
+                dto.setRequestId(approval.getRequest().getId());
+                result.add(dto);
             }
         }
         return new AppServiceResult<List<ApprovalDto>>(true, 0, "Succeed!", result);

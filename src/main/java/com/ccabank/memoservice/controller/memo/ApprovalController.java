@@ -7,6 +7,7 @@ import com.ccabank.memoservice.dto.HttpResponseError;
 import com.ccabank.memoservice.dto.HttpResponseSuccess;
 import com.ccabank.memoservice.dto.memo.AcceptedApprovalDto;
 import com.ccabank.memoservice.dto.memo.ApprovalDto;
+import com.ccabank.memoservice.dto.memo.ApprovalListDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import com.ccabank.memoservice.service.faces.DocumentTypeService;
@@ -43,8 +44,8 @@ public class ApprovalController {
 
     @GetMapping("/approval/getApprovalByStaffAndStatus")
     //@CrossOrigin()
-    public ResponseEntity<?> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
-        AppServiceResult<List<ApprovalDto>> result = approvalService.getApprovalByStaff(staff, status);
+    public ResponseEntity<?> getApprovalByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
+        AppServiceResult<List<ApprovalListDto>> result = approvalService.getApprovalByStaff(staff, status);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
