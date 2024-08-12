@@ -1,0 +1,71 @@
+{
+  "name" : "Mémo",
+  "generateUrl" : "",
+  "approvals" : [
+    {
+      "position" : 1,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Hiérarchie N + 1",
+      "required" : true
+    },
+    {
+      "position" : 2,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "DG",
+      "role" : "DIRECTION GENERALE",
+      "required" : false,
+      "fields" : [
+        {
+          "key" : "avis",
+          "name" : "Avis",
+          "type" : "choice",
+          "required": true,
+          "choices" : [
+            {
+              "label" : "Favorable",
+              "value" : "FAVORABLE"
+            },
+            {
+              "label" : "Non Favorable",
+              "value" : "NOT_FAVORABLE"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fields" : [
+    {
+      "key" : "subject",
+      "name" : "Objet du Mémo",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "material",
+      "name" : "Matériel Sollicité",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "receiver",
+      "name" : "Destinataire",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "body",
+      "name" : "Description du Mémo",
+      "type" : "wysiwig",
+      "required" : true
+    },
+    {
+      "key" : "document",
+      "name" : "Justificatifs",
+      "type" : "file",
+      "required" : true
+    }
+  ]
+}

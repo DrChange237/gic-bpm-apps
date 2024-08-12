@@ -31,14 +31,20 @@ public class InitDatabaseService implements CommandLineRunner {
                 new DocumentType("Demande de congé annuel","vacation"),
                 new DocumentType("Ordre de mission","mission"),
                 new DocumentType("Fiche de reprise de service","resumption"),
-                new DocumentType("Demande d'autorisation d'absence","absence")
+                new DocumentType("Demande d'autorisation d'absence","absence"),
+                new DocumentType("Memo","memo"),
+                new DocumentType("Demande de Travail","workform")
+
         ).filter(documentType -> !documentTypeRepository.existsByStructure(documentType.getStructure())).collect(Collectors.toList());
 
         documentTypeRepository.saveAll(documentTypes);
 
         List<ProcessUnity> processUnities = Stream.of(
                 new ProcessUnity("RH","Capital Humain", ""),
-                new ProcessUnity("DG","Direction Générale", "")
+                new ProcessUnity("DG","Direction Générale", ""),
+                new ProcessUnity("COMPTA","Comptabilité", ""),
+                new ProcessUnity("MG","Moyens Généraux", "")
+
         ).filter(processUnity -> !processUnityRepository.existsByCode(processUnity.getCode())).collect(Collectors.toList());
 
         processUnityRepository.saveAll(processUnities);

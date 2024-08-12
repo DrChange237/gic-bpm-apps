@@ -14,11 +14,6 @@ spring:
 
 
 
-
-
-
-
-
 security:
   oauth2:
     resource:

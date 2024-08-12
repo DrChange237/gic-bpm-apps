@@ -27,6 +27,10 @@ public class Absence {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Staff requester;
 
+    @JoinColumn(name = "OWNER", referencedColumnName = "ID",  nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    private Signatory owner;
+
     @Column(name = "PLACE")
     @Size(max = 100)
     private String place;
@@ -49,7 +53,6 @@ public class Absence {
     private Staff interim;
 
     @Column(name = "DEDUCTION")
-    @Size(max = 100)
     private Deduction deduction;
 
     @JoinColumn(name = "SUPERVISOR", referencedColumnName = "ID",  nullable = true)
@@ -234,5 +237,13 @@ public class Absence {
 
     public void setVacation(Settlement vacation) {
         this.vacation = vacation;
+    }
+
+    public Signatory getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Signatory owner) {
+        this.owner = owner;
     }
 }

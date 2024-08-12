@@ -10,4 +10,8 @@ public class DocumentTypeConstant {
 
     public final static String DOCUMENT_TYPE_RESUMPTION = "resumption";
 
+    public final static String DOCUMENT_TYPE_MEMO = "memo" ;
+
+    public final static String DOCUMENT_TYPE_WORKFORM = "workform";
+
 }

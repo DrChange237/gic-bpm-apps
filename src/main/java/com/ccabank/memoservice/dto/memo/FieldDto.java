@@ -19,6 +19,9 @@ public class FieldDto {
 
     private List<ChoiceDto> choices;
 
+    private List<FileDto> files;
+
+
     private boolean required = true;
 
     public boolean isRequired() {
@@ -68,5 +71,13 @@ public class FieldDto {
 
     public void setChoices(List<ChoiceDto> choices) {
         this.choices = choices;
+    }
+
+    public List<FileDto> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileDto> files) {
+        this.files = files;
     }
 }

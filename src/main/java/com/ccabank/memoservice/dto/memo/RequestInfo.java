@@ -20,6 +20,14 @@ public class RequestInfo {
 
     private List<FieldDto> fields;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getStaff() {
         return staff;
     }

@@ -26,6 +26,20 @@ public final class StringUtil {
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\"([^\"]*)\"|(\\S+)");
 
+    public static String transformUsernameToName(String name) {
+        // Séparer le nom en prénom et nom de famille
+        String[] nameParts = name.split("\\.");
+
+        // Mettre le prénom en majuscules
+        String firstName = nameParts[0].toUpperCase();
+
+        // Mettre le nom de famille en majuscules
+        String lastName = nameParts[1].toUpperCase();
+
+        // Recombiner le prénom et le nom de famille
+        return firstName + " " + lastName;
+    }
+
     private static final String[][] MIME_TYPES = {
             {"mp3", "audio/mpeg"},
             {"ogg", "audio/ogg"},

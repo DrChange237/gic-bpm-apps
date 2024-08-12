@@ -4,9 +4,11 @@ import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.FieldDto;
+import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
+import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
 import org.slf4j.Logger;
@@ -17,7 +19,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -59,6 +63,12 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private FileRestClient fileRestClient;
+
+    @Autowired
+    private FileRepository fileRepository;
+
     @Override
     public AppServiceResult<Request> newRequest(RequestDto requestDto) {
         try {
@@ -68,6 +78,13 @@ public class RequestServiceImpl implements RequestService {
             request.setCreatedAt(LocalDateTime.now());
             request.setStaff(requestDto.getStaff());
 
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+            String date = currentDate.format(formatter);
+
+            Long count = requestRepository.countRequestsCreatedToday();
+            date = date + "-" + count;
+            request.setReference(date);
             DocumentType type = documentTypeRepository.findOneByStructure(requestDto.getDocumentType());
             request.setType(type);
             request.setStatus(RequestStatus.DRAFT);
@@ -83,10 +100,24 @@ public class RequestServiceImpl implements RequestService {
                 field.setValue(fieldDto.getValue());
                 field.setRequest(request);
                 fieldRepository.save(field);
+
+                for(FileDto fileDto : fieldDto.getFiles()){
+                     FileDto fileRest = fileRestClient.uploadFileToFolder("paperless", "/memo", fileDto.getFile());
+
+                    File file = new File();
+                    file.setName(fileDto.getName());
+                    file.setField(field);
+                    file.setUrl(fileRest.getUrl());
+                    file.setType(fileRest.getType());
+                    file = fileRepository.save(file);
+                }
             }
 
             //Approval User
             for(ApprovalDto approvalDto : requestDto.getApprovals()){
+                if(approvalDto.getType() == ApprovalType.STATIC){
+                    continue;
+                }
                 Approval approval = new Approval();
                 approval.setPosition(approvalDto.getPosition());
                 approval.setStatus(ApprovalStatus.PENDING);

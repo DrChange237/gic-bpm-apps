@@ -69,6 +69,8 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
 
         requester = staffRepository.save(requester);
 
+        ordreMission.setRequester(requester);
+
         ordreMission.setPlace(staff.getAgencyName());
 
         Signatory owner = new Signatory();

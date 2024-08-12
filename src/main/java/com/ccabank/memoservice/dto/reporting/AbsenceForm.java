@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,62 +16,74 @@ import java.util.stream.Collectors;
 public class AbsenceForm {
     @NotBlank
     @Schema(example = "Douala")
-    private String place;
+    private String place = "Douala";
+
     @NotNull
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
+
     @Schema(example = " ")
-    private String signature;
+    private String signature = " ";
 
     @NotBlank
     @Schema(example = "01593")
-    private String matricule;
+    private String matricule = "01593";
+
     @NotBlank
     @Schema(example = "LONLA GATIEN JORDAN")
-    private String name;
+    private String name = "LONLA GATIEN JORDAN";
+
     @NotBlank
     @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
-    private String unity;
+    private String unity = "Départment Etudes et Développement des Solutions Digitales";
+
     @NotBlank
     @Schema(example = "Développeur Back-End")
-    private String function;
+    private String function = "Développeur Back-End";
+
     @NotNull
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
+
     @NotNull
-    private LocalDate endDate;
+    private LocalDate endDate = LocalDate.now();
+
     @NotNull
     @Min(value = 1)
     @Schema(example = "3")
-    private Integer days;
+    private Integer days = 1;
+
     @NotBlank
     @Schema(example = "Convalescence")
-    private String reason;
+    private String reason = "Convalescence";
+
     @NotNull
-    private Deduction deduction;
+    private Deduction deduction = Deduction.VACATION;
+
     @NotBlank
     @Schema(example = "SIMO TRÉSOR WILFRIED")
-    private String interim;
-    @NotNull
-    private Signatory signatory1;
-    @NotNull
-    private Signatory signatory2;
-    @NotNull
-    private Signatory headOffice;
+    private String interim = "SIMO TRÉSOR WILFRIED";
 
     @NotNull
-    private Settlement absence;
+    private Signatory signatory1  = new Signatory();
     @NotNull
-    private Settlement stock;
+    private Signatory signatory2  = new Signatory();
     @NotNull
-    private Settlement advice;
+    private Signatory headOffice = new Signatory();
+
     @NotNull
-    private Settlement rights;
+    private Settlement absence= new Settlement();
     @NotNull
-    private Settlement salary;
+    private Settlement stock = new Settlement();
     @NotNull
-    private Settlement vacation;
+    private Settlement advice = new Settlement();
+    @NotNull
+    private Settlement rights = new Settlement();
+    @NotNull
+    private Settlement salary = new Settlement();
+    @NotNull
+    private Settlement vacation = new Settlement();
 
 
-    private List<String> signatures;
+    private List<String> signatures = new ArrayList<>();
 
     public String getPlace() {
         return place;
@@ -258,8 +271,24 @@ public class AbsenceForm {
 
     @Data
     public static class Settlement {
-        private Double paid;
-        private Double unpaid;
+        private Double paid = Double.valueOf(100);
+        private Double unpaid = Double.valueOf(100);
+
+        public Double getPaid() {
+            return paid;
+        }
+
+        public void setPaid(Double paid) {
+            this.paid = paid;
+        }
+
+        public Double getUnpaid() {
+            return unpaid;
+        }
+
+        public void setUnpaid(Double unpaid) {
+            this.unpaid = unpaid;
+        }
     }
 
     @Data
@@ -267,11 +296,11 @@ public class AbsenceForm {
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
-        private String name;
+        private String name = "SIMO PATRICK";
         @Schema(example = " ", description = "Base64-encoded image")
-        private String signature;
+        private String signature = "";
         @NotNull
-        private LocalDate date;
+        private LocalDate date = LocalDate.now();
 
         public String getName() {
             return name;
@@ -302,5 +331,7 @@ public class AbsenceForm {
         SALARY,
         VACATION
     }
+
+
 
 }

@@ -1,4 +1,7 @@
 package com.ccabank.memoservice.dto.user;
+
+import com.ccabank.memoservice.util.StringUtil;
+
 public class UserRestDto {
 
     private String username;
@@ -16,6 +19,10 @@ public class UserRestDto {
     public String getEmail(){
         return "";
         //return  this.getUsername() + "@cca-bank.com";
+    }
+
+    public String getName(){
+        return  StringUtil.transformUsernameToName(username);
     }
 
 

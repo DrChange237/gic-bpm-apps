@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Table(name = "T_FIELD")
@@ -31,6 +33,9 @@ public class Field {
 
     @Column(name = "VALUE")
     private String value;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "field", fetch = FetchType.LAZY)
+    private Collection<File> files = new ArrayList<>();
 
     @Transient
     private String name;
@@ -81,5 +86,13 @@ public class Field {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Collection<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Collection<File> files) {
+        this.files = files;
     }
 }

@@ -137,11 +137,6 @@
       "type" : "date"
     },
     {
-      "key" : "days",
-      "name" : "Durée de l'absence (Jours)",
-      "type" : "number"
-    },
-    {
       "key" : "reason",
       "name" : "Motif de l'absence",
       "type" : "text"

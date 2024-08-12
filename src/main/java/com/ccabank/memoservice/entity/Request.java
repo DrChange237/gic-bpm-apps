@@ -29,6 +29,11 @@ public class Request {
     @Size(max = 1000)
     private String staff;
 
+    @Basic(optional = true)
+    @Column(name = "REFERENCE")
+    @Size(max = 20)
+    private String reference;
+
     @JoinColumn(name = "TYPE", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private DocumentType type;
@@ -115,5 +120,13 @@ public class Request {
 
     public void setDocumentId(Long documentId) {
         this.documentId = documentId;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }

@@ -1,5 +1,7 @@
 package com.ccabank.memoservice.entity.documenttype.sub;
 
+import com.ccabank.memoservice.entity.documenttype.Memo;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -13,12 +15,16 @@ public class Signatory {
     @Column(name = "ID", columnDefinition = "serial")
     private Long id;
 
+    @JoinColumn(name = "MEMO", referencedColumnName = "ID",  nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    private Memo memo;
+
     @JoinColumn(name = "OWNER", referencedColumnName = "ID",  nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Staff owner;
 
+    @Basic(optional = true)
     @Column(name = "SIGNATURE")
-    @Size(max = 100)
     private String signature;
 
     public Long getId() {
@@ -39,5 +45,13 @@ public class Signatory {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public Memo getMemo() {
+        return memo;
+    }
+
+    public void setMemo(Memo memo) {
+        this.memo = memo;
     }
 }

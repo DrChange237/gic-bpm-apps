@@ -12,34 +12,34 @@ import java.time.LocalDate;
 public class ResumptionForm {
     @NotBlank
     @Schema(example = "Douala")
-    private String place;
+    private String place = "Douala";
     @NotNull
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
 
     @NotBlank
     @Schema(example = "01593")
-    private String matricule;
+    private String matricule = "01593";
     @NotBlank
     @Schema(example = "LONLA GATIEN JORDAN")
-    private String name;
+    private String name = "LONLA GATIEN JORDAN";
     @NotBlank
     @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
-    private String unity;
+    private String unity = "Départment Etudes et Développement des Solutions Digitales";
     @NotBlank
     @Schema(example = "Développeur Back-End")
-    private String function;
+    private String function = "Développeur Back-End";
     @Schema(example = " ", description = "Base64-encoded image")
-    private String signature;
+    private String signature = "";
     @NotNull
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
     @NotNull
-    private LocalDate endDate;
+    private LocalDate endDate = LocalDate.now();
     @NotNull
-    private LocalDate realEndDate;
+    private LocalDate realEndDate = LocalDate.now();
     @NotNull
-    private Reason reason;
+    private Reason reason = Reason.ABSENCE;
     @NotNull
-    private Signatory supervisor;
+    private Signatory supervisor = new Signatory();
 
     public String getPlace() {
         return place;
@@ -148,9 +148,9 @@ public class ResumptionForm {
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
-        private String name;
+        private String name = "SIMO PATRICK";
         @Schema(example = " ", description = "Base64-encoded image")
-        private String signature;
+        private String signature = "";
 
         public String getName() {
             return name;

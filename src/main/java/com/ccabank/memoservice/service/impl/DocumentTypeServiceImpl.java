@@ -72,6 +72,25 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
+    public List<ApprovalDto> getApprobals(String name) {
+        try {
+            DocumentStructure structure = FieldUtils.getStructure(name);
+            List<ApprovalDto> approvalDtos = structure.getApprovals();
+            List<ApprovalDto> staticApprobals = new ArrayList<>();
+
+            for(ApprovalDto approbalDto: approvalDtos){
+                    staticApprobals.add(approbalDto);
+
+            }
+
+            return  staticApprobals;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
+
+    @Override
     public List<ApprovalDto> getStaticApprobals(String name) {
         try {
             DocumentStructure structure = FieldUtils.getStructure(name);

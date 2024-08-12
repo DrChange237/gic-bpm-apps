@@ -49,10 +49,14 @@ public class FieldUtils {
 
     public static  String getValueOfField(Request request, String key){
 
+        System.out.println("Get " + key);
+
+
         Collection<Field> fields = request.getFields();
         Optional<Field> field = fields.stream().filter(obj -> obj.getKey().equals(key)).findFirst();
 
         if(field.isEmpty()){
+            System.out.println("isEmpty : " + key);
             return null;
         }
 

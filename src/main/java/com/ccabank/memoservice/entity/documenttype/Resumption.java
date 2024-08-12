@@ -27,6 +27,11 @@ public class Resumption {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Staff requester;
 
+
+    @JoinColumn(name = "OWNER", referencedColumnName = "ID",  nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    private Signatory owner;
+
     @Column(name = "PLACE")
     @Size(max = 100)
     private String place;
@@ -41,7 +46,6 @@ public class Resumption {
     private LocalDate realEndDate;
 
     @Column(name = "REASON")
-    @Size(max = 100)
     private ResumptionReason reason;
 
     @JoinColumn(name = "SUPERVISOR", referencedColumnName = "ID",  nullable = true)
@@ -66,6 +70,14 @@ public class Resumption {
 
     public void setRequester(Staff requester) {
         this.requester = requester;
+    }
+
+    public Signatory getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Signatory owner) {
+        this.owner = owner;
     }
 
     public String getPlace() {

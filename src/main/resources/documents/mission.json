@@ -102,12 +102,6 @@
       "required" : true
     },
     {
-      "key" : "nights",
-      "name" : "Nombre de nuitées",
-      "type" : "number",
-      "required" : true
-    },
-    {
       "key" : "accountNumber",
       "name" : "Numero de compte courant ",
       "type" : "text",

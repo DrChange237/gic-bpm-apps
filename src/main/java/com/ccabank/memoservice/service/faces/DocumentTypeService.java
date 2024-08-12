@@ -11,5 +11,7 @@ public interface DocumentTypeService {
 
     AppServiceResult<DocumentTypeDto> getDocumentType(String structure);
 
+    List<ApprovalDto> getApprobals(String name);
+
     List<ApprovalDto> getStaticApprobals(String name);
 }

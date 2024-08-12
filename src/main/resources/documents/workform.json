@@ -1,0 +1,72 @@
+{
+  "name" : "Demande de Travail",
+  "generateUrl" : "",
+  "approvals" : [
+    {
+      "position" : 1,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Hiérarchie N + 1",
+      "required" : true
+    },
+    {
+      "position" : 2,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Chef de Département",
+      "required" : true
+    },
+    {
+      "position" : 3,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "COMPTA",
+      "role" : "COMPTABILITE",
+      "required" : false,
+      "fields" : [
+      ]
+    },
+    {
+      "position" : 4,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "MG",
+      "role" : "Moyens Généraux",
+      "required" : false,
+      "fields" : [
+        {
+          "key" : "provider",
+          "name" : "Désignation du prestataire",
+          "type" : "text",
+          "required": true
+        },
+        {
+          "key" : "designation",
+          "name" : "Désignation",
+          "type" : "text",
+          "required": true
+        },
+        {
+          "key" : "brand",
+          "name" : "Marque",
+          "type" : "text",
+          "required": true
+        },
+        {
+          "key" : "code",
+          "name" : "Code Etiquette",
+          "type" : "text",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "fields" : [
+    {
+      "key" : "works",
+      "name" : "Travaux demandés (séparé d'une virgule)",
+      "type" : "text",
+      "required" : true
+    }
+  ]
+}

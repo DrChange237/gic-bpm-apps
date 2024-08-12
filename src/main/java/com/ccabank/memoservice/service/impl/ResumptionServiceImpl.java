@@ -2,18 +2,18 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.entity.documenttype.Resumption;
 import com.ccabank.memoservice.entity.documenttype.Vacation;
+import com.ccabank.memoservice.entity.documenttype.sub.ResumptionReason;
 import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
 import com.ccabank.memoservice.entity.documenttype.sub.Staff;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.repository.ResumptionRepository;
 import com.ccabank.memoservice.repository.SignatoryRepository;
 import com.ccabank.memoservice.repository.StaffRepository;
-import com.ccabank.memoservice.repository.VacationRepository;
+import com.ccabank.memoservice.service.faces.ResumptionService;
 import com.ccabank.memoservice.service.faces.SignatoryService;
-import com.ccabank.memoservice.service.faces.VacationService;
 import com.ccabank.memoservice.util.field.FieldUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,9 +26,7 @@ import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 @Service
 @Transactional
 @Qualifier(MEMO_SERVICE)
-public class VacationServiceImpl implements VacationService {
-
-    private static final Logger logger = LoggerFactory.getLogger(SaveDocumentServiceImpl.class);
+public class ResumptionServiceImpl implements ResumptionService {
 
     @Autowired
     private UserRestClient userRestClient;
@@ -43,16 +41,14 @@ public class VacationServiceImpl implements VacationService {
     private SignatoryService signatoryService;
 
     @Autowired
-    private VacationRepository vacationRepository;
-
-
+    private ResumptionRepository resumptionRepository;
 
     @Override
-    public Vacation save(Request request){
+    public Resumption save(Request request){
 
-        Vacation vacation = new Vacation();
+        Resumption resumption = new Resumption();
 
-        vacation.setDate(LocalDate.now());
+        resumption.setDate(LocalDate.now());
 
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
@@ -65,9 +61,9 @@ public class VacationServiceImpl implements VacationService {
         requester.setUsername(request.getStaff());
 
         requester = staffRepository.save(requester);
-        vacation.setRequester(requester);
+        resumption.setRequester(requester);
 
-        vacation.setPlace(staff.getAgencyName());
+        resumption.setPlace(staff.getAgencyName());
 
         Signatory owner = new Signatory();
         owner.setOwner(requester);
@@ -75,48 +71,40 @@ public class VacationServiceImpl implements VacationService {
         owner.setSignature("");
 
         owner = signatoryRepository.save(owner);
-        vacation.setOwner(owner);
+        resumption.setOwner(owner);
 
 
         //StartDate
         String startDate = FieldUtils.getValueOfField(request,"startDate");
-        vacation.setStartDate(LocalDate.parse(startDate));
+        resumption.setStartDate(LocalDate.parse(startDate));
 
 
         //EndDate
         String endDate = FieldUtils.getValueOfField(request,"endDate");
-        vacation.setEndDate(LocalDate.parse(endDate));
+        resumption.setEndDate(LocalDate.parse(endDate));
 
-        //Interim
-        String interim = FieldUtils.getValueOfField(request,"interim");
-        staff = userRestClient.getAgencyByStaffUsername(interim, "key", "secret");
-        requester = new Staff();
-        requester.setFunction(staff.getFunction());
-        requester.setName(staff.getName());
-        requester.setUnity(staff.getDepartment());
-        requester.setMatricule(staff.getMatricule());
-        requester.setUsername(staff.getUsername());
-        requester = staffRepository.save(requester);
 
-        vacation.setInterim(requester);
+        //realEndDate
+        String realEndDate = FieldUtils.getValueOfField(request,"realEndDate");
+        resumption.setRealEndDate(LocalDate.parse(realEndDate));
+
+        //reason
+        String reason = FieldUtils.getValueOfField(request,"reason");
+        resumption.setReason(ResumptionReason.valueOf(reason));
 
 
         //Supervisor
         String username = request.getApprovalByPosition(1).getStaff();
         Signatory supervisor = signatoryService.getSignatory(username);
-        vacation.setSupervisor(supervisor);
+        resumption.setSupervisor(supervisor);
 
 
-        //SupervisorNext
-        username = request.getApprovalByPosition(2).getStaff();
-        supervisor = signatoryService.getSignatory(username);
-        vacation.setSupervisor2(supervisor);
 
+        resumption = resumptionRepository.save(resumption);
 
-        vacation = vacationRepository.save(vacation);
-
-        return vacation;
+        return resumption;
 
     }
+
 
 }

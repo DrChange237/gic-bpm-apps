@@ -119,8 +119,6 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
 
 
-
-
             String type = approval.getRequest().getType().getStructure();
             List<FieldDto> stuctureFields = FieldUtils.getFieldsOfTypeAndPosition(type, approval.getPosition());
 
@@ -130,11 +128,11 @@ public class ApprovalServiceImpl implements ApprovalService {
                 for(FieldDto fieldDto : stuctureFields){
                     if(fieldDto.isRequired()){
                         if(incommingFields == null){
-                            throw new Exception("champ : " + fieldDto.getKey() + " requis");
+                            throw new Exception("champs : " + fieldDto.getKey() + " requis");
                         }
                         Optional<FieldDto> fTmp = incommingFields.stream().filter(obj -> obj.getKey().equals(fieldDto.getKey())).findFirst();
                         if(fTmp.isEmpty()){
-                            throw new Exception("champ : " + fieldDto.getKey() + " requis");
+                            throw new Exception("champs : " + fieldDto.getKey() + " requis");
                         }
                     }
                 }
@@ -255,11 +253,15 @@ public class ApprovalServiceImpl implements ApprovalService {
             List<Approval> approvals = approvalRepository.findByStaffAndStatus(staff, ApprovalStatus.valueOf(status));
 
             List<ApprovalListDto> approvalDtos = new ArrayList<>();
+
             for (Approval approval : approvals) {
                 ApprovalListDto dto = approvalListMapper.toDto(approval);
                 RequestInfo info = requestInfoMapper.toDto(approval.getRequest());
                 info.setDocumentType(approval.getRequest().getType().getName());
                 dto.setRequest(info);
+                if(approval.getType() == ApprovalType.STATIC){
+                    dto.setFields(FieldUtils.getFieldsOfTypeAndPosition(approval.getRequest().getType().getStructure(), approval.getPosition()));
+                }
                 approvalDtos.add(dto);
             }
 
@@ -277,6 +279,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     public AppServiceResult<ApprovalDto> getApprovalDetail(Long id) {
         try {
             logger.info(MEMO_SERVICE + "getApprovalDetail : methode invocation");
+
             Approval approval = approvalRepository.getOne(id);
 
             String type = approval.getRequest().getType().getStructure();

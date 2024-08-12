@@ -4,6 +4,7 @@ import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
 import com.ccabank.memoservice.entity.documenttype.sub.Staff;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.repository.SignatoryRepository;
 import com.ccabank.memoservice.repository.StaffRepository;
 import com.ccabank.memoservice.service.faces.SignatoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class SignatoryServiceImpl implements SignatoryService {
     @Autowired
     private StaffRepository staffRepository;
 
+    @Autowired
+    private SignatoryRepository signatoryRepository;
+
     @Override
     public Signatory getSignatory(String username){
 
@@ -33,15 +37,16 @@ public class SignatoryServiceImpl implements SignatoryService {
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(username, "key", "secret");
         Staff requester = new Staff();
         requester.setFunction(staff.getFunction());
-        requester.setName(staff.getUsername());
+        requester.setName(staff.getName());
         requester.setUnity(staff.getDepartment());
         requester.setMatricule(staff.getMatricule());
+        requester.setUsername(staff.getUsername());
         requester = staffRepository.save(requester);
 
         supervisor.setOwner(requester);
-        supervisor.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+        //supervisor.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
 
-        return supervisor;
+        return signatoryRepository.save(supervisor);
     }
 
 
