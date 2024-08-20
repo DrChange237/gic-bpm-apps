@@ -77,6 +77,14 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @GetMapping("/request/getByReference")
+    //@CrossOrigin()
+    public ResponseEntity<?> getByReference(@RequestParam(value = "reference") String reference) {
+        AppServiceResult<RequestDto> result = requestService.getRequestByReference(reference);
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
     @GetMapping("/request/getAll")
     //@CrossOrigin()
     public ResponseEntity<?> getAll(@RequestParam(value = "staff") String staff) {

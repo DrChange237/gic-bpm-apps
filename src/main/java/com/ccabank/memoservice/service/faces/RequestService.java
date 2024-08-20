@@ -17,6 +17,8 @@ public interface RequestService {
 
     AppServiceResult<RequestDto> details(Long id);
 
+    AppServiceResult<RequestDto> getRequestByReference(String reference);
+
     AppServiceResult<List<RequestDto>> getRequestByStaff(String staff, String status);
 
     AppServiceResult<List<RequestDto>> getRequestAll(String staff);

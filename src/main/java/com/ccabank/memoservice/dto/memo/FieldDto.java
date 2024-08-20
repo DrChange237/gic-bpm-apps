@@ -3,11 +3,15 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.util.field.FieldUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class FieldDto {
+
+    private int position;
 
     private String key;
 
@@ -19,10 +23,18 @@ public class FieldDto {
 
     private List<ChoiceDto> choices;
 
-    private List<FileDto> files;
+    private List<FileDto> files = new ArrayList<>();
 
 
     private boolean required = true;
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public boolean isRequired() {
         return required;

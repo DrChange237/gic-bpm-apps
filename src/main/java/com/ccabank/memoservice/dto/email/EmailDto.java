@@ -4,20 +4,30 @@ import java.util.List;
 
 public class EmailDto {
 
-    private String to;
+    private String cc;
+
+    private String from;
 
     private String subject;
 
-    private List<String> bCC;
+    private String body;
 
-    private String message;
+    private String to;
 
-    public String getTo() {
-        return to;
+    public String getCc() {
+        return cc;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setCc(String cc) {
+        this.cc = cc;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 
     public String getSubject() {
@@ -28,19 +38,19 @@ public class EmailDto {
         this.subject = subject;
     }
 
-    public List<String> getbCC() {
-        return bCC;
+    public String getBody() {
+        return body;
     }
 
-    public void setbCC(List<String> bCC) {
-        this.bCC = bCC;
+    public void setBody(String body) {
+        this.body = body;
     }
 
-    public String getMessage() {
-        return message;
+    public String getTo() {
+        return to;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setTo(String to) {
+        this.to = to;
     }
 }

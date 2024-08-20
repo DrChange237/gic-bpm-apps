@@ -41,31 +41,36 @@
       "key" : "subject",
       "name" : "Objet du Mémo",
       "type" : "text",
-      "required" : true
+      "required" : true,
+      "position" : 1
     },
     {
       "key" : "material",
       "name" : "Matériel Sollicité",
       "type" : "text",
-      "required" : true
+      "required" : true,
+      "position" : 2
     },
     {
       "key" : "receiver",
       "name" : "Destinataire",
       "type" : "text",
-      "required" : true
+      "required" : true,
+      "position" : 3
     },
     {
       "key" : "body",
       "name" : "Description du Mémo",
-      "type" : "wysiwig",
-      "required" : true
+      "type" : "wysiwyg",
+      "required" : true,
+      "position" : 5
     },
     {
       "key" : "document",
       "name" : "Justificatifs",
       "type" : "file",
-      "required" : true
+      "required" : true,
+      "position" : 4
     }
   ]
 }

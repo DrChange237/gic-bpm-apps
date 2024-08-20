@@ -8,8 +8,9 @@ import java.util.List;
 
 public class RequestDto {
 
-
     private Long id;
+
+    private  String reference;
 
     private String staff;
 
@@ -90,4 +91,11 @@ public class RequestDto {
         this.createdAt = createdAt;
     }
 
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 }

@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.reporting.PurchaseForm;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.*;
 import com.ccabank.memoservice.openfeign.UserRestClient;
@@ -45,7 +46,12 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
     @Autowired
     private RequestRepository requestRepository;
 
-    private MemoRepository memoRepository;
+    @Autowired
+    private WorkformService workformService;
+
+    @Autowired
+    private PurchaseService purchaseService;
+
 
     @Override
     public void saveDocument(Request request){
@@ -91,7 +97,21 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
                 request.setDocumentId(memo.getId());
                 this.requestRepository.save(request);
 
+                break;
 
+            case DOCUMENT_TYPE_WORKFORM:
+
+                WorkForm workForm = this.workformService.save(request);
+                request.setDocumentId(workForm.getId());
+                this.requestRepository.save(request);
+                break;
+
+            case DOCUMENT_TYPE_PURCHASE:
+
+                Purchase purchase = this.purchaseService.save(request);
+                request.setDocumentId(purchase.getId());
+                this.requestRepository.save(request);
+                break;
         }
 
     }

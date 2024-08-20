@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "EMAIL-SERVICE")
 public interface EmailRestClient {
 
-    @PostMapping(path = "/api/reporting/vacation/sheet")
-    Response send(@RequestBody EmailDto email);
+    @PostMapping(path = "/api/emails/sendGenericEmail")
+    boolean send(@RequestBody EmailDto email);
 
 }

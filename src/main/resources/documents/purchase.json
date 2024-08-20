@@ -1,0 +1,229 @@
+{
+  "name" : "Demande d'achat",
+  "generateUrl" : "",
+  "approvals" : [
+    {
+      "position" : 1,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Superviseur",
+      "required" : true
+    },
+    {
+      "position" : 2,
+      "staff" : "",
+      "type" : "STATIC",
+      "unity" :  "ARMG",
+      "role" : "Adjoint Responsable des Moyens Généraux",
+      "required" : true
+    },
+    {
+      "position" : 3,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "RMG",
+      "role" : "Responsable des Moyens Généraux",
+      "required" : true,
+      "fields" : [
+      ]
+    },
+    {
+      "position" : 4,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "CB",
+      "role" : "Contrôle Budgétaire",
+      "required" : true,
+      "fields" : [
+        {
+          "key" : "opportune",
+          "name" : "Opportune",
+          "type" : "choice",
+          "required": true,
+          "choices" : [
+            {
+              "label" : "OUI",
+              "value" : "OUI"
+            },
+            {
+              "label" : "NON",
+              "value" : "NON"
+            }
+          ]
+        },
+        {
+          "key" : "budgetAvaibility",
+          "name" : "Disponibilité du Budget à Date",
+          "type" : "choice",
+          "required": true,
+          "choices" : [
+            {
+              "label" : "Mensuel",
+              "value" : "Mensuel"
+            },
+            {
+              "label" : "Annuel",
+              "value" : "Annuel"
+            },
+            {
+              "label" : "Budget Disponible",
+              "value" : "Budget Disponible"
+            }
+          ]
+        },
+        {
+          "key" : "avis_cb",
+          "name" : "Avis",
+          "type" : "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "position" : 5,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "FISCAL",
+      "role" : "Fiscalité",
+      "required" : true,
+      "fields" : [
+        {
+          "key" : "avis_fiscal",
+          "name" : "Avis",
+          "type" : "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "position" : 6,
+      "staff" : "",
+      "type" : "STATIC",
+      "unity" :  "DAF",
+      "role" : "Direction Administrative et Financière",
+      "required" : true
+    },
+    {
+      "position" : 7,
+      "staff" : "",
+      "type" : "STATIC",
+      "unity" :  "DGA",
+      "role" : "Direction Générale Adjointe",
+      "required" : true
+    },
+    {
+      "position" : 8,
+      "staff" : "",
+      "type" : "STATIC",
+      "unity" :  "DG",
+      "role" : "Direction Générale",
+      "required" : true
+    },
+    {
+      "position" : 9,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "DOP",
+      "role" : "Direction des Opérations",
+      "required" : true,
+      "fields" : [
+        {
+          "key" : "operator",
+          "name" : "Operateur de Saisie de la DOP",
+          "type" : "employee",
+          "required": true
+        },
+        {
+          "key" : "supervisor",
+          "name" : "Superviseur de la Saisie",
+          "type" : "employee",
+          "required": true
+        },
+        {
+          "key" : "avis_dop",
+          "name" : "Avis",
+          "type" : "text",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "fields" : [
+    {
+      "key" : "object",
+      "name" : "Objet de la demande",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "unity",
+      "name" : "Agence / Service demandeur",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "suppliers_submited",
+      "name" : "Fournisseurs Soumissionnaires (Séparé d'une virgule)",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "supplier",
+      "name" : "Fournisseurs Sélectionnés",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "deadline",
+      "name" : "Delai de livraison",
+      "type" : "date",
+      "required" : true
+    },
+    {
+      "key" : "type_reglement",
+      "name" : "Type de Règlement",
+      "type" : "choice",
+      "required" : true,
+      "choices" : [
+        {
+          "label" : "Virement Bancaire",
+          "value" : "Virement Bancaire"
+        },
+        {
+          "label" : "Cash",
+          "value" : "Cash"
+        }
+      ]
+    },
+    {
+      "key" : "account",
+      "name" : "Compte à Impacter",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "designation",
+      "name" : "Désignation du Produit",
+      "type" : "text",
+      "required" : true
+    },
+    {
+      "key" : "qty",
+      "name" : "Quantité",
+      "type" : "number",
+      "required" : true
+    },
+    {
+      "key" : "pu",
+      "name" : "Prix Unitaire",
+      "type" : "number",
+      "required" : true
+    },
+    {
+      "key" : "observations",
+      "name" : "Observations",
+      "type" : "text",
+      "required" : true
+    }
+  ]
+}

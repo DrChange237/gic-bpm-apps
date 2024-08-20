@@ -20,11 +20,4 @@ public class WorkDayCalculator {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
     }
-
-    public static void main(String[] args) {
-        LocalDate startDate = LocalDate.of(2023, 5, 1);
-        LocalDate endDate = LocalDate.of(2023, 5, 15);
-        long workdays = calculateWorkdays(startDate, endDate);
-        System.out.println("Nombre de jours ouvrables entre " + startDate + " et " + endDate + ": " + workdays);
-    }
 }

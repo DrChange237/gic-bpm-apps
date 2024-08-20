@@ -18,4 +18,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query("SELECT COUNT(r) FROM Request r WHERE DATE(r.createdAt) = CURRENT_DATE")
     long countRequestsCreatedToday();
+
+    Request findOneByReference(String reference);
 }

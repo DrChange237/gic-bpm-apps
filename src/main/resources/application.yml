@@ -2,7 +2,6 @@ spring:
   application:
     name: paperless-service
 
-
   # JAP
   jpa:
     hibernate:

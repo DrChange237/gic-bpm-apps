@@ -11,6 +11,7 @@ import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
+import com.ccabank.memoservice.util.file.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,11 +100,14 @@ public class RequestServiceImpl implements RequestService {
                 field.setKey(fieldDto.getKey());
                 field.setValue(fieldDto.getValue());
                 field.setRequest(request);
+                field.setType(fieldDto.getType());
+                field.setPosition(fieldDto.getPosition());
                 fieldRepository.save(field);
 
-                for(FileDto fileDto : fieldDto.getFiles()){
-                     FileDto fileRest = fileRestClient.uploadFileToFolder("paperless", "/memo", fileDto.getFile());
 
+
+                for(FileDto fileDto : fieldDto.getFiles()){
+                    FileDto fileRest = fileRestClient.uploadFileToFolder("paperless", "/memo", FileUtils.convertBase64ToMultipartFile(fileDto.getFile(), fileDto.getName(), fileDto.getType()));
                     File file = new File();
                     file.setName(fileDto.getName());
                     file.setField(field);
@@ -153,6 +157,8 @@ public class RequestServiceImpl implements RequestService {
 
         }
     }
+
+
 
     @Override
     public ByteArrayResource downloadRequest(Long id) {
@@ -241,6 +247,27 @@ public class RequestServiceImpl implements RequestService {
         }
 
 
+    }
+
+    @Override
+    public AppServiceResult<RequestDto> getRequestByReference(String reference) {
+        try {
+            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+
+            Request request = requestRepository.findOneByReference(reference);
+
+            RequestDto requestDto = requestMapper.toDto(request);
+
+            return new AppServiceResult<RequestDto>(true, 0, "Succeed!", requestDto );
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
+            return new AppServiceResult<RequestDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
     }
 
     @Override

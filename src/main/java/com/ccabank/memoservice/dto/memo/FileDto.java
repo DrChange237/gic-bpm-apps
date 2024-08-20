@@ -3,7 +3,6 @@ package com.ccabank.memoservice.dto.memo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.multipart.MultipartFile;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class FileDto {
 
     private String url;
@@ -16,9 +15,7 @@ public class FileDto {
 
     private String project;
 
-    private MultipartFile file;
-
-
+    private String file;
 
     public String getUrl() {
         return url;
@@ -60,11 +57,11 @@ public class FileDto {
         this.project = project;
     }
 
-    public MultipartFile getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(MultipartFile file) {
+    public void setFile(String file) {
         this.file = file;
     }
 }

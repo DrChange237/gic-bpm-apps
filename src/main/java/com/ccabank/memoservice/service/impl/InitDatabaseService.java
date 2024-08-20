@@ -33,7 +33,9 @@ public class InitDatabaseService implements CommandLineRunner {
                 new DocumentType("Fiche de reprise de service","resumption"),
                 new DocumentType("Demande d'autorisation d'absence","absence"),
                 new DocumentType("Memo","memo"),
-                new DocumentType("Demande de Travail","workform")
+                new DocumentType("Demande de Travail","workform"),
+                new DocumentType("Demande d'Achat","purchase")
+
 
         ).filter(documentType -> !documentTypeRepository.existsByStructure(documentType.getStructure())).collect(Collectors.toList());
 
@@ -42,8 +44,15 @@ public class InitDatabaseService implements CommandLineRunner {
         List<ProcessUnity> processUnities = Stream.of(
                 new ProcessUnity("RH","Capital Humain", ""),
                 new ProcessUnity("DG","Direction Générale", ""),
+                new ProcessUnity("DGA","Direction Générale Adjointe", ""),
+                new ProcessUnity("DAF","Direction Administrative et Financière", ""),
                 new ProcessUnity("COMPTA","Comptabilité", ""),
-                new ProcessUnity("MG","Moyens Généraux", "")
+                new ProcessUnity("MG","Moyens Généraux", ""),
+                new ProcessUnity("ARMG","Adjoint Responsable Moyens Généraux", ""),
+                new ProcessUnity("RMG","Responsable Moyens Généraux", ""),
+                new ProcessUnity("CB","Controle Budgétaire", ""),
+                new ProcessUnity("FISCAL","Fiscalité", ""),
+                new ProcessUnity("DOP","Direction des Opérations", "")
 
         ).filter(processUnity -> !processUnityRepository.existsByCode(processUnity.getCode())).collect(Collectors.toList());
 

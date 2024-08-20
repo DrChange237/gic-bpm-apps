@@ -25,8 +25,12 @@ public interface ReportingRestClient {
     @PostMapping(path = "/api/reporting/absence/authorization")
     ByteArrayResource absence(@RequestBody AbsenceForm form);
 
-    @PostMapping(path = "/api/reporting/absence/authorization")
+    @PostMapping(path = "/api/reporting/memo/sheet")
     ByteArrayResource memo(@RequestBody MemoForm form);
 
+    @PostMapping(path = "/api/reporting/absence/authorization")
+    ByteArrayResource workform(@RequestBody WorkForm form);
 
+    @PostMapping(path = "/api/reporting/absence/authorization")
+    ByteArrayResource purchase(@RequestBody PurchaseForm form);
 }

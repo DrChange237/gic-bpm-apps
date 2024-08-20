@@ -31,8 +31,14 @@ public class Field {
     @Column(name = "KEY")
     private String key;
 
-    @Column(name = "VALUE")
+    @Column(name = "VALUE", length = 5000)
     private String value;
+
+    @Column(name = "TYPE")
+    private String type;
+
+    @Column(name = "POSITION")
+    private int position;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "field", fetch = FetchType.LAZY)
     private Collection<File> files = new ArrayList<>();
@@ -86,6 +92,22 @@ public class Field {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public Collection<File> getFiles() {

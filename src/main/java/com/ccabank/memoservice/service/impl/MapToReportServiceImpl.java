@@ -7,18 +7,14 @@ import com.ccabank.memoservice.entity.documenttype.Absence;
 import com.ccabank.memoservice.entity.documenttype.Memo;
 import com.ccabank.memoservice.entity.documenttype.OrdreMission;
 import com.ccabank.memoservice.entity.documenttype.Vacation;
-import com.ccabank.memoservice.entity.documenttype.sub.Deduction;
 import com.ccabank.memoservice.entity.documenttype.sub.Settlement;
 import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.MapToReportService;
-import com.ccabank.memoservice.service.faces.VacationService;
+import com.ccabank.memoservice.service.faces.PurchaseService;
 import com.ccabank.memoservice.util.field.FieldUtils;
-import com.ccabank.memoservice.util.file.FileReader;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +48,6 @@ public class MapToReportServiceImpl implements MapToReportService {
     private ReportingRestClient reportingRestClient;
 
     @Autowired
-    private  FileReader fileReader;
-
-    @Autowired
     private OrdreMissionRepository ordreMissionRepository;
 
     @Autowired
@@ -68,6 +61,12 @@ public class MapToReportServiceImpl implements MapToReportService {
 
     @Autowired
     private MemoRepository memoRepository;
+
+    @Autowired
+    private WorkFormRepository workFormRepository;
+
+    @Autowired
+    private PurchaseService purchaseService;
 
     @Override
     public ByteArrayResource reportRequest(Request request){
@@ -175,6 +174,39 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 break;
 
+            case DOCUMENT_TYPE_WORKFORM:
+
+                WorkForm workForm = this.constructWorkRequest(request);
+                logger.info("Received : {}", workForm);
+                try {
+                    ByteArrayResource responseWork = this.reportingRestClient.workform(workForm);
+
+                    return  responseWork;
+
+                    // return responseResumption.body().asInputStream();
+                } catch (Exception e) {
+
+                    logger.error("Error downloading PDF file: mission", e);
+
+                }
+
+                break;
+
+            case DOCUMENT_TYPE_PURCHASE:
+
+                PurchaseForm purchaseForm = this.purchaseService.construct(request);
+                logger.info("Received : {}", purchaseForm);
+                try {
+                    ByteArrayResource responseWork = this.reportingRestClient.purchase(purchaseForm);
+                    return  responseWork;
+                    // return responseResumption.body().asInputStream();
+                } catch (Exception e) {
+
+                    logger.error("Error downloading PDF file: mission", e);
+
+                }
+
+                break;
 
         }
 
@@ -549,8 +581,47 @@ public class MapToReportServiceImpl implements MapToReportService {
 
     }
 
-    String getFictifSignature(){
 
-        return fileReader.readDataFromFile();
+    public  WorkForm constructWorkRequest(Request request){
+
+        com.ccabank.memoservice.entity.documenttype.WorkForm workForm = workFormRepository.getOne(request.getDocumentId());
+        WorkForm workForm1 = new WorkForm();
+        workForm1.setDate(workForm.getDate());
+
+
+        workForm1.setUnity(workForm.getRequester().getUnity());
+
+
+        String signature = userRestClient.getEmployeeSignature(workForm.getRequester().getUsername());
+       // workForm1.setSignature(signature);
+
+
+        //Supervisor
+        WorkForm.Signatory signatory = new WorkForm.Signatory();
+        signatory.setName(workForm.getSupervisor().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(workForm.getSupervisor().getOwner().getUsername());
+        signatory.setSignature(signature);
+        workForm1.setSupervisor(signatory);
+
+
+        //SupervisorNext
+        signatory = new WorkForm.Signatory();
+        signatory.setName(workForm.getHead().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(workForm.getHead().getOwner().getUsername());
+        signatory.setSignature(signature);
+        workForm1.setDepartment(signatory);
+
+        //SupervisorNext
+        signatory = new WorkForm.Signatory();
+        signatory.setName(workForm.getHead().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(workForm.getAccountant().getOwner().getUsername());
+        signatory.setSignature(signature);
+        workForm1.setAccountant(signatory);
+
+
+        return workForm1;
+
     }
+
+
 }

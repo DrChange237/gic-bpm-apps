@@ -14,4 +14,7 @@ public class DocumentTypeConstant {
 
     public final static String DOCUMENT_TYPE_WORKFORM = "workform";
 
+    public final static  String DOCUMENT_TYPE_PURCHASE = "purchase";
+
+
 }

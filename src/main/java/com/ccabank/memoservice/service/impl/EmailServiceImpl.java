@@ -33,29 +33,29 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendAskApproval(Request request, Approval approval){
 
         System.out.println("sendAskApproval");
-
-        String subject = "Nouvelle Approbation Requise";
-
+        String subject = request.getReference() +  " - Nouvelle Approbation Requise";
         String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
-
-        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
-
+        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
         UserRestDto approver = userRestClient.getAgencyByStaffUsername(approval.getStaff(), "key", "secret");
+        String from = approver.getEmail() ;
 
-        String to = approver.getEmail() ;
+        System.out.println("Email :" + approver.getEmail());
 
-        List<String> bCC = new ArrayList<>();
-
-        bCC.add(sender.getEmail());
 
         EmailDto emailDto = new EmailDto();
 
-        emailDto.setTo(to);
+        emailDto.setFrom("notifications@cca-bank.com");
+        emailDto.setTo(from);
         emailDto.setSubject(subject);
-        emailDto.setMessage(message);
-        emailDto.setbCC(bCC);
+        emailDto.setBody(message);
+        emailDto.setCc(sender.getEmail());
 
-        emailRestClient.send(emailDto);*/
+        try {
+            emailRestClient.send(emailDto);
+        }catch (Exception e){
+            System.out.println("Email Error" + e.getMessage());
+        }
+
 
         return true;
     }
@@ -65,31 +65,33 @@ public class EmailServiceImpl implements EmailService {
 
 
         System.out.println("sendConfirmApproval");
+        String subject = request.getReference() + " - Confirmation de l'approbation";
 
-        System.out.println("sendAskApproval");
-
-        String subject = "Nouvelle Approbation Requise";
-
-        String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
-
-        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         UserRestDto approver = userRestClient.getAgencyByStaffUsername(approval.getStaff(), "key", "secret");
 
-        String to = approver.getEmail() ;
+        String message = "M. " + approver.getName() + " a approuvé votre requete avec pour référence " + request.getReference();
 
-        List<String> bCC = new ArrayList<>();
+        String from = approver.getEmail() ;
 
-        bCC.add(sender.getEmail());
+        System.out.println("Email :" + approver.getEmail());
+
+
 
         EmailDto emailDto = new EmailDto();
 
-        emailDto.setTo(to);
+        emailDto.setFrom("notifications@cca-bank.com");
+        emailDto.setTo(from);
         emailDto.setSubject(subject);
-        emailDto.setMessage(message);
-        emailDto.setbCC(bCC);
+        emailDto.setBody(message);
+        emailDto.setCc(sender.getEmail());
 
-        emailRestClient.send(emailDto);*/
+        try {
+            emailRestClient.send(emailDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }
@@ -99,30 +101,34 @@ public class EmailServiceImpl implements EmailService {
 
         System.out.println("sendRejectedApproval");
 
-        System.out.println("sendAskApproval");
+        String subject = request.getReference() + " - Refus de l'approbation";
 
-        String subject = "Nouvelle Approbation Requise";
-
-        String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
-
-        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
         UserRestDto approver = userRestClient.getAgencyByStaffUsername(approval.getStaff(), "key", "secret");
 
-        String to = approver.getEmail() ;
 
-        List<String> bCC = new ArrayList<>();
+        String message = "M. " + approver.getName() + " a rejeté votre requete avec pour référence " + request.getReference();
 
-        bCC.add(sender.getEmail());
+
+        String from = approver.getEmail() ;
+
+        System.out.println("Email :" + approver.getEmail());
+
 
         EmailDto emailDto = new EmailDto();
 
-        emailDto.setTo(to);
+        emailDto.setFrom("notifications@cca-bank.com");
+        emailDto.setTo(from);
         emailDto.setSubject(subject);
-        emailDto.setMessage(message);
-        emailDto.setbCC(bCC);
+        emailDto.setBody(message);
+        emailDto.setCc(sender.getEmail());
 
-        emailRestClient.send(emailDto);*/
+        try {
+            emailRestClient.send(emailDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }
@@ -130,30 +136,29 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean sendConfirmRequest(Request request){
 
-        System.out.println("sendConfirmRequest");
 
-        System.out.println("sendAskApproval");
+        String subject = request.getReference() + " - Votre "+ request.getType().getName() + " a reçu toutes les approbations";
 
-        String subject = "Nouvelle Approbation Requise";
+        String message = "Votre "+ request.getType().getName() + " a reçu toutes les approbations.";
 
-        String message = "Votre accord ou signature est sollicitée pour une demande ( " + request.getType().getName() + ")";
+        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
-        /*UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+        String from = sender.getEmail() ;
 
-        String to = sender.getEmail() ;
-
-        List<String> bCC = new ArrayList<>();
-
-        bCC.add(sender.getEmail());
+        System.out.println("Email :" + sender.getEmail());
 
         EmailDto emailDto = new EmailDto();
 
-        emailDto.setTo(to);
+        emailDto.setFrom("notifications@cca-bank.com");
+        emailDto.setTo(from);
         emailDto.setSubject(subject);
-        emailDto.setMessage(message);
-        emailDto.setbCC(bCC);
+        emailDto.setBody(message);
 
-        emailRestClient.send(emailDto);*/
+        try {
+            emailRestClient.send(emailDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }
