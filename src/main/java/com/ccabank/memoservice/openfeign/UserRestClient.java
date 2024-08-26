@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.openfeign;
 
+import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -24,6 +25,11 @@ import java.util.List;
 //@FeignClient(value = "entityRestClient", url = "https://developer.ccabank-app.com/sandbox", configuration = FeignClientProperties.FeignClientConfiguration.class)
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientProperties.FeignClientConfiguration.class)
 public interface UserRestClient {
+
+
+
+    @GetMapping(path = "/api/users/employees/findByUsername/{username}")
+    EmployeeInfo getStaffByUsername(@PathVariable("username") String username);
 
 
     @GetMapping(path = "/api/users/exposed/findByUsername/{username}")

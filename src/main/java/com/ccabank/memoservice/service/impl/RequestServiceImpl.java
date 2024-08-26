@@ -6,9 +6,11 @@ import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
+import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.openfeign.FileRestClient;
+import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
 import com.ccabank.memoservice.util.file.FileUtils;
@@ -70,6 +72,9 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private FileRepository fileRepository;
 
+    @Autowired
+    private UserRestClient userRestClient;
+
     @Override
     public AppServiceResult<Request> newRequest(RequestDto requestDto) {
         try {
@@ -83,9 +88,10 @@ public class RequestServiceImpl implements RequestService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
             String date = currentDate.format(formatter);
 
-            Long count = requestRepository.countRequestsCreatedToday();
+            Long count = requestRepository.countRequestsCreatedToday() + 1;
             date = date + "-" + count;
-            request.setReference(date);
+            EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(requestDto.getStaff());
+            request.setReference(date + employeeInfo.getReference());
             DocumentType type = documentTypeRepository.findOneByStructure(requestDto.getDocumentType());
             request.setType(type);
             request.setStatus(RequestStatus.DRAFT);

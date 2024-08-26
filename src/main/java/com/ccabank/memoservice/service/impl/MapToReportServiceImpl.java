@@ -221,6 +221,8 @@ public class MapToReportServiceImpl implements MapToReportService {
 
         MemoForm memoForm = new MemoForm();
 
+        memoForm.setReference(request.getReference());
+
         memoForm.setDate(memo.getDate());
 
         memoForm.setSender(memo.getRequester().getUnity());

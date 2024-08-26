@@ -31,7 +31,7 @@ public class Request {
 
     @Basic(optional = true)
     @Column(name = "REFERENCE")
-    @Size(max = 20)
+    @Size(max = 50)
     private String reference;
 
     @JoinColumn(name = "TYPE", referencedColumnName = "ID")

@@ -1,0 +1,28 @@
+<!-- Intro Basic -->
+<table class="row" align="center" bgcolor="#F8F8F8" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+        <td class="spacer" height="40" style="line-height: 40px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <th class="column" width="640" style="padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;">
+            <div class="sans-serif" style="color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center"><strong>Demande Confirmée - <span  th:text="${documentType}">DocumentType</span> </strong></div>
+            <div class="sans-serif" style="color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center">Bonjour M. <span th:text="${staff}">staff</span>, <br> Votre demande de <strong><span th:text="${documentType}">documentType</span></p></strong>  a été accepté</div>
+            <table align="center" cellpadding="0" cellspacing="0" width="100%" style="margin: 0 auto; word-break: break-all;" role="presentation">
+                <tr align="left">
+                    <th class="sans-serif" bgcolor="#FFFFFF" style="padding: 20px; border-radius: 3px;">
+                        <p style="font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 16px; font-weight: 400; line-height: 24px; margin: 0px 0px 0px 0px;">
+                            <strong>Type de Document : </strong><span th:text="${documentType}">DocumentType</span></p>
+                        <p style="font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 16px; font-weight: 400; line-height: 24px; margin: 0px 0px 0px 0px;">
+                            <strong>Référence : </strong><span th:text="${reference}">Reference</span></p>
+                    </th>
+                </tr>
+            </table>
+            <div class="sans-serif" style="color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; ">Bien vouloir vous connecter pour consulter et télécharger votre <span th:text="${documentType}">documentType</span></div>
+            <div style="color: #969AA1; font-size: 13px; margin-top: 30px;">Merci, <br><strong>CCA BANK</strong></div>
+        </th>
+    </tr>
+    <tr>
+        <td class="spacer" height="40" style="line-height: 40px;">&nbsp;</td>
+    </tr>
+</table>
+<!-- /Intro Basic -->

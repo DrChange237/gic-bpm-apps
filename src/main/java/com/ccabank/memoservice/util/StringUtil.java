@@ -4,11 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
@@ -25,6 +24,16 @@ public final class StringUtil {
     public static final String ENCODING_UTF8 = "UTF-8";
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\"([^\"]*)\"|(\\S+)");
+
+    private static final Set<String> CONJUNCTIONS = new HashSet<>(Arrays.asList("et", "ou", "ni", "car", "donc", "mais", "or", "si", "que", "à", "de", "des", "au", "aux"));
+
+    public static  String getFirstLetters(String input) {
+        return Arrays.stream(input.split(" "))
+                .filter(word -> !CONJUNCTIONS.contains(word.toLowerCase()))
+                .map(String::trim)
+                .map(word -> word.substring(0, 1).toUpperCase(Locale.US))
+                .collect(Collectors.joining());
+    }
 
     public static String transformUsernameToName(String name) {
         // Séparer le nom en prénom et nom de famille

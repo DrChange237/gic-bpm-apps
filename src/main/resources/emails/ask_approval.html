@@ -1,0 +1,59 @@
+<!-- Intro Basic -->
+<table class="row" align="center" bgcolor="#F8F8F8" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+        <td class="spacer" height="40" style="line-height: 40px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <th class="column" width="640" style="padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;">
+            <div class="sans-serif" style="color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center"><strong>Demande d'approbation - <span  th:text="${documentType}">DocumentType</span> </strong></div>
+            <div class="sans-serif" style="color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center">Bonjour M. <span th:text="${approver}">approver</span>, <br>  Une demande d'approbation de document à été initié et est en attente de votre approbation</div>
+
+
+            <table align="center"  cellpadding="0" cellspacing="0" width="100%" style="margin: auto; word-break: break-all;" role="presentation">
+
+                <tr>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="border-radius: 3px; text-align: right;">
+                        <p style="font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;">
+                            <strong>Type de Document  </strong></p>
+                    </td>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="padding: 20px; border-radius: 3px; text-align: left; ">
+                        <p th:text="${documentType}">DocumentType</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="border-radius: 3px; text-align: right;">
+                        <p style="font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;">
+                            <strong>Référence  </strong></p>
+                    </td>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="padding: 20px; border-radius: 3px; ">
+                        <p th:text="${reference}">Reference</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="border-radius: 3px; text-align: right;">
+                        <p style="font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;">
+                            <strong>Initiateur  </strong> </p>
+                    </td>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="padding: 20px; border-radius: 3px;">
+                        <p  th:text="${staff}">Staff</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="border-radius: 3px; text-align: right;">
+                        <p style="font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;">
+                            <strong>Votre rôle  </strong> </p>
+                    </td>
+                    <td class="sans-serif" bgcolor="#FFFFFF" style="padding: 20px; border-radius: 3px;">
+                        <p th:text="${role}">role</p>
+                    </td>
+                </tr>
+            </table>
+            <div class="sans-serif" style="color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; ">Bien vouloir vous connecter pour consulter cette demande</div>
+            <div style="color: #969AA1; font-size: 13px; margin-top: 30px;">Merci, <br><strong>CCA BANK</strong></div>
+        </th>
+    </tr>
+    <tr>
+        <td class="spacer" height="40" style="line-height: 40px;">&nbsp;</td>
+    </tr>
+</table>
+<!-- /Intro Basic -->

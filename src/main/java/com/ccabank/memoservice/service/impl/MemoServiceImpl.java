@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.Memo;
@@ -48,6 +49,9 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public Memo save(Request request) {
 
+        System.out.println("Save Memo");
+
+
         Memo memo = new Memo();
         memo.setDate(LocalDate.now());
 
@@ -55,6 +59,11 @@ public class MemoServiceImpl implements MemoService {
 
         UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
 
+        EmployeeInfo employee = userRestClient.getStaffByUsername(request.getStaff());
+
+
+
+        System.out.println("Add Requester");
         Staff requester = new Staff();
         requester.setFunction(staff.getFunction());
         requester.setName(staff.getName());
@@ -65,33 +74,38 @@ public class MemoServiceImpl implements MemoService {
         requester = staffRepository.save(requester);
         memo.setRequester(requester);
 
-        //vacation.setPlace(staff.getAgencyName());
 
         Signatory owner = new Signatory();
         owner.setOwner(requester);
         String signature = userRestClient.getEmployeeSignature(staff.getUsername());
         owner.setSignature(signature);
+        owner.setMemo(memo);
         owner = signatoryRepository.save(owner);
         signatories.add(owner);
 
         //Subject
+        System.out.println("Subject");
         String subject = FieldUtils.getValueOfField(request,"subject");
         memo.setSubject(subject);
 
         //Material
+        System.out.println("Material");
         String material = FieldUtils.getValueOfField(request,"material");
         memo.setMaterial(material);
 
         //Receiver
+        System.out.println("Receiver");
         String receiver = FieldUtils.getValueOfField(request,"receiver");
         memo.setReceiver(receiver);
 
         //Memo
+        System.out.println("Memo");
         String body = FieldUtils.getValueOfField(request,"body");
         memo.setBody(body);
 
 
         //Supervisor
+        System.out.println("Supervisor");
         String username = request.getApprovalByPosition(1).getStaff();
         Signatory supervisor = signatoryService.getSignatory(username);
         memo.setSupervisor(supervisor);

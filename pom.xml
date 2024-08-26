@@ -151,6 +151,21 @@
             <version>5.5.13.2</version>
         </dependency>
 
+        <!--Thymeleaf-->
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring5</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+        </dependency>
+
         <!-- test dependency -->
         <dependency>
             <artifactId>spring-boot-starter-test</artifactId>
