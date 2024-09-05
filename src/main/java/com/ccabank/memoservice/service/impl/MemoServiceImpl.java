@@ -1,10 +1,10 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.reporting.MemoForm;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.Memo;
-import com.ccabank.memoservice.entity.documenttype.Vacation;
 import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
 import com.ccabank.memoservice.entity.documenttype.sub.Staff;
 import com.ccabank.memoservice.openfeign.UserRestClient;
@@ -14,6 +14,7 @@ import com.ccabank.memoservice.repository.StaffRepository;
 import com.ccabank.memoservice.service.faces.MemoService;
 import com.ccabank.memoservice.service.faces.SignatoryService;
 import com.ccabank.memoservice.util.field.FieldUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -115,5 +117,47 @@ public class MemoServiceImpl implements MemoService {
         memo = memoRepository.save(memo);
 
         return memo;
+    }
+
+    @Override
+    public MemoForm construct(Request request){
+
+        System.out.println("Document ID : " + request.getDocumentId());
+
+        Memo memo = memoRepository.getOne(request.getDocumentId());
+
+        MemoForm memoForm = new MemoForm();
+
+        memoForm.setReference(request.getReference());
+
+        memoForm.setDate(memo.getDate());
+
+        memoForm.setSender(memo.getRequester().getUnity());
+
+        memoForm.setReceiver(memo.getReceiver());
+
+        memoForm.setMaterial(memo.getMaterial());
+
+        memoForm.setNumber(request.getReference());
+
+        memoForm.setBody(memo.getBody());
+
+        memoForm.setSubject(memo.getSubject());
+
+        List<MemoForm.Signatory> signatories = new ArrayList<>();
+
+        for(Signatory signatory : memo.getSignatories()){
+            MemoForm.Signatory signatory1 = new MemoForm.Signatory();
+            signatory1.setName(signatory.getOwner().getName());
+            signatory1.setDate(memo.getDate());
+            String signature = userRestClient.getEmployeeSignature(signatory.getOwner().getUsername());
+            signatory1.setSignature(signature);
+            signatories.add(signatory1);
+        }
+
+        memoForm.setSignatories(signatories);
+
+
+        return  memoForm;
     }
 }

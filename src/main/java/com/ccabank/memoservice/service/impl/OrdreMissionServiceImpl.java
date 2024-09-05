@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.reporting.MissionForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.OrdreMission;
@@ -187,5 +188,100 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
         logger.info("Complete Map");
 
         return ordreMission;
+    }
+
+    @Override
+    public MissionForm construct(Request request) {
+
+
+        OrdreMission ordreMission = ordreMissionRepository.getOne(request.getDocumentId());
+
+        MissionForm missionForm = new MissionForm();
+        missionForm.setDate(ordreMission.getDate());
+
+        missionForm.setFunction(ordreMission.getRequester().getFunction());
+        missionForm.setName(ordreMission.getRequester().getName());
+        missionForm.setUnity(ordreMission.getRequester().getUnity());
+        missionForm.setPlace(ordreMission.getPlace());
+
+        missionForm.setSignature(ordreMission.getOwner().getSignature());
+
+        //Object
+        missionForm.setObject(ordreMission.getObject());
+
+        //Location
+        missionForm.setLocation(ordreMission.getLocation());
+
+        //StartDate
+        missionForm.setStartDate(ordreMission.getStartDate());
+
+        //EndDate
+        missionForm.setEndDate(ordreMission.getEndDate());
+
+        //nights
+        missionForm.setNights(ordreMission.getNights());
+
+        //Transport
+        MissionForm.Transport transport = new MissionForm.Transport();
+        transport.setCommon(ordreMission.getTransport().getCommon());
+
+        //Coursier
+        transport.setCourier(ordreMission.getTransport().getCoursier());
+
+        //Immatriculation
+        transport.setImmatriculation(ordreMission.getTransport().getImmatriculation());
+
+        missionForm.setTransport(transport);
+
+        //AccountNumber
+        transport.setImmatriculation(ordreMission.getAccountNumber());
+
+        //Supervisor
+        MissionForm.Signatory signatory = new MissionForm.Signatory();
+
+        signatory.setName(ordreMission.getSupervisor().getOwner().getName());
+        signatory.setSignature(ordreMission.getSupervisor().getSignature());
+        missionForm.setSupervisor(signatory);
+
+        logger.info("Get Supervisor Staff Ok");
+
+        //SupervisorNext
+        signatory = new MissionForm.Signatory();
+        signatory.setName(ordreMission.getSupervisorNext().getOwner().getName());
+        signatory.setSignature(ordreMission.getSupervisorNext().getSignature());
+        missionForm.setSupervisorNext(signatory);
+
+        logger.info("Get Supervisor Next Staff Ok");
+
+        //UCH
+        signatory = new MissionForm.Signatory();
+        signatory.setName(ordreMission.getUch().getOwner().getName());
+        signatory.setSignature(ordreMission.getUch().getSignature());
+        //signatory.setSignature(getFictifSignature());
+        missionForm.setUch(signatory);
+        missionForm.setRequesterSignature(ordreMission.getUch().getSignature());
+        logger.info("Get Supervisor UCH Ok");
+
+        //decision
+        missionForm.setDecision(ordreMission.getDecision());
+
+        //chargeSupport
+        missionForm.setChargeSupport(ordreMission.getChargeSupport());
+
+        //missionFees
+        missionForm.setMissionFees(ordreMission.getMissionFees());
+
+        //transportFees
+        missionForm.setTransportFees(ordreMission.getTransportFees());
+
+        //authorisationNumber
+        missionForm.setAuthorisationNumber(ordreMission.getAuthorisationNumber());
+
+        //receiptNumber
+        missionForm.setReceiptNumber(ordreMission.getReceiptNumber());
+
+        logger.info("Complete Map");
+
+        return missionForm;
     }
 }

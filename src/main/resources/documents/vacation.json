@@ -6,37 +6,75 @@
       "position" : 1,
       "staff" : "",
       "type" : "OPEN",
-      "role" : "Hiérarchie N + 1",
+      "role" : "Intérimaire",
       "required" : true
     },
     {
       "position" : 2,
       "staff" : "",
       "type" : "OPEN",
-      "role" : "Hiérarchie N + 2",
+      "role" : "Hiérarchie N + 1",
       "required" : true
+    },
+    {
+      "position" : 3,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Hiérarchie N + 2",
+      "required" : false
+    },
+    {
+      "position" : 4,
+      "staff" : "",
+      "type" : "STATIC",
+      "unity" :  "RH",
+      "role" : "Capital Humain",
+      "required" : true,
+      "fields" : [
+        {
+          "key" : "realEndDate",
+          "name" : "Date de Fin Définitive",
+          "type" : "date",
+          "required" : true
+        }
+      ]
     }
   ],
   "fields" : [
     {
       "key" : "lastVacationDate",
       "name" : "Derniers Jours de Vacance",
-      "type" : "date"
+      "type" : "date",
+      "position" : 1
     },
     {
       "key" : "startDate",
       "name" : "Date de Debut",
-      "type" : "date"
+      "type" : "date",
+      "position" : 2
     },
     {
       "key" : "endDate",
       "name" : "Date de Fin",
-      "type" : "date"
+      "type" : "date",
+      "required" : false,
+      "position" : 3
     },
     {
-      "key" : "interim",
-      "name" : "Intérimaire",
-      "type" : "Employee"
+      "key" : "criticForder",
+      "name" : "Dossiers Critiques",
+      "type" : "table",
+      "value" : "<div class=\"quill-better-table-wrapper\"><table border=1 class=\"quill-better-table\" style=\"width: 1338px;\"><colgroup><col width=\"100\" class=\"ql-align-center\"><col width=\"190\" class=\"ql-align-center\"><col width=\"190\" class=\"ql-align-center\"><col width=\"370\" class=\"ql-align-center\"><col width=\"488\" class=\"ql-align-center\"></colgroup><tbody><tr data-row=\"1\"><td data-row=\"1\" rowspan=\"1\" colspan=\"5\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color: rgb(230, 230, 230);\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"1\" data-cell=\"1\" data-rowspan=\"1\" data-colspan=\"5\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>ACTIVITES CLEES </strong></p></td></tr><tr data-row=\"2\"><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color: rgb(230, 230, 230);\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"1\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>N0 </strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color: rgb(230, 230, 230);\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"2\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Dossiers Critiques</strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color: rgb(230, 230, 230);\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"3\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Statut</strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color: rgb(230, 230, 230);\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"4\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Action(s) à mener</strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color: rgb(230, 230, 230);\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"5\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Interlocuteur(s) clé(s)</strong></p></td></tr><tr data-row=\"3\"><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"1\" data-rowspan=\"1\" data-colspan=\"1\"><strong>01</strong></p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"2\" data-rowspan=\"1\" data-colspan=\"1\"><strong>Test et homologation des patchs 25 ,26 et 27</strong></p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"3\" data-rowspan=\"1\" data-colspan=\"1\">En cours</p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"4\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"5\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td></tr><tr data-row=\"row-mt02\"><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"row-mt02\" data-cell=\"cell-2eu3\" data-rowspan=\"1\" data-colspan=\"1\"><strong>02</strong></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-alou\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-mk00\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-k441\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-3zbg\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td></tr><tr data-row=\"row-ba56\"><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"row-ba56\" data-cell=\"cell-6ndf\" data-rowspan=\"1\" data-colspan=\"1\"><strong>03</strong></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-yjjz\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-3de8\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-s3zm\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-k7ut\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td></tr></tbody></table></div><p><br></p>",
+      "required" : true,
+      "position" : 4
+    },
+    {
+      "key" : "mainWork",
+      "name" : "Principales Responsabilités",
+      "type" : "table",
+      "value" : "<div class=\"quill-better-table-wrapper\"><table border=\"1\" class=\"quill-better-table\" style=\"width:1338px\"><colgroup><col width=\"100\" class=\"ql-align-center\"><col width=\"190\" class=\"ql-align-center\"><col width=\"190\" class=\"ql-align-center\"><col width=\"370\" class=\"ql-align-center\"><col width=\"488\" class=\"ql-align-center\"></colgroup><tbody><tr data-row=\"1\"><td data-row=\"1\" rowspan=\"1\" colspan=\"5\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color:#e6e6e6\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"1\" data-cell=\"1\" data-rowspan=\"1\" data-colspan=\"5\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>RESPONSABILITES PRINCIPALES</strong></p></td></tr><tr data-row=\"2\"><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color:#e6e6e6\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"1\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>N0</strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color:#e6e6e6\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"2\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Dossiers Critiques</strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color:#e6e6e6\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"4\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Action(s) à mener</strong></p></td><td data-row=\"2\" rowspan=\"1\" colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\" style=\"background-color:#e6e6e6\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"2\" data-cell=\"5\" data-rowspan=\"1\" data-colspan=\"1\" data-cell-bg=\"rgb(230, 230, 230)\"><strong>Interlocuteur(s) clé(s)</strong></p></td></tr><tr data-row=\"3\"><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"1\" data-rowspan=\"1\" data-colspan=\"1\"><strong>01</strong></p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"2\" data-rowspan=\"1\" data-colspan=\"1\"><strong>Test et homologation des patchs 25 ,26 et 27</strong></p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"4\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"3\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"3\" data-cell=\"5\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td></tr><tr data-row=\"row-mt02\"><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"row-mt02\" data-cell=\"cell-2eu3\" data-rowspan=\"1\" data-colspan=\"1\"><strong>02</strong></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-alou\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-k441\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-mt02\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-mt02\" data-cell=\"cell-3zbg\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td></tr><tr data-row=\"row-ba56\"><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line ql-align-center\" data-row=\"row-ba56\" data-cell=\"cell-6ndf\" data-rowspan=\"1\" data-colspan=\"1\"><strong>03</strong></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-yjjz\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-3de8\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td><td data-row=\"row-ba56\" rowspan=\"1\" colspan=\"1\"><p class=\"qlbt-cell-line\" data-row=\"row-ba56\" data-cell=\"cell-k7ut\" data-rowspan=\"1\" data-colspan=\"1\"><br></p></td></tr></tbody></table></div><p><br></p>",
+      "required" : true,
+      "position" : 5
     }
   ]
 }

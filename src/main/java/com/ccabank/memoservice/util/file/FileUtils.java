@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.util.file;
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -8,6 +9,22 @@ import java.io.InputStream;
 import java.util.Base64;
 
 public class FileUtils {
+
+
+    public static  ByteArrayResource mergeResources(ByteArrayResource resource1, ByteArrayResource resource2) throws IOException {
+        byte[] bytes1 = resource1.getByteArray();
+        byte[] bytes2 = resource2.getByteArray();
+
+        // Crée un tableau de bytes pour contenir les deux ressources
+        byte[] mergedBytes = new byte[bytes1.length + bytes2.length];
+
+        // Copie les données du premier tableau
+        System.arraycopy(bytes1, 0, mergedBytes, 0, bytes1.length);
+        // Copie les données du second tableau
+        System.arraycopy(bytes2, 0, mergedBytes, bytes1.length, bytes2.length);
+
+        return new ByteArrayResource(mergedBytes);
+    }
 
     public static MultipartFile convertBase64ToMultipartFile(String base64Content, String fileName, String contentType) throws IOException {
         byte[] decodedBytes = Base64.getDecoder().decode(base64Content);

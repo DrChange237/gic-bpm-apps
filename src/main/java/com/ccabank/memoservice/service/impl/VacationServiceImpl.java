@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.reporting.VacationForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.Vacation;
@@ -84,11 +85,21 @@ public class VacationServiceImpl implements VacationService {
 
 
         //EndDate
-        String endDate = FieldUtils.getValueOfField(request,"endDate");
+        String endDate = FieldUtils.getValueOfField(request,"realEndDate");
         vacation.setEndDate(LocalDate.parse(endDate));
 
+        //Critic Folder
+        String criticFolder = FieldUtils.getValueOfField(request,"criticFolder");
+        vacation.setCriticFolder(criticFolder);
+
+        //Main Work
+        String mainWork = FieldUtils.getValueOfField(request,"mainWork");
+        vacation.setMainWork(mainWork);
+
+
+
         //Interim
-        String interim = FieldUtils.getValueOfField(request,"interim");
+        String interim = request.getApprovalByPosition(1).getStaff();
         staff = userRestClient.getAgencyByStaffUsername(interim, "key", "secret");
         requester = new Staff();
         requester.setFunction(staff.getFunction());
@@ -101,14 +112,15 @@ public class VacationServiceImpl implements VacationService {
         vacation.setInterim(requester);
 
 
+
         //Supervisor
-        String username = request.getApprovalByPosition(1).getStaff();
+        String username = request.getApprovalByPosition(2).getStaff();
         Signatory supervisor = signatoryService.getSignatory(username);
         vacation.setSupervisor(supervisor);
 
 
         //SupervisorNext
-        username = request.getApprovalByPosition(2).getStaff();
+        username = request.getApprovalByPosition(3).getStaff();
         supervisor = signatoryService.getSignatory(username);
         vacation.setSupervisor2(supervisor);
 
@@ -116,6 +128,62 @@ public class VacationServiceImpl implements VacationService {
         vacation = vacationRepository.save(vacation);
 
         return vacation;
+
+    }
+
+    @Override
+    public VacationForm construct(Request request){
+
+        Vacation vacation = vacationRepository.getOne(request.getDocumentId());
+        VacationForm vacationForm = new VacationForm();
+        vacationForm.setDate(vacation.getDate());
+
+        vacationForm.setFunction(vacation.getRequester().getFunction());
+        vacationForm.setName(vacation.getRequester().getName());
+        vacationForm.setMatricule(vacation.getRequester().getMatricule());
+        vacationForm.setUnity(vacation.getRequester().getUnity());
+
+
+        String signature = userRestClient.getEmployeeSignature(vacation.getRequester().getUsername());
+        vacationForm.setSignature(signature);
+
+
+
+        //StartDate
+        vacationForm.setStartDate(vacation.getStartDate());
+
+        //EndDate
+        vacationForm.setEndDate(vacation.getEndDate());
+
+        // Interim
+
+        VacationForm.Interim interim = new VacationForm.Interim();
+        interim.setName(vacation.getInterim().getName());
+        interim.setFunction(vacation.getInterim().getFunction());
+
+        vacationForm.setInterim(interim);
+
+        //Supervisor
+
+
+
+        //Supervisor
+        VacationForm.Signatory signatory = new VacationForm.Signatory();
+        signatory.setName(vacation.getSupervisor().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(vacation.getSupervisor().getOwner().getUsername());
+        signatory.setSignature(signature);
+        vacationForm.setSupervisor(signatory);
+
+
+        //SupervisorNext
+        signatory = new VacationForm.Signatory();
+        signatory.setName(vacation.getSupervisor().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(vacation.getSupervisor2().getOwner().getUsername());
+        signatory.setSignature(signature);
+        vacationForm.setSupervisorNext(signatory);
+
+
+        return vacationForm;
 
     }
 

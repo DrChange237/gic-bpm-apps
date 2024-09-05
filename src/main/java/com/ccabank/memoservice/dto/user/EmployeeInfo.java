@@ -57,7 +57,7 @@ public class EmployeeInfo implements Serializable {
 
     public String getReference(){
 
-        return "DG/" + StringUtil.getFirstLetters(this.getDepartment().getDirection().getName()) + "/" + StringUtil.getFirstLetters(this.getDepartment().getName()) + "/" + LocalDate.now().getYear() ;
+        return "DG/" + StringUtil.getFirstLetters(this.getDepartment().getDirection().getName()) + "/" + StringUtil.getFirstLetters(this.getDepartment().getName())  ;
 
     }
 

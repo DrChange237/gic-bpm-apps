@@ -4,6 +4,7 @@ import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.AcceptedApprovalDto;
 import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.ApprovalListDto;
+import com.ccabank.memoservice.dto.memo.ReassignDto;
 import com.ccabank.memoservice.entity.Approval;
 import com.ccabank.memoservice.entity.Request;
 
@@ -14,11 +15,13 @@ public interface ApprovalService {
 
     Approval getCurrentApproval(Request request);
 
-    AppServiceResult<ApprovalDto> decision(AcceptedApprovalDto acceptedApprovalDto);
+    AppServiceResult<?> decision(AcceptedApprovalDto acceptedApprovalDto);
 
-    AppServiceResult<ApprovalDto> approve(AcceptedApprovalDto acceptedApprovalDto);
+    AppServiceResult<?> reassign(ReassignDto reassignDto);
 
-    AppServiceResult<ApprovalDto> rejected(AcceptedApprovalDto acceptedApprovalDto);
+    AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto);
+
+    AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto);
 
     AppServiceResult<List<ApprovalListDto>> getApprovalByStaff(String staff, String status);
 

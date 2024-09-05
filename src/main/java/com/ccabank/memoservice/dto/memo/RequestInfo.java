@@ -5,8 +5,11 @@ import com.ccabank.memoservice.entity.RequestStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 public class RequestInfo {
     private Long id;
+
+    private  String reference;
 
     private String staff;
 
@@ -26,6 +29,14 @@ public class RequestInfo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public String getStaff() {

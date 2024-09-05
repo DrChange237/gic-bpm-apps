@@ -1,6 +1,7 @@
 package com.ccabank.memoservice.service.faces;
 
 import com.ccabank.memoservice.domain.AppServiceResult;
+import com.ccabank.memoservice.dto.memo.ArchivageDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.Request;
 import org.springframework.core.io.ByteArrayResource;
@@ -13,9 +14,11 @@ public interface RequestService {
 
     ByteArrayResource downloadRequest(Long id);
 
-    AppServiceResult<Request> validateRequest(Long id);
+    AppServiceResult<?> validateRequest(Long id);
 
     AppServiceResult<RequestDto> details(Long id);
+
+    AppServiceResult<RequestDto> achivage(ArchivageDto archivageDto);
 
     AppServiceResult<RequestDto> getRequestByReference(String reference);
 

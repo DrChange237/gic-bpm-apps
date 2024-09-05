@@ -2,10 +2,7 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
-import com.ccabank.memoservice.dto.memo.ApprovalDto;
-import com.ccabank.memoservice.dto.memo.FieldDto;
-import com.ccabank.memoservice.dto.memo.FileDto;
-import com.ccabank.memoservice.dto.memo.RequestDto;
+import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
@@ -91,7 +88,7 @@ public class RequestServiceImpl implements RequestService {
             Long count = requestRepository.countRequestsCreatedToday() + 1;
             date = date + "-" + count;
             EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(requestDto.getStaff());
-            request.setReference(date + employeeInfo.getReference());
+            request.setReference(employeeInfo.getReference() + date);
             DocumentType type = documentTypeRepository.findOneByStructure(requestDto.getDocumentType());
             request.setType(type);
             request.setStatus(RequestStatus.DRAFT);
@@ -109,7 +106,6 @@ public class RequestServiceImpl implements RequestService {
                 field.setType(fieldDto.getType());
                 field.setPosition(fieldDto.getPosition());
                 fieldRepository.save(field);
-
 
 
                 for(FileDto fileDto : fieldDto.getFiles()){
@@ -196,7 +192,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public AppServiceResult<Request> validateRequest(Long id) {
+    public AppServiceResult<?> validateRequest(Long id) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
 
@@ -220,12 +216,12 @@ public class RequestServiceImpl implements RequestService {
 
             //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
 
-            return new AppServiceResult<Request>(true, 0, "Succeed!", request );
+            return new AppServiceResult<>(true, 0, "Succeed!", request );
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<Request>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
 
@@ -253,6 +249,32 @@ public class RequestServiceImpl implements RequestService {
         }
 
 
+    }
+
+    @Override
+    public AppServiceResult<RequestDto> achivage(ArchivageDto archivageDto) {
+        try {
+            logger.info(MEMO_SERVICE + "achivage : methode invocation");
+
+            Request request = requestRepository.getOne(archivageDto.getId());
+
+            request.setArchived(archivageDto.getDecision());
+
+            request = this.requestRepository.save(request);
+
+
+            RequestDto dto = requestMapper.toDto(request);
+
+            //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
+
+            return new AppServiceResult<RequestDto>(true, 0, "Succeed!", dto );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
+            return new AppServiceResult<RequestDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
     }
 
     @Override

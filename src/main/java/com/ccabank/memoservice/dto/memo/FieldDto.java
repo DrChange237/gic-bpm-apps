@@ -28,6 +28,9 @@ public class FieldDto {
 
     private boolean required = true;
 
+    private String defaultValue = "";
+
+
     public int getPosition() {
         return position;
     }
@@ -70,6 +73,7 @@ public class FieldDto {
     }
 
     public String getValue() {
+
         return value;
     }
 
@@ -92,4 +96,13 @@ public class FieldDto {
     public void setFiles(List<FileDto> files) {
         this.files = files;
     }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
 }

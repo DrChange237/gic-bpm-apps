@@ -6,6 +6,7 @@ import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.HttpResponse;
 import com.ccabank.memoservice.dto.HttpResponseError;
 import com.ccabank.memoservice.dto.HttpResponseSuccess;
+import com.ccabank.memoservice.dto.memo.ArchivageDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.service.faces.RequestService;
@@ -42,6 +43,15 @@ public class MemoController {
     //@CrossOrigin()
     public ResponseEntity<?> details(@RequestParam(value = "id") Long id) {
         AppServiceResult<RequestDto> result = requestService.details(id);
+        return result.isSuccess()
+                ? ResponseEntity.ok(new HttpResponseSuccess<RequestDto>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @GetMapping("/request/archived")
+    //@CrossOrigin()
+    public ResponseEntity<?> archived(@RequestBody ArchivageDto archivageDto) {
+        AppServiceResult<RequestDto> result = requestService.achivage(archivageDto);
         return result.isSuccess()
                 ? ResponseEntity.ok(new HttpResponseSuccess<RequestDto>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));

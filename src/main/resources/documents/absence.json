@@ -14,7 +14,7 @@
       "staff" : "",
       "type" : "OPEN",
       "role" : "Signataire 2",
-      "required" : true
+      "required" : false
     },
     {
       "position" : 3,

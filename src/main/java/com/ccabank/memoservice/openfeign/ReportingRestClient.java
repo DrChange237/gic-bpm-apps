@@ -9,7 +9,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 
-//@FeignClient(value = "reportingRestClient", url = "https://developer.ccabank-app.com/sandbox", configuration = FeignClientProperties.FeignClientConfiguration.class)
 @FeignClient(name = "REPORTING-SERVICE")
 public interface ReportingRestClient {
 
@@ -33,4 +32,7 @@ public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/absence/authorization")
     ByteArrayResource purchase(@RequestBody PurchaseForm form);
+
+    @PostMapping(path = "/api/reporting/handover/sheet/v2")
+    ByteArrayResource handover(@RequestBody HandOverForm form);
 }

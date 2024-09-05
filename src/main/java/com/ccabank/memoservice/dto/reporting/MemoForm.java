@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 
 @Data
 public class MemoForm {

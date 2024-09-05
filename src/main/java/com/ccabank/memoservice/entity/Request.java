@@ -48,6 +48,10 @@ public class Request {
     @Column(name = "DOCUMENT_ID")
     private Long documentId;
 
+    @Basic(optional = true)
+    @Column(name = "ARCHIVED")
+    private Boolean archived = false;
+
 
 
     public Long getId() {
@@ -128,5 +132,13 @@ public class Request {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 }

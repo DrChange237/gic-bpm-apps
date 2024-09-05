@@ -2,6 +2,10 @@ spring:
   application:
     name: paperless-service
 
+
+  #  # DATASOURCE (POSTGRESSSQL)
+
+
   # JAP
   jpa:
     hibernate:
@@ -23,6 +27,18 @@ security:
       client-secret: XY7kmzoNzl100
       grant-type: client_credentials
       access-token-uri: http://10.4.4.111:9100/api/oauth/token
+
+feign:
+  httpclient:
+    max-connections: 10
+    max-connections-per-route: 8
+    connection-timeout: 60000
+  client:
+    config:
+      default:
+        read-timeout : 60000
+        connectTimeout: 60000
+
 
 
 

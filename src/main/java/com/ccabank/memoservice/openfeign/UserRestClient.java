@@ -22,7 +22,6 @@ import java.util.List;
  * Created with IntelliJ IDEA
  * To change this template use File | Settings | File Templates.
  */
-//@FeignClient(value = "entityRestClient", url = "https://developer.ccabank-app.com/sandbox", configuration = FeignClientProperties.FeignClientConfiguration.class)
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientProperties.FeignClientConfiguration.class)
 public interface UserRestClient {
 

@@ -3,6 +3,7 @@ package com.ccabank.memoservice.dto.memo;
 import com.ccabank.memoservice.entity.ApprovalStatus;
 import com.ccabank.memoservice.entity.ApprovalType;
 
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,25 +11,34 @@ public class ApprovalListDto {
 
     private  Long id;
 
+    @Null
     private int position;
 
+    @Null
     private String staff;
 
+    @Null
     private  String role;
 
+    @Null
     private ApprovalType type;
 
+    @Null
     private LocalDateTime approvalDate;
 
+    @Null
     private ApprovalStatus status;
 
+    @Null
     private String comments;
 
+    @Null
     private String unity;
 
+    @Null
     private List<FieldDto> fields;
 
-
+    @Null
     private RequestInfo request;
 
 

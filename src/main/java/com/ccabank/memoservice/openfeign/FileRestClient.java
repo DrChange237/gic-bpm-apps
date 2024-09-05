@@ -5,6 +5,7 @@ import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.memo.FileDto;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClientProperties;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

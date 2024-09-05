@@ -1,9 +1,9 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.reporting.AbsenceForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.Absence;
-import com.ccabank.memoservice.entity.documenttype.Vacation;
 import com.ccabank.memoservice.entity.documenttype.sub.Deduction;
 import com.ccabank.memoservice.entity.documenttype.sub.Settlement;
 import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
@@ -17,6 +17,7 @@ import com.ccabank.memoservice.service.faces.AbsenceService;
 import com.ccabank.memoservice.service.faces.SignatoryService;
 import com.ccabank.memoservice.util.WorkDayCalculator;
 import com.ccabank.memoservice.util.field.FieldUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 
@@ -230,6 +232,126 @@ public class AbsenceServiceImpl implements AbsenceService {
 
         return absence;
 
+    }
+
+    @Override
+    public AbsenceForm construct(Request request){
+
+        System.out.println("Document ID : " + request.getDocumentId());
+
+
+        Absence absence = absenceRepository.getOne(request.getDocumentId());
+
+        System.out.println("1");
+        AbsenceForm absenceForm = new AbsenceForm();
+
+
+
+        System.out.println("Date");
+        absenceForm.setDate(absence.getDate());
+
+        absenceForm.setEndDate(absence.getEndDate());
+        absenceForm.setStartDate(absence.getStartDate());
+
+
+        System.out.println("Function");
+        absenceForm.setFunction(absence.getRequester().getFunction());
+
+        absenceForm.setMatricule(absence.getRequester().getMatricule());
+
+
+        System.out.println("Name");
+        absenceForm.setName(absence.getRequester().getName());
+
+        System.out.println("Unity");
+        absenceForm.setUnity(absence.getRequester().getUnity());
+
+        System.out.println("Place");
+        absenceForm.setPlace(absence.getPlace());
+
+        String signature = userRestClient.getEmployeeSignature(absence.getRequester().getUsername());
+        //String signature = this.getFictifSignature();
+        absenceForm.setSignature(signature);
+
+        System.out.println("Rights");
+        AbsenceForm.Settlement settlement = new AbsenceForm.Settlement();
+        settlement.setPaid(Optional.of(absence).map(Absence::getRights).map(Settlement::getPaid).orElse(0.0));
+        settlement.setUnpaid(Optional.of(absence).map(Absence::getRights).map(Settlement::getUnpaid).orElse(0.0));
+        absenceForm.setRights(settlement);
+
+        System.out.println("Stock");
+        settlement = new AbsenceForm.Settlement();
+        settlement.setPaid(Optional.of(absence).map(Absence::getStock).map(Settlement::getPaid).orElse(0.0));
+        settlement.setUnpaid(Optional.of(absence).map(Absence::getStock).map(Settlement::getUnpaid).orElse(0.0));
+        absenceForm.setRights(settlement);
+
+        System.out.println("Absence");
+        settlement = new AbsenceForm.Settlement();
+        settlement.setPaid(Optional.of(absence).map(Absence::getAbsence).map(Settlement::getPaid).orElse(0.0));
+        settlement.setUnpaid(Optional.of(absence).map(Absence::getAbsence).map(Settlement::getUnpaid).orElse(0.0));
+        absenceForm.setRights(settlement);
+
+        System.out.println("Vacation");
+        settlement = new AbsenceForm.Settlement();
+        settlement.setPaid(Optional.of(absence).map(Absence::getVacation).map(Settlement::getPaid).orElse(0.0));
+        settlement.setUnpaid(Optional.of(absence).map(Absence::getVacation).map(Settlement::getUnpaid).orElse(0.0));
+        absenceForm.setRights(settlement);
+
+        System.out.println("Salary");
+        settlement = new AbsenceForm.Settlement();
+        settlement.setPaid(Optional.of(absence).map(Absence::getSalary).map(Settlement::getPaid).orElse(0.0));
+        settlement.setUnpaid(Optional.of(absence).map(Absence::getSalary).map(Settlement::getUnpaid).orElse(0.0));
+        absenceForm.setRights(settlement);
+
+        System.out.println("Advice");
+        settlement = new AbsenceForm.Settlement();
+        settlement.setPaid(Optional.of(absence).map(Absence::getAdvice).map(Settlement::getPaid).orElse(0.0));
+        settlement.setUnpaid(Optional.of(absence).map(Absence::getAdvice).map(Settlement::getUnpaid).orElse(0.0));
+        absenceForm.setRights(settlement);
+
+
+        AbsenceForm.Signatory signatory = new AbsenceForm.Signatory();
+
+        signatory.setName(absence.getSupervisor().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(absence.getSupervisor().getOwner().getUsername());
+        signatory.setSignature(signature);
+        absenceForm.setSignatory1(signatory);
+
+        AbsenceForm.Signatory signatory2 = new AbsenceForm.Signatory();
+
+
+        signatory2.setName(absence.getSupervisor2().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(absence.getSupervisor2().getOwner().getUsername());
+        signatory2.setSignature(signature);
+        absenceForm.setSignatory2(signatory2);
+
+        AbsenceForm.Signatory signatory3 = new AbsenceForm.Signatory();
+
+
+        signatory3.setName(absence.getHeadOffice().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(absence.getHeadOffice().getOwner().getUsername());
+        signatory3.setSignature(signature);
+        absenceForm.setHeadOffice(signatory3);
+
+
+        absenceForm.setInterim(absence.getInterim().getName());
+
+
+
+        System.out.println("Days");
+        absenceForm.setDays(absence.getDays());
+
+        System.out.println("Deduction");
+        AbsenceForm.Deduction deduction = AbsenceForm.Deduction.valueOf(absence.getDeduction().name());
+        absenceForm.setDeduction(deduction);
+
+        System.out.println("Reason");
+        absenceForm.setReason(StringUtils.defaultString(absence.getReason()));
+
+        System.out.println(absenceForm);
+
+
+        return absenceForm;
     }
 
 }

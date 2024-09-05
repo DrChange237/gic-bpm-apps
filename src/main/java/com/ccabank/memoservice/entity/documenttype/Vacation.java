@@ -39,6 +39,14 @@ public class Vacation {
     @Column(name = "END_DATE", nullable = true)
     private LocalDate endDate;
 
+    @Column(name = "CRITIC_FOLDER")
+    @Size(max = 5000)
+    private String criticFolder;
+
+    @Column(name = "MAIN_WORK")
+    @Size(max = 5000)
+    private String mainWork;
+
     @JoinColumn(name = "INTERIM", referencedColumnName = "ID",  nullable = true)
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Staff interim;
@@ -125,5 +133,21 @@ public class Vacation {
 
     public void setSupervisor2(Signatory supervisor2) {
         this.supervisor2 = supervisor2;
+    }
+
+    public String getCriticFolder() {
+        return criticFolder;
+    }
+
+    public void setCriticFolder(String criticFolder) {
+        this.criticFolder = criticFolder;
+    }
+
+    public String getMainWork() {
+        return mainWork;
+    }
+
+    public void setMainWork(String mainWork) {
+        this.mainWork = mainWork;
     }
 }

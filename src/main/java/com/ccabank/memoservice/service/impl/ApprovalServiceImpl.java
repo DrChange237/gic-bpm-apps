@@ -3,11 +3,13 @@ package com.ccabank.memoservice.service.impl;
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.*;
+import com.ccabank.memoservice.dto.user.UserInfo;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ApprovalListMapper;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
 import com.ccabank.memoservice.mappers.RequestInfoMapper;
 import com.ccabank.memoservice.mappers.RequestMapper;
+import com.ccabank.memoservice.openfeign.AuthRestClient;
 import com.ccabank.memoservice.repository.ApprovalRepository;
 import com.ccabank.memoservice.repository.FieldRepository;
 import com.ccabank.memoservice.repository.ProcessUnityRepository;
@@ -64,6 +66,10 @@ public class ApprovalServiceImpl implements ApprovalService {
     private ApprovalListMapper approvalListMapper;
 
     @Autowired
+    private AuthRestClient authRestClient;
+
+
+    @Autowired
     private ProcessUnityRepository processUnityRepository;
 
     @Override
@@ -98,21 +104,41 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
-    public AppServiceResult<ApprovalDto> decision(AcceptedApprovalDto acceptedApprovalDto) {
+    public AppServiceResult<?> decision(AcceptedApprovalDto acceptedApprovalDto)  {
 
           if(acceptedApprovalDto.isDecision()){
               return this.approve(acceptedApprovalDto);
-          }
+          }else{
+              return this.rejected(acceptedApprovalDto);
 
-          return this.rejected(acceptedApprovalDto);
+          }
+    }
+
+    @Override
+    public AppServiceResult<?> reassign(ReassignDto reassignDto)  {
+        try {
+            Approval approval = this.approvalRepository.getOne(reassignDto.getIdApproval());
+            if (!(approval.getStatus() == ApprovalStatus.WAITING || approval.getStatus() == ApprovalStatus.PENDING)){
+                    throw new Exception("Cette approbation ne peut etre réassigné");
+            }
+
+            approval.setStaff(reassignDto.getStaff());
+            ApprovalDto approvalDto = this.approvalMapper.toDto(approval);
+
+            return new AppServiceResult<>(true, 0, "Succeed!", approvalDto);
+
+        } catch (Exception e) {
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        }
     }
 
 
     @Override
-    public AppServiceResult<ApprovalDto> approve(AcceptedApprovalDto acceptedApprovalDto) {
+    public AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto) {
         try {
             logger.info(MEMO_SERVICE + "approve : methode invocation");
             Approval approval = approvalRepository.getOne(acceptedApprovalDto.getIdApproval());
+
 
             if(!approval.getStatus().equals(ApprovalStatus.WAITING)){
                 throw new Exception("Cette requete ne peut pas etre approuvée");
@@ -153,6 +179,8 @@ public class ApprovalServiceImpl implements ApprovalService {
             approval.setApprovalDate(LocalDateTime.now());
             approval.setStatus(ApprovalStatus.ACCEPTED);
             approval.setComments(acceptedApprovalDto.getComments());
+            UserInfo userInfo = this.authRestClient.profile();
+            approval.setStaff(userInfo.getUsername());
             approval = approvalRepository.save(approval);
 
             Request request = approval.getRequest();
@@ -161,51 +189,57 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             request = requestRepository.save(request);
 
-            emailService.sendConfirmApproval(request, approval);
-
 
             Approval nextApproval = this.getNextPendingApproval(approval.getRequest());
 
             if(nextApproval == null){
-                emailService.sendConfirmRequest(request);
                 request.setStatus(RequestStatus.ACCEPTED);
                 request = requestRepository.save(request);
                 saveDocumentService.saveDocument(request);
+                emailService.sendConfirmRequest(request);
             }else{
                 nextApproval.setStatus(ApprovalStatus.WAITING);
                 if(nextApproval.getType() == ApprovalType.STATIC){
                     if(nextApproval.getProcessUnity() != null){
                         ProcessUnity unity = nextApproval.getProcessUnity();
-                        String staffList = unity.getStaffList();
+                        nextApproval = approvalRepository.save(nextApproval);
+                        emailService.sendAskApprovalUnity(request, nextApproval, unity);
+                        /*String staffList = unity.getStaffList();
                         List<String> list = Arrays.asList(staffList.split(";"));
                         Random random = new Random();
                         int randomIndex = random.nextInt(list.size());
                         String staff = list.get(randomIndex);
-                        nextApproval.setStaff(staff);
+                        nextApproval.setStaff(staff);*/
                     }
+                }else{
+                    nextApproval = approvalRepository.save(nextApproval);
+                    emailService.sendAskApproval(request,nextApproval);
                 }
-                nextApproval = approvalRepository.save(nextApproval);
-                emailService.sendAskApproval(request,nextApproval);
-
             }
 
+            emailService.sendConfirmApproval(request, approval);
+
             ApprovalDto dto = approvalMapper.toDto(approval);
-            return new AppServiceResult<ApprovalDto>(true, 0, "Succeed!", dto);
+            return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<ApprovalDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
 
     @Override
-    public AppServiceResult<ApprovalDto> rejected(AcceptedApprovalDto acceptedApprovalDto) {
+    public AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
             Approval approval = approvalRepository.getOne(acceptedApprovalDto.getIdApproval());
+
+            if (acceptedApprovalDto.getComments() == null) {
+                throw new Exception("Le commentaires est obligatoire en cas de refus");
+            }
 
             if(!approval.getStatus().equals(ApprovalStatus.WAITING)){
                 throw new Exception("Cette requete ne peut pas etre approuvée");
@@ -221,6 +255,7 @@ public class ApprovalServiceImpl implements ApprovalService {
                 field.setKey(fieldDto.getKey());
                 field.setValue(fieldDto.getValue());
                 field.setApproval(approval);
+                field.setRequest(approval.getRequest());
                 fieldRepository.save(field);
             }
 
@@ -234,7 +269,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 
             ApprovalDto dto = approvalMapper.toDto(approval);
-            return new AppServiceResult<ApprovalDto>(true, 0, "Succeed!", dto);
+            return new AppServiceResult<>(true, 0, "Succeed!", null);
 
 
         } catch (Exception e) {
@@ -251,6 +286,10 @@ public class ApprovalServiceImpl implements ApprovalService {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
             List<Approval> approvals = approvalRepository.findByStaffAndStatus(staff, ApprovalStatus.valueOf(status));
+            List<Approval> approvalsUnity = approvalRepository.findApprovalsByUsernameInStaffListAndStatus(staff, ApprovalStatus.valueOf(status));
+
+            approvals.addAll(approvalsUnity);
+
 
             List<ApprovalListDto> approvalDtos = new ArrayList<>();
 

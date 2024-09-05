@@ -60,6 +60,10 @@ public class Approval {
     @Size(max = 1000)
     private String comments;
 
+    @Basic(optional = true)
+    @Column(name = "ARCHIVED")
+    private Boolean archived = false;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "approval", fetch = FetchType.LAZY)
     private Collection<Field> fields = new ArrayList<>();
 
@@ -148,5 +152,13 @@ public class Approval {
 
     public void setFields(Collection<Field> fields) {
         this.fields = fields;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 }

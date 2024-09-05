@@ -10,9 +10,5 @@ public interface MapToReportService {
 
     ByteArrayResource reportRequest(Request request);
 
-    AbsenceForm constructAbsenceRequest(Request request);
 
-    MissionForm constructMissionRequest(Request request);
-
-    ResumptionForm constructResumptionRequest(Request request);
 }

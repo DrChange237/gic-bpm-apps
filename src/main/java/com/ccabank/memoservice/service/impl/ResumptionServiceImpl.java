@@ -1,9 +1,9 @@
 package com.ccabank.memoservice.service.impl;
 
+import com.ccabank.memoservice.dto.reporting.ResumptionForm;
 import com.ccabank.memoservice.dto.user.UserRestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.documenttype.Resumption;
-import com.ccabank.memoservice.entity.documenttype.Vacation;
 import com.ccabank.memoservice.entity.documenttype.sub.ResumptionReason;
 import com.ccabank.memoservice.entity.documenttype.sub.Signatory;
 import com.ccabank.memoservice.entity.documenttype.sub.Staff;
@@ -103,6 +103,64 @@ public class ResumptionServiceImpl implements ResumptionService {
         resumption = resumptionRepository.save(resumption);
 
         return resumption;
+
+    }
+
+    @Override
+    public ResumptionForm construct(Request request){
+
+        ResumptionForm resumptionForm = new ResumptionForm();
+        resumptionForm.setDate(LocalDate.now());
+
+        UserRestDto staff = userRestClient.getAgencyByStaffUsername(request.getStaff(), "key", "secret");
+
+        resumptionForm.setFunction(staff.getFunction());
+        resumptionForm.setName(staff.getName());
+        resumptionForm.setMatricule(staff.getMatricule());
+        resumptionForm.setUnity(staff.getDepartment());
+
+        String signature = userRestClient.getEmployeeSignature(staff.getUsername());
+        resumptionForm.setSignature(signature);
+
+
+        //StartDate
+        String startDate = FieldUtils.getValueOfField(request,"startDate");
+        if(startDate != null){
+            resumptionForm.setStartDate(LocalDate.parse(startDate));
+        }
+
+
+        //realEndDate
+        String realEndDate = FieldUtils.getValueOfField(request,"realEndDate");
+        if(realEndDate != null){
+            resumptionForm.setRealEndDate(LocalDate.parse(realEndDate));
+        }
+
+        //EndDate
+        String endDate = FieldUtils.getValueOfField(request,"endDate");
+        if(endDate != null){
+            resumptionForm.setEndDate(LocalDate.parse(endDate));
+        }
+
+        //Reason
+        String reason = FieldUtils.getValueOfField(request,"reason");
+        if(reason != null){
+            resumptionForm.setReason(ResumptionForm.Reason.valueOf(reason));
+        }
+
+
+        //Supervisor
+        ResumptionForm.Signatory signatory = new ResumptionForm.Signatory();
+        String supervisor = request.getApprovalByPosition(1).getStaff();
+        if(supervisor != null){
+            staff = userRestClient.getAgencyByStaffUsername(supervisor, "key", "secret");
+            signatory.setName(staff.getName());
+            signatory.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            resumptionForm.setSupervisor(signatory);
+        }
+
+
+        return resumptionForm;
 
     }
 

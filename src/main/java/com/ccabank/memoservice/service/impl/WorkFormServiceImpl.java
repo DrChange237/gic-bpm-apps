@@ -8,6 +8,7 @@ import com.ccabank.memoservice.entity.documenttype.sub.Staff;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.SignatoryRepository;
 import com.ccabank.memoservice.repository.StaffRepository;
+import com.ccabank.memoservice.repository.WorkFormRepository;
 import com.ccabank.memoservice.service.faces.SignatoryService;
 import com.ccabank.memoservice.service.faces.WorkformService;
 import com.ccabank.memoservice.util.field.FieldUtils;
@@ -36,6 +37,9 @@ public class WorkFormServiceImpl implements WorkformService {
 
     @Autowired
     private SignatoryService signatoryService;
+
+    @Autowired
+    private WorkFormRepository workFormRepository;
 
     @Override
     public WorkForm save(Request request){
@@ -101,6 +105,48 @@ public class WorkFormServiceImpl implements WorkformService {
         workForm.setAccountant(accountantSignatory);
 
         return  workForm;
+    }
+
+    @Override
+    public com.ccabank.memoservice.dto.reporting.WorkForm construct(Request request){
+
+        com.ccabank.memoservice.entity.documenttype.WorkForm workForm = workFormRepository.getOne(request.getDocumentId());
+        com.ccabank.memoservice.dto.reporting.WorkForm workForm1 = new com.ccabank.memoservice.dto.reporting.WorkForm();
+        workForm1.setDate(workForm.getDate());
+
+
+        workForm1.setUnity(workForm.getRequester().getUnity());
+
+
+        String signature = userRestClient.getEmployeeSignature(workForm.getRequester().getUsername());
+        // workForm1.setSignature(signature);
+
+
+        //Supervisor
+        com.ccabank.memoservice.dto.reporting.WorkForm.Signatory signatory = new com.ccabank.memoservice.dto.reporting.WorkForm.Signatory();
+        signatory.setName(workForm.getSupervisor().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(workForm.getSupervisor().getOwner().getUsername());
+        signatory.setSignature(signature);
+        workForm1.setSupervisor(signatory);
+
+
+        //SupervisorNext
+        signatory = new com.ccabank.memoservice.dto.reporting.WorkForm.Signatory();
+        signatory.setName(workForm.getHead().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(workForm.getHead().getOwner().getUsername());
+        signatory.setSignature(signature);
+        workForm1.setDepartment(signatory);
+
+        //SupervisorNext
+        signatory = new com.ccabank.memoservice.dto.reporting.WorkForm.Signatory();
+        signatory.setName(workForm.getHead().getOwner().getName());
+        signature = userRestClient.getEmployeeSignature(workForm.getAccountant().getOwner().getUsername());
+        signatory.setSignature(signature);
+        workForm1.setAccountant(signatory);
+
+
+        return workForm1;
+
     }
 
 }
