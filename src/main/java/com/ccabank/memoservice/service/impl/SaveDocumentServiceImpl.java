@@ -56,9 +56,14 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
     @Override
     public void saveDocument(Request request){
 
+        System.out.println("Save Document");
+
+
         switch (request.getType().getStructure()){
 
             case DOCUMENT_TYPE_VACATION:
+
+                System.out.println("Save Vacation");
 
                 Vacation vacation = this.vacationService.save(request);
                 request.setDocumentId(vacation.getId());
@@ -67,6 +72,8 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
                 break;
 
             case DOCUMENT_TYPE_ABSENSE:
+
+                System.out.println("Save Absence");
 
                 Absence absence = this.absenceService.save(request);
                 request.setDocumentId(absence.getId());
@@ -77,6 +84,8 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
 
             case DOCUMENT_TYPE_MISSION:
 
+                System.out.println("Save Ordre de Mission");
+
                 OrdreMission ordreMission = this.ordreMissionService.save(request);
                 request.setDocumentId(ordreMission.getId());
                 this.requestRepository.save(request);
@@ -84,6 +93,9 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
                 break;
 
             case DOCUMENT_TYPE_RESUMPTION:
+
+                System.out.println("Save Resumption");
+
 
                 Resumption resumption = this.resumptionService.save(request);
                 request.setDocumentId(resumption.getId());
@@ -93,6 +105,9 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
 
             case DOCUMENT_TYPE_MEMO:
 
+                System.out.println("Save Memo");
+
+
                 Memo memo = this.memoService.save(request);
                 request.setDocumentId(memo.getId());
                 this.requestRepository.save(request);
@@ -101,12 +116,17 @@ public class SaveDocumentServiceImpl implements SaveDocumentService {
 
             case DOCUMENT_TYPE_WORKFORM:
 
+                System.out.println("Save workform");
+
+
                 WorkForm workForm = this.workformService.save(request);
                 request.setDocumentId(workForm.getId());
                 this.requestRepository.save(request);
                 break;
 
             case DOCUMENT_TYPE_PURCHASE:
+
+                System.out.println("Save Purchase");
 
                 Purchase purchase = this.purchaseService.save(request);
                 request.setDocumentId(purchase.getId());

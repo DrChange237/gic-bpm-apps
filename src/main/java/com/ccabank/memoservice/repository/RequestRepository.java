@@ -20,4 +20,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     long countRequestsCreatedToday();
 
     Request findOneByReference(String reference);
+
+
+    List<Request> findByStaffAndArchivedOrderByLastModificationDesc(String staff, boolean archived);
 }

@@ -40,26 +40,29 @@ public class HandOverServiceImpl implements HandOverService {
         employee.setSignature(signature);
 
         handOverForm.setEmployee(employee);
+
+
         handOverForm.setStartDate(vacation.getStartDate());
         handOverForm.setEndDate(vacation.getEndDate());
 
 
         HandOverForm.Employee interim = new HandOverForm.Employee();
-        employee.setDate(vacation.getDate());
-        employee.setName(vacation.getInterim().getName());
-        employee.setFunction(vacation.getInterim().getFunction());
+        interim.setDate(vacation.getDate());
+        interim.setName(vacation.getInterim().getName());
+        interim.setFunction(vacation.getInterim().getFunction());
         signature = userRestClient.getEmployeeSignature(vacation.getInterim().getUsername());
-        employee.setSignature(signature);
+        interim.setSignature(signature);
 
         handOverForm.setInterim(interim);
 
 
         HandOverForm.Employee supervisor = new HandOverForm.Employee();
-        employee.setDate(vacation.getDate());
-        employee.setName(vacation.getSupervisor().getOwner().getName());
-        employee.setFunction(vacation.getSupervisor().getOwner().getFunction());
+        supervisor.setDate(vacation.getDate());
+        supervisor.setName(vacation.getSupervisor().getOwner().getName());
+        supervisor.setFunction(vacation.getSupervisor().getOwner().getFunction());
         signature = userRestClient.getEmployeeSignature(vacation.getSupervisor().getOwner().getUsername());
-        employee.setSignature(signature);
+        supervisor.setSignature(signature);
+
 
         handOverForm.setSupervisor(supervisor);
 

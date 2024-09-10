@@ -7,7 +7,10 @@
       "staff" : "",
       "type" : "OPEN",
       "role" : "Superviseur",
-      "required" : true
+      "required" : true,
+      "fields" : [
+
+      ]
     },
     {
       "position" : 2,
@@ -15,7 +18,10 @@
       "type" : "STATIC",
       "unity" :  "ARMG",
       "role" : "Adjoint Responsable des Moyens Généraux",
-      "required" : true
+      "required" : true,
+      "fields" : [
+
+      ]
     },
     {
       "position" : 3,
@@ -101,7 +107,10 @@
       "type" : "STATIC",
       "unity" :  "DAF",
       "role" : "Direction Administrative et Financière",
-      "required" : true
+      "required" : true,
+      "fields" : [
+
+      ]
     },
     {
       "position" : 7,
@@ -109,7 +118,10 @@
       "type" : "STATIC",
       "unity" :  "DGA",
       "role" : "Direction Générale Adjointe",
-      "required" : true
+      "required" : true,
+      "fields" : [
+
+      ]
     },
     {
       "position" : 8,
@@ -117,7 +129,10 @@
       "type" : "STATIC",
       "unity" :  "DG",
       "role" : "Direction Générale",
-      "required" : true
+      "required" : true,
+      "fields" : [
+
+      ]
     },
     {
       "position" : 9,
@@ -130,13 +145,13 @@
         {
           "key" : "operator",
           "name" : "Operateur de Saisie de la DOP",
-          "type" : "employee",
+          "type" : "Employee",
           "required": true
         },
         {
           "key" : "supervisor",
           "name" : "Superviseur de la Saisie",
-          "type" : "employee",
+          "type" : "Employee",
           "required": true
         },
         {

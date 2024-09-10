@@ -52,7 +52,7 @@
         {
           "key" : "orderGive",
           "name" : "Donneur D'ordre",
-          "type" : "text",
+          "type" : "Employee",
           "required" : true
         },
         {

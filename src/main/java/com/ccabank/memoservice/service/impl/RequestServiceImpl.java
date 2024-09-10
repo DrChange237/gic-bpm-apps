@@ -5,11 +5,13 @@ import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
+import com.ccabank.memoservice.mappers.FieldMapper;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
+import com.ccabank.memoservice.util.field.FieldUtils;
 import com.ccabank.memoservice.util.file.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +74,9 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private UserRestClient userRestClient;
 
+    @Autowired
+    private FieldMapper fieldMapper;
+
     @Override
     public AppServiceResult<Request> newRequest(RequestDto requestDto) {
         try {
@@ -79,6 +84,8 @@ public class RequestServiceImpl implements RequestService {
 
             Request request = new Request();
             request.setCreatedAt(LocalDateTime.now());
+            request.setLastModification(LocalDateTime.now());
+
             request.setStaff(requestDto.getStaff());
 
             LocalDate currentDate = LocalDate.now();
@@ -88,7 +95,7 @@ public class RequestServiceImpl implements RequestService {
             Long count = requestRepository.countRequestsCreatedToday() + 1;
             date = date + "-" + count;
             EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(requestDto.getStaff());
-            request.setReference(employeeInfo.getReference() + date);
+            request.setReference(employeeInfo.getReference() + "/" + date);
             DocumentType type = documentTypeRepository.findOneByStructure(requestDto.getDocumentType());
             request.setType(type);
             request.setStatus(RequestStatus.DRAFT);
@@ -160,6 +167,61 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+    @Override
+    public AppServiceResult<Request> update(RequestDto requestDto) {
+        try {
+            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+
+
+            Request request = this.requestRepository.getOne(requestDto.getId());
+
+            if(request.getStatus().equals(RequestStatus.ACCEPTED) || request.getStatus().equals(RequestStatus.PENDING) ){
+                throw new Exception("Cette requete est déjà acceptée ou encore en cours");
+            }
+
+
+            request.setLastModification(LocalDateTime.now());
+
+            request.setStatus(RequestStatus.DRAFT);
+
+
+            request = requestRepository.save(request);
+
+            //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
+
+            for(FieldDto fieldDto : requestDto.getFields()){
+                Field field = this.fieldRepository.getOne(fieldDto.getId());
+                field.setKey(fieldDto.getKey());
+                field.setValue(fieldDto.getValue());
+                field.setRequest(request);
+                field.setType(fieldDto.getType());
+                field.setPosition(fieldDto.getPosition());
+                field = fieldRepository.save(field);
+
+                this.fileRepository.deleteByField(field);
+
+                for(FileDto fileDto : fieldDto.getFiles()){
+
+                    FileDto fileRest = fileRestClient.uploadFileToFolder("paperless", "/memo", FileUtils.convertBase64ToMultipartFile(fileDto.getFile(), fileDto.getName(), fileDto.getType()));
+                    File file = new File();
+                    file.setName(fileDto.getName());
+                    file.setField(field);
+                    file.setUrl(fileRest.getUrl());
+                    file.setType(fileRest.getType());
+                    fileRepository.save(file);
+                }
+            }
+
+            return new AppServiceResult<Request>(true, 0, "Succeed!", request );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " newRequest : Exception {}", e.getMessage());
+            return new AppServiceResult<Request>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
+    }
+
 
 
     @Override
@@ -198,6 +260,8 @@ public class RequestServiceImpl implements RequestService {
 
             Request request = requestRepository.getOne(id);
 
+            request.setLastModification(LocalDateTime.now());
+
             if(request == null){
                 throw new Exception("Aucune requete retrouvée");
             }
@@ -206,7 +270,7 @@ public class RequestServiceImpl implements RequestService {
                 throw new Exception("Cette requete à déjà été validée");
             }
 
-            Approval approval = approvalService.getNextPendingApproval(request);
+            Approval approval = approvalService.getApprovalWithPosition(request, 1);
             approval.setStatus(ApprovalStatus.WAITING);
             approval = approvalRepository.save(approval);
             request.setStatus(RequestStatus.PENDING);
@@ -236,6 +300,12 @@ public class RequestServiceImpl implements RequestService {
             Request request = requestRepository.getOne(id);
 
             RequestDto dto = requestMapper.toDto(request);
+
+            for(FieldDto fieldDto : dto.getFields()){
+
+                List<ChoiceDto>  choices = FieldUtils.getChoicesOfField(request.getType().getStructure(), fieldDto.getKey());
+                fieldDto.setChoices(choices);
+            }
 
             //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
 
@@ -321,7 +391,7 @@ public class RequestServiceImpl implements RequestService {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
 
-            List<Request> requests = requestRepository.findByStaff(staff);
+            List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(staff, false);
 
             return getConvertedResult(requests, "getRequestAll ");
 

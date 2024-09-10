@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.dto.memo;
 
+import com.ccabank.memoservice.dto.workflow.Transition;
 import com.ccabank.memoservice.entity.ApprovalStatus;
 import com.ccabank.memoservice.entity.ApprovalType;
 import com.ccabank.memoservice.entity.ProcessUnity;
@@ -38,6 +39,8 @@ public class ApprovalDto {
 
 
     private boolean required;
+
+    private List<Transition> next =  null;
 
 
     public Long getId() {
@@ -145,5 +148,13 @@ public class ApprovalDto {
 
     public void setParent(RequestInfo parent) {
         this.parent = parent;
+    }
+
+    public List<Transition> getNext() {
+        return next;
+    }
+
+    public void setNext(List<Transition> next) {
+        this.next = next;
     }
 }

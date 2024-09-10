@@ -11,7 +11,12 @@ import com.ccabank.memoservice.entity.Request;
 import java.util.List;
 
 public interface ApprovalService {
-    Approval getNextPendingApproval(Request request);
+
+    Approval getApprovalWithPosition(Request request, int position);
+
+    Approval getNextPendingApproval(Approval approval);
+
+    Approval getNextApproval(Request request);
 
     Approval getCurrentApproval(Request request);
 

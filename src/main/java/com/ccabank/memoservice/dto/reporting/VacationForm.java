@@ -11,28 +11,36 @@ import java.time.LocalDate;
 @Data
 @Schema(description = "Demande de congé annuel")
 public class VacationForm {
+
     @NotBlank
     @Schema(example = "Douala")
     private String place = "Douala";
+
     @NotNull
     private LocalDate date = LocalDate.now();
 
     @NotBlank
     @Schema(example = "01593")
     private String matricule = "01593";
+
     @NotBlank
     @Schema(example = "LONLA GATIEN JORDAN")
     private String name = "LONLA GATIEN JORDAN";
+
     @NotBlank
     @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
     private String unity = "Départment Etudes et Développement des Solutions Digitales";
+
     @NotBlank
     @Schema(example = "Développeur Back-End")
     private String function = "Développeur Back-End";
+
     @NotNull
     private LocalDate lastVacationDate = LocalDate.now();
+
     @NotNull
     private LocalDate startDate = LocalDate.now();
+
     @NotNull
     private LocalDate endDate = LocalDate.now();
 
@@ -45,6 +53,7 @@ public class VacationForm {
 
     @NotNull
     private Signatory supervisor = new Signatory();
+
     @NotNull
     private Signatory supervisorNext = new Signatory();
 
@@ -53,9 +62,11 @@ public class VacationForm {
         @NotBlank
         @Schema(example = "SIMO TRÉSOR WILFRIED")
         private String name = "SIMO TRÉSOR WILFRIED";
+
         @NotBlank
         @Schema(example = "Développeur Back-End")
         private String function = "Développeur Back-End";
+
         @NotBlank
         @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
         private String unity = "Départment Etudes et Développement des Solutions Digitales";
@@ -89,7 +100,9 @@ public class VacationForm {
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
+
         private String name = "SIMO PATRICK";
+
         @Schema(example = " ", description = "Base64-encoded image")
         private String signature = "";
 

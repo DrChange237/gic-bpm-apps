@@ -12,6 +12,8 @@ public interface RequestService {
 
     AppServiceResult<Request> newRequest(RequestDto requestDto);
 
+    AppServiceResult<Request> update(RequestDto requestDto);
+
     ByteArrayResource downloadRequest(Long id);
 
     AppServiceResult<?> validateRequest(Long id);

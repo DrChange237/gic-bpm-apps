@@ -1,0 +1,62 @@
+{
+  "name" : "Test Conditionnal Workflow",
+  "generateUrl" : "",
+  "approvals" : [
+    {
+      "position" : 1,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Signataire 1",
+      "required" : true,
+      "next": [
+        {
+          "to": 3,
+          "condition": {
+            "comparison": {
+              "operator": "greaterThan",
+              "field": {
+                "key": "amount",
+                "value": "10"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "position" : 2,
+      "staff" : "",
+      "type" : "OPEN",
+      "role" : "Signataire 2",
+      "required" : false
+    },
+    {
+      "position" : 3,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "DG",
+      "role" : "DIRECTION GENERALE",
+      "required" : false,
+      "fields" : [
+
+      ]
+    },
+    {
+      "position" : 4,
+      "staff" : null,
+      "type" : "STATIC",
+      "unity" : "RH",
+      "role" : "CAPITAL HUMAIN",
+      "fields" : [
+
+      ]
+    }
+  ],
+  "fields" : [
+    {
+      "key" : "amount",
+      "name" : "Montant",
+      "type" : "number"
+    }
+  ]
+}

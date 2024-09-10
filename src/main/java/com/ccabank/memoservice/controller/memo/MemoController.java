@@ -39,8 +39,15 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @PutMapping("/request/update")
+    public ResponseEntity<?> update(@RequestBody RequestDto requestDto) {
+        AppBaseResult result = requestService.update(requestDto);
+        return result.isSuccess()
+                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully added"))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
     @GetMapping("/request/details")
-    //@CrossOrigin()
     public ResponseEntity<?> details(@RequestParam(value = "id") Long id) {
         AppServiceResult<RequestDto> result = requestService.details(id);
         return result.isSuccess()
@@ -48,8 +55,7 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
-    @GetMapping("/request/archived")
-    //@CrossOrigin()
+    @PostMapping("/request/archived")
     public ResponseEntity<?> archived(@RequestBody ArchivageDto archivageDto) {
         AppServiceResult<RequestDto> result = requestService.achivage(archivageDto);
         return result.isSuccess()
@@ -58,7 +64,6 @@ public class MemoController {
     }
 
     @GetMapping("/request/validate")
-    //@CrossOrigin()
     public ResponseEntity<?> validate(@RequestParam(value = "id") Long id) {
         AppBaseResult result = requestService.validateRequest(id);
         return result.isSuccess()
@@ -67,7 +72,6 @@ public class MemoController {
     }
 
     @GetMapping("/request/download")
-    //@CrossOrigin()
     public ResponseEntity<ByteArrayResource> download(@RequestParam(value = "id") Long id) {
 
         ByteArrayResource input = requestService.downloadRequest(id);
@@ -80,7 +84,6 @@ public class MemoController {
     }
 
    @GetMapping("/request/getRequestByStaffAndStatus")
-    //@CrossOrigin()
     public ResponseEntity<?> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
         AppServiceResult<List<RequestDto>> result = requestService.getRequestByStaff(staff, status);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
@@ -88,7 +91,6 @@ public class MemoController {
     }
 
     @GetMapping("/request/getByReference")
-    //@CrossOrigin()
     public ResponseEntity<?> getByReference(@RequestParam(value = "reference") String reference) {
         AppServiceResult<RequestDto> result = requestService.getRequestByReference(reference);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())

@@ -25,6 +25,9 @@ public class Request {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "LAST_MODIFICATION", nullable = false)
+    private LocalDateTime lastModification;
+
     @Column(name = "STAFF")
     @Size(max = 1000)
     private String staff;
@@ -140,5 +143,13 @@ public class Request {
 
     public void setArchived(Boolean archived) {
         this.archived = archived;
+    }
+
+    public LocalDateTime getLastModification() {
+        return lastModification;
+    }
+
+    public void setLastModification(LocalDateTime lastModification) {
+        this.lastModification = lastModification;
     }
 }

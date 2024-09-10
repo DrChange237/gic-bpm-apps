@@ -5,6 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class FileDto {
 
+    private Long id;
+
     private String url;
 
     private String name;
@@ -16,6 +18,14 @@ public class FileDto {
     private String project;
 
     private String file;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUrl() {
         return url;

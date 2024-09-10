@@ -19,17 +19,22 @@ public class ResumptionForm {
     @NotBlank
     @Schema(example = "01593")
     private String matricule = "01593";
+
     @NotBlank
     @Schema(example = "LONLA GATIEN JORDAN")
     private String name = "LONLA GATIEN JORDAN";
+
     @NotBlank
     @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
     private String unity = "Départment Etudes et Développement des Solutions Digitales";
+
     @NotBlank
     @Schema(example = "Développeur Back-End")
     private String function = "Développeur Back-End";
+
     @Schema(example = " ", description = "Base64-encoded image")
     private String signature = "";
+
     @NotNull
     private LocalDate startDate = LocalDate.now();
     @NotNull

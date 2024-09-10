@@ -3,7 +3,8 @@ package com.ccabank.memoservice.service.impl;
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.*;
-import com.ccabank.memoservice.dto.user.UserInfo;
+import com.ccabank.memoservice.dto.workflow.Transition;
+import com.ccabank.memoservice.dto.workflow.WorkflowManager;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ApprovalListMapper;
 import com.ccabank.memoservice.mappers.ApprovalMapper;
@@ -17,6 +18,7 @@ import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import com.ccabank.memoservice.service.faces.EmailService;
 import com.ccabank.memoservice.service.faces.SaveDocumentService;
+import com.ccabank.memoservice.util.field.ApprobalUtils;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +75,9 @@ public class ApprovalServiceImpl implements ApprovalService {
     private ProcessUnityRepository processUnityRepository;
 
     @Override
-    public Approval getNextPendingApproval(Request request){
+    public Approval getApprovalWithPosition(Request request, int position){
 
-        List<Approval> approvals = approvalRepository.findByRequestAndStatus(request, ApprovalStatus.PENDING).stream().sorted(Comparator.comparing(Approval::getPosition))
+        List<Approval> approvals = approvalRepository.findByRequestAndPosition(request,  position).stream().sorted(Comparator.comparing(Approval::getPosition))
                 .collect(Collectors.toList());
 
         Optional<Approval> nextApproval = approvals.stream().findFirst();
@@ -86,13 +88,66 @@ public class ApprovalServiceImpl implements ApprovalService {
         }
 
         return nextApproval.get();
+    }
+
+    @Override
+    public Approval getNextPendingApproval(Approval approval){
+
+        Request request = approval.getRequest();
+
+        ApprovalDto structure = ApprobalUtils.getApprobalStructure(request.getType().getStructure(), approval.getPosition());
+
+        if (structure.getNext() != null){
+
+             for (Transition transition : structure.getNext()){
+
+                 if(WorkflowManager.evaluateCondition(transition.getCondition(), approval)){
+
+                     int to = transition.getTo();
+
+                     return this.getApprovalWithPosition(request, to);
+
+                 }
+             }
+        }
+
+        return this.getApprovalWithPosition(request, approval.getPosition() + 1);
+    }
+
+    @Override
+    public Approval getNextApproval(Request request){
+
+        List<Approval> approvals = approvalRepository.findByRequest(request).stream().sorted(Comparator.comparing(Approval::getPosition))
+                .collect(Collectors.toList());
+
+        Optional<Approval> nextApproval = approvals.stream().findFirst();
+
+        if(nextApproval.isEmpty()){
+            //throw new Exception("Pas d'approbation disponible pour cette requete");
+            return null;
+        }
+        return nextApproval.get();
+    }
+
+    public Approval getPrevAccepted(Request request){
+
+        List<Approval> approvals = approvalRepository.findByRequestAndStatus(request, ApprovalStatus.ACCEPTED).stream().sorted(Comparator.comparing(Approval::getPosition).reversed())
+                .collect(Collectors.toList());
+
+        Optional<Approval> nextApproval = approvals.stream().findFirst();
+
+        if(nextApproval.isEmpty()){
+            //throw new Exception("Pas d'approbation disponible pour cette requete");
+            return null;
+        }
+        return nextApproval.get();
 
     }
 
     @Override
     public Approval getCurrentApproval(Request request){
 
-        List<Approval> approvals = approvalRepository.findByRequestAndStatus(request, ApprovalStatus.WAITING).stream().sorted(Comparator.comparing(Approval::getPosition))
+        List<Approval> approvals = approvalRepository.findByRequestAndStatus(request, ApprovalStatus.WAITING).stream().sorted(Comparator.comparing(Approval::getPosition).reversed())
                 .collect(Collectors.toList());
 
         Optional<Approval> currentApproval = approvals.stream().findFirst();
@@ -123,6 +178,14 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
 
             approval.setStaff(reassignDto.getStaff());
+
+            Request request = approval.getRequest();
+            request.setLastModification(LocalDateTime.now());
+            requestRepository.save(request);
+
+
+            this.emailService.sendAskApproval(approval.getRequest(), approval);
+
             ApprovalDto approvalDto = this.approvalMapper.toDto(approval);
 
             return new AppServiceResult<>(true, 0, "Succeed!", approvalDto);
@@ -179,22 +242,29 @@ public class ApprovalServiceImpl implements ApprovalService {
             approval.setApprovalDate(LocalDateTime.now());
             approval.setStatus(ApprovalStatus.ACCEPTED);
             approval.setComments(acceptedApprovalDto.getComments());
-            UserInfo userInfo = this.authRestClient.profile();
-            approval.setStaff(userInfo.getUsername());
             approval = approvalRepository.save(approval);
 
             Request request = approval.getRequest();
 
             request.setApprobationLevel(approval.getPosition());
 
+            request.setLastModification(LocalDateTime.now());
+
             request = requestRepository.save(request);
 
 
-            Approval nextApproval = this.getNextPendingApproval(approval.getRequest());
+            Approval nextApproval = this.getNextPendingApproval(approval);
 
             if(nextApproval == null){
+                System.out.println("Pas de Next Approval");
+
                 request.setStatus(RequestStatus.ACCEPTED);
+
+                System.out.println("Requete Acceptée");
                 request = requestRepository.save(request);
+
+                System.out.println("Sauvegarde du Document");
+
                 saveDocumentService.saveDocument(request);
                 emailService.sendConfirmRequest(request);
             }else{
@@ -204,12 +274,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                         ProcessUnity unity = nextApproval.getProcessUnity();
                         nextApproval = approvalRepository.save(nextApproval);
                         emailService.sendAskApprovalUnity(request, nextApproval, unity);
-                        /*String staffList = unity.getStaffList();
+                        String staffList = unity.getStaffList();
                         List<String> list = Arrays.asList(staffList.split(";"));
                         Random random = new Random();
                         int randomIndex = random.nextInt(list.size());
                         String staff = list.get(randomIndex);
-                        nextApproval.setStaff(staff);*/
+                        nextApproval.setStaff(staff);
                     }
                 }else{
                     nextApproval = approvalRepository.save(nextApproval);
@@ -246,7 +316,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
 
             approval.setApprovalDate(LocalDateTime.now());
-            approval.setStatus(ApprovalStatus.REJECTED);
+            //approval.setStatus(ApprovalStatus.REJECTED);
             approval.setComments(acceptedApprovalDto.getComments());
             approval = approvalRepository.save(approval);
 
@@ -262,11 +332,35 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             Request request = approval.getRequest();
             request.setStatus(RequestStatus.REJECTED);
+            request.setLastModification(LocalDateTime.now());
+
+
             requestRepository.save(request);
 
             emailService.sendRejectedApproval(request, approval);
 
 
+            int positionToRejected = acceptedApprovalDto.getPositionRejected();
+
+            approval.setStatus(ApprovalStatus.PENDING);
+            this.approvalRepository.save(approval);
+
+            Approval prevApproval = this.getPrevAccepted(request);
+
+            while (prevApproval.getPosition() > positionToRejected){
+                 prevApproval.setStatus(ApprovalStatus.PENDING);
+                 this.approvalRepository.save(prevApproval);
+                 prevApproval = this.getPrevAccepted(request);
+            }
+
+            if(prevApproval != null){
+                prevApproval.setStatus(ApprovalStatus.WAITING);
+                this.approvalRepository.save(prevApproval);
+                request.setApprobationLevel(approval.getPosition());
+                this.emailService.sendAskApproval(request, prevApproval);
+            }
+
+            this.requestRepository.save(request);
 
             ApprovalDto dto = approvalMapper.toDto(approval);
             return new AppServiceResult<>(true, 0, "Succeed!", null);
@@ -278,6 +372,13 @@ public class ApprovalServiceImpl implements ApprovalService {
             return new AppServiceResult<ApprovalDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
+    }
+
+    public Request rjectedRequestToInferiorApprobal(Request request, AcceptedApprovalDto acceptedApprovalDto){
+
+
+
+        return request;
     }
 
 

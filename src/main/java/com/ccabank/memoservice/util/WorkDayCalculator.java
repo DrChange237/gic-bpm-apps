@@ -2,8 +2,17 @@ package com.ccabank.memoservice.util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class WorkDayCalculator {
+
+
+    public static int calculateNights(LocalDate checkIn, LocalDate checkOut) {
+        if (checkIn.isAfter(checkOut)) {
+            throw new IllegalArgumentException("La date d'arrivée doit être avant la date de départ");
+        }
+        return Math.toIntExact(ChronoUnit.DAYS.between(checkIn, checkOut));
+    }
 
     public static long calculateWorkdays(LocalDate startDate, LocalDate endDate) {
         long workdays = 0;

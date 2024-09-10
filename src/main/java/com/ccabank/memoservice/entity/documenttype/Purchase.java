@@ -27,6 +27,29 @@ public class Purchase {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private Signatory owner;
 
+    @Column(name = "OBJECT", nullable = false)
+    private String object;
+
+    @Column(name = "UNITY", nullable = false)
+    private String unity;
+
+    @Column(name = "SUPPLIER_SUBMITED", nullable = false)
+    private String suppliersSubmited;
+
+    @Column(name = "SUPPLIER", nullable = false)
+    private String supplier;
+
+    @Column(name = "DEADLINE", nullable = true)
+    private LocalDate deadline;
+
+    @Column(name = "TYPE_REGLEMENT", nullable = false)
+    private String typeReglement;
+
+    @Column(name = "ACCOUNT", nullable = true)
+    private String account;
+
+
+
     public Long getId() {
         return id;
     }
@@ -53,5 +76,61 @@ public class Purchase {
 
     public void setOwner(Signatory owner) {
         this.owner = owner;
+    }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
+    }
+
+    public String getUnity() {
+        return unity;
+    }
+
+    public void setUnity(String unity) {
+        this.unity = unity;
+    }
+
+    public String getSuppliersSubmited() {
+        return suppliersSubmited;
+    }
+
+    public void setSuppliersSubmited(String suppliersSubmited) {
+        this.suppliersSubmited = suppliersSubmited;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public String getTypeReglement() {
+        return typeReglement;
+    }
+
+    public void setTypeReglement(String typeReglement) {
+        this.typeReglement = typeReglement;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 }

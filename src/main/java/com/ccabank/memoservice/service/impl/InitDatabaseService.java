@@ -34,7 +34,8 @@ public class InitDatabaseService implements CommandLineRunner {
                 new DocumentType("Demande d'autorisation d'absence","absence"),
                 new DocumentType("Memo","memo"),
                 new DocumentType("Demande de Travail","workform"),
-                new DocumentType("Demande d'Achat","purchase")
+                new DocumentType("Demande d'Achat","purchase"),
+                new DocumentType("Test Conditional Workflow","test")
 
 
         ).filter(documentType -> !documentTypeRepository.existsByStructure(documentType.getStructure())).collect(Collectors.toList());

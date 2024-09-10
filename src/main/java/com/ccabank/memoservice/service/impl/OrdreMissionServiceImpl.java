@@ -14,6 +14,7 @@ import com.ccabank.memoservice.repository.StaffRepository;
 import com.ccabank.memoservice.repository.TransportRepository;
 import com.ccabank.memoservice.service.faces.OrdreMissionService;
 import com.ccabank.memoservice.service.faces.SignatoryService;
+import com.ccabank.memoservice.util.WorkDayCalculator;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,7 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
 
         Staff requester = new Staff();
         requester.setFunction(staff.getFunction());
-        requester.setName(staff.getUsername());
+        requester.setName(staff.getName());
         requester.setUnity(staff.getDepartment());
         requester.setMatricule(staff.getMatricule());
 
@@ -107,8 +108,7 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
 
 
         //nights
-        String nights = FieldUtils.getValueOfField(request,"nights");
-        ordreMission.setNights(Integer.valueOf(nights));
+        ordreMission.setNights(WorkDayCalculator.calculateNights(LocalDate.parse(startDate), LocalDate.parse(endDate)));
 
 
         //Transport
@@ -183,6 +183,19 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
         //receiptNumber
         String receiptNumber = FieldUtils.getValueOfField(request,"receiptNumber");
         ordreMission.setReceiptNumber(receiptNumber);
+
+        //Donneur d'ordre
+        String orderGive = FieldUtils.getValueOfField(request,"orderGive");
+
+        signature = userRestClient.getEmployeeSignature(orderGive);
+
+        Signatory signatory = signatoryService.getSignatory(orderGive);
+
+        signatory.setSignature(signature);
+
+        ordreMission.setOrderGiven(signatory);
+
+        this.ordreMissionRepository.save(ordreMission);
 
 
         logger.info("Complete Map");
@@ -279,6 +292,8 @@ public class OrdreMissionServiceImpl implements OrdreMissionService {
 
         //receiptNumber
         missionForm.setReceiptNumber(ordreMission.getReceiptNumber());
+
+        missionForm.setRequesterSignature(ordreMission.getOrderGiven().getSignature());
 
         logger.info("Complete Map");
 

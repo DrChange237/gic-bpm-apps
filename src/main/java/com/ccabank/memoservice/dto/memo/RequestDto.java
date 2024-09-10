@@ -16,6 +16,8 @@ public class RequestDto {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime lastModification;
+
     private int approbationLevel;
 
     private String documentType;
@@ -25,6 +27,7 @@ public class RequestDto {
     private List<ApprovalDto> approvals;
 
     private List<FieldDto> fields;
+
 
 
     public Long getId() {
@@ -97,5 +100,13 @@ public class RequestDto {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public LocalDateTime getLastModification() {
+        return lastModification;
+    }
+
+    public void setLastModification(LocalDateTime lastModification) {
+        this.lastModification = lastModification;
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 
@@ -104,6 +106,8 @@ public class WorkFormServiceImpl implements WorkformService {
         Signatory accountantSignatory = signatoryService.getSignatory(username);
         workForm.setAccountant(accountantSignatory);
 
+        this.workFormRepository.save(workForm);
+
         return  workForm;
     }
 
@@ -117,13 +121,22 @@ public class WorkFormServiceImpl implements WorkformService {
 
         workForm1.setUnity(workForm.getRequester().getUnity());
 
+        workForm1.setUser(workForm.getRequester().getName());
+
+
+        com.ccabank.memoservice.dto.reporting.WorkForm.Signatory signatory = new com.ccabank.memoservice.dto.reporting.WorkForm.Signatory();
+
+        signatory.setName(workForm.getRequester().getName());
+        signatory.setDate(workForm.getDate());
 
         String signature = userRestClient.getEmployeeSignature(workForm.getRequester().getUsername());
-        // workForm1.setSignature(signature);
 
+        signatory.setSignature(signature);
+
+        workForm1.setInitiator(signatory);
 
         //Supervisor
-        com.ccabank.memoservice.dto.reporting.WorkForm.Signatory signatory = new com.ccabank.memoservice.dto.reporting.WorkForm.Signatory();
+        signatory = new com.ccabank.memoservice.dto.reporting.WorkForm.Signatory();
         signatory.setName(workForm.getSupervisor().getOwner().getName());
         signature = userRestClient.getEmployeeSignature(workForm.getSupervisor().getOwner().getUsername());
         signatory.setSignature(signature);
@@ -144,6 +157,20 @@ public class WorkFormServiceImpl implements WorkformService {
         signatory.setSignature(signature);
         workForm1.setAccountant(signatory);
 
+
+
+        workForm1.setBrand(workForm.getBrand());
+        workForm1.setDesignation(workForm.getDesignation());
+        workForm1.setLabelCode(workForm.getCode());
+        workForm1.setProvider(workForm.getProvider());
+
+        // Convertir la chaîne en tableau
+        String[] array = workForm.getWorkToSolve().split(",");
+
+        // Convertir le tableau en liste
+        List<String> list = Arrays.asList(array);
+
+        workForm1.setTasks(list);
 
         return workForm1;
 

@@ -24,10 +24,14 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 import static com.ccabank.memoservice.constant.DocumentTypeConstant.*;
@@ -70,6 +74,7 @@ public class MapToReportServiceImpl implements MapToReportService {
     @Autowired
     private HandOverService handOverService;
 
+
     @Override
     public ByteArrayResource reportRequest(Request request){
 
@@ -82,16 +87,17 @@ public class MapToReportServiceImpl implements MapToReportService {
 
                 HandOverForm handOverForm = this.handOverService.construct(request);
 
-                logger.info("Received : {}", vacationForm);
+                VacationFullForm vacationFullForm = new VacationFullForm();
+
+                vacationFullForm.setVacation(vacationForm);
+
+                vacationFullForm.setHandover(handOverForm);
+
+                logger.info("Received : {}", vacationFullForm);
 
                 try {
 
-                    ByteArrayResource document1 = this.reportingRestClient.vacation(vacationForm);
-
-                    ByteArrayResource document2 = this.reportingRestClient.handover(handOverForm);
-
-                    ByteArrayResource response = FileUtils.mergeResources(document1,document2) ;
-
+                    ByteArrayResource response = this.reportingRestClient.vacation(vacationFullForm);
 
                     return response;
 

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -20,4 +21,8 @@ public interface ApprovalRepository extends JpaRepository<Approval, Long> {
 
     @Query("SELECT a FROM Approval a JOIN a.processUnity p WHERE p.staffList LIKE CONCAT('%', :username, '%') AND a.status = :status")
     List<Approval> findApprovalsByUsernameInStaffListAndStatus(@Param("username") String username, @Param("status") ApprovalStatus status);
+
+    List<Approval> findByRequest(Request request);
+
+    List<Approval> findByRequestAndPosition(Request request, int i);
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 public class FieldDto {
 
+    private Long id;
+
     private int position;
 
     private String key;
@@ -105,4 +107,11 @@ public class FieldDto {
         this.defaultValue = defaultValue;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -9,6 +9,10 @@ public class AcceptedApprovalDto {
     @Schema(example = "1")
     private Long idApproval;
 
+    @Schema(example = "2")
+    private int positionRejected = 1;
+
+
     @Schema(example = "Liste des champs")
     private List<FieldDto> fields;
 
@@ -48,5 +52,13 @@ public class AcceptedApprovalDto {
 
     public void setDecision(boolean decision) {
         this.decision = decision;
+    }
+
+    public int getPositionRejected() {
+        return positionRejected;
+    }
+
+    public void setPositionRejected(int positionRejected) {
+        this.positionRejected = positionRejected;
     }
 }
