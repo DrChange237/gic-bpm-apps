@@ -2,7 +2,6 @@ package com.ccabank.memoservice.entity;
 
 
 import com.ccabank.memoservice.util.field.FieldUtils;
-import com.sun.jersey.core.impl.provider.entity.XMLRootObjectProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;

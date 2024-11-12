@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "T_REQUEST")
-public class Request {
+public class Request  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

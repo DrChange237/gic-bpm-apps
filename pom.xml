@@ -57,6 +57,12 @@
         <dependency>
           <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
           <groupId>org.springframework.cloud</groupId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -79,13 +85,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.imgscalr</groupId>
-            <artifactId>imgscalr-lib</artifactId>
-            <version>4.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+
 
         <dependency>
             <artifactId>postgresql</artifactId>
@@ -110,11 +110,7 @@
             <version>${io.springfox.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>2.0.2</version>
-        </dependency>
+
 
         <dependency>
             <groupId>io.springfox</groupId>
@@ -195,6 +191,64 @@
         </dependency>
 
         <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter</artifactId>
+            <version>7.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.netflix</groupId>
+                    <artifactId>module-name</artifactId> <!-- Remplacez par le nom du module à exclure -->
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+            <!-- <artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
+            <version>7.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.netflix</groupId>
+                    <artifactId>module-name</artifactId> <!-- Même exclusion ici si nécessaire -->
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jhades</groupId>
+            <artifactId>jhades</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
+            <version>7.14.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.netflix</groupId>
+                    <artifactId>module-name</artifactId> <!-- Même exclusion ici si nécessaire -->
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
@@ -209,6 +263,14 @@
                 <scope>import</scope>
                 <type>pom</type>
                 <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <!-- Import dependency management from camunda -->
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-bom</artifactId>
+                <version>7.14.0</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -245,7 +307,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.6.RELEASE</version>
+        <version>2.3.8.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -336,6 +398,8 @@
     <!-- properties -->
     <properties>
 
+
+
         <aerogear.version>1.0.0</aerogear.version>
 
         <!-- JAVA version property -->
@@ -374,6 +438,15 @@
     </properties>
 
     <version>0.0.1</version>
+
+    <repositories>
+        <repository>
+            <id>camunda-bpm-nexus-public</id>
+            <name>camunda-bpm-nexus-public</name>
+            <url>https://app.camunda.com/nexus/content/groups/public</url>
+        </repository>
+
+    </repositories>
 
 
 </project>

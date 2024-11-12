@@ -5,7 +5,10 @@ spring:
 
   #  # DATASOURCE (POSTGRESSSQL)
 
-
+  datasource:
+    url: jdbc:postgresql://localhost:5432/paperless
+    username: postgres
+    password: root
 
 
   # JAP
