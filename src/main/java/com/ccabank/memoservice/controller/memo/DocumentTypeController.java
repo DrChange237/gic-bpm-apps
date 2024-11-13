@@ -24,6 +24,7 @@ public class DocumentTypeController {
     @Autowired
     private DocumentTypeService documentTypeService;
 
+
     @GetMapping("/documentType/getTypes")
     public ResponseEntity<?> getTypes() {
         try{
@@ -31,19 +32,16 @@ public class DocumentTypeController {
             return ResponseEntity.ok(documentTypeDtos);
         }catch (Exception exception){
             return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
-
         }
     }
 
     @GetMapping("/documentType/getTypeDetails")
     public ResponseEntity<?> getTypeDetails(@RequestParam(value = "name") String name) {
-
         try{
             DocumentTypeDto documentTypeDto = documentTypeService.getDocumentType(name).getData();
             return ResponseEntity.ok(documentTypeDto);
         }catch (Exception exception){
             return   ResponseEntity.badRequest().body(new HttpResponseError(null, exception.getMessage()));
-
         }
     }
 

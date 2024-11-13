@@ -6,13 +6,13 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentStructure {
-    private String name;
 
-    private String generateUrl;
+    private String name;
 
     private List<FieldDto> fields;
 
     private List<ApprovalDto> approvals;
+
 
     public String getName() {
         return name;
@@ -22,13 +22,6 @@ public class DocumentStructure {
         this.name = name;
     }
 
-    public String getGenerateUrl() {
-        return generateUrl;
-    }
-
-    public void setGenerateUrl(String generateUrl) {
-        this.generateUrl = generateUrl;
-    }
 
     public List<FieldDto> getFields() {
         return fields;

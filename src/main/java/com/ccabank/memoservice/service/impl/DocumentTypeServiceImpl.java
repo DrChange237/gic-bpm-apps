@@ -8,8 +8,11 @@ import com.ccabank.memoservice.dto.memo.DocumentTypeDto;
 import com.ccabank.memoservice.entity.ApprovalType;
 import com.ccabank.memoservice.entity.DocumentType;
 import com.ccabank.memoservice.repository.DocumentTypeRepository;
+import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.DocumentTypeService;
+import com.ccabank.memoservice.util.camunda.Mapping;
 import com.ccabank.memoservice.util.field.FieldUtils;
+import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,10 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Autowired
     private DocumentTypeRepository documentTypeRepository;
+
+    @Autowired
+    private CamundaService camundaService;
+
 
     @Override
     public AppServiceResult<List<DocumentTypeDto>> getDocumentTypes() {
@@ -60,8 +67,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
             DocumentTypeDto dto = new DocumentTypeDto();
             dto.setName(type.getStructure());
             dto.setDescription(type.getName());
-            dto.setStructure(FieldUtils.getStructure(type.getStructure()));
-
+            StartFormData formData = camundaService.getStartForm(type.getStructure());
+            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+            dto.setStructure(documentStructure);
             return new AppServiceResult<DocumentTypeDto>(true, 0, "Succeed!", dto);
 
         } catch (Exception e) {

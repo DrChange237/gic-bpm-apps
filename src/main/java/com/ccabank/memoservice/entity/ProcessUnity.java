@@ -1,11 +1,13 @@
 package com.ccabank.memoservice.entity;
 
 
+import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "T_PROCESS_UNITY")
-public class ProcessUnity {
+public class ProcessUnity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

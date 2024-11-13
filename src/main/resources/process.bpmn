@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1njbhpd" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
-  <bpmn:process id="Process_0731rj8" name="test" isExecutable="true" camunda:historyTimeToLive="180">
-    <bpmn:startEvent id="StartEvent_1">
+  <bpmn:process id="test" name="test" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="admin">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="field1" label="Name" type="string">
             <camunda:properties>
-              <camunda:property id="type" value="TYPE" />
+              <camunda:property id="required" value="false" />
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="text" />
             </camunda:properties>
             <camunda:validation>
               <camunda:constraint name="required" config="true" />
             </camunda:validation>
           </camunda:formField>
+          <camunda:formField id="approval1" label="Intérimaire" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="choice1" label="Sexe" type="string">
+            <camunda:properties>
+              <camunda:property id="required" value="true" />
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="choice" />
+              <camunda:property id="choices" value="[ { &#34;label&#34; : &#34;test&#34;, &#34;value&#34; : &#34;test&#34;} ]" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1vibfdh</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Activity_16ik4s4" name="Test User Task">
+    <bpmn:userTask id="Activity_16ik4s4" name="Test User Task" camunda:assignee="admin" camunda:priority="100">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="name" label="Name" type="string" defaultValue="Simo Trésor" />
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1vibfdh</bpmn:incoming>
       <bpmn:outgoing>Flow_0tm6say</bpmn:outgoing>
     </bpmn:userTask>
@@ -27,7 +48,7 @@
     <bpmn:sequenceFlow id="Flow_0tm6say" sourceRef="Activity_16ik4s4" targetRef="Event_09v0uzl" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0731rj8">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="test">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>

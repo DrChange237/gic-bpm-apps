@@ -6,7 +6,10 @@ import com.ccabank.memoservice.dto.memo.ProcessUnityDto;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.ProcessUnityMapper;
 import com.ccabank.memoservice.repository.ProcessUnityRepository;
+import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.ProcessUnityService;
+import org.camunda.bpm.engine.identity.Group;
+import org.camunda.bpm.engine.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,49 +38,60 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
     private ProcessUnityRepository processUnityRepository;
 
 
+    @Autowired
+    private CamundaService camundaService;
 
 
 
     @Override
-    public AppServiceResult<ProcessUnity> create(ProcessUnityDto processUnityDto) {
+    @Transactional
+    public AppServiceResult<ProcessUnityDto> create(ProcessUnityDto processUnityDto) {
         try {
             logger.info(MEMO_SERVICE + "create : methode invocation");
-            ProcessUnity processUnity = processUnityMapper.toEntity(processUnityDto);
-            processUnity = processUnityRepository.save(processUnity);
 
-            return new AppServiceResult<ProcessUnity>(true, 0, "Succeed!", processUnity );
+            camundaService.createGroup(processUnityDto.getCode(), processUnityDto.getName(),"");
+
+            List<String> staffList = List.of(processUnityDto.getStaffList().split(","));
+
+            for (String staff : staffList){
+                 camundaService.addUserToGroup(staff, processUnityDto.getCode());
+            }
+
+            return new AppServiceResult<ProcessUnityDto>(true, 0, "Succeed!", processUnityDto );
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " create : Exception {}", e.getMessage());
-            return new AppServiceResult<ProcessUnity>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<ProcessUnityDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
 
     @Override
-    public AppServiceResult<ProcessUnity> update(ProcessUnityDto processUnityDto) {
+    @Transactional
+    public AppServiceResult<ProcessUnityDto> update(ProcessUnityDto processUnityDto) {
         try {
             logger.info(MEMO_SERVICE + "create : methode invocation");
 
-            ProcessUnity processUnity = processUnityRepository.findById(processUnityDto.getId()).orElse(null);
+            //ProcessUnity processUnity = processUnityRepository.findById(processUnityDto.getId()).orElse(null);
 
-            if (processUnity == null) {
+            Group group = camundaService.getGroup(processUnityDto.getCode());
+
+            if (group == null) {
                 logger.warn("update : process unity not found -> " + processUnityDto.getId());
-                return new AppServiceResult<ProcessUnity>(false, HttpStatus.NOT_FOUND.value(), "process unity not found!", null);
+                return new AppServiceResult<ProcessUnityDto>(false, HttpStatus.NOT_FOUND.value(), "process unity not found!", null);
             }
 
-            processUnity.setCode(processUnityDto.getCode());
-            processUnity.setName(processUnityDto.getName());
-            processUnity.setStaffList(processUnityDto.getStaffList());
-            processUnity = processUnityRepository.save(processUnity);
+            camundaService.updateGroup(group.getId(), processUnityDto.getName(),"");
+            camundaService.updateGroupMembers(group.getId(), List.of(processUnityDto.getStaffList().split(",")));
 
-            return new AppServiceResult<ProcessUnity>(true, 0, "Succeed!", processUnity );
+
+            return new AppServiceResult<ProcessUnityDto>(true, 0, "Succeed!", processUnityDto );
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " create : Exception {}", e.getMessage());
-            return new AppServiceResult<ProcessUnity>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<ProcessUnityDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -106,9 +120,11 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
         try {
             logger.info(MEMO_SERVICE + "getAll : methode invocation");
 
-            List<ProcessUnity> unities = processUnityRepository.findAll();
+            List<Group> groups =   camundaService.getAllGroup();
 
-            List<ProcessUnityDto> unityDtos = this.getConvertedResult(unities, "getAll").getData();
+            //List<ProcessUnity> unities = processUnityRepository.findAll();
+
+            List<ProcessUnityDto> unityDtos = this.getConvertedResult(groups, "getAll").getData();
 
             return new AppServiceResult<List<ProcessUnityDto>>(true, 0, "Succeed!", unityDtos );
 
@@ -120,17 +136,30 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
         }
     }
 
-    private AppServiceResult<List<ProcessUnityDto>> getConvertedResult(List<ProcessUnity> processUnities, String functionName) {
-        if (processUnities == null) {
+    private AppServiceResult<List<ProcessUnityDto>> getConvertedResult(List<Group> groups, String functionName) {
+        if (groups == null) {
             logger.warn(MEMO_SERVICE, functionName,
                     "Feedback not exist!, Cannot further process!");
             return new AppServiceResult<List<ProcessUnityDto>>(false, AppError.Validattion.errorCode(),
                     "Process Unity not exist!", null);
         }
         List<ProcessUnityDto> result =  new ArrayList<ProcessUnityDto>();
-        if (processUnities.size() > 0) {
-            for (ProcessUnity processUnity : processUnities) {
-                result.add(processUnityMapper.toDto(processUnity));
+        if (groups.size() > 0) {
+            for (Group group : groups) {
+                ProcessUnityDto processUnityDto = new ProcessUnityDto();
+                processUnityDto.setCode(group.getId());
+                processUnityDto.setName(group.getName());
+
+                List<User> members = camundaService.getGroupDetailsWithMembers(group.getId());
+
+                System.out.println("Membres : " + members.size()  );
+
+                String staffList = "";
+                for(User m : members){
+                    staffList =  m.getId() + "," + staffList;
+                }
+                processUnityDto.setStaffList(staffList);
+                result.add(processUnityDto);
             }
         }
         return new AppServiceResult<List<ProcessUnityDto>>(true, 0, "Succeed!", result);
