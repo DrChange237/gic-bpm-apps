@@ -6,11 +6,12 @@ import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.Request;
 import org.springframework.core.io.ByteArrayResource;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface RequestService {
 
-    AppServiceResult<Request> newRequest(RequestDto requestDto);
+    AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest request);
 
     AppServiceResult<Request> update(RequestDto requestDto);
 

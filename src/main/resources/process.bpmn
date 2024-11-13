@@ -34,18 +34,21 @@
     </bpmn:startEvent>
     <bpmn:userTask id="Activity_16ik4s4" name="Test User Task" camunda:assignee="admin" camunda:priority="100">
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="name" label="Name" type="string" defaultValue="Simo Trésor" />
-        </camunda:formData>
+        <camunda:formData />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1vibfdh</bpmn:incoming>
       <bpmn:outgoing>Flow_0tm6say</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1vibfdh" sourceRef="StartEvent_1" targetRef="Activity_16ik4s4" />
     <bpmn:endEvent id="Event_09v0uzl">
-      <bpmn:incoming>Flow_0tm6say</bpmn:incoming>
+      <bpmn:incoming>Flow_1131dab</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0tm6say" sourceRef="Activity_16ik4s4" targetRef="Event_09v0uzl" />
+    <bpmn:sequenceFlow id="Flow_0tm6say" sourceRef="Activity_16ik4s4" targetRef="Gateway_0n61917" />
+    <bpmn:exclusiveGateway id="Gateway_0n61917">
+      <bpmn:incoming>Flow_0tm6say</bpmn:incoming>
+      <bpmn:outgoing>Flow_1131dab</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1131dab" sourceRef="Gateway_0n61917" targetRef="Event_09v0uzl" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="test">
@@ -56,7 +59,10 @@
         <dc:Bounds x="310" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_09v0uzl_di" bpmnElement="Event_09v0uzl">
-        <dc:Bounds x="522" y="99" width="36" height="36" />
+        <dc:Bounds x="762" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0n61917_di" bpmnElement="Gateway_0n61917" isMarkerVisible="true">
+        <dc:Bounds x="535" y="92" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1vibfdh_di" bpmnElement="Flow_1vibfdh">
         <di:waypoint x="215" y="117" />
@@ -64,7 +70,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0tm6say_di" bpmnElement="Flow_0tm6say">
         <di:waypoint x="410" y="117" />
-        <di:waypoint x="522" y="117" />
+        <di:waypoint x="535" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1131dab_di" bpmnElement="Flow_1131dab">
+        <di:waypoint x="585" y="117" />
+        <di:waypoint x="762" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

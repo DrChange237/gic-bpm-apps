@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.core.io.ClassPathResource;
@@ -17,10 +18,33 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Mapping {
+
+    public static Map<String, Object> getVariablesFromField(List<FieldDto> fields) {
+
+        Map<String, Object> variables = new HashMap<>();
+
+        for (FieldDto field : fields) {
+            variables.put(field.getKey(), field.getValue());
+        }
+        return variables;
+    }
+
+    public static Map<String, Object> getVariablesFromApproval(List<ApprovalDto> approvals) {
+
+        Map<String, Object> variables = new HashMap<>();
+
+        for (ApprovalDto approval : approvals) {
+            variables.put(approval.getKey(), approval.getStaff());
+        }
+
+        return variables;
+    }
 
     public static DocumentStructure getStructureFromFormData(StartFormData formData) {
 
@@ -58,6 +82,7 @@ public class Mapping {
             field.setPosition(fields.indexOf(f) + 1);
             field.setName(f.getLabel());
             field.setRequired(f.getProperties().get("required").equals("true"));
+            field.setValue(String.valueOf(f.getDefaultValue()));
             field.setDefaultValue(String.valueOf(f.getDefaultValue()));
             outFields.add(field);
         }
@@ -68,6 +93,7 @@ public class Mapping {
             ApprovalDto approval = new ApprovalDto();
             approval.setPosition(approvals.indexOf(f) + 1);
             approval.setRole(f.getLabel());
+            approval.setKey(f.getId());
             approval.setRequired(f.getProperties().get("required").equals("true"));
             outApprovals.add(approval);
         }

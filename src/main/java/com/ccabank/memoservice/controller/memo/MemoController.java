@@ -11,6 +11,8 @@ import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.service.faces.RequestService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -20,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Api(tags = "Paperless")
@@ -30,15 +33,17 @@ public class MemoController {
     @Autowired
     private RequestService requestService;
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/request/create")
     //@CrossOrigin()
-    public ResponseEntity<?> newRequest(@RequestBody RequestDto requestDto) {
-        AppBaseResult result = requestService.newRequest(requestDto);
+    public ResponseEntity<?> newRequest(HttpServletRequest request, @RequestBody RequestDto requestDto) {
+        AppBaseResult result = requestService.newRequest(requestDto, request);
         return result.isSuccess()
                 ? ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully added"))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PutMapping("/request/update")
     public ResponseEntity<?> update(@RequestBody RequestDto requestDto) {
         AppBaseResult result = requestService.update(requestDto);
@@ -47,6 +52,7 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/request/details")
     public ResponseEntity<?> details(@RequestParam(value = "id") Long id) {
         AppServiceResult<RequestDto> result = requestService.details(id);
@@ -55,6 +61,7 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/request/archived")
     public ResponseEntity<?> archived(@RequestBody ArchivageDto archivageDto) {
         AppServiceResult<RequestDto> result = requestService.achivage(archivageDto);
@@ -63,6 +70,7 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/request/validate")
     public ResponseEntity<?> validate(@RequestParam(value = "id") Long id) {
         AppBaseResult result = requestService.validateRequest(id);
@@ -71,6 +79,7 @@ public class MemoController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/request/download")
     public ResponseEntity<ByteArrayResource> download(@RequestParam(value = "id") Long id) {
 

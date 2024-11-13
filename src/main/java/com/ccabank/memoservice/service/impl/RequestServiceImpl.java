@@ -11,6 +11,7 @@ import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
+import com.ccabank.memoservice.util.camunda.Mapping;
 import com.ccabank.memoservice.util.field.FieldUtils;
 import com.ccabank.memoservice.util.file.FileUtils;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -72,40 +74,46 @@ public class RequestServiceImpl implements RequestService {
     private FileRepository fileRepository;
 
     @Autowired
-    private UserRestClient userRestClient;
+    private SecurityService securityService;
 
     @Autowired
-    private FieldMapper fieldMapper;
+    private CamundaService camundaService;
 
     @Override
-    public AppServiceResult<Request> newRequest(RequestDto requestDto) {
+    public AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest req) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+
+            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            System.out.println("UserName Employe" + employeeInfo.getUsername());
 
             Request request = new Request();
             request.setCreatedAt(LocalDateTime.now());
             request.setLastModification(LocalDateTime.now());
-
-            request.setStaff(requestDto.getStaff());
-
+            request.setStaff(employeeInfo.getUsername());
             LocalDate currentDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
             String date = currentDate.format(formatter);
-
             Long count = requestRepository.countRequestsCreatedToday() + 1;
             date = date + "-" + count;
-            EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(requestDto.getStaff());
             request.setReference(employeeInfo.getReference() + "/" + date);
             DocumentType type = documentTypeRepository.findOneByStructure(requestDto.getDocumentType());
             request.setType(type);
             request.setStatus(RequestStatus.DRAFT);
             request.setApprobationLevel(0);
-
             request = requestRepository.save(request);
+
+
+            Map<String, Object> variables = Mapping.getVariablesFromField(requestDto.getFields());
+            Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
+            variables.putAll(variablesApprovals);
+            variables.put("owner", requestDto.getStaff());
+
+            camundaService.createProcessInstance(type.getStructure(), variables);
 
             //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
 
-            for(FieldDto fieldDto : requestDto.getFields()){
+            /*for(FieldDto fieldDto : requestDto.getFields()){
                 Field field = new Field();
                 field.setKey(fieldDto.getKey());
                 field.setValue(fieldDto.getValue());
@@ -124,10 +132,10 @@ public class RequestServiceImpl implements RequestService {
                     file.setType(fileRest.getType());
                     file = fileRepository.save(file);
                 }
-            }
+            }*/
 
             //Approval User
-            for(ApprovalDto approvalDto : requestDto.getApprovals()){
+            /*for(ApprovalDto approvalDto : requestDto.getApprovals()){
                 if(approvalDto.getType() == ApprovalType.STATIC){
                     continue;
                 }
@@ -140,10 +148,10 @@ public class RequestServiceImpl implements RequestService {
                 approval.setProcessUnity(processUnity);
                 approval.setRequest(request);
                 approvalRepository.save(approval);
-            }
+            }*/
 
             //Approval Static
-            List<ApprovalDto> staticApprobals = documentTypeService.getStaticApprobals(type.getStructure());
+            /*List<ApprovalDto> staticApprobals = documentTypeService.getStaticApprobals(type.getStructure());
             for(ApprovalDto approvalDto : staticApprobals){
                 Approval approval = new Approval();
                 approval.setPosition(approvalDto.getPosition());
@@ -155,7 +163,7 @@ public class RequestServiceImpl implements RequestService {
                 approval.setProcessUnity(processUnity);
                 approval.setRequest(request);
                 approvalRepository.save(approval);
-            }
+            }*/
 
             return new AppServiceResult<Request>(true, 0, "Succeed!", request );
 

@@ -13,6 +13,8 @@ public class ApprovalDto {
 
     private  Long id;
 
+    private String key;
+
     private int position;
 
     private String staff;
@@ -49,6 +51,14 @@ public class ApprovalDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public int getPosition() {
