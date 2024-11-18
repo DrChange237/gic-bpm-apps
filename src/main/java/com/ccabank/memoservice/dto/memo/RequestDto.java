@@ -1,9 +1,12 @@
 package com.ccabank.memoservice.dto.memo;
 
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.RequestStatus;
+import org.springframework.http.RequestEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestDto {
@@ -28,8 +31,6 @@ public class RequestDto {
 
     private List<FieldDto> fields;
 
-
-
     public Long getId() {
         return id;
     }
@@ -37,6 +38,7 @@ public class RequestDto {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getStaff() {
         return staff;

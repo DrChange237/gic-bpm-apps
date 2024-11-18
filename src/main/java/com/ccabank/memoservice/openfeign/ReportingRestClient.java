@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/vacation/full/sheet")
-    ByteArrayResource vacation(@RequestBody VacationFullForm form);
+    ByteArrayResource vacation(@RequestBody VacationForm form);
 
     @PostMapping(path = "/api/reporting/service/resumption")
     ByteArrayResource resumption(@RequestBody ResumptionForm form);
@@ -35,4 +35,7 @@ public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/handover/sheet/v2")
     ByteArrayResource handover(@RequestBody HandOverForm form);
+
+    @PostMapping(path = "/api/reporting/interim/letter")
+    ByteArrayResource interim(@RequestBody InterimForm form);
 }

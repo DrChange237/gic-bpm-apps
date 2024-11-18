@@ -1,18 +1,18 @@
 package com.ccabank.memoservice.service.faces;
 
-import com.ccabank.memoservice.entity.Approval;
-import com.ccabank.memoservice.entity.ProcessUnity;
-import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 
 public interface EmailService {
 
-    boolean sendAskApprovalUnity(Request request, Approval approval, ProcessUnity unity);
 
-    boolean sendAskApproval(Request request, Approval approval);
+    boolean sendAskApproval(EmailAskApprovalDto ask);
 
-    boolean sendConfirmApproval(Request request, Approval approval);
 
-    boolean sendRejectedApproval(Request request, Approval approval);
+    boolean sendConfirmApproval(EmailAskApprovalDto ask);
 
-    boolean sendConfirmRequest(Request request);
+
+    boolean sendRejectedApproval(EmailAskApprovalDto ask);
+
+
+    boolean sendConfirmRequest(EmailAskApprovalDto ask);
 }

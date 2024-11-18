@@ -3,9 +3,6 @@ package com.ccabank.memoservice.service.impl;
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.ProcessUnityDto;
-import com.ccabank.memoservice.entity.*;
-import com.ccabank.memoservice.mappers.ProcessUnityMapper;
-import com.ccabank.memoservice.repository.ProcessUnityRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.ProcessUnityService;
 import org.camunda.bpm.engine.identity.Group;
@@ -31,12 +28,6 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
-    @Autowired
-    private ProcessUnityMapper processUnityMapper;
-
-    @Autowired
-    private ProcessUnityRepository processUnityRepository;
-
 
     @Autowired
     private CamundaService camundaService;
@@ -49,9 +40,9 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
         try {
             logger.info(MEMO_SERVICE + "create : methode invocation");
 
-            camundaService.createGroup(processUnityDto.getCode(), processUnityDto.getName(),"");
+            camundaService.createGroup(processUnityDto.getCode(), processUnityDto.getName(),"PROCESS-UNITY");
 
-            List<String> staffList = List.of(processUnityDto.getStaffList().split(","));
+            List<String> staffList = List.of(processUnityDto.getStaffList().split(";"));
 
             for (String staff : staffList){
                  camundaService.addUserToGroup(staff, processUnityDto.getCode());
@@ -60,8 +51,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
             return new AppServiceResult<ProcessUnityDto>(true, 0, "Succeed!", processUnityDto );
 
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " create : Exception {}", e.getMessage());
+
             return new AppServiceResult<ProcessUnityDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
@@ -83,7 +73,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
             }
 
             camundaService.updateGroup(group.getId(), processUnityDto.getName(),"");
-            camundaService.updateGroupMembers(group.getId(), List.of(processUnityDto.getStaffList().split(",")));
+            camundaService.updateGroupMembers(group.getId(), List.of(processUnityDto.getStaffList().split(";")));
 
 
             return new AppServiceResult<ProcessUnityDto>(true, 0, "Succeed!", processUnityDto );
@@ -101,9 +91,9 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
         try {
             logger.info(MEMO_SERVICE + "getDetail : methode invocation");
 
-            ProcessUnity unity = processUnityRepository.getOne(id);
+            //ProcessUnity unity = processUnityRepository.getOne(id);
 
-            ProcessUnityDto unityDto = processUnityMapper.toDto(unity);
+            ProcessUnityDto unityDto = new ProcessUnityDto();
 
             return new AppServiceResult<ProcessUnityDto>(true, 0, "Succeed!", unityDto );
 
@@ -156,7 +146,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
                 String staffList = "";
                 for(User m : members){
-                    staffList =  m.getId() + "," + staffList;
+                    staffList =  m.getEmail().replace("@cca-bank.com", "") + ";" + staffList;
                 }
                 processUnityDto.setStaffList(staffList);
                 result.add(processUnityDto);

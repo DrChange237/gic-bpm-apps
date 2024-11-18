@@ -7,7 +7,7 @@ import java.util.List;
 public class AcceptedApprovalDto {
 
     @Schema(example = "1")
-    private Long idApproval;
+    private String idApproval;
 
     @Schema(example = "2")
     private int positionRejected = 1;
@@ -22,11 +22,11 @@ public class AcceptedApprovalDto {
     @Schema(example = "true")
     private boolean decision;
 
-    public Long getIdApproval() {
+    public String getIdApproval() {
         return idApproval;
     }
 
-    public void setIdApproval(Long idApproval) {
+    public void setIdApproval(String idApproval) {
         this.idApproval = idApproval;
     }
 

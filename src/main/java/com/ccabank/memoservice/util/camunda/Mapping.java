@@ -1,22 +1,13 @@
 package com.ccabank.memoservice.util.camunda;
 
-import com.ccabank.memoservice.dto.memo.ApprovalDto;
-import com.ccabank.memoservice.dto.memo.ChoiceDto;
-import com.ccabank.memoservice.dto.memo.DocumentStructure;
-import com.ccabank.memoservice.dto.memo.FieldDto;
-import com.ccabank.memoservice.entity.Approval;
-import com.ccabank.memoservice.entity.Field;
+import com.ccabank.memoservice.dto.memo.*;
+import com.ccabank.memoservice.entity.ApprovalType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
-import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Mapping {
+
 
     public static Map<String, Object> getVariablesFromField(List<FieldDto> fields) {
 
@@ -34,6 +26,7 @@ public class Mapping {
         }
         return variables;
     }
+
 
     public static Map<String, Object> getVariablesFromApproval(List<ApprovalDto> approvals) {
 
@@ -93,6 +86,7 @@ public class Mapping {
             ApprovalDto approval = new ApprovalDto();
             approval.setPosition(approvals.indexOf(f) + 1);
             approval.setRole(f.getLabel());
+            approval.setType(ApprovalType.OPEN);
             approval.setKey(f.getId());
             approval.setRequired(f.getProperties().get("required").equals("true"));
             outApprovals.add(approval);

@@ -1,30 +1,27 @@
 package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.entity.ApprovalStatus;
+import com.ccabank.memoservice.entity.camunda.UserCamunda;
+import com.ccabank.memoservice.repository.GroupRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.service.faces.UserCamundaService;
 import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.StartFormData;
-import org.camunda.bpm.engine.history.HistoricProcessInstance;
-import org.camunda.bpm.engine.history.HistoricProcessInstanceQuery;
-import org.camunda.bpm.engine.history.HistoricTaskInstance;
-import org.camunda.bpm.engine.history.HistoricTaskInstanceQuery;
+import org.camunda.bpm.engine.history.*;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState;
 import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
-import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.rest.GroupRestService;
-import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
-import org.camunda.bpm.engine.spring.annotations.UserId;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,19 +50,36 @@ public class CamundaServiceImpl implements CamundaService {
     @Autowired
     private HistoryService historyService;
 
-    private GroupRestService groupRestService;
+    @Autowired
+    private UserCamundaService userCamundaService;
+
+    @Autowired
+    private GroupRepository groupRepository;
+
+
 
     //-------------------------------------------Process Instance---------------------------------------------------------
+    @Override
+    public ProcessDefinition getProcessDefinition(String processDefinitionId) {
+        return repositoryService.createProcessDefinitionQuery()
+                .processDefinitionId(processDefinitionId)
+                .singleResult();
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance(String processInstanceId) {
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId);
+
+        // Exécuter la requête et retourner la liste des instances
+        return query.singleResult();
+    }
 
     @Override
     public ProcessInstance createProcessInstance(String processDefinitionKey, Map<String, Object> variables) {
         // Créer une instance de processus sans la démarrer
         // Note : Camunda ne permet pas de créer une instance sans la démarrer,
         // mais vous pouvez stocker les variables pour un démarrage ultérieur.
-
-        // Vous pouvez utiliser une variable de type "Waiting"
-        variables.put("waiting", true); // Indiquer que le processus est en attente
-
         // Démarre le processus avec les variables
         return runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
     }
@@ -76,20 +90,11 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
-    // Démarrer un processus à partir d'une instance en attente
-    public void resumeProcessInstance(String instanceId, Map<String, Object> variables) {
-        // Récupérer l'exécution associée à l'ID d'instance
-        Execution execution = runtimeService.createExecutionQuery()
-                .executionId(instanceId)
-                .singleResult();
-
-        if (execution == null) {
-            throw new IllegalArgumentException("Execution with ID " + instanceId + " not found.");
-        }
-
-        // Envoyer un signal pour reprendre le processus
-        runtimeService.signal(execution.getId(), variables);
+    public void setProcessVariable(String processInstanceId, String variableName, Object value) {
+        runtimeService.setVariable(processInstanceId, variableName, value);
     }
+
+
 
     @Override
     public Map<String, Object> getProcessVariables(String instanceId) {
@@ -134,6 +139,15 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public List<HistoricActivityInstance> getHistoricActivityInstances(String processInstanceId) {
+        return historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .orderByHistoricActivityInstanceStartTime()
+                .asc()
+                .list();
+    }
+
+    @Override
     public List<HistoricTaskInstance> getExecutedTasksForProcessInstance(String processInstanceId) {
         // Créer une requête pour récupérer les instances de tâches historiques associées à une instance de processus
         HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
@@ -165,6 +179,22 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public Task getOneTaskForProcessInstanceAndKey(String processInstanceId, String definitionKey) {
+        // Créer une requête pour récupérer toutes les tâches associées à l'instance de processus
+        TaskQuery query = taskService.createTaskQuery()
+                .processInstanceId(processInstanceId).taskDefinitionKey(definitionKey);
+
+        // Exécuter la requête et retourner la liste des tâches
+        return query.singleResult();
+    }
+
+    @Override
+    public void completeTask(String taskId, Map<String, Object> variables) {
+        // Créer une requête pour récupérer toutes les tâches associées à l'instance de processus
+        taskService.complete(taskId, variables);
+    }
+
+    @Override
     public List<Task> getTasksAssignedToUser(String userId) {
         // Créer une requête pour récupérer les tâches assignées à l'utilisateur
         TaskQuery query = taskService.createTaskQuery()
@@ -172,6 +202,40 @@ public class CamundaServiceImpl implements CamundaService {
 
         // Exécuter la requête et retourner la liste des tâches
         return query.list();
+    }
+
+    @Override
+    public void claimTask(String taskId, String userId) {
+        // Revendiquer la tâche pour l'utilisateur spécifié
+        taskService.claim(taskId, userId);
+    }
+
+    @Override
+    public List<Task> getActiveTasksForUser(String userId) {
+        // Récupérer les groupes de l'utilisateur
+        List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
+
+        List<String> groupIds = groups.stream().map(group -> group.getId()).collect(Collectors.toList());
+
+
+        // Créer une requête de tâches pour les tâches assignées aux groupes
+        TaskQuery taskQuery = taskService.createTaskQuery()
+                .active() // Récupérer uniquement les tâches actives
+                .or()
+                .taskCandidateGroupIn(groupIds) // Tâches candidates pour les groupes
+                .taskAssignee(userId) // Tâches assignées directement à l'utilisateur
+                .endOr();
+
+        // Exécuter la requête et retourner la liste des tâches
+        return taskQuery.list();
+    }
+
+    @Override
+    public List<Task> getActiveTasksByAssignee(String username) {
+        return taskService.createTaskQuery()
+                .taskAssignee(username) // Filtrer par utilisateur assigné
+                .active() // Récupérer uniquement les tâches actives
+                .list(); // Exécuter la requête et retourner la liste
     }
 
     @Override
@@ -198,6 +262,38 @@ public class CamundaServiceImpl implements CamundaService {
         return query.list();
     }
 
+    @Override
+    public Task getTaskByProcessInstanceIdAndTaskKey(String processInstanceId, String taskDefinitionKey) {
+        List<Task> tasks = taskService.createTaskQuery()
+                .processInstanceId(processInstanceId)
+                .taskDefinitionKey(taskDefinitionKey)
+                .list();
+
+        if (!tasks.isEmpty()) {
+            return tasks.get(0); // Retourne la première tâche trouvée
+        }
+        return null; // Ou lance une exception selon vos besoins
+    }
+
+    @Override
+    public void assignTask(String processInstanceId, String taskId, String assignee) {
+
+        // Vérifier que l'utilisateur et le groupe existent
+        UserCamunda user = userCamundaService.getUser(assignee);
+        if (identityService.createUserQuery().userId(user.getId()).count() == 0) {
+            userCamundaService.newUser(assignee);
+            //throw new IllegalArgumentException("User with ID " + userId + " not found.");
+        }
+
+        taskService.createTaskQuery()
+                .processInstanceId(processInstanceId)
+                .taskDefinitionKey(taskId) // Utilisez la clé de la tâche
+                .list()
+                .forEach(task -> {
+                    taskService.setAssignee(task.getId(), user.getId());
+                });
+    }
+
 
     //-------------------------------------------Form Function---------------------------------------------------------
 
@@ -218,17 +314,22 @@ public class CamundaServiceImpl implements CamundaService {
         }
     }
 
+    @Override
+    public FormData getFormData(String taskId) {
+        return formService.getTaskFormData(taskId);
+    }
+
     //-------------------------------------------Group Function---------------------------------------------------------
 
     @Override
     public void createGroup(String groupId, String groupName, String groupType) {
         // Créer une nouvelle instance de GroupEntity
-        GroupEntity group = new GroupEntity();
+        com.ccabank.memoservice.entity.camunda.Group group = new com.ccabank.memoservice.entity.camunda.Group();
         group.setId(groupId);
         group.setName(groupName);
-        group.setType(groupType);
+        group.setType("PROCESS-UNITY");
         // Enregistrer le groupe via le service d'identité
-        identityService.saveGroup(group);
+        groupRepository.save(group);
     }
 
     @Override
@@ -241,7 +342,7 @@ public class CamundaServiceImpl implements CamundaService {
         if (group != null) {
             // Mettre à jour les propriétés du groupe
             group.setName(newName);
-            group.setType(newType);
+            group.setType("PROCESS-UNITY");
 
             // Enregistrer les modifications
             identityService.saveGroup(group);
@@ -252,38 +353,20 @@ public class CamundaServiceImpl implements CamundaService {
 
     // Ajouter un utilisateur au groupe
     @Override
+    @Transactional
     public void addUserToGroup(String userId, String groupId) {
-        User user = new UserEntity();
-        String filterUserId = userId.replace(".","");       // Vérifier que l'utilisateur et le groupe existent
-        if (identityService.createUserQuery().userId(filterUserId).count() == 0) {
-            user = this.newUser(userId);
-            //throw new IllegalArgumentException("User with ID " + userId + " not found.");
-        }
-        if (identityService.createGroupQuery().groupId(groupId).count() == 0) {
-            throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
-        }
-
-        // Ajouter l'utilisateur au groupe
-        identityService.createMembership(filterUserId, groupId);
+        userCamundaService.newMembership(userId,groupId);
     }
 
-    public User newUser(String userId) {
-        User user = new UserEntity();
-        user.setEmail(userId + "@cca-bank.com");
-        String[] fullname = userId.split("\\.");
-        user.setFirstName(fullname[0].toUpperCase());
-        user.setLastName(fullname[1].toUpperCase());
-        String newUserId = userId.replace(".", "");
-        user.setId(newUserId);
-        identityService.saveUser(user);
-        return user;
-    }
 
     // Supprimer un utilisateur du groupe
     @Override
     public void removeUserFromGroup(String userId, String groupId) {
+
+        UserCamunda user = userCamundaService.getUser(userId);
+
         // Vérifier que l'utilisateur et le groupe existent
-        if (identityService.createUserQuery().userId(userId).count() == 0) {
+        if (identityService.createUserQuery().userId(user.getId()).count() == 0) {
             throw new IllegalArgumentException("User with ID " + userId + " not found.");
         }
         if (identityService.createGroupQuery().groupId(groupId).count() == 0) {
@@ -291,7 +374,7 @@ public class CamundaServiceImpl implements CamundaService {
         }
 
         // Supprimer l'utilisateur du groupe
-        identityService.deleteMembership(userId, groupId);
+        identityService.deleteMembership(user.getId(), groupId);
     }
 
     // Remplacer la liste des membres du groupe
@@ -310,7 +393,8 @@ public class CamundaServiceImpl implements CamundaService {
 
         for (User memberId : existingMembers) {
             System.out.println(memberId);
-            removeUserFromGroup(memberId.getId(), groupId);
+            UserCamunda user = userCamundaService.getUserById(memberId.getId());
+            removeUserFromGroup(user.getId(), groupId);
         }
 
         // Ajouter les nouveaux membres
@@ -321,7 +405,7 @@ public class CamundaServiceImpl implements CamundaService {
 
     @Override
     public List<Group> getAllGroup(){
-        return identityService.createGroupQuery().list();
+        return identityService.createGroupQuery().groupType("PROCESS-UNITY").list();
     }
 
     @Override

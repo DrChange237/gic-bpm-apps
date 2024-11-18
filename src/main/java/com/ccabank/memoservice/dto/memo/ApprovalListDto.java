@@ -2,14 +2,17 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.entity.ApprovalStatus;
 import com.ccabank.memoservice.entity.ApprovalType;
+import lombok.Data;
 
 import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
-public class ApprovalListDto {
+@Data
+public class ApprovalListDto  {
 
-    private  Long id;
+    private  String id;
 
     @Null
     private int position;
@@ -41,102 +44,10 @@ public class ApprovalListDto {
     @Null
     private RequestInfo request;
 
+    private int priority;
+
+    private Date dueDate;
 
     private boolean required;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public String getStaff() {
-        return staff;
-    }
-
-    public void setStaff(String staff) {
-        this.staff = staff;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public ApprovalType getType() {
-        return type;
-    }
-
-    public void setType(ApprovalType type) {
-        this.type = type;
-    }
-
-    public LocalDateTime getApprovalDate() {
-        return approvalDate;
-    }
-
-    public void setApprovalDate(LocalDateTime approvalDate) {
-        this.approvalDate = approvalDate;
-    }
-
-    public ApprovalStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ApprovalStatus status) {
-        this.status = status;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public String getUnity() {
-        return unity;
-    }
-
-    public void setUnity(String unity) {
-        this.unity = unity;
-    }
-
-    public List<FieldDto> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<FieldDto> fields) {
-        this.fields = fields;
-    }
-
-    public RequestInfo getRequest() {
-        return request;
-    }
-
-    public void setRequest(RequestInfo request) {
-        this.request = request;
-    }
-
-    public boolean isRequired() {
-        return required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
 }

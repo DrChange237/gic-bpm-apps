@@ -37,6 +37,7 @@ public class HandOverForm {
     @Schema(description = "Tableau (format HTML) des responsabilités à prendre en main")
     private String responsibilities = "";
 
+
     public Employee getEmployee() {
         return employee;
     }
@@ -109,6 +110,7 @@ public class HandOverForm {
         @NotNull
         @Schema(description = "Date de signature")
         private LocalDate date = LocalDate.now();
+
 
         public String getName() {
             return name;

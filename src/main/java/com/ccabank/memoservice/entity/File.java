@@ -14,9 +14,6 @@ public class File {
     @Column(name = "ID", columnDefinition = "serial")
     private Long id;
 
-    @JoinColumn(name = "FIELD", referencedColumnName = "ID",  nullable = true)
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    private Field field;
 
     @Column(name = "URL")
     @Size(max = 255)
@@ -58,11 +55,4 @@ public class File {
         this.type = type;
     }
 
-    public Field getField() {
-        return field;
-    }
-
-    public void setField(Field field) {
-        this.field = field;
-    }
 }

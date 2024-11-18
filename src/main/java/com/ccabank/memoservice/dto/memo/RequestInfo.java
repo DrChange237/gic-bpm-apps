@@ -23,6 +23,10 @@ public class RequestInfo {
 
     private List<FieldDto> fields;
 
+    private List<ApprovalDto> approvals;
+
+
+
     public Long getId() {
         return id;
     }
@@ -85,5 +89,13 @@ public class RequestInfo {
 
     public void setFields(List<FieldDto> fields) {
         this.fields = fields;
+    }
+
+    public List<ApprovalDto> getApprovals() {
+        return approvals;
+    }
+
+    public void setApprovals(List<ApprovalDto> approvals) {
+        this.approvals = approvals;
     }
 }

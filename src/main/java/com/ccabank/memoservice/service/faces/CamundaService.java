@@ -1,12 +1,15 @@
 package com.ccabank.memoservice.service.faces;
 
 import com.ccabank.memoservice.entity.ApprovalStatus;
+import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 
@@ -15,12 +18,17 @@ import java.util.Map;
 
 public interface CamundaService {
 
+    //-------------------------------------------Process Instance---------------------------------------------------------
+    ProcessDefinition getProcessDefinition(String processDefinitionId);
+
+    ProcessInstance getProcessInstance(String processInstanceId);
+
     ProcessInstance createProcessInstance(String processDefinitionKey, Map<String, Object> variables);
 
     void setProcessVariables(String processInstanceId, Map<String, Object> variables);
 
-    // Démarrer un processus à partir d'une instance en attente
-    void resumeProcessInstance(String instanceId, Map<String, Object> variables);
+
+    void setProcessVariable(String processInstanceId, String variableName, Object value);
 
     Map<String, Object> getProcessVariables(String instanceId);
 
@@ -28,18 +36,37 @@ public interface CamundaService {
 
     List<HistoricProcessInstance> getProcessInstancesForUserWithStatus(String userId, CaseExecutionState status);
 
+    List<HistoricActivityInstance> getHistoricActivityInstances(String processInstanceId);
+
     List<HistoricTaskInstance> getExecutedTasksForProcessInstance(String processInstanceId);
 
     Task getTaskDetails(String taskId);
 
     List<Task> getTasksForProcessInstance(String processInstanceId);
 
+    Task getOneTaskForProcessInstanceAndKey(String processInstanceId, String definitionKey);
+
+    void completeTask(String taskId, Map<String, Object> variables);
+
     List<Task> getTasksAssignedToUser(String userId);
+
+    void claimTask(String taskId, String userId);
+
+
+    List<Task> getActiveTasksForUser(String userId);
+
+    List<Task> getActiveTasksByAssignee(String username);
 
     List<Task> getTasksAssignedToUserWithStatus(String userId, ApprovalStatus status);
 
+    Task getTaskByProcessInstanceIdAndTaskKey(String processInstanceId, String taskDefinitionKey);
+
+    void assignTask(String processInstanceId, String taskId, String assignee);
+
     StartFormData getStartForm(String processDefinitionKey);
 
+
+    FormData getFormData(String taskId);
 
     void createGroup(String groupId, String groupName, String groupType);
 

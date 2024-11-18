@@ -8,17 +8,5 @@ import java.util.List;
 
 public class ApprobalUtils {
 
-    public static ApprovalDto getApprobalStructure(String type, int position){
 
-        DocumentStructure structure = FieldUtils.getStructure(type);
-        List<ApprovalDto> approvalDtos = structure.getApprovals();
-
-        ApprovalDto approvalDto = approvalDtos.stream().filter(obj -> obj.getPosition() == position).findFirst().get();
-
-        if(approvalDto == null){
-            return null;
-        }
-
-        return approvalDto;
-    }
 }

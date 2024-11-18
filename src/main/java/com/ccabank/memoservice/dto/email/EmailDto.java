@@ -14,6 +14,8 @@ public class EmailDto {
 
     private String to;
 
+    private AttachmentDto[] attachments;
+
     public String getCc() {
         return cc;
     }
@@ -52,5 +54,13 @@ public class EmailDto {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    public AttachmentDto[] getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(AttachmentDto[] attachments) {
+        this.attachments = attachments;
     }
 }

@@ -41,11 +41,6 @@ public class Request  {
     @ManyToOne(optional = false)
     private DocumentType type;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "request", fetch = FetchType.LAZY)
-    private Collection<Approval> approvals = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "request", fetch = FetchType.LAZY)
-    private Collection<Field> fields = new ArrayList<>();
 
     @Basic(optional = true)
     @Column(name = "DOCUMENT_ID")
@@ -55,14 +50,23 @@ public class Request  {
     @Column(name = "ARCHIVED")
     private Boolean archived = false;
 
+    @Basic(optional = true)
+    @Column(name = "INSTANCE_ID")
+    private String instanceId;
+
 
 
     public Long getId() {
         return id;
     }
 
-    public Approval getApprovalByPosition(int position){
-        return this.approvals.stream().filter(obj -> obj.getPosition() == position).findFirst().get();
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 
     public RequestStatus getStatus() {
@@ -105,21 +109,6 @@ public class Request  {
         this.type = type;
     }
 
-    public Collection<Approval> getApprovals() {
-        return approvals;
-    }
-
-    public void setApprovals(Collection<Approval> approvals) {
-        this.approvals = approvals;
-    }
-
-    public Collection<Field> getFields() {
-        return fields;
-    }
-
-    public void setFields(Collection<Field> fields) {
-        this.fields = fields;
-    }
 
     public Long getDocumentId() {
         return documentId;

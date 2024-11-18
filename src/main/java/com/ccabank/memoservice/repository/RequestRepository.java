@@ -23,4 +23,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
 
     List<Request> findByStaffAndArchivedOrderByLastModificationDesc(String staff, boolean archived);
+
+    Request findByInstanceId(String instanceId);
 }
