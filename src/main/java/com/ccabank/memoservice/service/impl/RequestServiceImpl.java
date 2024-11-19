@@ -18,6 +18,7 @@ import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
@@ -62,6 +63,9 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private CamundaService camundaService;
 
+    @Autowired
+    private Mapping mapping;
+
 
     @Override
     public AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest req) {
@@ -87,11 +91,11 @@ public class RequestServiceImpl implements RequestService {
             request.setApprobationLevel(0);
             request = requestRepository.save(request);
 
-            Map<String, Object> variables = Mapping.getVariablesFromField(requestDto.getFields());
+            Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
             Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
             variables.putAll(variablesApprovals);
-            variables.put("owner", requestDto.getStaff());
-            variables.put("reference", requestDto.getReference());
+            variables.put("owner", request.getStaff());
+            variables.put("reference", request.getReference());
 
             ProcessInstance instance = camundaService.createProcessInstance(request.getType().getStructure(), variables);
 
@@ -124,7 +128,7 @@ public class RequestServiceImpl implements RequestService {
             request.setStatus(RequestStatus.DRAFT);
             request = requestRepository.save(request);
 
-            Map<String, Object> variables = Mapping.getVariablesFromField(requestDto.getFields());
+            Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
             Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
             variables.putAll(variablesApprovals);
             variables.put("owner", requestDto.getStaff());
@@ -188,7 +192,10 @@ public class RequestServiceImpl implements RequestService {
             Request request = requestRepository.getOne(id);
             RequestInfo dto = requestMapper.toDto(request);
             List<HistoricActivityInstance> historics = camundaService.getHistoricActivityInstances(request.getInstanceId());
-            List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(historics);
+
+            List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+
+            List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(histories);
             dto.setApprovals(approvalDtos);
             return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", dto );
 
@@ -199,37 +206,38 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    public  List<ApprovalDto> mapTaskToApprovalDto(List<HistoricActivityInstance> historics) {
+    public  List<ApprovalDto> mapTaskToApprovalDto(List<HistoricTaskInstance> historics) {
 
         List<ApprovalDto> approvalDtos = new ArrayList<>();
 
-        for (HistoricActivityInstance historic : historics) {
+        for (HistoricTaskInstance historic : historics) {
 
             System.out.println(historic);
 
-            String taskId = historic.getTaskId();
+            String taskId = historic.getId();
 
-            if(taskId == null){
-                continue;
-            }
-
-            Task task = camundaService.getTaskDetails(taskId);
-
-            if(task == null){
-                continue;
-            }
-
-            System.out.println("Task Id : " + taskId);
             ApprovalDto approvalDto = new ApprovalDto();
-            System.out.println("ActivitiName : " + historic.getActivityName());
-            approvalDto.setRole(historic.getActivityName());
-            System.out.println("Position : " + historics.indexOf(historic));
-            approvalDto.setPosition(historics.indexOf(historic));
-            if(task.getAssignee() != null){
-                System.out.println("Assigne : " + task.getAssignee());
-                approvalDto.setStaff(task.getAssignee());
-            }
+            approvalDto.setType(ApprovalType.STATIC);
             approvalDto.setStatus(ApprovalStatus.PENDING);
+
+            if(taskId != null){
+                approvalDto.setType(ApprovalType.OPEN);
+                System.out.println("Task Id : " + taskId);
+                approvalDto.setId(historic.getId());
+                System.out.println("ActivitiName : " + historic.getName());
+                approvalDto.setRole(historic.getName());
+                System.out.println("Position : " + historics.indexOf(historic));
+                approvalDto.setPosition(historics.indexOf(historic));
+                String natureTask = camundaService.getTaskAssigneeNature(taskId);
+                if(natureTask.equals("GROUP")){
+                    approvalDto.setType(ApprovalType.STATIC);
+                }
+                if(historic.getAssignee() != null){
+                    System.out.println("Assigne : " + historic.getAssignee());
+                    approvalDto.setStaff(historic.getAssignee());
+                }
+            }
+
             if(historic.getDurationInMillis() != null){
                 System.out.println("Duration : " + historic.getDurationInMillis());
                 if(historic.getDurationInMillis() > 0){
@@ -237,13 +245,12 @@ public class RequestServiceImpl implements RequestService {
                 }
             }
 
-            if(historic.isCompleteScope()){
+            if(historic.getEndTime() != null){
                 System.out.println("Is Complete : ");
                 approvalDto.setStatus(ApprovalStatus.ACCEPTED);
             }
 
             approvalDto.setFields(new ArrayList<>());
-            approvalDto.setType(ApprovalType.OPEN);
             approvalDtos.add(approvalDto);
         }
 
@@ -345,6 +352,15 @@ public class RequestServiceImpl implements RequestService {
             for (Request request : requests) {
                 RequestInfo dto = requestMapper.toDto(request);
                 dto.setDocumentType(request.getType().getName());
+                StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+
+                Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+
+                dto.setFields(Mapping.getFieldFromFormField(formData, variables));
+
+                List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+                List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(historics);
+                dto.setApprovals(approvalDtos);
 
                 result.add(dto);
             }

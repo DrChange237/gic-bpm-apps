@@ -31,11 +31,11 @@ public class HandOverForm {
 
     @NotBlank
     @Schema(description = "Tableau (format HTML) des dossiers critiques")
-    private String activities = "";
+    private String activities = "test";
 
     @NotBlank
     @Schema(description = "Tableau (format HTML) des responsabilités à prendre en main")
-    private String responsibilities = "";
+    private String responsibilities = "test";
 
 
     public Employee getEmployee() {

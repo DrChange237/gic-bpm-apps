@@ -16,13 +16,13 @@ import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -95,19 +95,20 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
 
-
     @Override
-    public Map<String, Object> getProcessVariables(String instanceId) {
+    public Map<String, Object> getProcessVariables(String processInstanceId) {
         // Récupérer les variables de l'instance de processus
-        Map<String, Object> variables = runtimeService.getVariables(instanceId);
+        List<VariableInstance> variableInstances = runtimeService
+                .createVariableInstanceQuery().processInstanceIdIn(processInstanceId)
+                .list();
 
-        // Convertir VariableMap en Map<String, Object>
-        Map<String, Object> result = new HashMap<>();
-        for (String key : variables.keySet()) {
-            result.put(key, variables.get(key));
-        }
+        System.out.println(variableInstances);
 
-        return result;
+        // Convertir en Map pour un accès facile
+        return variableInstances.stream()
+                .filter(variable -> variable.getName() != null)  // Filtrer les noms null
+                .filter(variable -> variable.getValue() != null)  // Filtrer les noms null
+                .collect(Collectors.toMap(VariableInstance::getName, VariableInstance::getValue));
     }
 
     @Override
@@ -139,6 +140,17 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public List<HistoricTaskInstance> getHistoricTasksForProcessInstance(String processInstanceId) {
+        // Créer une requête pour récupérer les instances de tâches historiques
+        HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .orderByHistoricTaskInstanceEndTime().desc(); // Optionnel: trier par date de fin
+
+        // Exécuter la requête et retourner la liste des tâches historiques
+        return query.list();
+    }
+
+    @Override
     public List<HistoricActivityInstance> getHistoricActivityInstances(String processInstanceId) {
         return historyService.createHistoricActivityInstanceQuery()
                 .processInstanceId(processInstanceId)
@@ -166,6 +178,46 @@ public class CamundaServiceImpl implements CamundaService {
         return taskService.createTaskQuery()
                 .taskId(taskId)
                 .singleResult();
+    }
+
+    @Override
+    public String getTaskAssigneeNature(String taskId) {
+        // Récupérer la tâche par son ID
+        Task task = taskService.createTaskQuery()
+                .taskId(taskId)
+                .singleResult();
+
+        // Vérifier si la tâche existe
+        if (task == null) {
+            return "GROUP";
+            //throw new IllegalArgumentException("Task not found with ID: " + taskId);
+        }
+
+        // Vérifier si l'assigné est un groupe ou un utilisateur
+        String assignee = task.getAssignee();
+
+        // Récupérer les groupes candidats
+        List<String> candidateGroups = taskService.getIdentityLinksForTask(taskId).stream()
+                .filter(link -> link.getGroupId() != null)
+                .map(link -> link.getGroupId()).collect(Collectors.toList());
+
+        if (!candidateGroups.isEmpty()) {
+            // Si l'assigné est null, mais qu'il y a des groupes candidats, c'est un groupe
+            return "GROUP";
+        }
+
+        return "USER";
+
+    }
+
+    @Override
+    public boolean isTaskAssignedToGroup(String taskId, String groupId) {
+        TaskQuery query = taskService.createTaskQuery()
+                .taskId(taskId)
+                .taskCandidateGroup(groupId);
+
+        List<Task> tasks = query.list();
+        return !tasks.isEmpty(); // Retourne vrai si la tâche est assignée au groupe
     }
 
     @Override
@@ -216,6 +268,17 @@ public class CamundaServiceImpl implements CamundaService {
         List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
 
         List<String> groupIds = groups.stream().map(group -> group.getId()).collect(Collectors.toList());
+
+        if (groupIds.isEmpty()){
+            TaskQuery taskQuery = taskService.createTaskQuery()
+                    .active() // Récupérer uniquement les tâches actives
+                    .or()
+                    .taskAssignee(userId) // Tâches assignées directement à l'utilisateur
+                    .endOr();
+
+            // Exécuter la requête et retourner la liste des tâches
+            return taskQuery.list();
+        }
 
 
         // Créer une requête de tâches pour les tâches assignées aux groupes
@@ -285,13 +348,23 @@ public class CamundaServiceImpl implements CamundaService {
             //throw new IllegalArgumentException("User with ID " + userId + " not found.");
         }
 
-        taskService.createTaskQuery()
+        if (taskService.createTaskQuery().taskId(taskId).singleResult() == null) {
+            throw new IllegalArgumentException("Task not found with ID: " + taskId);
+        }
+
+        // Réassigner la tâche à un nouvel utilisateur
+        taskService.setAssignee(taskId, assignee);
+
+        /*taskService.createTaskQuery()
                 .processInstanceId(processInstanceId)
                 .taskDefinitionKey(taskId) // Utilisez la clé de la tâche
                 .list()
                 .forEach(task -> {
-                    taskService.setAssignee(task.getId(), user.getId());
-                });
+                    if(task.getId() != null){
+                        System.out.println(task.getName());
+                        taskService.setAssignee(task.getId(), user.getId());
+                    }
+                });*/
     }
 
 

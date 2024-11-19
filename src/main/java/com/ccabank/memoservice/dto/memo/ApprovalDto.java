@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class ApprovalDto {
 
-    private  Long id;
+    private  String id;
 
     private String key;
 

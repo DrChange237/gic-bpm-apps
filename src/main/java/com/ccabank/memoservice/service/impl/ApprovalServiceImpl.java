@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
+import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
@@ -47,6 +48,9 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private Mapping mapping;
 
 
 
@@ -103,7 +107,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             requestRepository.save(request);
 
-            Map<String, Object> variables = Mapping.getVariablesFromField(incommingFields);
+            Map<String, Object> variables = mapping.getVariablesFromField(incommingFields);
 
             variables.put("decision", true);
 
@@ -202,6 +206,9 @@ public class ApprovalServiceImpl implements ApprovalService {
         System.out.println("Task " + position);
 
         ApprovalListDto approvalDto = new ApprovalListDto();
+        StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+        requestInfo.setFields(Mapping.getFieldFromFormField(formData, variables));
         approvalDto.setRequest(requestInfo);
         approvalDto.setId(task.getId());
         approvalDto.setRole(task.getName());

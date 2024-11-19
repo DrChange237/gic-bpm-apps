@@ -46,38 +46,49 @@ public class SendInterimLetter implements JavaDelegate {
         interim.setSex(InterimForm.Employee.Sex.MALE);
         form.setInterim(interim);
 
+        String owner = (String) delegateExecution.getVariable("Apbt_interimaire");
+        EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
+
+        InterimForm.Employee employee = new InterimForm.Employee();
+        employee.setMatricule(staff.getMatricule());
+        employee.setName(staff.getFirstName() + " " + staff.getLastName());
+        employee.setFunction(staff.getFunctionalTitle());
+        employee.setSex(InterimForm.Employee.Sex.MALE);
+        form.setEmployee(employee);
+
         form.setDate(LocalDate.now());
 
         // Numero du bas
-        form.setNumber(interimaire.getMobile());
+        form.setNumber("XXX");
+
 
 
         form.setSubject(InterimForm.Subject.INTERIM);
 
         //Note à Generer
-        form.setNoteId("");
+        form.setNoteId("NOTE");
 
         LocalDate startDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("startDate")) ;
         LocalDate endDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("endDate")) ;
 
-        form.setStartDate(startDate);
-        form.setEndDate(endDate);
+        form.setStartDate(LocalDate.now());
+        form.setEndDate(LocalDate.now());
 
 
         String signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
         form.setCachet(signature);
 
-        String owner = (String) delegateExecution.getVariable("owner");
 
-        EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
+        System.out.println(form);
 
         ByteArrayResource resource = reportingRestClient.interim(form);
 
         EmailDto emailDto = new EmailDto();
         emailDto.setFrom("notification@cca-bank.com");
         emailDto.setTo(interimaire.getEmail());
-        emailDto.setSubject("Formulaire de Hand Over");
+        emailDto.setSubject("Lettre d'intérim");
         emailDto.setCc(staff.getEmail());
+        emailDto.setBody("Lettre d'intérim");
 
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("lettre_interim.pdf");

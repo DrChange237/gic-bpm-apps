@@ -2,11 +2,15 @@ package com.ccabank.memoservice.util.camunda;
 
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.entity.ApprovalType;
+import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +18,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class Mapping {
 
 
-    public static Map<String, Object> getVariablesFromField(List<FieldDto> fields) {
+    @Autowired
+    private FileRestClient fileRestClient;
+
+
+    public static  List<FieldDto> getFieldFromFormField(FormData data, Map<String, Object> variables){
+
+        List<FieldDto> fieldDtos = new ArrayList<>();
+
+        List<FormField> fieldDatas = data.getFormFields().stream().filter(field -> field.getProperties().get("fieldType").equals("field")).collect(Collectors.toList());
+
+
+        for (FormField field : fieldDatas) {
+            if(field.getProperties().isEmpty()){
+                System.out.println("properties is empty");
+                continue;
+            }
+            FieldDto fieldDto = new FieldDto();
+            fieldDto.setPosition(fieldDtos.indexOf(fieldDto));
+            fieldDto.setName(field.getLabel());
+            fieldDto.setType(field.getProperties().get("type"));
+            fieldDto.setValue(String.valueOf(variables.get(field.getId())));
+            fieldDto.setRequired(field.getProperties().get("required").equals("true"));
+            fieldDtos.add(fieldDto);
+        }
+
+        return fieldDtos;
+    }
+
+
+    public Map<String, Object> getVariablesFromField(List<FieldDto> fields) {
 
         Map<String, Object> variables = new HashMap<>();
 
         for (FieldDto field : fields) {
+            if(field.getType().equals("file")){
+                for(FileDto file : field.getFiles()) {
+                    /*file = fileRestClient.uploadFileToFolder("paperless", "paperless", file.getFile());
+                    variables.put(file.getName(), file.getUrl());*/
+                }
+            }
             variables.put(field.getKey(), field.getValue());
         }
         return variables;

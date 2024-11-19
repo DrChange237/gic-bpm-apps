@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1c2bn5s" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
   <bpmn:collaboration id="Collaboration_0jgj7zn">
-    <bpmn:participant id="Participant_0ajcfue" processRef="Process_09gme2y" />
+    <bpmn:participant id="Participant_0ajcfue" name="CCA BANK" processRef="resumption" />
     <bpmn:textAnnotation id="TextAnnotation_1s3ijb9">
       <bpmn:text>Approbation</bpmn:text>
     </bpmn:textAnnotation>
@@ -11,7 +11,7 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1ybsmtv" associationDirection="None" sourceRef="Flow_0dne6dz" targetRef="TextAnnotation_0z52ols" />
   </bpmn:collaboration>
-  <bpmn:process id="Process_09gme2y" name="Reprise de Service" isExecutable="true">
+  <bpmn:process id="resumption" name="Reprise de Service" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:laneSet id="LaneSet_16ij7gv">
       <bpmn:lane id="Lane_0q9uw07" name="STAFF">
         <bpmn:flowNodeRef>Activity_1vsqa29</bpmn:flowNodeRef>
@@ -127,6 +127,7 @@
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0jgj7zn">
       <bpmndi:BPMNShape id="Participant_0ajcfue_di" bpmnElement="Participant_0ajcfue" isHorizontal="true">
         <dc:Bounds x="122" y="90" width="948" height="500" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0lrfp7t_di" bpmnElement="Lane_0lrfp7t" isHorizontal="true">
         <dc:Bounds x="152" y="90" width="918" height="260" />
@@ -204,14 +205,6 @@
         <di:waypoint x="290" y="360" />
         <di:waypoint x="290" y="250" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1o0qy6v_di" bpmnElement="Association_1o0qy6v">
-        <di:waypoint x="682.5" y="210" />
-        <di:waypoint x="683" y="140" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1ybsmtv_di" bpmnElement="Association_1ybsmtv">
-        <di:waypoint x="610" y="307.5" />
-        <di:waypoint x="633" y="304" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1s3ijb9_di" bpmnElement="TextAnnotation_1s3ijb9">
         <dc:Bounds x="633" y="110" width="100" height="30" />
         <bpmndi:BPMNLabel />
@@ -220,6 +213,14 @@
         <dc:Bounds x="633" y="280" width="100" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1o0qy6v_di" bpmnElement="Association_1o0qy6v">
+        <di:waypoint x="682.5" y="210" />
+        <di:waypoint x="683" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ybsmtv_di" bpmnElement="Association_1ybsmtv">
+        <di:waypoint x="610" y="307.5" />
+        <di:waypoint x="633" y="304" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -2,6 +2,7 @@ package com.ccabank.memoservice.process.vacation.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.reporting.VacationDecision;
 import com.ccabank.memoservice.dto.reporting.VacationForm;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
@@ -49,13 +50,13 @@ public class SendVacation implements JavaDelegate {
         form.setSignature(signature);
 
         LocalDate startDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("startDate")) ;
-        form.setStartDate(startDate);
+        form.setStartDate(LocalDate.now());
 
         LocalDate endDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("endDate"));
-        form.setEndDate(endDate);
+        form.setEndDate(LocalDate.now());
 
         LocalDate lastVacationDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("lastVacationDate"));
-        form.setLastVacationDate(lastVacationDate);
+        form.setLastVacationDate(LocalDate.now());
 
         VacationForm.Interim interim = new VacationForm.Interim();
         String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
@@ -81,6 +82,11 @@ public class SendVacation implements JavaDelegate {
         supervisor.setSignature(signature);
         form.setSupervisorNext(supervisor);
 
+        VacationDecision decision = new VacationDecision();
+
+        ByteArrayResource decisionVacation = reportingRestClient.vacationDecision(decision);
+
+
         ByteArrayResource resource = reportingRestClient.vacation(form);
 
         EmailDto emailDto = new EmailDto();
@@ -88,11 +94,16 @@ public class SendVacation implements JavaDelegate {
         emailDto.setTo(interimaire.getEmail());
         emailDto.setSubject("Demande de Congés Validées");
         emailDto.setCc(staff.getEmail());
-
+        emailDto.setBody("Demande de Congés Validées");
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("demande_congés.pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
-        emailDto.setAttachments(new AttachmentDto[]{attachment});
+
+        AttachmentDto attachmentDecision = new AttachmentDto();
+        attachmentDecision.setName("decision_congés.pdf");
+        attachmentDecision.setData(Base64.getEncoder().encodeToString(decisionVacation.getByteArray()));
+
+        emailDto.setAttachments(new AttachmentDto[]{attachment, attachmentDecision});
         this.emailRestClient.send(emailDto);
 
 

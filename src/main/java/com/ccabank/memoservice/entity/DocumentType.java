@@ -1,11 +1,14 @@
 package com.ccabank.memoservice.entity;
 
+import com.ccabank.memoservice.security.Authority;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "T_DOCUMENT_TYPE")
 public class DocumentType {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +31,10 @@ public class DocumentType {
 
     public DocumentType() {
 
+    }
+
+    public String getAuthority(){
+        return "ADD_" + this.name.toUpperCase();
     }
 
     public Long getId() {

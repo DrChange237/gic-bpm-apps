@@ -51,11 +51,11 @@ public class SendHandOver implements JavaDelegate {
         employee.setSignature(signature);
         handOverForm.setEmployee(employee);
 
-        LocalDate startDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("startDate")) ;
-        handOverForm.setStartDate(startDate);
+        LocalDate startDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("realStartDate")) ;
+        handOverForm.setStartDate(LocalDate.now());
 
         LocalDate endDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("endDate"));
-        handOverForm.setEndDate(endDate);
+        handOverForm.setEndDate(LocalDate.now());
 
 
         HandOverForm.Employee interim = new HandOverForm.Employee();
@@ -88,11 +88,16 @@ public class SendHandOver implements JavaDelegate {
 
         handOverForm.setSupervisor(supervisorModel);
 
+
         String criticFolder = (String) delegateExecution.getVariable("criticFolder");
 
         handOverForm.setActivities(criticFolder);
         String mainWork = (String) delegateExecution.getVariable("mainWork");
         handOverForm.setResponsibilities(mainWork);
+
+        System.out.println(handOverForm.toString());
+
+        //HandOverForm handOverForm1 = new HandOverForm();
 
         //Envoyer le HandOver Par Email à l'intérimaire
         ByteArrayResource resource = this.reportingRestClient.handover(handOverForm);
@@ -102,7 +107,7 @@ public class SendHandOver implements JavaDelegate {
         emailDto.setTo(interimaire.getEmail());
         emailDto.setSubject("Formulaire de Hand Over");
         emailDto.setCc(staff.getEmail());
-
+        emailDto.setBody("En pièce jointe le formulaire de HandOver");
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("handover.pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

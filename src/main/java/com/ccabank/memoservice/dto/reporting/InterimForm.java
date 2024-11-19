@@ -12,29 +12,30 @@ import java.time.LocalDate;
 public class InterimForm {
     @NotNull
     @Schema(description = "Date d'émission de la lettre", example = "2024-10-21")
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
     @NotNull
     @Schema(description = "Employé allant en congés")
-    private Employee employee;
+    private Employee employee = new Employee();
     @NotNull
     @Schema(description = "Employé assurant l'intérim")
-    private Employee interim;
+    private Employee interim = new Employee();
     @NotNull
     @Schema(description = "Date de début de l'intérim", example = "2024-10-21")
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
     @NotNull
     @Schema(description = "Date de fin de l'intérim", example = "2024-11-15")
-    private LocalDate endDate;
+    private LocalDate endDate = LocalDate.now();
     @NotBlank
     @Schema(description = "Numéro de la note", example = "00448023", requiredMode = Schema.RequiredMode.AUTO)
-    private String number;
+    private String number = "00448023";
     @NotBlank
     @Schema(description = "Référence de la note", example = "NOTE 2024 N° 2970/DGA/DAF/RCH/DAAS/CORH", requiredMode = Schema.RequiredMode.AUTO)
-    private String noteId;
+    private String noteId = "NOTE 2024 N° 2970/DGA/DAF/RCH/DAAS/CORH";
     @NotNull
-    private Subject subject;
+    private Subject subject = Subject.INTERIM;
+
     @Schema(example = " ", description = "Base64-encoded image contenant le cachet rond, le cachet nominatif et la signature du DGA")
-    private String cachet;
+    private String cachet = " ";
 
 
     @Getter
@@ -46,12 +47,12 @@ public class InterimForm {
     @Data
     public static class Employee {
         @Schema(description = "Nom complet", example = "LONLA Gatien Jordan")
-        private String name;
+        private String name = "Gatien Jordan";
         @Schema(description = "Matricule de l'employé", example = "01593")
-        private String matricule;
+        private String matricule =  "01593";
         @Schema(description = "Fonction de l'employé", example = "Développeur Back End")
-        private String function;
-        private Sex sex;
+        private String function = " ";
+        private Sex sex = Sex.MALE;
 
         @Getter
         public enum Sex {

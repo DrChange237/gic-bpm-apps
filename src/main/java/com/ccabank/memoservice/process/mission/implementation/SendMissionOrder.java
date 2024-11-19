@@ -1,0 +1,109 @@
+package com.ccabank.memoservice.process.mission.implementation;
+
+import com.ccabank.memoservice.dto.email.AttachmentDto;
+import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.reporting.MissionForm;
+import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.openfeign.EmailRestClient;
+import com.ccabank.memoservice.openfeign.ReportingRestClient;
+import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.process.general.service.RequestService;
+import com.ccabank.memoservice.process.mission.constant.TransportCommonConstant;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.Base64;
+
+@Component
+public class SendMissionOrder implements JavaDelegate {
+
+    @Autowired
+    private ReportingRestClient reportingRestClient;
+
+    @Autowired
+    private EmailRestClient emailRestClient;
+
+    @Autowired
+    private UserRestClient userRestClient;
+
+    @Autowired
+    private RequestService requestService;
+
+    @Override
+    public void execute(DelegateExecution delegateExecution) throws Exception {
+
+        requestService.confirmRequest(delegateExecution.getProcessDefinitionId());
+
+        MissionForm missionForm = new MissionForm();
+        String owner = (String) delegateExecution.getVariable("owner");
+        EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
+        String signature = userRestClient.getEmployeeSignature(owner);
+        missionForm.setRequesterSignature(signature);
+        missionForm.setName(staff.getFirstName() + " " + staff.getLastName());
+        missionForm.setDate(LocalDate.now());
+        String accountNumber = (String) delegateExecution.getVariable("accountNumber");
+        missionForm.setAccountNumber(accountNumber);
+        LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
+        missionForm.setStartDate(startDate);
+        LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
+        missionForm.setEndDate(endDate);
+        missionForm.setFunction(staff.getFunctionalTitle());
+        missionForm.setUnity(staff.getDepartment().getName());
+        String location = (String) delegateExecution.getVariable("location");
+        missionForm.setLocation(location);
+        String subject = (String) delegateExecution.getVariable("subject");
+        missionForm.setObject(subject);
+        missionForm.setPlace(staff.getAgency().getName());
+        Integer nights = (Integer) delegateExecution.getVariable("nights");
+        missionForm.setNights(nights);
+        Double missionFees = (Double) delegateExecution.getVariable("missionFees");
+        missionForm.setMissionFees(missionFees);
+        Double transportFees = (Double) delegateExecution.getVariable("transportFees");
+        missionForm.setMissionFees(transportFees);
+        String authorisationNumber = (String) delegateExecution.getVariable("authorisationNumber");
+        missionForm.setAuthorisationNumber(authorisationNumber);
+        Double chargeSupport = (Double) delegateExecution.getVariable("chargeSupport");
+        missionForm.setChargeSupport(chargeSupport);
+        String apbt_n1 = (String) delegateExecution.getVariable("Apbt_n1");
+        EmployeeInfo n1 =  userRestClient.getStaffByUsername(apbt_n1);
+        MissionForm.Signatory supervisor = new MissionForm.Signatory();
+        supervisor.setDate(LocalDate.now());
+        supervisor.setName(n1.getFirstName() + " " + n1.getLastName());
+        supervisor.setFunction(n1.getFunctionalTitle());
+        signature = userRestClient.getEmployeeSignature(apbt_n1);
+        supervisor.setSignature(signature);
+        missionForm.setSupervisor(supervisor);
+        MissionForm.Transport transport  = new MissionForm.Transport();
+        String transportMoyen = (String) delegateExecution.getVariable("transport");
+        transport.setCommon(false);
+        if(transportMoyen.equals(TransportCommonConstant.COMMON_TRANSPORT)){
+            transport.setCommon(true);
+        }
+        String coursier = (String) delegateExecution.getVariable("coursier");
+        transport.setCourier(coursier);
+        String immatriculation = (String) delegateExecution.getVariable("immatriculation");
+        transport.setImmatriculation(immatriculation);
+        missionForm.setTransport(transport);
+
+
+        //Envoyer le HandOver Par Email à l'intérimaire
+        ByteArrayResource resource = this.reportingRestClient.mission(missionForm);
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setFrom("notification@cca-bank.com");
+        emailDto.setTo(staff.getEmail());
+        emailDto.setSubject("Ordre de Mission");
+        emailDto.setCc(staff.getEmail());
+        emailDto.setBody("Ordre de Mission");
+        AttachmentDto attachment = new AttachmentDto();
+        attachment.setName("ordre_mission.pdf");
+        attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+        emailDto.setAttachments(new AttachmentDto[]{attachment});
+        this.emailRestClient.send(emailDto);
+
+    }
+}

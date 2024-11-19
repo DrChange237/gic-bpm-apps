@@ -6,6 +6,7 @@ import com.ccabank.memoservice.dto.HttpResponse;
 import com.ccabank.memoservice.dto.HttpResponseError;
 import com.ccabank.memoservice.dto.HttpResponseSuccess;
 import com.ccabank.memoservice.dto.memo.*;
+import com.ccabank.memoservice.security.Authority;
 import com.ccabank.memoservice.service.faces.ApprovalService;
 import com.ccabank.memoservice.service.faces.DocumentTypeService;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,20 +30,25 @@ public class ApprovalController {
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/approval/decision")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> decision(HttpServletRequest request, @RequestBody AcceptedApprovalDto acceptedApprovalDto) {
         AppServiceResult<?> result = approvalService.decision(request, acceptedApprovalDto);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/approval/reassign")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> reassign(@RequestBody ReassignDto reassignDto) {
         AppServiceResult<?> result = approvalService.reassign(reassignDto);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/approval/getDetails")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getDetails(@RequestParam(value = "id") String id) {
         AppServiceResult<ApprovalListDto> result = approvalService.getApprovalDetail(id);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
@@ -50,6 +57,7 @@ public class ApprovalController {
 
     @GetMapping("/approval/getApprovalByStaffAndStatus")
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
         AppServiceResult<List<ApprovalListDto>> result = approvalService.getApprovalByStaff(request, status);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())

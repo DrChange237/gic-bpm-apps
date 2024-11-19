@@ -36,11 +36,17 @@ public interface CamundaService {
 
     List<HistoricProcessInstance> getProcessInstancesForUserWithStatus(String userId, CaseExecutionState status);
 
+    List<HistoricTaskInstance> getHistoricTasksForProcessInstance(String processInstanceId);
+
     List<HistoricActivityInstance> getHistoricActivityInstances(String processInstanceId);
 
     List<HistoricTaskInstance> getExecutedTasksForProcessInstance(String processInstanceId);
 
     Task getTaskDetails(String taskId);
+
+    String getTaskAssigneeNature(String taskId);
+
+    boolean isTaskAssignedToGroup(String taskId, String groupId);
 
     List<Task> getTasksForProcessInstance(String processInstanceId);
 

@@ -2,6 +2,7 @@ package com.ccabank.memoservice.process.general.implementation;
 
 import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.EmailService;
@@ -25,9 +26,13 @@ public class SendRejectEmail implements JavaDelegate {
     @Autowired
     RequestRepository requestRepository;
 
+    @Autowired
+    RequestService requestService;
+
     @Override
     public void execute(DelegateExecution execution) {
 
+        requestService.rejectRequest(execution.getProcessDefinitionId());
 
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
 
@@ -38,7 +43,6 @@ public class SendRejectEmail implements JavaDelegate {
         String owner = (String) execution.getVariable("owner");
         String reference = (String) execution.getVariable("reference");
         Task task = camundaService.getTaskByProcessInstanceIdAndTaskKey(processInstanceId, approbation);
-
 
 
         ask.setSender(owner);
