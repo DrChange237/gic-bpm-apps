@@ -4,9 +4,12 @@ import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.InterimForm;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.entity.user.Gender;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
+import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.util.DateUtil;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -29,72 +32,90 @@ public class SendInterimLetter implements JavaDelegate {
     @Autowired
     private UserRestClient userRestClient;
 
+    @Autowired
+    private CamundaService camundaService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        System.out.println("Sending interim letter");
+        try{
 
-        InterimForm form = new InterimForm();
+            System.out.println("Sending interim letter");
 
-        String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
-        EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
+            InterimForm form = new InterimForm();
 
-        InterimForm.Employee interim = new InterimForm.Employee();
-        interim.setMatricule(interimaire.getMatricule());
-        interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-        interim.setFunction(interimaire.getFunctionalTitle());
-        interim.setSex(InterimForm.Employee.Sex.MALE);
-        form.setInterim(interim);
+            String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
+            EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
 
-        String owner = (String) delegateExecution.getVariable("Apbt_interimaire");
-        EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
+            InterimForm.Employee interim = new InterimForm.Employee();
+            interim.setMatricule(interimaire.getMatricule());
+            interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
+            interim.setFunction(interimaire.getFunction().getFunction().getId());
+            interim.setSex(InterimForm.Employee.Sex.MALE);
+            if(interimaire.getGender().equals(Gender.FEMALE)){
+                interim.setSex(InterimForm.Employee.Sex.FEMALE);
+            }
+            form.setInterim(interim);
 
-        InterimForm.Employee employee = new InterimForm.Employee();
-        employee.setMatricule(staff.getMatricule());
-        employee.setName(staff.getFirstName() + " " + staff.getLastName());
-        employee.setFunction(staff.getFunctionalTitle());
-        employee.setSex(InterimForm.Employee.Sex.MALE);
-        form.setEmployee(employee);
+            String owner = (String) delegateExecution.getVariable("Apbt_interimaire");
+            EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
 
-        form.setDate(LocalDate.now());
+            InterimForm.Employee employee = new InterimForm.Employee();
+            employee.setMatricule(staff.getMatricule());
+            employee.setName(staff.getFirstName() + " " + staff.getLastName());
+            employee.setFunction(staff.getFunction().getFunction().getName());
+            employee.setSex(InterimForm.Employee.Sex.MALE);
+            if(staff.getGender().equals(Gender.FEMALE)){
+                employee.setSex(InterimForm.Employee.Sex.FEMALE);
+            }
+            form.setEmployee(employee);
 
-        // Numero du bas
-        form.setNumber("XXX");
+            form.setDate(LocalDate.now());
 
+            // Numero du bas
+            form.setNumber("XXX");
 
+            String typeInterim = (String) delegateExecution.getVariable("typeInterim");
 
-        form.setSubject(InterimForm.Subject.INTERIM);
+            System.out.println(typeInterim);
 
-        //Note à Generer
-        form.setNoteId("NOTE");
-
-        LocalDate startDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("startDate")) ;
-        LocalDate endDate = DateUtil.convertStringToLocalDate((String) delegateExecution.getVariable("endDate")) ;
-
-        form.setStartDate(LocalDate.now());
-        form.setEndDate(LocalDate.now());
-
-
-        String signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
-        form.setCachet(signature);
+            form.setSubject(InterimForm.Subject.valueOf(typeInterim));
 
 
-        System.out.println(form);
+            //Note à Generer
+            form.setNoteId("NOTE 2024 N° 2970/DGA/DAF/RCH/DAAS/CORH");
 
-        ByteArrayResource resource = reportingRestClient.interim(form);
+            LocalDate startDate = (LocalDate) delegateExecution.getVariable("realStartDate");
+            LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate") ;
 
-        EmailDto emailDto = new EmailDto();
-        emailDto.setFrom("notification@cca-bank.com");
-        emailDto.setTo(interimaire.getEmail());
-        emailDto.setSubject("Lettre d'intérim");
-        emailDto.setCc(staff.getEmail());
-        emailDto.setBody("Lettre d'intérim");
+            form.setStartDate(startDate);
+            form.setEndDate(endDate);
 
-        AttachmentDto attachment = new AttachmentDto();
-        attachment.setName("lettre_interim.pdf");
-        attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
-        emailDto.setAttachments(new AttachmentDto[]{attachment});
-        this.emailRestClient.send(emailDto);
+
+            String signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
+            form.setCachet(signature);
+
+
+            System.out.println(form);
+
+            ByteArrayResource resource = reportingRestClient.interim(form);
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setFrom("notification@cca-bank.com");
+            emailDto.setTo(interimaire.getEmail());
+            emailDto.setSubject("Lettre d'intérim");
+            emailDto.setCc(staff.getEmail());
+            emailDto.setBody("Lettre d'intérim");
+
+            AttachmentDto attachment = new AttachmentDto();
+            attachment.setName("lettre_interim.pdf");
+            attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            emailDto.setAttachments(new AttachmentDto[]{attachment});
+            this.emailRestClient.send(emailDto);
+
+        }catch (Exception e){
+            camundaService.createIncident(delegateExecution.getProcessInstanceId(), IncidentTypeConstant.TECHNICAL, "Letter Interim Generation " + e.getMessage() );
+        }
 
     }
 }

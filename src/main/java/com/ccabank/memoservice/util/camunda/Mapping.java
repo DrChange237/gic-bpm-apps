@@ -1,5 +1,6 @@
 package com.ccabank.memoservice.util.camunda;
 
+import com.ccabank.memoservice.constant.FieldTypeConstant;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.entity.ApprovalType;
 import com.ccabank.memoservice.openfeign.FileRestClient;
@@ -12,6 +13,7 @@ import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,13 +58,26 @@ public class Mapping {
         Map<String, Object> variables = new HashMap<>();
 
         for (FieldDto field : fields) {
-            if(field.getType().equals("file")){
-                for(FileDto file : field.getFiles()) {
+            switch (field.getType()){
+                case FieldTypeConstant.FILE:
+
+                    for(FileDto file : field.getFiles()) {
                     /*file = fileRestClient.uploadFileToFolder("paperless", "paperless", file.getFile());
                     variables.put(file.getName(), file.getUrl());*/
-                }
+                    }
+                    break;
+
+                case FieldTypeConstant.DATE:
+                    variables.put(field.getKey(), LocalDate.parse(field.getValue()));
+                    break;
+
+                    case FieldTypeConstant.NUMBER:
+                        variables.put(field.getKey(), Long.valueOf(field.getValue()));
+                        break;
+
+                default:
+                    variables.put(field.getKey(), field.getValue());
             }
-            variables.put(field.getKey(), field.getValue());
         }
         return variables;
     }

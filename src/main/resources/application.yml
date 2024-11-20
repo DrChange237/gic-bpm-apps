@@ -5,8 +5,6 @@ spring:
 
   #  # DATASOURCE (POSTGRESSSQL)
 
-
-
   # JAP
   jpa:
     hibernate:

@@ -9,6 +9,7 @@ import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.process.mission.constant.TransportCommonConstant;
+import com.ccabank.memoservice.util.WorkDayCalculator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,15 @@ public class SendMissionOrder implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        requestService.confirmRequest(delegateExecution.getProcessDefinitionId());
 
         MissionForm missionForm = new MissionForm();
         String owner = (String) delegateExecution.getVariable("owner");
         EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
         String signature = userRestClient.getEmployeeSignature(owner);
         missionForm.setRequesterSignature(signature);
+        missionForm.setSignature(signature);
+
+
         missionForm.setName(staff.getFirstName() + " " + staff.getLastName());
         missionForm.setDate(LocalDate.now());
         String accountNumber = (String) delegateExecution.getVariable("accountNumber");
@@ -51,32 +54,51 @@ public class SendMissionOrder implements JavaDelegate {
         missionForm.setStartDate(startDate);
         LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
         missionForm.setEndDate(endDate);
-        missionForm.setFunction(staff.getFunctionalTitle());
+        missionForm.setFunction(staff.getFunction().getFunction().getName());
         missionForm.setUnity(staff.getDepartment().getName());
         String location = (String) delegateExecution.getVariable("location");
         missionForm.setLocation(location);
         String subject = (String) delegateExecution.getVariable("subject");
         missionForm.setObject(subject);
         missionForm.setPlace(staff.getAgency().getName());
-        Integer nights = (Integer) delegateExecution.getVariable("nights");
-        missionForm.setNights(nights);
-        Double missionFees = (Double) delegateExecution.getVariable("missionFees");
-        missionForm.setMissionFees(missionFees);
-        Double transportFees = (Double) delegateExecution.getVariable("transportFees");
-        missionForm.setMissionFees(transportFees);
+
+        int nightsLong = WorkDayCalculator.calculateNights(startDate, endDate);
+        missionForm.setNights(nightsLong);
+
+        Long missionFeesLong = (Long) delegateExecution.getVariable("missionFees");
+        missionForm.setMissionFees(missionFeesLong.doubleValue());
+
+        Long transportFees = (Long) delegateExecution.getVariable("transportFees");
+        missionForm.setMissionFees(transportFees.doubleValue());
+
         String authorisationNumber = (String) delegateExecution.getVariable("authorisationNumber");
         missionForm.setAuthorisationNumber(authorisationNumber);
-        Double chargeSupport = (Double) delegateExecution.getVariable("chargeSupport");
-        missionForm.setChargeSupport(chargeSupport);
+
+        Long chargeSupport = (Long) delegateExecution.getVariable("chargeSupport");
+        missionForm.setChargeSupport(chargeSupport.doubleValue());
+
         String apbt_n1 = (String) delegateExecution.getVariable("Apbt_n1");
         EmployeeInfo n1 =  userRestClient.getStaffByUsername(apbt_n1);
         MissionForm.Signatory supervisor = new MissionForm.Signatory();
         supervisor.setDate(LocalDate.now());
         supervisor.setName(n1.getFirstName() + " " + n1.getLastName());
-        supervisor.setFunction(n1.getFunctionalTitle());
+        supervisor.setFunction(n1.getFunction().getFunction().getName());
         signature = userRestClient.getEmployeeSignature(apbt_n1);
         supervisor.setSignature(signature);
         missionForm.setSupervisor(supervisor);
+
+        String apbt_n2 = (String) delegateExecution.getVariable("Apbt_n2");
+        EmployeeInfo n2 =  userRestClient.getStaffByUsername(apbt_n2);
+        MissionForm.Signatory supervisor2 = new MissionForm.Signatory();
+        supervisor2.setDate(LocalDate.now());
+        supervisor2.setName(n2.getFirstName() + " " + n1.getLastName());
+        supervisor2.setFunction(n2.getFunction().getFunction().getName());
+        signature = userRestClient.getEmployeeSignature(apbt_n2);
+        supervisor2.setSignature(signature);
+        missionForm.setSupervisor(supervisor2);
+
+
+
         MissionForm.Transport transport  = new MissionForm.Transport();
         String transportMoyen = (String) delegateExecution.getVariable("transport");
         transport.setCommon(false);
@@ -104,6 +126,9 @@ public class SendMissionOrder implements JavaDelegate {
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
         emailDto.setAttachments(new AttachmentDto[]{attachment});
         this.emailRestClient.send(emailDto);
+
+        requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+
 
     }
 }

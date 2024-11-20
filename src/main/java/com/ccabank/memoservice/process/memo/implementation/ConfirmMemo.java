@@ -38,7 +38,7 @@ public class ConfirmMemo implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        requestService.confirmRequest(delegateExecution.getProcessDefinitionId());
+        requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
         MemoForm form = new MemoForm();
 
@@ -64,7 +64,7 @@ public class ConfirmMemo implements JavaDelegate {
         List<MemoForm.Signatory> signatories = new ArrayList<>();
 
         while (nbSignatory <= 5){
-            apbt = (String) delegateExecution.getVariable("Apbt_" + nbSignatory);
+            apbt = (String) delegateExecution.getVariable("Apbt_n" + nbSignatory);
             if(apbt != null){
                 signataire =  userRestClient.getStaffByUsername(apbt);
                 MemoForm.Signatory signatory = new MemoForm.Signatory();
@@ -73,11 +73,11 @@ public class ConfirmMemo implements JavaDelegate {
                 signatory.setSignature(userRestClient.getEmployeeSignature(signataire.getUsername()));
                 signatories.add(signatory);
             }
+            nbSignatory++;
         }
 
         form.setSignatories(signatories);
 
-        //Envoyer le HandOver Par Email à l'intérimaire
         ByteArrayResource resource = this.reportingRestClient.memo(form);
 
         EmailDto emailDto = new EmailDto();

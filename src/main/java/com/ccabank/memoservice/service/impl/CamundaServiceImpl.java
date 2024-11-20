@@ -14,6 +14,7 @@ import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState;
 import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.Incident;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
 import org.camunda.bpm.engine.runtime.VariableInstance;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState.*;
@@ -55,6 +57,9 @@ public class CamundaServiceImpl implements CamundaService {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private ManagementService managementService;
 
 
 
@@ -208,6 +213,56 @@ public class CamundaServiceImpl implements CamundaService {
 
         return "USER";
 
+    }
+
+    @Override
+    public Optional<HistoricTaskInstance> getLastHistoricTaskInstance(String processInstanceId, String taskDefinitionKey) {
+        // Créer une requête pour récupérer les instances historiques de tâches
+        HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .taskDefinitionKey(taskDefinitionKey).orderByHistoricTaskInstanceEndTime().desc();
+
+        // Récupérer le premier résultat (le dernier HistoricTaskInstance)
+        if (!query.list().isEmpty()) {
+            return Optional.of(query.list().get(0));
+        } else {
+            return Optional.empty(); // Aucune instance trouvée
+        }
+    }
+
+    @Override
+    public void triggerProcessRestart(String messageName, String processInstanceId) {
+        // Envoyer un message pour relancer le processus
+        runtimeService
+                .createMessageCorrelation(messageName)
+                .processInstanceId(processInstanceId) // spécifier l'ID de l'instance de processus
+                .correlateWithResult(); // Cela relancera l'instance si le message est attendu
+    }
+
+    @Override
+    public Object getProcessVariable(String processInstanceId, String variableName) {
+        // Vérifiez que l'instance de processus existe
+        if (processInstanceId == null || variableName == null) {
+            throw new IllegalArgumentException("Process instance ID and variable name must not be null");
+        }
+
+        // Récupérer la valeur de la variable
+        Object variableValue = runtimeService.getVariable(processInstanceId, variableName);
+
+        // Vérifiez si la variable existe
+        if (variableValue == null) {
+            return null;
+        }
+
+        return variableValue;
+    }
+
+    @Override
+    public void createIncident(String processInstanceId, String incidentType, String incidentMessage) {
+        // Créer un incident
+        Incident incident = runtimeService.
+                createIncident(incidentType, processInstanceId, incidentMessage);
+        System.out.println("Incident created: " + incident.getId());
     }
 
     @Override

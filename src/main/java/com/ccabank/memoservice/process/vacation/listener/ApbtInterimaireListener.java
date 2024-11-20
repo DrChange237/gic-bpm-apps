@@ -18,5 +18,7 @@ public class ApbtInterimaireListener implements TaskListener {
 
         System.out.println("Assignation de l'intérim à " + interimaire);
 
+
+
     }
 }

@@ -1,6 +1,8 @@
 package com.ccabank.memoservice.dto.memo;
 
-public class ChoiceDto {
+import java.io.Serializable;
+
+public class ChoiceDto  implements Serializable {
 
     public ChoiceDto(){
 

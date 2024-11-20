@@ -47,4 +47,6 @@ public class VacationDecision {
     private Integer permissions = 0;
     @Schema(description = "Nombre de jours total accordés", example = "30", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer providedVacation = 18;
+
+
 }

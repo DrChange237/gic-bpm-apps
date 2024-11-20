@@ -15,6 +15,7 @@ import org.camunda.bpm.engine.task.Task;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface CamundaService {
 
@@ -45,6 +46,15 @@ public interface CamundaService {
     Task getTaskDetails(String taskId);
 
     String getTaskAssigneeNature(String taskId);
+
+    Optional<HistoricTaskInstance> getLastHistoricTaskInstance(String processInstanceId, String taskDefinitionKey);
+
+
+    void triggerProcessRestart(String messageName, String processInstanceId);
+
+    Object getProcessVariable(String processInstanceId, String variableName);
+
+    void createIncident(String processInstanceId, String incidentType, String incidentMessage);
 
     boolean isTaskAssignedToGroup(String taskId, String groupId);
 

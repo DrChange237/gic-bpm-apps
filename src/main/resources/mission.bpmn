@@ -3,7 +3,7 @@
   <bpmn:collaboration id="Collaboration_0omaou6">
     <bpmn:participant id="Participant_04wpnbx" name="CCA BANK" processRef="mission" />
   </bpmn:collaboration>
-  <bpmn:process id="mission" isExecutable="true">
+  <bpmn:process id="mission" name="Ordre de Mission" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0pl6ppp">
       <bpmn:lane id="Lane_0eyecvu" name="STAFF">
         <bpmn:flowNodeRef>mission_init</bpmn:flowNodeRef>
@@ -13,7 +13,7 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_1gb5eel" name="N + 1">
         <bpmn:flowNodeRef>Activity_1p1a1e5</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0vrwqf8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Abpt_n1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0rqv6xt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0569ide</bpmn:flowNodeRef>
       </bpmn:lane>
@@ -71,8 +71,9 @@
           <camunda:formField id="transport" label="Moyen de Transport" type="string">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
-              <camunda:property id="type" value="text" />
+              <camunda:property id="type" value="choice" />
               <camunda:property id="required" value="true" />
+              <camunda:property id="choices" value="[{&#34;label&#34;:&#34;Véhicule de Service&#34;,&#34;value&#34;:&#34;SERVICE&#34;},{&#34;label&#34;:&#34;Transport en Commun&#34;,&#34;value&#34;:&#34;COMMON&#34;}]" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="immatriculation" label="Immatriculation du véhicule" type="string">
@@ -113,7 +114,10 @@
       <bpmn:incoming>Flow_1wuf8hp</bpmn:incoming>
       <bpmn:outgoing>Flow_0vby8w3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Activity_0vrwqf8" name="Approbation N+1">
+    <bpmn:userTask id="Abpt_n1" name="Approbation N+1">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN1Listener" event="create" id="Apbt_n1" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vby8w3</bpmn:incoming>
       <bpmn:outgoing>Flow_0m1z4sk</bpmn:outgoing>
     </bpmn:userTask>
@@ -127,11 +131,14 @@
       <bpmn:outgoing>Flow_0bwgrnk</bpmn:outgoing>
       <bpmn:outgoing>Flow_1gzkj0h</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_080hkki" name="Demande d&#39;approbation N+2" camunda:delegateExpression="SendAskEmailN2">
+    <bpmn:serviceTask id="Activity_080hkki" name="Demande d&#39;approbation N+2" camunda:delegateExpression="${sendAskEmailN2}">
       <bpmn:incoming>Flow_0bwgrnk</bpmn:incoming>
       <bpmn:outgoing>Flow_1g6unlu</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="Activity_11jsy8s" name="Approbation N+2">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN2Listener" event="create" id="Apbt_n2" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1g6unlu</bpmn:incoming>
       <bpmn:outgoing>Flow_1rmkd2a</bpmn:outgoing>
     </bpmn:userTask>
@@ -142,8 +149,8 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1wcpetx" sourceRef="mission_init" targetRef="Validation" />
     <bpmn:sequenceFlow id="Flow_1wuf8hp" sourceRef="Validation" targetRef="Activity_1p1a1e5" />
-    <bpmn:sequenceFlow id="Flow_0vby8w3" sourceRef="Activity_1p1a1e5" targetRef="Activity_0vrwqf8" />
-    <bpmn:sequenceFlow id="Flow_0m1z4sk" sourceRef="Activity_0vrwqf8" targetRef="Gateway_0rqv6xt" />
+    <bpmn:sequenceFlow id="Flow_0vby8w3" sourceRef="Activity_1p1a1e5" targetRef="Abpt_n1" />
+    <bpmn:sequenceFlow id="Flow_0m1z4sk" sourceRef="Abpt_n1" targetRef="Gateway_0rqv6xt" />
     <bpmn:sequenceFlow id="Flow_0lefioh" sourceRef="Gateway_0rqv6xt" targetRef="Activity_0oojvbb" />
     <bpmn:sequenceFlow id="Flow_0vk0vor" sourceRef="Gateway_0rqv6xt" targetRef="Gateway_0569ide">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
@@ -164,7 +171,7 @@
     <bpmn:sequenceFlow id="Flow_08qx0tp" sourceRef="Gateway_1e1vu8a" targetRef="Activity_18ybrok">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_18ybrok" name="Observation de la Direction Générale">
+    <bpmn:userTask id="Activity_18ybrok" name="Observation de la Direction Générale" camunda:candidateGroups="direction-general">
       <bpmn:incoming>Flow_08qx0tp</bpmn:incoming>
       <bpmn:incoming>Flow_1gzkj0h</bpmn:incoming>
       <bpmn:outgoing>Flow_0te12wy</bpmn:outgoing>
@@ -187,7 +194,7 @@
     <bpmn:endEvent id="Event_1vixsug">
       <bpmn:incoming>Flow_1d1wz4e</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_1b0d9ah" name="Envoi de l&#39;Ordre de Mission" camunda:delegateExpression="${SendMissionOrder}">
+    <bpmn:serviceTask id="Activity_1b0d9ah" name="Envoi de l&#39;Ordre de Mission" camunda:delegateExpression="${sendMissionOrder}">
       <bpmn:incoming>Flow_17xh056</bpmn:incoming>
       <bpmn:outgoing>Flow_1d1wz4e</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -249,20 +256,20 @@
         <dc:Bounds x="129" y="80" width="2191" height="982" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_0eyecvu_di" bpmnElement="Lane_0eyecvu" isHorizontal="true">
-        <dc:Bounds x="159" y="812" width="2161" height="250" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_1gb5eel_di" bpmnElement="Lane_1gb5eel" isHorizontal="true">
-        <dc:Bounds x="159" y="590" width="2161" height="222" />
+      <bpmndi:BPMNShape id="Lane_12quag6_di" bpmnElement="Lane_12quag6" isHorizontal="true">
+        <dc:Bounds x="159" y="80" width="2161" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1gep159_di" bpmnElement="Lane_1gep159" isHorizontal="true">
         <dc:Bounds x="159" y="340" width="2161" height="250" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_12quag6_di" bpmnElement="Lane_12quag6" isHorizontal="true">
-        <dc:Bounds x="159" y="80" width="2161" height="260" />
+      <bpmndi:BPMNShape id="Lane_1gb5eel_di" bpmnElement="Lane_1gb5eel" isHorizontal="true">
+        <dc:Bounds x="159" y="590" width="2161" height="222" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0eyecvu_di" bpmnElement="Lane_0eyecvu" isHorizontal="true">
+        <dc:Bounds x="159" y="812" width="2161" height="250" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="mission_init">
@@ -277,7 +284,7 @@
       <bpmndi:BPMNShape id="Activity_1wahzdz_di" bpmnElement="Activity_1p1a1e5">
         <dc:Bounds x="250" y="630" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_067d30v_di" bpmnElement="Activity_0vrwqf8">
+      <bpmndi:BPMNShape id="Activity_067d30v_di" bpmnElement="Abpt_n1">
         <dc:Bounds x="430" y="630" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0rqv6xt_di" bpmnElement="Gateway_0rqv6xt" isMarkerVisible="true">

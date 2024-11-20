@@ -80,6 +80,16 @@ public class RequestController {
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @GetMapping("/request/download")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
+    public ResponseEntity<?> download(@RequestParam(value = "id") Long id) {
+        AppBaseResult result = requestService.download(id);
+        return result.isSuccess()
+                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully downloaded"))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/request/getRequestByStaffAndStatus")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {

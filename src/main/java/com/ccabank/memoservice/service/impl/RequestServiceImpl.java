@@ -6,37 +6,26 @@ import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
-import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
 import com.ccabank.memoservice.util.camunda.Mapping;
-import com.ccabank.memoservice.util.file.FileUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.camunda.bpm.engine.form.FormData;
-import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 
@@ -183,6 +172,30 @@ public class RequestServiceImpl implements RequestService {
         }
 
 
+    }
+
+    @Override
+    public AppServiceResult<?> download(Long id) {
+        try {
+            Request request = requestRepository.getOne(id);
+            request.setLastModification(LocalDateTime.now());
+
+            if (request == null) {
+                throw new Exception("Aucune requete retrouvée");
+            }
+
+            if (!request.getStatus().equals(RequestStatus.ACCEPTED)) {
+                throw new Exception("Cette requete n'est pas encore acceptée");
+            }
+
+            camundaService.triggerProcessRestart("Download", request.getInstanceId());
+            return new AppServiceResult<>(true, 0, "Succeed!", request);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " downloadRequest : Exception {}", e.getMessage());
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        }
     }
 
     @Override

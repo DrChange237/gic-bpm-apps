@@ -18,6 +18,8 @@ public interface RequestService {
 
     AppServiceResult<?> validateRequest(Long id);
 
+    AppServiceResult<?> download(Long id);
+
     AppServiceResult<RequestInfo> details(Long id);
 
     AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto);

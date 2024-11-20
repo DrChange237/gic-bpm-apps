@@ -22,7 +22,7 @@ public class StartResumptionListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
-        String processInstanceId = delegateExecution.getProcessInstanceId();
+        /*String processInstanceId = delegateExecution.getProcessInstanceId();
         List<ChoiceDto> choices = new ArrayList<>();
         ChoiceDto choice = new ChoiceDto("Congés Annuels", ReasonConstant.ANNUAL);
         choices.add(choice);
@@ -33,7 +33,7 @@ public class StartResumptionListener implements ExecutionListener {
         choice = new ChoiceDto("Absence", ReasonConstant.ABSENCE);
         choices.add(choice);
 
-        camundaService.setProcessVariable(processInstanceId, "reason" , choices);
+        camundaService.setProcessVariable(processInstanceId, "reason" , choices);*/
 
     }
 }

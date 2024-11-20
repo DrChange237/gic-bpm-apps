@@ -13,102 +13,73 @@ import java.util.Objects;
 public class MissionForm {
     @NotBlank
     @Schema(example = "Douala")
-    private String place;
+    private String place = "Douala";
     @NotNull
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
 
     @NotBlank
     @Schema(example = "LONLA GATIEN JORDAN")
-    private String name;
+    private String name = "LONLA GATIEN JORDAN" ;
     @NotBlank
     @Schema(example = "Développeur Back-End")
-    private String function;
+    private String function = "Développeur Back-End";
     @NotBlank
     @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
-    private String unity;
+    private String unity = "DSD";
     @NotBlank
     @Schema(example = "Déploiement de la solution MOTOMAN", description = "Objet de la mission")
-    private String object;
+    private String object = "Déploiement de la solution MOTOMAN";
     @NotBlank
     @Schema(description = "Lieu de la mission", example = "YAOUNDE")
-    private String location;
+    private String location = "YAOUNDE";
     @NotNull
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
     @NotNull
-    private LocalDate endDate;
+    private LocalDate endDate = LocalDate.now();
     @NotNull
     @Schema(description = "Nombre de nuitées", example = "3")
-    private Integer nights;
+    private Integer nights = 3;
     @NotNull
-    private Transport transport;
+    private Transport transport = new Transport();
     @NotBlank
     @Schema(description = "Numéro de compte courant", example = "00671459701 - 67")
-    private String accountNumber;
+    private String accountNumber = "00671459701 - 67";
     @NotNull
-    private Signatory supervisor;
+    private Signatory supervisor = new Signatory();
     @NotNull
-    private Signatory supervisorNext;
+    private Signatory supervisorNext = new Signatory();
     @NotNull
-    private Signatory uch;
+    private Signatory uch = new Signatory();
     @Schema(description = "Décision de la Direction Générale", example = "Favorable")
-    private String decision;
-    @Schema(example = " ")
-    private String signature;
-    @Schema(description = "Signature du donneur d'ordre", example = " ")
-    private String requesterSignature;
+    private String decision = "Favorable";
 
-    private Double chargeSupport;
-    private Double missionFees;
-    private Double transportFees;
+    @Schema(example = " ")
+    private String signature = "";
+
+    @Schema(description = "Signature du donneur d'ordre", example = " ")
+    private String requesterSignature = "";
+
+    private Double chargeSupport = 0.0;
+    private Double missionFees = 0.0;
+    private Double transportFees = 0.0;
     @Schema(example = "123456789")
-    private String authorisationNumber;
+    private String authorisationNumber = "123456789";
     @Schema(example = "987654321")
-    private String receiptNumber;
+    private String receiptNumber =  "987654321";
 
     @Data
     @Schema(name = "Signer")
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
-        private String name;
+        private String name = "SIMO PATRICK";
+
         @Schema(example = "Chef de département")
-        private String function;
+        private String function = "Chef de département";
         @NotNull
-        private LocalDate date;
+        private LocalDate date = LocalDate.now();
         @Schema(example = " ", description = "Base64-encoded image")
-        private String signature;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getFunction() {
-            return function;
-        }
-
-        public void setFunction(String function) {
-            this.function = function;
-        }
-
-        public LocalDate getDate() {
-            return date;
-        }
-
-        public void setDate(LocalDate date) {
-            this.date = date;
-        }
-
-        public String getSignature() {
-            return signature;
-        }
-
-        public void setSignature(String signature) {
-            this.signature = signature;
-        }
+        private String signature =  "";
     }
 
     @Data
@@ -116,245 +87,8 @@ public class MissionForm {
         @Schema(example = "false")
         public Boolean common = false;
         @Schema(example = "CE277DG")
-        public String immatriculation;
+        public String immatriculation = "CE277DG";
         @Schema(example = "CLÉMENT")
-        public String courier;
-
-        public Boolean getCommon() {
-            return common;
-        }
-
-        public void setCommon(Boolean common) {
-            this.common = common;
-        }
-
-        public String getImmatriculation() {
-            return immatriculation;
-        }
-
-        public void setImmatriculation(String immatriculation) {
-            this.immatriculation = immatriculation;
-        }
-
-        public String getCourier() {
-            return courier;
-        }
-
-        public void setCourier(String courier) {
-            this.courier = courier;
-        }
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFunction() {
-        return function;
-    }
-
-    public void setFunction(String function) {
-        this.function = function;
-    }
-
-    public String getUnity() {
-        return unity;
-    }
-
-    public void setUnity(String unity) {
-        this.unity = unity;
-    }
-
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public Integer getNights() {
-        return nights;
-    }
-
-    public void setNights(Integer nights) {
-        this.nights = nights;
-    }
-
-    public Transport getTransport() {
-        return transport;
-    }
-
-    public void setTransport(Transport transport) {
-        this.transport = transport;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public Signatory getSupervisor() {
-        return supervisor;
-    }
-
-    public void setSupervisor(Signatory supervisor) {
-        this.supervisor = supervisor;
-    }
-
-    public Signatory getSupervisorNext() {
-        return supervisorNext;
-    }
-
-    public void setSupervisorNext(Signatory supervisorNext) {
-        this.supervisorNext = supervisorNext;
-    }
-
-    public Signatory getUch() {
-        return uch;
-    }
-
-    public void setUch(Signatory uch) {
-        this.uch = uch;
-    }
-
-    public String getDecision() {
-        return decision;
-    }
-
-    public void setDecision(String decision) {
-        this.decision = decision;
-    }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
-
-    public String getRequesterSignature() {
-        return requesterSignature;
-    }
-
-    public void setRequesterSignature(String requesterSignature) {
-        this.requesterSignature = requesterSignature;
-    }
-
-    public Double getChargeSupport() {
-        return chargeSupport;
-    }
-
-    public void setChargeSupport(Double chargeSupport) {
-        this.chargeSupport = chargeSupport;
-    }
-
-    public Double getMissionFees() {
-        return missionFees;
-    }
-
-    public void setMissionFees(Double missionFees) {
-        this.missionFees = missionFees;
-    }
-
-    public Double getTransportFees() {
-        return transportFees;
-    }
-
-    public void setTransportFees(Double transportFees) {
-        this.transportFees = transportFees;
-    }
-
-    public String getAuthorisationNumber() {
-        return authorisationNumber;
-    }
-
-    public void setAuthorisationNumber(String authorisationNumber) {
-        this.authorisationNumber = authorisationNumber;
-    }
-
-    public String getReceiptNumber() {
-        return receiptNumber;
-    }
-
-    public void setReceiptNumber(String receiptNumber) {
-        this.receiptNumber = receiptNumber;
-    }
-
-    @Override
-    public String toString() {
-        return "MissionForm{" +
-                "place='" + place + '\'' +
-                ", date=" + date +
-                ", name='" + name + '\'' +
-                ", function='" + function + '\'' +
-                ", unity='" + unity + '\'' +
-                ", object='" + object + '\'' +
-                ", location='" + location + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", nights=" + nights +
-                ", transport=" + transport +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", supervisor=" + supervisor +
-                ", supervisorNext=" + supervisorNext +
-                ", uch=" + uch +
-                ", decision='" + decision + '\'' +
-                ", signature='" + signature + '\'' +
-                ", requesterSignature='" + requesterSignature + '\'' +
-                ", chargeSupport=" + chargeSupport +
-                ", missionFees=" + missionFees +
-                ", transportFees=" + transportFees +
-                ", authorisationNumber='" + authorisationNumber + '\'' +
-                ", receiptNumber='" + receiptNumber + '\'' +
-                '}';
+        public String courier = "CLÉMENT";
     }
 }

@@ -63,11 +63,14 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     public AppServiceResult<DocumentTypeDto> getDocumentType(String structure) {
         try {
             DocumentType type = documentTypeRepository.findOneByStructure(structure);
-
+            if(type == null){
+                throw new Exception("Structure not found");
+            }
             DocumentTypeDto dto = new DocumentTypeDto();
             dto.setName(type.getStructure());
             dto.setDescription(type.getName());
             StartFormData formData = camundaService.getStartForm(type.getStructure());
+
             DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
             dto.setStructure(documentStructure);
             return new AppServiceResult<DocumentTypeDto>(true, 0, "Succeed!", dto);

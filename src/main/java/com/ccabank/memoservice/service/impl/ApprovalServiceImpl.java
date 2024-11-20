@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -73,14 +75,10 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Override
     public AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto)  {
 
-
-
-
         EmployeeInfo employeeInfo = securityService.getCurrentUser(request);
         System.out.println("UserName Employe" + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
         camundaService.claimTask(task.getId(), employeeInfo.getUsername());
-
 
         if(acceptedApprovalDto.isDecision()){
             return this.approve(acceptedApprovalDto, employeeInfo.getUsername());
@@ -99,21 +97,14 @@ public class ApprovalServiceImpl implements ApprovalService {
             List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
 
             Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
-
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
-
             request.setLastModification(LocalDateTime.now());
-
             requestRepository.save(request);
-
             Map<String, Object> variables = mapping.getVariablesFromField(incommingFields);
-
             variables.put("decision", true);
-
-            if(task.getAssignee().isEmpty()){
-                variables.put(task.getTaskDefinitionKey(), assignee);
-            }
+            variables.put(task.getTaskDefinitionKey(), assignee);
+            camundaService.claimTask(task.getId(), assignee);
             variables.put("comments", acceptedApprovalDto.getComments());
             camundaService.completeTask(task.getId(), variables);
 
@@ -220,6 +211,13 @@ public class ApprovalServiceImpl implements ApprovalService {
         approvalDto.setPriority(task.getPriority());
         approvalDto.setDueDate(task.getDueDate());
 
+        /*Optional<HistoricTaskInstance> history = camundaService.getLastHistoricTaskInstance(request.getInstanceId(), task.getTaskDefinitionKey());
+        if(history.isPresent()){
+            approvalDto.setApprovalDate(history.get().getEndTime().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime());
+        }*/
+
         FormData data =  camundaService.getFormData(task.getId());
 
         List<FieldDto> outFields = new ArrayList<>();
@@ -255,24 +253,29 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             if(f.getProperties().get("type").equals("choice")){
                 System.out.println("Is Choice " + f.getLabel());
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<ChoiceDto> choices = new ArrayList<>();
-                try {
-                    if(f.getProperties() != null){
-                        choices = objectMapper.readValue(f.getProperties().get("choices"),  new TypeReference<List<ChoiceDto>>() {});
+                Object choices = camundaService.getProcessVariable(request.getInstanceId(), f.getId() + "_choices");
+                if(choices != null){
+                    field.setChoices((List<ChoiceDto>) choices);
+                }else{
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<ChoiceDto> choicesString = new ArrayList<>();
+                    try {
+                        choicesString = objectMapper.readValue(f.getProperties().get("choices"),  new TypeReference<List<ChoiceDto>>() {});
+                    } catch (JsonProcessingException e) {
+                        System.out.println("JSON Not Valid Exception " + e.getMessage());
                     }
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+                    field.setChoices(choicesString);
                 }
-                field.setChoices(choices);
             }
 
             field.setPosition(data.getFormFields().indexOf(f) + 1);
             field.setName(f.getLabel());
             System.out.println("Add required " + f.getLabel());
             field.setRequired(f.getProperties().get("required").equals("true"));
-            field.setValue(String.valueOf(f.getDefaultValue()));
-            field.setDefaultValue(String.valueOf(f.getDefaultValue()));
+            if(f.getDefaultValue() != null){
+                field.setValue(String.valueOf(f.getDefaultValue()));
+                field.setDefaultValue(String.valueOf(f.getDefaultValue()));
+            }
             outFields.add(field);
             System.out.println("Add complete " + f.getLabel());
         }

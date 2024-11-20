@@ -21,9 +21,8 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_0lrfp7t" name="N + 1">
         <bpmn:flowNodeRef>Activity_1d4pc5r</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0jjc69v</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Abpt_n1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1i5cgi2</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1a1n1uk</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1tio0nt</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
@@ -31,7 +30,7 @@
       <bpmn:incoming>Flow_1xtbzby</bpmn:incoming>
       <bpmn:outgoing>Flow_09if7lr</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Activity_0jjc69v" name="Approbation N+1">
+    <bpmn:userTask id="Abpt_n1" name="Approbation N+1">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="decision" type="boolean" />
@@ -43,10 +42,9 @@
       <bpmn:outgoing>Flow_1r78jna</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0vz8aqg" sourceRef="StartEvent_1" targetRef="Validation" />
-    <bpmn:sequenceFlow id="Flow_09if7lr" sourceRef="Activity_1d4pc5r" targetRef="Activity_0jjc69v" />
-    <bpmn:sequenceFlow id="Flow_1r78jna" sourceRef="Activity_0jjc69v" targetRef="Gateway_1i5cgi2" />
-    <bpmn:sequenceFlow id="Flow_1hifhye" sourceRef="Activity_1tio0nt" targetRef="Activity_1a1n1uk" />
-    <bpmn:sequenceFlow id="Flow_1m8raey" sourceRef="Activity_1a1n1uk" targetRef="Event_101y7yt" />
+    <bpmn:sequenceFlow id="Flow_09if7lr" sourceRef="Activity_1d4pc5r" targetRef="Abpt_n1" />
+    <bpmn:sequenceFlow id="Flow_1r78jna" sourceRef="Abpt_n1" targetRef="Gateway_1i5cgi2" />
+    <bpmn:sequenceFlow id="Flow_1hifhye" sourceRef="Activity_1tio0nt" targetRef="Event_101y7yt" />
     <bpmn:sequenceFlow id="Flow_08qdowr" sourceRef="Gateway_1i5cgi2" targetRef="Activity_1tio0nt">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -62,17 +60,13 @@
       <bpmn:incoming>Flow_0dne6dz</bpmn:incoming>
       <bpmn:outgoing>Flow_0xhopaz</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1a1n1uk" name="Notification au Habilitations" camunda:delegateExpression="${sendResumptionToHabilitation}">
-      <bpmn:incoming>Flow_1hifhye</bpmn:incoming>
-      <bpmn:outgoing>Flow_1m8raey</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_1tio0nt" name="Notification au Capital Humain" camunda:delegateExpression="${sendResumptionToRH}">
       <bpmn:incoming>Flow_08qdowr</bpmn:incoming>
       <bpmn:outgoing>Flow_1hifhye</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_101y7yt">
-      <bpmn:incoming>Flow_1m8raey</bpmn:incoming>
       <bpmn:incoming>Flow_0xhopaz</bpmn:incoming>
+      <bpmn:incoming>Flow_1hifhye</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:startEvent id="StartEvent_1" name="Nouvelle Reprise de Travail">
       <bpmn:extensionElements>
@@ -103,7 +97,7 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="choice" />
               <camunda:property id="required" value="true" />
-              <camunda:property id="choices" value="choices" />
+              <camunda:property id="choices" value="[{&#34;label&#34;:&#34;Maternité&#34;,&#34;value&#34;:&#34;MATERNITY&#34;},{&#34;label&#34;:&#34;Médical&#34;,&#34;value&#34;:&#34;MEDICAL&#34;}]" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="Apbt_n1" label="Hiérarchie N+1" type="string">
@@ -140,7 +134,7 @@
       <bpmndi:BPMNShape id="Activity_0gh58dq_di" bpmnElement="Activity_1d4pc5r">
         <dc:Bounds x="240" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_14n4hfq_di" bpmnElement="Activity_0jjc69v">
+      <bpmndi:BPMNShape id="Activity_14n4hfq_di" bpmnElement="Abpt_n1">
         <dc:Bounds x="430" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1i5cgi2_di" bpmnElement="Gateway_1i5cgi2" isMarkerVisible="true">
@@ -148,9 +142,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_18261rs_di" bpmnElement="Activity_1vsqa29">
         <dc:Bounds x="560" y="380" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02efgwi_di" bpmnElement="Activity_1a1n1uk">
-        <dc:Bounds x="910" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0eqhuz0_di" bpmnElement="Activity_1tio0nt">
         <dc:Bounds x="730" y="170" width="100" height="80" />
@@ -182,10 +173,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hifhye_di" bpmnElement="Flow_1hifhye">
         <di:waypoint x="830" y="210" />
-        <di:waypoint x="910" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1m8raey_di" bpmnElement="Flow_1m8raey">
-        <di:waypoint x="960" y="250" />
+        <di:waypoint x="960" y="210" />
         <di:waypoint x="960" y="472" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08qdowr_di" bpmnElement="Flow_08qdowr">

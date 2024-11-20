@@ -46,6 +46,36 @@
               <camunda:property id="required" value="false" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="Apbt_n1" label="Signataire 1" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="Apbt_n2" label="Signataire 2" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="Apbt_n3" label="Signataire 3" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="Apbt_n4" label="Signataire 4" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="Apbt_n5" label="Signataire 5" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_18nz02c</bpmn:outgoing>
@@ -70,7 +100,6 @@
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="Activity_1qhsy58" name="Confirmation du Memo" camunda:delegateExpression="${confirmMemo}">
       <bpmn:incoming>Flow_1b0d8mf</bpmn:incoming>
-      <bpmn:incoming>Flow_128i7nk</bpmn:incoming>
       <bpmn:incoming>Flow_1sbygpq</bpmn:incoming>
       <bpmn:incoming>Flow_1axby1g</bpmn:incoming>
       <bpmn:incoming>Flow_1wsija7</bpmn:incoming>
@@ -90,7 +119,6 @@
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_041emgj" default="Flow_166vdye">
       <bpmn:incoming>Flow_1p0wgmk</bpmn:incoming>
-      <bpmn:outgoing>Flow_128i7nk</bpmn:outgoing>
       <bpmn:outgoing>Flow_166vdye</bpmn:outgoing>
       <bpmn:outgoing>Flow_06t0t1u</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -110,9 +138,6 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_17ssiz4" sourceRef="Activity_198ritt" targetRef="Activity_1t6o12c" />
     <bpmn:sequenceFlow id="Flow_1p0wgmk" sourceRef="Activity_1t6o12c" targetRef="Gateway_041emgj" />
-    <bpmn:sequenceFlow id="Flow_128i7nk" sourceRef="Gateway_041emgj" targetRef="Activity_1qhsy58">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_19lm6vu" name="Demande Approbation 1" camunda:delegateExpression="${sendAskEmailN1}">
       <bpmn:incoming>Flow_03c60br</bpmn:incoming>
       <bpmn:outgoing>Flow_1q6kgcm</bpmn:outgoing>
@@ -128,7 +153,7 @@
       <bpmn:incoming>Flow_1q6kgcm</bpmn:incoming>
       <bpmn:outgoing>Flow_1w5n7eu</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0i6gce2" name="Email de Refus" camunda:class="com.ccabank.memoservice.process.vacation.SendEmailRefusInterimaire">
+    <bpmn:serviceTask id="Activity_0i6gce2" name="Email de Refus" camunda:delegateExpression="${sendRejectEmail}">
       <bpmn:incoming>Flow_166vdye</bpmn:incoming>
       <bpmn:incoming>Flow_01unrvk</bpmn:incoming>
       <bpmn:incoming>Flow_17ibnmx</bpmn:incoming>
@@ -375,11 +400,6 @@
       <bpmndi:BPMNEdge id="Flow_1p0wgmk_di" bpmnElement="Flow_1p0wgmk">
         <di:waypoint x="1130" y="440" />
         <di:waypoint x="1205" y="440" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_128i7nk_di" bpmnElement="Flow_128i7nk">
-        <di:waypoint x="1230" y="415" />
-        <di:waypoint x="1230" y="190" />
-        <di:waypoint x="800" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ckuier_di" bpmnElement="Flow_0ckuier">
         <di:waypoint x="1230" y="640" />
