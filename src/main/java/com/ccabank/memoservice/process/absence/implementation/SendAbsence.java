@@ -52,7 +52,7 @@ public class SendAbsence implements JavaDelegate {
         form.setFunction(staff.getFunction().getFunction().getName());
         form.setDate(LocalDate.now());
         form.setMatricule(staff.getMatricule());
-        form.setPlace(staff.getAgency().getName());
+        form.setPlace("DOUALA");
         form.setUnity(staff.getDepartment().getName());
 
         LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
@@ -63,6 +63,11 @@ public class SendAbsence implements JavaDelegate {
         form.setReason(reason);
         form.setStartDate(startDate);
         form.setEndDate(endDate);
+
+        String interim = (String) delegateExecution.getVariable("interim");
+        form.setInterim(interim);
+
+
 
         form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
 
@@ -86,16 +91,14 @@ public class SendAbsence implements JavaDelegate {
 
         String direction = "";
 
-        Optional<HistoricTaskInstance> taskDG = camundaService.getLastHistoricTaskInstance(delegateExecution.getProcessInstanceId(), "Apbt_DG");
-        if(taskDG.isPresent()){
-            direction = taskDG.get().getAssignee();
-            EmployeeInfo DG =  userRestClient.getStaffByUsername(direction);
-            AbsenceForm.Signatory directionG = new AbsenceForm.Signatory();
-            directionG.setDate(LocalDate.now());
-            directionG.setName(DG.getFirstName() + " " + DG.getLastName());
-            directionG.setSignature(userRestClient.getEmployeeSignature(DG.getUsername()));
-            form.setSignatory2(directionG);
-        }
+        direction = (String) delegateExecution.getVariable("Apbt_DG");
+        EmployeeInfo DG =  userRestClient.getStaffByUsername(direction);
+        AbsenceForm.Signatory directionG = new AbsenceForm.Signatory();
+        directionG.setDate(LocalDate.now());
+        directionG.setName(DG.getFirstName() + " " + DG.getLastName());
+        directionG.setSignature(userRestClient.getEmployeeSignature(DG.getUsername()));
+        form.setHeadOffice(directionG);
+
 
         String deduction = (String) delegateExecution.getVariable("deduction");
         form.setDeduction(AbsenceForm.Deduction.valueOf(deduction));

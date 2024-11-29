@@ -29,7 +29,6 @@ import java.util.List;
 public interface UserRestClient {
 
 
-
     @GetMapping(path = "/api/users/employees/findByUsername/{username}")
     EmployeeInfo getStaffByUsername(@PathVariable("username") String username);
 

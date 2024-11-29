@@ -4,7 +4,9 @@ import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.VacationDecision;
 import com.ccabank.memoservice.dto.reporting.VacationForm;
+import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.dto.user.FunctionInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Component
 public class SendVacation implements JavaDelegate {
@@ -52,12 +56,12 @@ public class SendVacation implements JavaDelegate {
             form.setName(staff.getFirstName() + " " + staff.getLastName());
             form.setFunction(staff.getFunction().getFunction().getName());
             form.setMatricule(staff.getMatricule());
-            form.setPlace(staff.getAgency().getName());
+            form.setPlace("DOUALA");
             form.setUnity(staff.getDepartment().getName());
             String signature = userRestClient.getEmployeeSignature(staff.getUsername());
             form.setSignature(signature);
 
-            LocalDate startDate = (LocalDate) delegateExecution.getVariable("realStartDate");
+            LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
             form.setStartDate(startDate);
 
             LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
@@ -70,10 +74,9 @@ public class SendVacation implements JavaDelegate {
             String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
             EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            interim.setFunction(interimaire.getFunctionalTitle());
+            interim.setFunction(interimaire.getFunction().getFunction().getName());
             interim.setUnity(interimaire.getDepartment().getName());
             form.setInterim(interim);
-
             VacationForm.Signatory supervisor = new VacationForm.Signatory();
             String supervisorId = (String) delegateExecution.getVariable("Apbt_n1");
             EmployeeInfo supervisorInfo =  userRestClient.getStaffByUsername(supervisorId);

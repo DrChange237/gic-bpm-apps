@@ -76,9 +76,12 @@ public class ApprovalServiceImpl implements ApprovalService {
     public AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto)  {
 
         EmployeeInfo employeeInfo = securityService.getCurrentUser(request);
-        System.out.println("UserName Employe" + employeeInfo.getUsername());
+        System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
-        camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+        if(task != null){
+            camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
+            camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+        }
 
         if(acceptedApprovalDto.isDecision()){
             return this.approve(acceptedApprovalDto, employeeInfo.getUsername());
@@ -95,7 +98,6 @@ public class ApprovalServiceImpl implements ApprovalService {
             logger.info(MEMO_SERVICE + "approve : methode invocation");
 
             List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
-
             Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);

@@ -44,7 +44,9 @@ public class Mapping {
             fieldDto.setPosition(fieldDtos.indexOf(fieldDto));
             fieldDto.setName(field.getLabel());
             fieldDto.setType(field.getProperties().get("type"));
-            fieldDto.setValue(String.valueOf(variables.get(field.getId())));
+            if(variables.get(field.getId()) != null){
+                fieldDto.setValue(String.valueOf(variables.get(field.getId())));
+            }
             fieldDto.setRequired(field.getProperties().get("required").equals("true"));
             fieldDtos.add(fieldDto);
         }
@@ -130,8 +132,11 @@ public class Mapping {
             field.setPosition(fields.indexOf(f) + 1);
             field.setName(f.getLabel());
             field.setRequired(f.getProperties().get("required").equals("true"));
-            field.setValue(String.valueOf(f.getDefaultValue()));
-            field.setDefaultValue(String.valueOf(f.getDefaultValue()));
+
+            if(f.getDefaultValue() != null){
+                field.setValue(String.valueOf(f.getDefaultValue()));
+                field.setDefaultValue(String.valueOf(f.getDefaultValue()));
+            }
             outFields.add(field);
         }
 

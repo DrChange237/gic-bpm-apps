@@ -7,6 +7,7 @@ import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.process.general.service.RequestService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,13 @@ public class SendResumptionToRH implements JavaDelegate {
     @Autowired
     private EmailRestClient emailRestClient;
 
+    @Autowired
+    private RequestService requestService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
+
+        requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
         ResumptionForm form = new ResumptionForm();
 
@@ -51,7 +57,7 @@ public class SendResumptionToRH implements JavaDelegate {
         form.setStartDate(startDate);
         form.setEndDate(endDate);
         form.setRealEndDate(realEndDate);
-        form.setPlace(staff.getAgency().getName());
+        form.setPlace("DOUALA");
         String reason = (String) delegateExecution.getVariable("reason");
         form.setReason(ResumptionForm.Reason.valueOf(reason));
 

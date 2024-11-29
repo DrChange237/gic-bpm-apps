@@ -60,7 +60,8 @@ public class SendMissionOrder implements JavaDelegate {
         missionForm.setLocation(location);
         String subject = (String) delegateExecution.getVariable("subject");
         missionForm.setObject(subject);
-        missionForm.setPlace(staff.getAgency().getName());
+        missionForm.setPlace("DOUALA");
+
 
         int nightsLong = WorkDayCalculator.calculateNights(startDate, endDate);
         missionForm.setNights(nightsLong);
@@ -69,10 +70,13 @@ public class SendMissionOrder implements JavaDelegate {
         missionForm.setMissionFees(missionFeesLong.doubleValue());
 
         Long transportFees = (Long) delegateExecution.getVariable("transportFees");
-        missionForm.setMissionFees(transportFees.doubleValue());
+        missionForm.setTransportFees(transportFees.doubleValue());
 
         String authorisationNumber = (String) delegateExecution.getVariable("authorisationNumber");
         missionForm.setAuthorisationNumber(authorisationNumber);
+
+        String receiptNumber = (String) delegateExecution.getVariable("receiptNumber");
+        missionForm.setReceiptNumber(receiptNumber);
 
         Long chargeSupport = (Long) delegateExecution.getVariable("chargeSupport");
         missionForm.setChargeSupport(chargeSupport.doubleValue());
@@ -95,7 +99,20 @@ public class SendMissionOrder implements JavaDelegate {
         supervisor2.setFunction(n2.getFunction().getFunction().getName());
         signature = userRestClient.getEmployeeSignature(apbt_n2);
         supervisor2.setSignature(signature);
-        missionForm.setSupervisor(supervisor2);
+        missionForm.setSupervisorNext(supervisor2);
+
+
+        String apbt_uch = (String) delegateExecution.getVariable("Apbt_rh");
+
+
+        EmployeeInfo n_uch =  userRestClient.getStaffByUsername(apbt_n2);
+        MissionForm.Signatory uch = new MissionForm.Signatory();
+        uch.setDate(LocalDate.now());
+        uch.setName(n_uch.getFirstName() + " " + n_uch.getLastName());
+        uch.setFunction(n_uch.getFunction().getFunction().getName());
+        signature = userRestClient.getEmployeeSignature(apbt_uch);
+        uch.setSignature(signature);
+        missionForm.setUch(uch);
 
 
 
