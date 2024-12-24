@@ -65,8 +65,12 @@ public class Mapping {
 
         for (FieldDto field : fields) {
 
+            System.out.println("In Field : " + field.getName());
+
+
             if(field.isRequired()){
-                if(field.getValue() == null || field.getValue().equals("")){
+                System.out.println("Field is required : " + field.getName());
+                if(field.getValue() == null){
                     throw new Exception("Parameter " + field.getName() + " is required");
                 }
             }
@@ -86,7 +90,7 @@ public class Mapping {
                             variables.put(field.getKey(), LocalDate.parse(field.getValue()));
                         }
                     }catch (Exception e){
-                        throw new BadPasswordException("Format de la date invalid : " + field.getValue() );
+                        throw new Exception("Format de la date invalid : " + field.getValue() );
                     }
 
                     break;

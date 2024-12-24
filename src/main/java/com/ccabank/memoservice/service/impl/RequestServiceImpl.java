@@ -83,7 +83,7 @@ public class RequestServiceImpl implements RequestService {
             request.setType(type);
             request.setStatus(RequestStatus.DRAFT);
             request.setApprobationLevel(0);
-            request = requestRepository.save(request);
+            //request = requestRepository.save(request);
 
             System.out.println("Début du mapping");
             Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
