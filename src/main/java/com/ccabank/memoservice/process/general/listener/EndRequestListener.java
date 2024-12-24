@@ -4,20 +4,16 @@ import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.RequestStatus;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class EndRequestListener implements ExecutionListener {
-
-    @Autowired
-    CamundaService camundaService;
-
-    @Autowired
-    RequestRepository requestRepository;
+    private final CamundaService camundaService;
+    private final RequestRepository requestRepository;
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {

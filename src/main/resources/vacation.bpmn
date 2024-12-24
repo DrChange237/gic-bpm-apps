@@ -95,7 +95,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN2Listener" event="create" id="ApbtN2" />
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1pgh58l</bpmn:incoming>
       <bpmn:outgoing>Flow_08a9t8l</bpmn:outgoing>
@@ -232,7 +232,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN1Listener" event="create" id="ApbtN1" />
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wpjrvf</bpmn:incoming>
       <bpmn:outgoing>Flow_14cikxp</bpmn:outgoing>

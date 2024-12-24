@@ -3,19 +3,18 @@ package com.ccabank.memoservice.process.mission.listener;
 import com.ccabank.memoservice.dto.entity.AgencyInfo;
 import com.ccabank.memoservice.dto.memo.ChoiceDto;
 import com.ccabank.memoservice.openfeign.EntityRestClient;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ApbtMissionRHListener implements ExecutionListener {
-
-    @Autowired
-    private EntityRestClient entityRestClient;
+    private final EntityRestClient entityRestClient;
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {

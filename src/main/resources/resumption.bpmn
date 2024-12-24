@@ -36,7 +36,7 @@
           <camunda:formField id="decision" label="decision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN1Listener" event="create" id="ApbtN1" />
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09if7lr</bpmn:incoming>
       <bpmn:outgoing>Flow_1r78jna</bpmn:outgoing>
