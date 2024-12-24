@@ -41,6 +41,7 @@ public class InterimForm {
     @Getter
 
     public enum Subject {
+        NONE,
         CONTINUITY,
         INTERIM;
     }

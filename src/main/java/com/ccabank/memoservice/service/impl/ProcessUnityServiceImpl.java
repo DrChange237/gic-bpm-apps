@@ -61,7 +61,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
     @Transactional
     public AppServiceResult<ProcessUnityDto> update(ProcessUnityDto processUnityDto) {
         try {
-            logger.info(MEMO_SERVICE + "create : methode invocation");
+            logger.info(MEMO_SERVICE + "update : methode invocation");
 
             //ProcessUnity processUnity = processUnityRepository.findById(processUnityDto.getId()).orElse(null);
 

@@ -23,9 +23,12 @@ public class ApbtVacationRHListener implements TaskListener {
         System.out.println("Tâche assignée au groupe : " + groupId);
 
         List<ChoiceDto> typeInterim = new ArrayList<>();
+
         ChoiceDto choice = new ChoiceDto("Intérim", InterimForm.Subject.INTERIM);
         typeInterim.add(choice);
         choice = new ChoiceDto("Continuité de service", InterimForm.Subject.CONTINUITY);
+        typeInterim.add(choice);
+        choice = new ChoiceDto("Pas d'intérim", InterimForm.Subject.NONE);
         typeInterim.add(choice);
 
         delegateTask.setVariable("typeInterim" + "_choices" , typeInterim);

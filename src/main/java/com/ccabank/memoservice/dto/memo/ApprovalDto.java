@@ -14,6 +14,8 @@ public class ApprovalDto {
 
     private String key;
 
+    private String description;
+
     private int position;
 
     private String staff;

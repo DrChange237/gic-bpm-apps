@@ -62,6 +62,11 @@ public class RequestServiceImpl implements RequestService {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
 
             EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+
+            if(employeeInfo == null){
+                System.out.println("Erreur : employeeInfo is null");
+            }
+
             System.out.println("UserName Employe" + employeeInfo.getUsername());
 
             Request request = new Request();
@@ -80,6 +85,7 @@ public class RequestServiceImpl implements RequestService {
             request.setApprobationLevel(0);
             request = requestRepository.save(request);
 
+            System.out.println("Début du mapping");
             Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
             Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
             variables.putAll(variablesApprovals);

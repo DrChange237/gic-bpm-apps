@@ -97,13 +97,20 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="choice" />
               <camunda:property id="required" value="true" />
-              <camunda:property id="choices" value="[     {&#34;label&#34;:&#34;Maternité&#34;,&#34;value&#34;:&#34;MATERNITY&#34;},     {&#34;label&#34;:&#34;Médical&#34;,&#34;value&#34;:&#34;MEDICAL&#34;},     {&#34;label&#34;:&#34;Congés Annuel&#34;,&#34;value&#34;:&#34;ANNUAL&#34;},     {&#34;label&#34;:&#34;Autorisation d&#39;absence&#34;,&#34;value&#34;:&#34;ABSENCE&#34;} ]" />
+              <camunda:property id="choices" value="[ {&#34;label&#34;:&#34;Maternité&#34;,&#34;value&#34;:&#34;MATERNITY&#34;}, {&#34;label&#34;:&#34;Médical&#34;,&#34;value&#34;:&#34;MEDICAL&#34;}, {&#34;label&#34;:&#34;Congés Annuel&#34;,&#34;value&#34;:&#34;ANNUAL&#34;},  {&#34;label&#34;:&#34;Autorisation d&#39;absence&#34;,&#34;value&#34;:&#34;ABSENCE&#34;}, {&#34;label&#34;:&#34;Autres&#34;,&#34;value&#34;:&#34;OTHER&#34;} ]" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="Apbt_n1" label="Hiérarchie N+1" type="string">
             <camunda:properties>
               <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="explication" label="Autre Raison" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="text" />
+              <camunda:property id="required" value="false" />
             </camunda:properties>
           </camunda:formField>
         </camunda:formData>

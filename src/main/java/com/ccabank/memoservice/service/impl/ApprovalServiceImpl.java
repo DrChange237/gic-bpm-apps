@@ -170,6 +170,8 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             List<Task> tasks = camundaService.getActiveTasksForUser(employeeInfo.getUsername());
 
+            tasks.sort(Comparator.comparing(Task::getCreateTime).reversed());
+
             System.out.println("Get Tasks " + tasks.size());
 
             List<ApprovalListDto> approvalDtos = this.mapTaskToApprovalDto(tasks);

@@ -62,7 +62,8 @@ public class SendAbsence implements JavaDelegate {
         form.setEndDate(endDate);
 
         String interim = (String) delegateExecution.getVariable("interim");
-        form.setInterim(interim);
+        EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interim);
+        form.setInterim(interimaire.getFirstName() + " " + interimaire.getLastName());
 
 
 
