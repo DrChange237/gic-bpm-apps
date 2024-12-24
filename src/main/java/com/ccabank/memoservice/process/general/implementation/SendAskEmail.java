@@ -67,6 +67,8 @@ public class SendAskEmail implements JavaDelegate {
         ask.setSubject("Demande d'approbation");
         if(task != null){
             ask.setRole(task.getName());
+        }else{
+            ask.setRole("R.A.S");
         }
 
 

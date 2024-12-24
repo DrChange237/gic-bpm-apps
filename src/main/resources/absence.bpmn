@@ -41,7 +41,7 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-           <camunda:formField id="reason" label="Motif de l&#39;absence" type="string">
+          <camunda:formField id="reason" label="Motif de l&#39;absence" type="string">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="choice" />
@@ -49,7 +49,6 @@
               <camunda:property id="choices" value="[{&#34;label&#34;:&#34;Mariage&#34;,&#34;value&#34;:&#34;MARIAGE&#34;},{&#34;label&#34;:&#34;Baptème&#34;,&#34;value&#34;:&#34;BAPTEME&#34;},{&#34;label&#34;:&#34;Autres&#34;,&#34;value&#34;:&#34;OTHER&#34;}]" />
             </camunda:properties>
           </camunda:formField>
-          
           <camunda:formField id="endDate" label="Date de reprise de Service" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
@@ -57,19 +56,20 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-         
           <camunda:formField id="otherReason" label="Autres Raisons" type="string">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="text" />
               <camunda:property id="required" value="false" />
+              <camunda:property id="description" value="Si la raison n&#39;est pas conventionelle veuillez la préciser ici" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="plusDays" label="Jours en plus" type="long">
+          <camunda:formField id="plusDays" label="Jours en plus" type="long" defaultValue="0">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="number" />
               <camunda:property id="required" value="false" />
+              <camunda:property id="description" value="Si vous voulez ajouter des jours à une raison conventionnelle" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="interim" label="Proposition D&#39;intérimaire" type="string">

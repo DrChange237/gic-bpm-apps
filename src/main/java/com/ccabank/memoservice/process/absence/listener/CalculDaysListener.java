@@ -2,6 +2,7 @@ package com.ccabank.memoservice.process.absence.listener;
 
 import com.ccabank.memoservice.dto.memo.ChoiceDto;
 import com.ccabank.memoservice.dto.reporting.AbsenceForm;
+import com.ccabank.memoservice.process.absence.domain.ReasonAbsence;
 import com.ccabank.memoservice.util.WorkDayCalculator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -21,8 +22,18 @@ public class CalculDaysListener implements ExecutionListener {
         LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
         LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
 
-        long nbDays = WorkDayCalculator.calculateNights(startDate, endDate);
 
+        String reason = (String) delegateExecution.getVariable("reason");
+        ReasonAbsence absenceReason = ReasonAbsence.valueOf(reason);
+
+        int nbDays = WorkDayCalculator.calculateNights(startDate, endDate);
+        if(!absenceReason.equals(ReasonAbsence.OTHER)){
+            Long plusDays = (Long) delegateExecution.getVariable("plusDays");
+            nbDays = absenceReason.getNbDays() + plusDays.intValue();
+            endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays);
+            delegateExecution.setVariable("endDate", endDate);
+
+        }
         delegateExecution.setVariable("nbDays", nbDays);
 
     }

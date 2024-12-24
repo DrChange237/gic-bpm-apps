@@ -8,6 +8,8 @@ import com.ccabank.memoservice.util.file.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.exceptions.BadPasswordException;
+import feign.FeignException;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
@@ -57,11 +59,22 @@ public class Mapping {
     }
 
 
-    public Map<String, Object> getVariablesFromField(List<FieldDto> fields) throws IOException {
+    public Map<String, Object> getVariablesFromField(List<FieldDto> fields) throws Exception {
 
         Map<String, Object> variables = new HashMap<>();
 
         for (FieldDto field : fields) {
+
+            System.out.println("In Field : " + field.getName());
+
+
+            if(field.isRequired()){
+                System.out.println("Field is required : " + field.getName());
+                if(field.getValue() == null){
+                    throw new Exception("Parameter " + field.getName() + " is required");
+                }
+            }
+
             switch (field.getType()){
                 case FieldTypeConstant.FILE:
 
@@ -72,7 +85,14 @@ public class Mapping {
                     break;
 
                 case FieldTypeConstant.DATE:
-                    variables.put(field.getKey(), LocalDate.parse(field.getValue()));
+                    try {
+                        if(field.getValue() != null){
+                            variables.put(field.getKey(), LocalDate.parse(field.getValue()));
+                        }
+                    }catch (Exception e){
+                        throw new Exception("Format de la date invalid : " + field.getValue() );
+                    }
+
                     break;
 
                     case FieldTypeConstant.NUMBER:

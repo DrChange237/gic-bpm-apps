@@ -50,8 +50,8 @@ public class Request  {
     @Column(name = "ARCHIVED")
     private Boolean archived = false;
 
-    @Basic(optional = true)
-    @Column(name = "INSTANCE_ID")
+    @Basic(optional = false)
+    @Column(name = "INSTANCE_ID", nullable = false, unique = true)
     private String instanceId;
 
 
