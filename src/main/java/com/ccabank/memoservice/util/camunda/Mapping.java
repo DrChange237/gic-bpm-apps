@@ -4,6 +4,7 @@ import com.ccabank.memoservice.constant.FieldTypeConstant;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.entity.ApprovalType;
 import com.ccabank.memoservice.openfeign.FileRestClient;
+import com.ccabank.memoservice.util.file.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,7 @@ import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +57,7 @@ public class Mapping {
     }
 
 
-    public Map<String, Object> getVariablesFromField(List<FieldDto> fields) {
+    public Map<String, Object> getVariablesFromField(List<FieldDto> fields) throws IOException {
 
         Map<String, Object> variables = new HashMap<>();
 
@@ -64,8 +66,8 @@ public class Mapping {
                 case FieldTypeConstant.FILE:
 
                     for(FileDto file : field.getFiles()) {
-                    /*file = fileRestClient.uploadFileToFolder("paperless", "paperless", file.getFile());
-                    variables.put(file.getName(), file.getUrl());*/
+                      file = fileRestClient.uploadFileToFolder("paperless", "paperless", FileUtils.convertBase64ToMultipartFile(file.getFile(), file.getName(), "application/octet-stream"));
+                      variables.put(file.getName(), file.getUrl());
                     }
                     break;
 
@@ -119,6 +121,15 @@ public class Mapping {
             FieldDto field = new FieldDto();
             field.setKey(f.getId());
             field.setType(f.getProperties().get("type"));
+            try{
+                field.setDescription(f.getProperties().get("description"));
+                field.setNgIf(f.getProperties().get("ngIf"));
+                if(f.getProperties().get("ngIf") == null){
+                    field.setRequired(true);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             if(field.getType().equals("choice")){
                 ObjectMapper objectMapper = new ObjectMapper();
                 List<ChoiceDto> choices = new ArrayList<>();
@@ -148,6 +159,7 @@ public class Mapping {
             approval.setRole(f.getLabel());
             approval.setType(ApprovalType.OPEN);
             approval.setKey(f.getId());
+            approval.setDescription(f.getProperties().get("description"));
             approval.setRequired(f.getProperties().get("required").equals("true"));
             outApprovals.add(approval);
         }

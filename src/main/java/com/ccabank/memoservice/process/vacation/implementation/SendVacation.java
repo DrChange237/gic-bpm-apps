@@ -64,7 +64,9 @@ public class SendVacation implements JavaDelegate {
             LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
             form.setStartDate(startDate);
 
-            LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
+            Long nbDays = (Long) delegateExecution.getVariable("nbDays");
+            LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays.intValue());
+
             form.setEndDate(endDate);
 
             LocalDate lastVacationDate = (LocalDate) delegateExecution.getVariable("lastVacationDate");
@@ -72,11 +74,20 @@ public class SendVacation implements JavaDelegate {
 
             VacationForm.Interim interim = new VacationForm.Interim();
             String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
-            EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
-            interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            interim.setFunction(interimaire.getFunction().getFunction().getName());
-            interim.setUnity(interimaire.getDepartment().getName());
+
+            if (interimId == null) {
+                interim.setName("...");
+                interim.setFunction("...");
+                interim.setUnity("...");
+            }else{
+                EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
+                interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
+                interim.setFunction(interimaire.getFunction().getFunction().getName());
+                interim.setUnity(interimaire.getDepartment().getName());
+            }
+
             form.setInterim(interim);
+
             VacationForm.Signatory supervisor = new VacationForm.Signatory();
             String supervisorId = (String) delegateExecution.getVariable("Apbt_n1");
             EmployeeInfo supervisorInfo =  userRestClient.getStaffByUsername(supervisorId);

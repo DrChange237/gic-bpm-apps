@@ -30,7 +30,7 @@ public class WorkDayCalculator {
     public static  LocalDate addBusinessDays(LocalDate startDate, int daysToAdd) {
         List<LocalDate> holidaySet = HolidayConfig.getHolidays();
         LocalDate currentDate = startDate;
-        int addedDays = 0;
+        int addedDays = 1;
         while (addedDays < daysToAdd) {
             currentDate = currentDate.plusDays(1);
             // Vérifiez si c'est un dimanche ou un jour férié

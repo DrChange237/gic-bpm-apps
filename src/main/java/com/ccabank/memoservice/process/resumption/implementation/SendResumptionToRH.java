@@ -60,6 +60,10 @@ public class SendResumptionToRH implements JavaDelegate {
         form.setPlace("DOUALA");
         String reason = (String) delegateExecution.getVariable("reason");
         form.setReason(ResumptionForm.Reason.valueOf(reason));
+        if(form.getReason().equals(ResumptionForm.Reason.OTHER)){
+            String explication = (String) delegateExecution.getVariable("explication");
+            form.setExplication(explication);
+        }
 
         String supervisorUser = (String) delegateExecution.getVariable("Apbt_n1");
         EmployeeInfo supervisor =  userRestClient.getStaffByUsername(supervisorUser);

@@ -23,6 +23,10 @@ public class FieldDto {
 
     private String type;
 
+    private String description;
+
+    private String ngIf = "true";
+
     private List<ChoiceDto> choices;
 
     private List<FileDto> files = new ArrayList<>();
@@ -113,5 +117,21 @@ public class FieldDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNgIf() {
+        return ngIf;
+    }
+
+    public void setNgIf(String ngIf) {
+        this.ngIf = ngIf;
     }
 }

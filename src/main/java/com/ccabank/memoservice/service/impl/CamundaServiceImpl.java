@@ -462,20 +462,15 @@ public class CamundaServiceImpl implements CamundaService {
 
     @Override
     public void updateGroup(String groupId, String newName, String newType) {
-        // Récupérer le groupe existant
-        GroupEntity group = (GroupEntity) identityService.createGroupQuery()
-                .groupId(groupId)
-                .singleResult();
 
-        if (group != null) {
-            // Mettre à jour les propriétés du groupe
+        Optional<com.ccabank.memoservice.entity.camunda.Group> groupOptional = groupRepository.findById(groupId);
+        if (groupOptional.isPresent()) {
+            com.ccabank.memoservice.entity.camunda.Group group = groupOptional.get();
+            group.setId(groupId);
             group.setName(newName);
             group.setType("PROCESS-UNITY");
-
-            // Enregistrer les modifications
-            identityService.saveGroup(group);
-        } else {
-            throw new IllegalArgumentException("Group with ID " + groupId + " not found.");
+            // Enregistrer le groupe via le service d'identité
+            groupRepository.save(group);
         }
     }
 

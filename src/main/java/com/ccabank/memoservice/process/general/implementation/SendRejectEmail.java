@@ -32,7 +32,7 @@ public class SendRejectEmail implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
 
-        requestService.rejectRequest(execution.getProcessDefinitionId());
+        requestService.rejectRequest(execution.getProcessInstanceId());
 
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
 

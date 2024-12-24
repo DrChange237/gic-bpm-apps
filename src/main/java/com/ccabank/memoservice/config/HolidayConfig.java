@@ -10,11 +10,9 @@ public class HolidayConfig {
                 LocalDate.of(2024, 1, 1),   // Jour de l'An
                 LocalDate.of(2024, 4, 21),  // Pâques
                 LocalDate.of(2024, 5, 1),   // Fête du Travail
-                LocalDate.of(2024, 5, 8),   // Victoire 1945
+                LocalDate.of(2024, 5, 20),   // 20 Mai
                 LocalDate.of(2024, 7, 14),  // Fête Nationale
                 LocalDate.of(2024, 8, 15),  // Assomption
-                LocalDate.of(2024, 11, 1),  // Toussaint
-                LocalDate.of(2024, 11, 11), // Armistice 1918
                 LocalDate.of(2024, 12, 25)  // Noël
         );
 

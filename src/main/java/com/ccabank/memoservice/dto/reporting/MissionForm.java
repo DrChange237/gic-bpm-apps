@@ -59,7 +59,7 @@ public class MissionForm {
     @Schema(description = "Signature du donneur d'ordre", example = " ")
     private String requesterSignature = "";
 
-    private Double chargeSupport = 0.0;
+    private String chargeSupport = "Douala";
     private Double missionFees = 0.0;
     private Double transportFees = 0.0;
     @Schema(example = "123456789")

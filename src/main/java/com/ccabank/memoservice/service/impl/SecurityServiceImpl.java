@@ -7,10 +7,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
+import java.util.Optional;
+import java.security.Principal;
+
 
 
 @Service
@@ -40,15 +44,21 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         return null;
+       /* EmployeeInfo employeeInfo = getCurrentUserInfo();
+
+        return employeeInfo;*/
+
     }
 
-    private EmployeeInfo getCurrentUserInfo(String token) throws JsonProcessingException {
+    private EmployeeInfo
+    getCurrentUserInfo(String token) throws JsonProcessingException {
         String[] chunks = token.split("\\.");
         Base64.Decoder decoder = Base64.getUrlDecoder();
         String payload = new String(decoder.decode(chunks[1]));
         ObjectMapper mapper = new ObjectMapper();
         JsonNode actualObj = mapper.readTree(payload);
         String username = actualObj.get("user_name").textValue();
+        //String username = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Principal::getName).orElse("");
         return userRestClient.getStaffByUsername(username);
     }
 

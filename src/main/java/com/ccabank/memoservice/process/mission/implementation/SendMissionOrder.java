@@ -2,13 +2,16 @@ package com.ccabank.memoservice.process.mission.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.entity.AgencyInfo;
 import com.ccabank.memoservice.dto.reporting.MissionForm;
+import com.ccabank.memoservice.dto.user.AgencyDto;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.process.mission.constant.TransportCommonConstant;
+import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.WorkDayCalculator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Optional;
 
 @Component
 public class SendMissionOrder implements JavaDelegate {
@@ -48,29 +52,40 @@ public class SendMissionOrder implements JavaDelegate {
 
         missionForm.setName(staff.getFirstName() + " " + staff.getLastName());
         missionForm.setDate(LocalDate.now());
+
+        String object = (String) delegateExecution.getVariable("object");
+        missionForm.setObject(object);
+
         String accountNumber = (String) delegateExecution.getVariable("accountNumber");
         missionForm.setAccountNumber(accountNumber);
         LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
+
+        Long missionFeesLong = (Long) delegateExecution.getVariable("missionFees");
+
         missionForm.setStartDate(startDate);
-        LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
+
+        Long nbDays = (Long) delegateExecution.getVariable("nbDays");
+
+        missionForm.setMissionFees(missionFeesLong.doubleValue() * nbDays.doubleValue());
+
+
+        LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays.intValue());
         missionForm.setEndDate(endDate);
         missionForm.setFunction(staff.getFunction().getFunction().getName());
         missionForm.setUnity(staff.getDepartment().getName());
         String location = (String) delegateExecution.getVariable("location");
         missionForm.setLocation(location);
-        String subject = (String) delegateExecution.getVariable("subject");
-        missionForm.setObject(subject);
         missionForm.setPlace("DOUALA");
 
 
-        int nightsLong = WorkDayCalculator.calculateNights(startDate, endDate);
-        missionForm.setNights(nightsLong);
+        //int nightsLong = WorkDayCalculator.calculateNights(startDate, endDate);
+        missionForm.setNights(nbDays.intValue());
 
-        Long missionFeesLong = (Long) delegateExecution.getVariable("missionFees");
-        missionForm.setMissionFees(missionFeesLong.doubleValue());
+
 
         Long transportFees = (Long) delegateExecution.getVariable("transportFees");
         missionForm.setTransportFees(transportFees.doubleValue());
+
 
         String authorisationNumber = (String) delegateExecution.getVariable("authorisationNumber");
         missionForm.setAuthorisationNumber(authorisationNumber);
@@ -78,8 +93,7 @@ public class SendMissionOrder implements JavaDelegate {
         String receiptNumber = (String) delegateExecution.getVariable("receiptNumber");
         missionForm.setReceiptNumber(receiptNumber);
 
-        Long chargeSupport = (Long) delegateExecution.getVariable("chargeSupport");
-        missionForm.setChargeSupport(chargeSupport.doubleValue());
+        missionForm.setChargeSupport(Optional.ofNullable(staff.getAgency()).map(AgencyDto::getName).orElse(""));
 
         String apbt_n1 = (String) delegateExecution.getVariable("Apbt_n1");
         EmployeeInfo n1 =  userRestClient.getStaffByUsername(apbt_n1);
@@ -136,7 +150,7 @@ public class SendMissionOrder implements JavaDelegate {
         emailDto.setFrom("notification@cca-bank.com");
         emailDto.setTo(staff.getEmail());
         emailDto.setSubject("Ordre de Mission");
-        emailDto.setCc(staff.getEmail());
+        emailDto.setCc(n1.getEmail());
         emailDto.setBody("Ordre de Mission");
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("ordre_mission.pdf");
