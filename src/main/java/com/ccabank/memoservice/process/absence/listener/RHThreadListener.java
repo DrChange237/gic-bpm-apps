@@ -20,7 +20,7 @@ public class RHThreadListener implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
-        
+
         String processInstanceId = delegateExecution.getProcessInstanceId();
         List<ChoiceDto> baseDeductions = new ArrayList<>();
         ChoiceDto choice = new ChoiceDto("Congés", AbsenceForm.Deduction.VACATION);
