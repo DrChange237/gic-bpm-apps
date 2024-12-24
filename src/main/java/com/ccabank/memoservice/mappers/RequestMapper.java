@@ -1,6 +1,5 @@
 package com.ccabank.memoservice.mappers;
 
-import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.dto.memo.RequestInfo;
 import com.ccabank.memoservice.entity.Request;
 import org.mapstruct.Mapper;

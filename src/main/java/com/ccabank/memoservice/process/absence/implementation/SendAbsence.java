@@ -10,15 +10,12 @@ import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.history.HistoricTaskInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Optional;
 
 import com.ccabank.memoservice.process.general.service.RequestService;
 

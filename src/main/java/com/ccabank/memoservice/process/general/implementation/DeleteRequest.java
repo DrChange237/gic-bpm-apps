@@ -1,7 +1,6 @@
 package com.ccabank.memoservice.process.general.implementation;
 
 import com.ccabank.memoservice.entity.Request;
-import com.ccabank.memoservice.entity.RequestStatus;
 import com.ccabank.memoservice.repository.RequestRepository;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

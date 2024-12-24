@@ -10,10 +10,9 @@ import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
 import com.ccabank.memoservice.service.faces.CamundaService;
-import com.ccabank.memoservice.util.DateUtil;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -21,19 +20,12 @@ import java.time.LocalDate;
 import java.util.Base64;
 
 @Component
+@RequiredArgsConstructor
 public class SendInterimLetter implements JavaDelegate {
-
-    @Autowired
-    private ReportingRestClient reportingRestClient;
-
-    @Autowired
-    private EmailRestClient emailRestClient;
-
-    @Autowired
-    private UserRestClient userRestClient;
-
-    @Autowired
-    private CamundaService camundaService;
+    private final ReportingRestClient reportingRestClient;
+    private final EmailRestClient emailRestClient;
+    private final UserRestClient userRestClient;
+    private final CamundaService camundaService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

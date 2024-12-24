@@ -1,19 +1,16 @@
 package com.ccabank.memoservice.process.vacation;
 
 import com.ccabank.memoservice.service.faces.CamundaService;
-import org.camunda.bpm.engine.TaskService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@RequiredArgsConstructor
 public class ApbtInterimaireStartListener implements ExecutionListener {
-
-    @Autowired
-    CamundaService camundaService;
+    private final CamundaService camundaService;
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {

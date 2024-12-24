@@ -4,41 +4,29 @@ import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.VacationDecision;
 import com.ccabank.memoservice.dto.reporting.VacationForm;
-import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
-import com.ccabank.memoservice.dto.user.FunctionInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
 import com.ccabank.memoservice.service.faces.CamundaService;
-import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.WorkDayCalculator;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Optional;
-import java.util.function.Function;
 
 @Component
+@RequiredArgsConstructor
 public class SendVacation implements JavaDelegate {
-
-    @Autowired
-    private UserRestClient userRestClient;
-
-    @Autowired
-    private ReportingRestClient reportingRestClient;
-
-    @Autowired
-    private EmailRestClient emailRestClient;
-
-    @Autowired
-    private CamundaService camundaService;
+    private final UserRestClient userRestClient;
+    private final ReportingRestClient reportingRestClient;
+    private final EmailRestClient emailRestClient;
+    private final CamundaService camundaService;
 
 
     @Override

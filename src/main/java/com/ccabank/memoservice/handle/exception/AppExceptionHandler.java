@@ -24,12 +24,6 @@ import java.util.Objects;
 
 /**
  * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * @project : entity-service
- * @Package : com.ccabank.userservice.handle.exception
- * <p>
- * @date: 19/06/2023
- * @time: 09:15
- * <p>
  * Created with IntelliJ IDEA To change this template use File | Settings | File Templates.
  */
 @RestControllerAdvice
