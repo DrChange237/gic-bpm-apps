@@ -18,12 +18,10 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-<<<<<<< HEAD
+
 import java.time.ZoneId;
 import java.util.*;
-=======
 import java.util.Base64;
->>>>>>> 1540f9e8ef809a73640b20186a60152ee0af8c94
 
 import com.ccabank.memoservice.process.general.service.RequestService;
 

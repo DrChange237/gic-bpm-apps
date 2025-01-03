@@ -18,6 +18,7 @@ import com.ccabank.memoservice.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +31,17 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class SendMissionOrder implements JavaDelegate {
+
+    @Autowired
     private final ReportingRestClient reportingRestClient;
+
+    @Autowired
     private final EmailRestClient emailRestClient;
+
+    @Autowired
     private final UserRestClient userRestClient;
+
+    @Autowired
     private final RequestService requestService;
 
     @Override

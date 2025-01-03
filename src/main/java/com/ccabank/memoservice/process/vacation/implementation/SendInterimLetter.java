@@ -17,6 +17,7 @@ import com.ccabank.memoservice.service.faces.CamundaService;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +30,18 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class SendInterimLetter implements JavaDelegate {
-    private final ReportingRestClient reportingRestClient;
-    private final EmailRestClient emailRestClient;
-    private final UserRestClient userRestClient;
-    private final CamundaService camundaService;
+
+    @Autowired
+    private  ReportingRestClient reportingRestClient;
+
+    @Autowired
+    private  EmailRestClient emailRestClient;
+
+    @Autowired
+    private  UserRestClient userRestClient;
+
+    @Autowired
+    private  CamundaService camundaService;
 
     @Autowired
     private RequestRepository requestRepository;
@@ -40,7 +49,6 @@ public class SendInterimLetter implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        try{
 
             System.out.println("Sending interim letter");
 
@@ -92,10 +100,7 @@ public class SendInterimLetter implements JavaDelegate {
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
 
-            Date endDateD = (Date) delegateExecution.getVariable("endDate") ;
-            LocalDate endDate = endDateD.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
+            LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate") ;
 
             form.setStartDate(startDate);
             form.setEndDate(endDate);
@@ -123,10 +128,6 @@ public class SendInterimLetter implements JavaDelegate {
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             emailDto.setAttachments(new AttachmentDto[]{attachment});
             this.emailRestClient.send(emailDto);
-
-        }catch (Exception e){
-            camundaService.createIncident(delegateExecution.getProcessInstanceId(), IncidentTypeConstant.TECHNICAL, "Letter Interim Generation " + e.getMessage() );
-        }
 
     }
 }

@@ -93,13 +93,6 @@
               <camunda:property id="required" value="false" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="pièces" label="Justificatifs" type="string">
-            <camunda:properties>
-              <camunda:property id="fieldType" value="field" />
-              <camunda:property id="type" value="file" />
-              <camunda:property id="required" value="false" />
-            </camunda:properties>
-          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener delegateExpression="${calculDaysListener}" event="end" />
       </bpmn:extensionElements>

@@ -109,7 +109,9 @@ public class ApprovalServiceImpl implements ApprovalService {
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
             request.setLastModification(LocalDateTime.now());
-            request.setStatus(RequestStatus.PENDING);
+            if(!request.getStatus().equals(RequestStatus.ACCEPTED)){
+                request.setStatus(RequestStatus.PENDING);
+            }
             requestRepository.save(request);
 
 

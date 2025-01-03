@@ -9,7 +9,9 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -19,8 +21,15 @@ public class CalculDaysListener implements ExecutionListener {
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
         String processInstanceId = delegateExecution.getProcessInstanceId();
-        LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
-        LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
+        Date startDateD = (Date) delegateExecution.getVariable("startDate");
+        LocalDate startDate = startDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        Date endDateD = (Date) delegateExecution.getVariable("endDate");
+        LocalDate endDate = startDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
 
         String reason = (String) delegateExecution.getVariable("reason");

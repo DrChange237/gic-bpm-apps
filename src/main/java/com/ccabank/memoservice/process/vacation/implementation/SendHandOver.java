@@ -11,12 +11,14 @@ import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
+import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -32,15 +34,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SendHandOver implements JavaDelegate {
 
+    @Autowired
     private final ReportingRestClient reportingRestClient;
+
+    @Autowired
     private final EmailRestClient emailRestClient;
+
+    @Autowired
     private final UserRestClient userRestClient;
+
+    @Autowired
     private final CamundaService camundaService;
 
+    @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    private RequestService requestService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
+
 
         System.out.println("Send Hand Over");
 

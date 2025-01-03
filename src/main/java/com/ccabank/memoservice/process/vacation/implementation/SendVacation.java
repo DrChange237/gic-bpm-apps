@@ -53,6 +53,9 @@ public class SendVacation implements JavaDelegate {
 
             System.out.println("Send Valided Vacation");
 
+            requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+
+
             VacationForm form = new VacationForm();
             form.setDate(LocalDate.now());
 
@@ -170,8 +173,6 @@ public class SendVacation implements JavaDelegate {
 
             emailDto.setAttachments(new AttachmentDto[]{attachment, attachmentDecision});
             this.emailRestClient.send(emailDto);
-
-            requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
 
     }
