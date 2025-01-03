@@ -9,28 +9,21 @@ import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 
 @Component
+@RequiredArgsConstructor
 public class SendVacationDecision implements JavaDelegate {
-
-    @Autowired
-    private UserRestClient userRestClient;
-
-    @Autowired
-    private ReportingRestClient reportingRestClient;
-
-    @Autowired
-    private EmailRestClient emailRestClient;
-
-    @Autowired
-    private CamundaService camundaService;
+    private final UserRestClient userRestClient;
+    private final ReportingRestClient reportingRestClient;
+    private final EmailRestClient emailRestClient;
+    private final CamundaService camundaService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

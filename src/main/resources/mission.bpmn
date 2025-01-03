@@ -143,7 +143,7 @@
     </bpmn:serviceTask>
     <bpmn:userTask id="Abpt_n1" name="Approbation N+1">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN1Listener" event="create" id="Apbt_n1" />
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vby8w3</bpmn:incoming>
       <bpmn:incoming>Flow_1pzfzm3</bpmn:incoming>
@@ -154,7 +154,7 @@
     </bpmn:userTask>
     <bpmn:userTask id="Activity_11jsy8s" name="Approbation N+2">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN2Listener" event="create" id="Apbt_n2" />
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1g6unlu</bpmn:incoming>
       <bpmn:outgoing>Flow_1rmkd2a</bpmn:outgoing>

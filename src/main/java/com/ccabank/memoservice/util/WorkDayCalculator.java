@@ -6,10 +6,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class WorkDayCalculator {
 

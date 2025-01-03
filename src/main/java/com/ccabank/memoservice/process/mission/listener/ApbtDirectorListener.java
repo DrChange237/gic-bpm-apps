@@ -1,15 +1,8 @@
 package com.ccabank.memoservice.process.mission.listener;
 
-import com.ccabank.memoservice.dto.entity.AgencyInfo;
-import com.ccabank.memoservice.dto.memo.ChoiceDto;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ApbtDirectorListener implements TaskListener {

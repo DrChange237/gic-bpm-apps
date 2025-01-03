@@ -1,23 +1,16 @@
 package com.ccabank.memoservice.process.resumption.listener;
 
-import com.ccabank.memoservice.dto.memo.ChoiceDto;
-import com.ccabank.memoservice.process.resumption.constant.ReasonConstant;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
+@RequiredArgsConstructor
 public class StartResumptionListener implements ExecutionListener {
 
-    @Autowired
-    CamundaService camundaService;
+    private final CamundaService camundaService;
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {

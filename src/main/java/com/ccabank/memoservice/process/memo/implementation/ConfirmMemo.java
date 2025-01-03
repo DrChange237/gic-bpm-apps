@@ -4,14 +4,13 @@ import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.MemoForm;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
-import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.service.RequestService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -21,19 +20,13 @@ import java.util.Base64;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ConfirmMemo implements JavaDelegate {
 
-    @Autowired
-    private ReportingRestClient reportingRestClient;
-
-    @Autowired
-    private EmailRestClient emailRestClient;
-
-    @Autowired
-    private UserRestClient userRestClient;
-
-    @Autowired
-    private RequestService requestService;
+    private final ReportingRestClient reportingRestClient;
+    private final EmailRestClient emailRestClient;
+    private final UserRestClient userRestClient;
+    private final RequestService requestService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

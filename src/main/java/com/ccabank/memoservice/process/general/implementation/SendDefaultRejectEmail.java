@@ -7,7 +7,6 @@ import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.EmailService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

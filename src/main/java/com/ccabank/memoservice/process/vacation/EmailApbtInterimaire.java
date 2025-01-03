@@ -1,26 +1,19 @@
 package com.ccabank.memoservice.process.vacation;
 
 import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
-import com.ccabank.memoservice.dto.email.EmailDto;
-import com.ccabank.memoservice.dto.user.EmployeeInfo;
-import com.ccabank.memoservice.openfeign.EmailRestClient;
-import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.EmailService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmailApbtInterimaire implements JavaDelegate {
-
-    @Autowired
-    EmailService emailService;
-
-    @Autowired
-    CamundaService camundaService;
+    private final EmailService emailService;
+    private final CamundaService camundaService;
 
     @Override
     public void execute(DelegateExecution execution) {

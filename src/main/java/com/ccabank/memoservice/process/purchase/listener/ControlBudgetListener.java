@@ -1,8 +1,6 @@
 package com.ccabank.memoservice.process.purchase.listener;
 
 import com.ccabank.memoservice.dto.memo.ChoiceDto;
-import com.ccabank.memoservice.dto.reporting.AbsenceForm;
-import com.ccabank.memoservice.dto.reporting.PurchaseForm;
 import com.ccabank.memoservice.process.purchase.constant.BudgetAvaibility;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;

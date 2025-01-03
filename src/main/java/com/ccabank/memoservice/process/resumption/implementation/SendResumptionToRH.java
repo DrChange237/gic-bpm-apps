@@ -10,6 +10,7 @@ import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.service.RequestService;
+<<<<<<< HEAD
 import com.ccabank.memoservice.repository.GroupRepository;
 import com.ccabank.memoservice.security.Authority;
 import com.ccabank.memoservice.service.faces.CamundaService;
@@ -18,6 +19,11 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+=======
+import lombok.RequiredArgsConstructor;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+>>>>>>> 1540f9e8ef809a73640b20186a60152ee0af8c94
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -29,19 +35,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class SendResumptionToRH implements JavaDelegate {
-
-    @Autowired
-    private UserRestClient userRestClient;
-
-    @Autowired
-    private ReportingRestClient reportingRestClient;
-
-    @Autowired
-    private EmailRestClient emailRestClient;
-
-    @Autowired
-    private RequestService requestService;
+    private final UserRestClient userRestClient;
+    private final ReportingRestClient reportingRestClient;
+    private final EmailRestClient emailRestClient;
+    private final RequestService requestService;
 
     @Autowired
     private CamundaService camundaService;
