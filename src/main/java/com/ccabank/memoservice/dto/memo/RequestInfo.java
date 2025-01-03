@@ -2,11 +2,12 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.entity.RequestStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
-public class RequestInfo {
+public class RequestInfo implements Serializable {
     private Long id;
 
     private  String reference;
@@ -24,6 +25,8 @@ public class RequestInfo {
     private List<FieldDto> fields;
 
     private List<ApprovalDto> approvals;
+
+    private String comments;
 
 
 
@@ -97,5 +100,13 @@ public class RequestInfo {
 
     public void setApprovals(List<ApprovalDto> approvals) {
         this.approvals = approvals;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }

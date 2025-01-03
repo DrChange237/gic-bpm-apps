@@ -221,7 +221,7 @@ public class EmailServiceImpl implements EmailService {
                     "    <tr>\n" +
                     "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center\"><strong>Refus d'approbation - <span>"+ ask.getType() +"</span> </strong></div>\n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getName() +"</span>, <br> Votre demande d'approbation a été rejeté par <strong><span> "+ ask.getRole() + "</span></p></strong> </div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getName() +"</span>, <br> Votre demande d'approbation a été rejeté  <strong><span> </span></p></strong> </div>\n" +
                     "            \n" +
                     "            \n" +
                     "            <table align=\"center\"  cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: auto; word-break: break-all;\" role=\"presentation\">\n" +

@@ -3,6 +3,7 @@ package com.ccabank.memoservice.service.faces;
 import com.ccabank.memoservice.entity.ApprovalStatus;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
@@ -47,6 +48,8 @@ public interface CamundaService {
 
     String getTaskAssigneeNature(String taskId);
 
+    void cancelOthersToken(String processInstanceId, String executionId);
+
     Optional<HistoricTaskInstance> getLastHistoricTaskInstance(String processInstanceId, String taskDefinitionKey);
 
 
@@ -69,7 +72,14 @@ public interface CamundaService {
     void claimTask(String taskId, String userId);
 
 
+    void addLocalVariableToTask(String taskId, String variableName, Object value);
+
     List<Task> getActiveTasksForUser(String userId);
+
+
+    List<HistoricTaskInstance> getConfirmTasksForUser(String userId, boolean decision);
+
+    HistoricTaskInstance getHistoryTaskInstance(String taskId);
 
     List<Task> getActiveTasksByAssignee(String username);
 
@@ -83,6 +93,10 @@ public interface CamundaService {
 
 
     FormData getFormData(String taskId);
+
+    List<TaskFormData> getUserTasksWithForms(String processDefinitionKey);
+
+    Map<String, Object>  retrieveCompletedProcessVariables(String processInstanceId);
 
     void createGroup(String groupId, String groupName, String groupType);
 

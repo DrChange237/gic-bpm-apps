@@ -8,20 +8,15 @@ import com.ccabank.memoservice.util.file.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.exceptions.BadPasswordException;
-import feign.FeignException;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -40,6 +35,7 @@ public class Mapping {
 
 
         for (FormField field : fieldDatas) {
+            System.out.println(field.getId());
             if(field.getProperties().isEmpty()){
                 System.out.println("properties is empty");
                 continue;
@@ -47,14 +43,27 @@ public class Mapping {
             FieldDto fieldDto = new FieldDto();
             fieldDto.setPosition(fieldDtos.indexOf(fieldDto));
             fieldDto.setName(field.getLabel());
+            fieldDto.setKey(field.getId());
             fieldDto.setType(field.getProperties().get("type"));
             if(variables.get(field.getId()) != null){
                 fieldDto.setValue(String.valueOf(variables.get(field.getId())));
             }
             fieldDto.setRequired(field.getProperties().get("required").equals("true"));
+
+
+            if(fieldDto.getType().equals("choice")){
+                System.out.println("choice is choice");
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<ChoiceDto> choices = new ArrayList<>();
+                try {
+                    choices = objectMapper.readValue(field.getProperties().get("choices"),  new TypeReference<List<ChoiceDto>>() {});
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+                fieldDto.setChoices(choices);
+            }
             fieldDtos.add(fieldDto);
         }
-
         return fieldDtos;
     }
 
@@ -87,17 +96,28 @@ public class Mapping {
                 case FieldTypeConstant.DATE:
                     try {
                         if(field.getValue() != null){
-                            variables.put(field.getKey(), LocalDate.parse(field.getValue()));
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+                            try {
+                                Date date = formatter.parse(field.getValue());
+                                System.out.println("Parsed Date: " + date);
+                                variables.put(field.getKey(), date);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }catch (Exception e){
                         throw new Exception("Format de la date invalid : " + field.getValue() );
                     }
-
                     break;
 
-                    case FieldTypeConstant.NUMBER:
+                case FieldTypeConstant.NUMBER:
+                    try{
                         variables.put(field.getKey(), Long.valueOf(field.getValue()));
-                        break;
+                    }catch (Exception e){
+                        variables.put(field.getKey(), null);
+                    }
+                    break;
 
                 default:
                     variables.put(field.getKey(), field.getValue());
@@ -144,8 +164,8 @@ public class Mapping {
             try{
                 field.setDescription(f.getProperties().get("description"));
                 field.setNgIf(f.getProperties().get("ngIf"));
-                if(f.getProperties().get("ngIf") == null){
-                    field.setRequired(true);
+                if(field.getNgIf() ==  null){
+                    field.setNgIf("true");
                 }
             }catch (Exception e){
                 e.printStackTrace();

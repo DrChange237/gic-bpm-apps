@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum ReasonAbsence {
+     MARIAGE("Mariage", true, 5),
      MATERNITY("Maternité", true, 3),
      BAPTEME("Baptème", true, 3),
      OTHER("Autres", false, 0);

@@ -63,6 +63,7 @@
               <camunda:property id="required" value="false" />
               <camunda:property id="description" value="Si la raison n&#39;est pas conventionelle veuillez la préciser ici" />
             </camunda:properties>
+            <camunda:validation />
           </camunda:formField>
           <camunda:formField id="plusDays" label="Jours en plus" type="long" defaultValue="0">
             <camunda:properties>
@@ -70,6 +71,7 @@
               <camunda:property id="type" value="number" />
               <camunda:property id="required" value="false" />
               <camunda:property id="description" value="Si vous voulez ajouter des jours à une raison conventionnelle" />
+              <camunda:property id="ngIf" value="reason != &#34;OTHER&#34;" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="interim" label="Proposition D&#39;intérimaire" type="string">
@@ -91,13 +93,24 @@
               <camunda:property id="required" value="false" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="pièces" label="Justificatifs" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="file" />
+              <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener delegateExpression="${calculDaysListener}" event="end" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_09nlzmc</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Validation" name="Validation">
+    <bpmn:userTask id="Validation" name="Validation" camunda:assignee="${owner}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ValidationListener" event="create" id="Validation" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_09nlzmc</bpmn:incoming>
+      <bpmn:incoming>Flow_07m9fdy</bpmn:incoming>
       <bpmn:outgoing>Flow_0nginhu</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="Activity_0s6146r" name="Demande d&#39;approbation" camunda:delegateExpression="${sendAskEmailN1}">
@@ -113,6 +126,7 @@
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN1Listener" event="create" id="Apbt_n1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1h84a7b</bpmn:incoming>
+      <bpmn:incoming>Flow_0tkidp3</bpmn:incoming>
       <bpmn:outgoing>Flow_1xxkin4</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_109dcvv" default="Flow_07m9fdy">
@@ -133,6 +147,7 @@
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtN2Listener" event="create" id="Apbt_n2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0oll56d</bpmn:incoming>
+      <bpmn:incoming>Flow_0lcm3zb</bpmn:incoming>
       <bpmn:outgoing>Flow_0e5jcaa</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_1ko8fbo" default="Flow_0tkidp3">
@@ -156,10 +171,6 @@
       <bpmn:incoming>Flow_02mlbin</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="Activity_1tv6z45" name="Email de Refus" camunda:delegateExpression="${sendDefaultRejectEmail}">
-      <bpmn:incoming>Flow_07m9fdy</bpmn:incoming>
-      <bpmn:incoming>Flow_0tkidp3</bpmn:incoming>
-      <bpmn:incoming>Flow_0lcm3zb</bpmn:incoming>
-      <bpmn:incoming>Flow_0ug0uei</bpmn:incoming>
       <bpmn:incoming>Flow_1g0ivuo</bpmn:incoming>
       <bpmn:outgoing>Flow_02mlbin</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -171,7 +182,7 @@
     <bpmn:endEvent id="Event_1ad8lv2">
       <bpmn:incoming>Flow_0gsjie0</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="Gateway_1y6ltts">
+    <bpmn:exclusiveGateway id="Gateway_1y6ltts" default="Flow_0ug0uei">
       <bpmn:incoming>Flow_19hmjz5</bpmn:incoming>
       <bpmn:outgoing>Flow_19t1g2y</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ug0uei</bpmn:outgoing>
@@ -180,7 +191,7 @@
     <bpmn:sequenceFlow id="Flow_0nginhu" sourceRef="Validation" targetRef="Activity_0s6146r" />
     <bpmn:sequenceFlow id="Flow_1h84a7b" sourceRef="Activity_0s6146r" targetRef="Apbt_n1" />
     <bpmn:sequenceFlow id="Flow_1xxkin4" sourceRef="Apbt_n1" targetRef="Gateway_109dcvv" />
-    <bpmn:sequenceFlow id="Flow_07m9fdy" sourceRef="Gateway_109dcvv" targetRef="Activity_1tv6z45" />
+    <bpmn:sequenceFlow id="Flow_07m9fdy" sourceRef="Gateway_109dcvv" targetRef="Validation" />
     <bpmn:sequenceFlow id="Flow_00ozuqo" sourceRef="Gateway_109dcvv" targetRef="Activity_0406esr">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -189,17 +200,17 @@
     <bpmn:sequenceFlow id="Flow_0glclcm" sourceRef="Gateway_1ko8fbo" targetRef="Gateway_1s0iwwb">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0tkidp3" sourceRef="Gateway_1ko8fbo" targetRef="Activity_1tv6z45" />
+    <bpmn:sequenceFlow id="Flow_0tkidp3" sourceRef="Gateway_1ko8fbo" targetRef="Apbt_n1" />
     <bpmn:sequenceFlow id="Flow_0ni90o8" sourceRef="Gateway_1s0iwwb" targetRef="Apbt_DG">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('nbDays') &gt; 2)}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1b6j7sy" sourceRef="Apbt_DG" targetRef="Gateway_0e9lndx" />
-    <bpmn:sequenceFlow id="Flow_0lcm3zb" sourceRef="Gateway_0e9lndx" targetRef="Activity_1tv6z45" />
+    <bpmn:sequenceFlow id="Flow_0lcm3zb" sourceRef="Gateway_0e9lndx" targetRef="Apbt_n2" />
     <bpmn:sequenceFlow id="Flow_0jhfwae" sourceRef="Gateway_0e9lndx" targetRef="Activity_1n2y8wg">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_02mlbin" sourceRef="Activity_1tv6z45" targetRef="Event_11r7er7" />
-    <bpmn:sequenceFlow id="Flow_0ug0uei" sourceRef="Gateway_1y6ltts" targetRef="Activity_1tv6z45" />
+    <bpmn:sequenceFlow id="Flow_0ug0uei" sourceRef="Gateway_1y6ltts" targetRef="Activity_1n2y8wg" />
     <bpmn:sequenceFlow id="Flow_1onooo4" sourceRef="Gateway_1s0iwwb" targetRef="Activity_1n2y8wg" />
     <bpmn:sequenceFlow id="Flow_1hlandv" sourceRef="Activity_1n2y8wg" targetRef="Gateway_1rdpuf8" />
     <bpmn:sequenceFlow id="Flow_0gsjie0" sourceRef="Activity_1rqondo" targetRef="Event_1ad8lv2" />
@@ -210,7 +221,7 @@
       <bpmn:incoming>Flow_19t1g2y</bpmn:incoming>
       <bpmn:outgoing>Flow_0gsjie0</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Activity_1n2y8wg" name="Traitement du Capital Humain" camunda:candidateGroups="capital-humain">
+    <bpmn:userTask id="Activity_1n2y8wg" name="Saisie du Capital Humain" camunda:candidateGroups="capital-humain">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="deduction" label="Base de Déduction" type="string">
@@ -254,6 +265,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0jhfwae</bpmn:incoming>
       <bpmn:incoming>Flow_1onooo4</bpmn:incoming>
+      <bpmn:incoming>Flow_0ug0uei</bpmn:incoming>
       <bpmn:outgoing>Flow_1hlandv</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_19hmjz5" sourceRef="Activity_0deaynf" targetRef="Gateway_1y6ltts" />
@@ -342,6 +354,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_042nvrj_di" bpmnElement="Activity_1n2y8wg">
         <dc:Bounds x="1050" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ejbfql_di" bpmnElement="Activity_0deaynf">
         <dc:Bounds x="790" y="160" width="100" height="80" />
@@ -367,8 +380,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07m9fdy_di" bpmnElement="Flow_07m9fdy">
         <di:waypoint x="950" y="475" />
-        <di:waypoint x="950" y="670" />
-        <di:waypoint x="1160" y="670" />
+        <di:waypoint x="950" y="690" />
+        <di:waypoint x="670" y="690" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00ozuqo_di" bpmnElement="Flow_00ozuqo">
         <di:waypoint x="975" y="450" />
@@ -388,8 +401,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0tkidp3_di" bpmnElement="Flow_0tkidp3">
         <di:waypoint x="1490" y="475" />
-        <di:waypoint x="1490" y="690" />
-        <di:waypoint x="1260" y="690" />
+        <di:waypoint x="1490" y="570" />
+        <di:waypoint x="770" y="570" />
+        <di:waypoint x="770" y="490" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ni90o8_di" bpmnElement="Flow_0ni90o8">
         <di:waypoint x="1490" y="285" />
@@ -401,7 +415,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lcm3zb_di" bpmnElement="Flow_0lcm3zb">
         <di:waypoint x="1210" y="225" />
-        <di:waypoint x="1210" y="650" />
+        <di:waypoint x="1210" y="420" />
+        <di:waypoint x="1280" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jhfwae_di" bpmnElement="Flow_0jhfwae">
         <di:waypoint x="1185" y="200" />
@@ -412,9 +427,10 @@
         <di:waypoint x="1210" y="862" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ug0uei_di" bpmnElement="Flow_0ug0uei">
-        <di:waypoint x="700" y="225" />
-        <di:waypoint x="700" y="720" />
-        <di:waypoint x="1160" y="720" />
+        <di:waypoint x="700" y="175" />
+        <di:waypoint x="700" y="100" />
+        <di:waypoint x="1110" y="100" />
+        <di:waypoint x="1110" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1onooo4_di" bpmnElement="Flow_1onooo4">
         <di:waypoint x="1465" y="310" />

@@ -4,23 +4,26 @@ import com.ccabank.memoservice.dto.memo.ChoiceDto;
 import com.ccabank.memoservice.dto.reporting.InterimForm;
 import com.ccabank.memoservice.process.absence.constant.BaseDeductionConstant;
 import com.ccabank.memoservice.process.resumption.constant.ReasonConstant;
+import com.ccabank.memoservice.service.faces.CamundaService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class ApbtVacationRHListener implements TaskListener {
+public class ApbtVacationRHListener implements ExecutionListener {
+
+    @Autowired
+    private CamundaService camundaService;
+
     @Override
-    public void notify(DelegateTask delegateTask) {
-
-        String groupId = "capital-humain"; // Remplacez par l'ID de votre groupe
-        delegateTask.addCandidateGroup(groupId);
-
-        // Optionnel : log pour vérifier l'assignation
-        System.out.println("Tâche assignée au groupe : " + groupId);
+    public void notify(DelegateExecution delegateExecution) throws Exception {
 
         List<ChoiceDto> typeInterim = new ArrayList<>();
 
@@ -31,7 +34,7 @@ public class ApbtVacationRHListener implements TaskListener {
         choice = new ChoiceDto("Pas d'intérim", InterimForm.Subject.NONE);
         typeInterim.add(choice);
 
-        delegateTask.setVariable("typeInterim" + "_choices" , typeInterim);
+        delegateExecution.setVariable("typeInterim" + "_choices" , typeInterim);
 
     }
 }

@@ -3,12 +3,16 @@ package com.ccabank.memoservice.process.vacation.implementation;
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.InterimForm;
+import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.dto.user.FunctionInfo;
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.user.Gender;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
+import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.util.DateUtil;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -18,7 +22,10 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class SendInterimLetter implements JavaDelegate {
@@ -35,6 +42,9 @@ public class SendInterimLetter implements JavaDelegate {
     @Autowired
     private CamundaService camundaService;
 
+    @Autowired
+    private RequestRepository requestRepository;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
@@ -50,7 +60,7 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm.Employee interim = new InterimForm.Employee();
             interim.setMatricule(interimaire.getMatricule());
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            interim.setFunction(interimaire.getFunction().getFunction().getName());
+            interim.setFunction(Optional.ofNullable(interimaire.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             interim.setSex(InterimForm.Employee.Sex.MALE);
             if(interimaire.getGender().equals(Gender.FEMALE)){
                 interim.setSex(InterimForm.Employee.Sex.FEMALE);
@@ -63,7 +73,7 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm.Employee employee = new InterimForm.Employee();
             employee.setMatricule(staff.getMatricule());
             employee.setName(staff.getFirstName() + " " + staff.getLastName());
-            employee.setFunction(staff.getFunction().getFunction().getName());
+            employee.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             employee.setSex(InterimForm.Employee.Sex.MALE);
             if(staff.getGender().equals(Gender.FEMALE)){
                 employee.setSex(InterimForm.Employee.Sex.FEMALE);
@@ -85,8 +95,15 @@ public class SendInterimLetter implements JavaDelegate {
             //Note à Generer
             form.setNoteId("NOTE 2024 N° 2970/DGA/DAF/RCH/DAAS/CORH");
 
-            LocalDate startDate = (LocalDate) delegateExecution.getVariable("realStartDate");
-            LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate") ;
+            Date startDateD = (Date) delegateExecution.getVariable("realStartDate");
+            LocalDate startDate = startDateD.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            Date endDateD = (Date) delegateExecution.getVariable("endDate") ;
+            LocalDate endDate = endDateD.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
 
             form.setStartDate(startDate);
             form.setEndDate(endDate);
@@ -100,6 +117,8 @@ public class SendInterimLetter implements JavaDelegate {
 
             ByteArrayResource resource = reportingRestClient.interim(form);
 
+            Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
+
             EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
             emailDto.setTo(interimaire.getEmail());
@@ -108,7 +127,7 @@ public class SendInterimLetter implements JavaDelegate {
             emailDto.setBody("Lettre d'intérim");
 
             AttachmentDto attachment = new AttachmentDto();
-            attachment.setName("lettre_interim.pdf");
+            attachment.setName("lettre_interim_" + request.getReference() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             emailDto.setAttachments(new AttachmentDto[]{attachment});
             this.emailRestClient.send(emailDto);

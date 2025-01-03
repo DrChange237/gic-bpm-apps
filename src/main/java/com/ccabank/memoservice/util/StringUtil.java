@@ -25,7 +25,7 @@ public final class StringUtil {
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\"([^\"]*)\"|(\\S+)");
 
-    private static final Set<String> CONJUNCTIONS = new HashSet<>(Arrays.asList("et", "ou", "ni", "car", "donc", "mais", "or", "si", "que", "à", "de", "des", "au", "aux"));
+    private static final Set<String> CONJUNCTIONS = new HashSet<>(Arrays.asList("et", "ou", "ni", "car", "donc", "mais", "or", "si", "que", "à", "de", "des", "au", "aux", "&"));
 
     public static  String getFirstLetters(String input) {
         return Arrays.stream(input.split(" "))

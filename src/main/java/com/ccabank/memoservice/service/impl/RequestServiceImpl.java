@@ -8,7 +8,9 @@ import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
+import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.camunda.Mapping;
+import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
@@ -55,6 +57,9 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private Mapping mapping;
 
+    @Autowired
+    private ApprobationRepository approbationRepository;
+
 
     @Override
     public AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest req) {
@@ -91,6 +96,8 @@ public class RequestServiceImpl implements RequestService {
             variables.putAll(variablesApprovals);
             variables.put("owner", request.getStaff());
             variables.put("reference", request.getReference());
+            List<FieldDto> otherFields = new ArrayList<>();
+            variables.put("otherFields", otherFields);
 
             ProcessInstance instance = camundaService.createProcessInstance(request.getType().getStructure(), variables);
 
@@ -124,14 +131,15 @@ public class RequestServiceImpl implements RequestService {
             request = requestRepository.save(request);
 
             Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
-            Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
-            variables.putAll(variablesApprovals);
-            variables.put("owner", requestDto.getStaff());
-            variables.put("reference", requestDto.getReference());
+            //Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
+            //variables.putAll(variablesApprovals);
+            variables.put("owner", request.getStaff());
+            variables.put("reference", request.getReference());
 
-            ProcessInstance instance = camundaService.createProcessInstance(request.getType().getStructure(), variables);
+            ProcessInstance instance = camundaService.getProcessInstance(request.getInstanceId());
+            camundaService.setProcessVariables(instance.getId(), variables);
 
-            request.setInstanceId(instance.getId());
+            //request.setInstanceId(instance.getId());
 
             request = requestRepository.save(request);
 
@@ -210,7 +218,21 @@ public class RequestServiceImpl implements RequestService {
 
             Request request = requestRepository.getOne(id);
             RequestInfo dto = requestMapper.toDto(request);
-            List<HistoricActivityInstance> historics = camundaService.getHistoricActivityInstances(request.getInstanceId());
+            dto.setDocumentType(request.getType().getName());
+            StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+            Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+
+            List<FieldDto> updateFields = new ArrayList<>();
+
+            for (FieldDto field : documentStructure.getFields()) {
+                field.setValue(String.valueOf(variables.get(field.getKey())));
+                updateFields.add(field);
+            }
+
+            dto.setFields(updateFields);
+
+            //List<HistoricActivityInstance> historics = camundaService.getHistoricActivityInstances(request.getInstanceId());
 
             List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
 
@@ -255,6 +277,10 @@ public class RequestServiceImpl implements RequestService {
                     System.out.println("Assigne : " + historic.getAssignee());
                     approvalDto.setStaff(historic.getAssignee());
                 }
+                if(historic.getEndTime() != null){
+                    System.out.println("EndTime : " + historic.getAssignee());
+                    approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(historic.getEndTime()));
+                }
             }
 
             if(historic.getDurationInMillis() != null){
@@ -266,7 +292,16 @@ public class RequestServiceImpl implements RequestService {
 
             if(historic.getEndTime() != null){
                 System.out.println("Is Complete : ");
-                approvalDto.setStatus(ApprovalStatus.ACCEPTED);
+                if(historic.getId() != null){
+                    Optional<Approbation> approbationOptional = approbationRepository.findByTaskId(historic.getId());
+                    if(approbationOptional.isPresent()){
+                        Approbation approbation = approbationOptional.get();
+                        approvalDto.setStatus(approbation.getStatus());
+                        approvalDto.setComments(approbation.getComments());
+                    }else{
+                        approvalDto.setStatus(ApprovalStatus.ACCEPTED);
+                    }
+                }
             }
 
             approvalDto.setFields(new ArrayList<>());
@@ -327,12 +362,8 @@ public class RequestServiceImpl implements RequestService {
     public AppServiceResult<List<RequestInfo>> getRequestByStaff(String staff, String status) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
-
             List<Request> requests = requestRepository.findByStaffAndStatus(staff, RequestStatus.valueOf(status));
-
             return getConvertedResult(requests, "getRequestByStaff ");
-
-
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
@@ -374,7 +405,11 @@ public class RequestServiceImpl implements RequestService {
                 StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
 
                 Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
-
+                if(!request.getStatus().equals(RequestStatus.PENDING)){
+                    variables = camundaService.retrieveCompletedProcessVariables(request.getInstanceId());
+                }
+                System.out.println("Debut du mapping");
+                DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
                 dto.setFields(Mapping.getFieldFromFormField(formData, variables));
 
                 List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
@@ -386,7 +421,5 @@ public class RequestServiceImpl implements RequestService {
         }
         return new AppServiceResult<List<RequestInfo>>(true, 0, "Succeed!", result);
     }
-
-
 
 }

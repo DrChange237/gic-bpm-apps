@@ -3,19 +3,30 @@ package com.ccabank.memoservice.process.resumption.implementation;
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.ResumptionForm;
+import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.dto.user.FunctionInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.service.RequestService;
+import com.ccabank.memoservice.repository.GroupRepository;
+import com.ccabank.memoservice.security.Authority;
+import com.ccabank.memoservice.service.faces.CamundaService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.identity.Group;
+import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SendResumptionToRH implements JavaDelegate {
@@ -32,6 +43,9 @@ public class SendResumptionToRH implements JavaDelegate {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private CamundaService camundaService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
@@ -45,14 +59,25 @@ public class SendResumptionToRH implements JavaDelegate {
 
         form.setDate(LocalDate.now());
         form.setName(staff.getFirstName() + " " + staff.getLastName());
-        form.setFunction(staff.getFunction().getFunction().getName());
+        form.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
         form.setMatricule(staff.getMatricule());
         form.setUnity(staff.getDepartment().getName());
         form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
 
-        LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
-        LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
-        LocalDate realEndDate = (LocalDate) delegateExecution.getVariable("realEndDate");
+        Date startDateD = (Date) delegateExecution.getVariable("startDate");
+        LocalDate startDate = startDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        Date endDateD = (Date) delegateExecution.getVariable("endDate");
+        LocalDate endDate = endDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        Date realEndDateD = (Date) delegateExecution.getVariable("realEndDate");
+        LocalDate realEndDate = realEndDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
         form.setStartDate(startDate);
         form.setEndDate(endDate);
@@ -77,11 +102,21 @@ public class SendResumptionToRH implements JavaDelegate {
         //Envoyer le HandOver Par Email à l'intérimaire
         ByteArrayResource resource = this.reportingRestClient.resumption(form);
 
+        List<User> users = camundaService.getGroupDetailsWithMembers("notification-capital-humain");
+
+        String emailList = "";
+
+        for (User user : users) {
+            emailList += user.getEmail() + ",";
+        }
+
+        emailList = emailList + supervisor.getEmail() + ",";
+
         EmailDto emailDto = new EmailDto();
         emailDto.setFrom("notification@cca-bank.com");
         emailDto.setTo(staff.getEmail());
         emailDto.setSubject("Fiche de Reprise de Service");
-        emailDto.setCc(supervisor.getEmail());
+        emailDto.setCc(emailList);
         emailDto.setBody("En pièce jointe la fiche de reprise de service");
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("reprise_service.pdf");

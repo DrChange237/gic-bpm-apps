@@ -7,6 +7,7 @@ import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.EmailService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,11 @@ public class SendAskEmail implements JavaDelegate {
 
         String processInstanceId = execution.getProcessInstanceId();
 
+        String processDefinitionId = execution.getProcessDefinitionId();
+
+        ProcessDefinition definition = camundaService.getProcessDefinition(processDefinitionId);
+
+
 
         String apbt_interimaire = (String) execution.getVariable(this.approbation);
         String owner = (String) execution.getVariable("owner");
@@ -64,7 +70,7 @@ public class SendAskEmail implements JavaDelegate {
 
         ask.setType(request.getType().getName());
 
-        ask.setSubject("Demande d'approbation");
+        ask.setSubject("Demande d'approbation - " + definition.getName());
         if(task != null){
             ask.setRole(task.getName());
         }else{

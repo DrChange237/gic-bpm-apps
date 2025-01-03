@@ -5,7 +5,9 @@ import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.entity.AgencyInfo;
 import com.ccabank.memoservice.dto.reporting.MissionForm;
 import com.ccabank.memoservice.dto.user.AgencyDto;
+import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.dto.user.FunctionInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
@@ -20,7 +22,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Optional;
 
 @Component
@@ -58,7 +62,10 @@ public class SendMissionOrder implements JavaDelegate {
 
         String accountNumber = (String) delegateExecution.getVariable("accountNumber");
         missionForm.setAccountNumber(accountNumber);
-        LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
+        Date startDateD = (Date) delegateExecution.getVariable("startDate");
+        LocalDate startDate = startDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
         Long missionFeesLong = (Long) delegateExecution.getVariable("missionFees");
 
@@ -66,12 +73,11 @@ public class SendMissionOrder implements JavaDelegate {
 
         Long nbDays = (Long) delegateExecution.getVariable("nbDays");
 
-        missionForm.setMissionFees(missionFeesLong.doubleValue() * nbDays.doubleValue());
-
+        missionForm.setMissionFees(missionFeesLong.doubleValue() * nbDays.intValue());
 
         LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays.intValue());
         missionForm.setEndDate(endDate);
-        missionForm.setFunction(staff.getFunction().getFunction().getName());
+        missionForm.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
         missionForm.setUnity(staff.getDepartment().getName());
         String location = (String) delegateExecution.getVariable("location");
         missionForm.setLocation(location);
@@ -100,17 +106,18 @@ public class SendMissionOrder implements JavaDelegate {
         MissionForm.Signatory supervisor = new MissionForm.Signatory();
         supervisor.setDate(LocalDate.now());
         supervisor.setName(n1.getFirstName() + " " + n1.getLastName());
-        supervisor.setFunction(n1.getFunction().getFunction().getName());
+        supervisor.setFunction(Optional.ofNullable(n1.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
         signature = userRestClient.getEmployeeSignature(apbt_n1);
         supervisor.setSignature(signature);
         missionForm.setSupervisor(supervisor);
 
         String apbt_n2 = (String) delegateExecution.getVariable("Apbt_n2");
+
         EmployeeInfo n2 =  userRestClient.getStaffByUsername(apbt_n2);
         MissionForm.Signatory supervisor2 = new MissionForm.Signatory();
         supervisor2.setDate(LocalDate.now());
         supervisor2.setName(n2.getFirstName() + " " + n1.getLastName());
-        supervisor2.setFunction(n2.getFunction().getFunction().getName());
+        supervisor2.setFunction(Optional.ofNullable(n2.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
         signature = userRestClient.getEmployeeSignature(apbt_n2);
         supervisor2.setSignature(signature);
         missionForm.setSupervisorNext(supervisor2);
@@ -123,7 +130,7 @@ public class SendMissionOrder implements JavaDelegate {
         MissionForm.Signatory uch = new MissionForm.Signatory();
         uch.setDate(LocalDate.now());
         uch.setName(n_uch.getFirstName() + " " + n_uch.getLastName());
-        uch.setFunction(n_uch.getFunction().getFunction().getName());
+        uch.setFunction(Optional.ofNullable(n_uch.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
         signature = userRestClient.getEmployeeSignature(apbt_uch);
         uch.setSignature(signature);
         missionForm.setUch(uch);

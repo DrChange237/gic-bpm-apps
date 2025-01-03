@@ -3,11 +3,15 @@ package com.ccabank.memoservice.process.vacation.implementation;
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.HandOverForm;
+import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.dto.user.FunctionInfo;
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
+import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.WorkDayCalculator;
@@ -19,8 +23,10 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class SendHandOver implements JavaDelegate {
@@ -37,12 +43,13 @@ public class SendHandOver implements JavaDelegate {
     @Autowired
     private CamundaService camundaService;
 
+    @Autowired
+    private RequestRepository requestRepository;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         System.out.println("Send Hand Over");
-
-        try {
 
             //Générer le HandOver
             HandOverForm handOverForm = new HandOverForm();
@@ -54,7 +61,7 @@ public class SendHandOver implements JavaDelegate {
 
             EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
             employee.setName(staff.getFirstName() + " " + staff.getLastName());
-            employee.setFunction(staff.getFunction().getFunction().getName());
+            employee.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
 
             String signature = userRestClient.getEmployeeSignature(staff.getUsername());
             employee.setSignature(signature);
@@ -62,7 +69,10 @@ public class SendHandOver implements JavaDelegate {
 
 
             System.out.println("Je suis au niveau des dates");
-            LocalDate startDate = (LocalDate) delegateExecution.getVariable("realStartDate") ;
+            Date startDateD = (Date) delegateExecution.getVariable("realStartDate");
+            LocalDate startDate = startDateD.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
             handOverForm.setStartDate(startDate);
             System.out.println(startDate);
 
@@ -88,7 +98,7 @@ public class SendHandOver implements JavaDelegate {
 
 
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            interim.setFunction(interimaire.getFunction().getFunction().getName());
+            interim.setFunction(Optional.ofNullable(interimaire.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
             interim.setSignature(signature);
 
@@ -102,7 +112,7 @@ public class SendHandOver implements JavaDelegate {
             EmployeeInfo supervisor =  userRestClient.getStaffByUsername(supervisorId);
 
             supervisorModel.setName(supervisor.getFirstName() + " " + supervisor.getLastName());
-            supervisorModel.setFunction(supervisor.getFunction().getFunction().getName());
+            supervisorModel.setFunction(Optional.ofNullable(supervisor.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
 
             signature = userRestClient.getEmployeeSignature(supervisor.getUsername());
             supervisorModel.setSignature(signature);
@@ -121,6 +131,8 @@ public class SendHandOver implements JavaDelegate {
             //Envoyer le HandOver Par Email à l'intérimaire
             ByteArrayResource resource = this.reportingRestClient.handover(handOverForm);
 
+            Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
+
             EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
             emailDto.setTo(interimaire.getEmail());
@@ -128,15 +140,10 @@ public class SendHandOver implements JavaDelegate {
             emailDto.setCc(staff.getEmail());
             emailDto.setBody("En pièce jointe le formulaire de HandOver");
             AttachmentDto attachment = new AttachmentDto();
-            attachment.setName("handover.pdf");
+            attachment.setName("handover_" + request.getReference() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             emailDto.setAttachments(new AttachmentDto[]{attachment});
             this.emailRestClient.send(emailDto);
-
-        }catch (Exception e){
-                camundaService.createIncident(delegateExecution.getProcessInstanceId(), IncidentTypeConstant.TECHNICAL, "Hand Over Not Generate " + e.getMessage() );
-                throw new Exception(e.getMessage());
-        }
 
     }
 }

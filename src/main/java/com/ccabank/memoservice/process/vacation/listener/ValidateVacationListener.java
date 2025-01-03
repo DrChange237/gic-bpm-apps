@@ -19,7 +19,6 @@ public class ValidateVacationListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
-        requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
     }
 }

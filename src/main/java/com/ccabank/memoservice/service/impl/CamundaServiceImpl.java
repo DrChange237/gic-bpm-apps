@@ -8,25 +8,23 @@ import com.ccabank.memoservice.service.faces.UserCamundaService;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.history.*;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState;
-import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.runtime.Incident;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.engine.runtime.ProcessInstanceQuery;
-import org.camunda.bpm.engine.runtime.VariableInstance;
+import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
+import org.camunda.bpm.engine.runtime.*;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState.*;
@@ -58,8 +56,11 @@ public class CamundaServiceImpl implements CamundaService {
     @Autowired
     private GroupRepository groupRepository;
 
+
     @Autowired
     private ManagementService managementService;
+
+
 
 
 
@@ -215,6 +216,62 @@ public class CamundaServiceImpl implements CamundaService {
 
     }
 
+    public String getTaskIdsByExecutionId(String executionId) {
+        // Créer une requête pour obtenir les tâches associées à l'ID d'exécution
+        TaskQuery taskQuery = taskService.createTaskQuery().executionId(executionId).active();
+        // Obtenir la liste des tâches
+        Task task = taskQuery.singleResult();
+        System.out.println("la tache associé a cette executio ID est :" + task.getName());
+        // Extraire et retourner les IDs des tâches
+        return task.getId();
+    }
+
+    public void suspendTask(String taskId) {
+        // Vérifier si la tâche existe
+        Task task = taskService.createTaskQuery()
+                .taskId(taskId)
+                .singleResult();
+
+        if (task != null) {
+            // Suspendre la tâche
+            taskService.setAssignee(taskId, null);
+            taskService.claim(task.getId(), "notneed");
+        } else {
+            throw new IllegalArgumentException("Task not found for ID: " + taskId);
+        }
+    }
+
+    @Override
+    public void cancelOthersToken(String processInstanceId, String executionId) {
+        List<Execution> executions = this.getActiveTokens(processInstanceId);
+        for (Execution execution : executions) {
+            System.out.println("Executing: " + execution.getId());
+            if (!execution.getId().equals(executionId)) {
+                String taskId = this.getTaskIdsByExecutionId(execution.getId());
+                this.suspendTask(taskId);
+            }
+        }
+    }
+
+
+    public List<Execution> getActiveTokens(String processInstanceId) {
+        // Récupérer l'instance de processus
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .singleResult();
+
+        if (processInstance != null) {
+            // Récupérer les exécutions (jetons) actifs pour cette instance
+            List<Execution> executions = runtimeService.createExecutionQuery()
+                    .processInstanceId(processInstanceId)
+                    .active() // Filtrer pour obtenir uniquement les jetons actifs
+                    .list();
+            return executions;
+        } else {
+            throw new IllegalArgumentException("Process instance not found for ID: " + processInstanceId);
+        }
+    }
+
     @Override
     public Optional<HistoricTaskInstance> getLastHistoricTaskInstance(String processInstanceId, String taskDefinitionKey) {
         // Créer une requête pour récupérer les instances historiques de tâches
@@ -318,6 +375,21 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public void addLocalVariableToTask(String taskId, String variableName, Object value) {
+        // Récupérer la tâche par son ID
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+
+        if (task != null) {
+            // Ajouter la variable locale à la tâche
+            taskService.removeVariable(taskId, variableName);
+            taskService.setVariable(taskId, variableName, value);
+        } else {
+            throw new IllegalArgumentException("Task not found with ID: " + taskId);
+        }
+    }
+
+
+    @Override
     public List<Task> getActiveTasksForUser(String userId) {
         // Récupérer les groupes de l'utilisateur
         List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
@@ -346,6 +418,27 @@ public class CamundaServiceImpl implements CamundaService {
 
         // Exécuter la requête et retourner la liste des tâches
         return taskQuery.list();
+    }
+
+
+    @Override
+    public List<HistoricTaskInstance> getConfirmTasksForUser(String userId, boolean decision) {
+        // Récupérer les groupes de l'utilisateur
+        HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
+                .taskVariableValueEquals("signature", decision)
+                .taskAssignee(userId) // Tâches assignées directement à l'utilisateur
+                .finished(); // Filtrer uniquement les tâches complétées
+
+        // Exécuter la requête et retourner la liste des tâches
+        return query.list();
+    }
+
+    @Override
+    public HistoricTaskInstance getHistoryTaskInstance(String taskId) {
+        // Vérifiez d'abord si la tâche existe
+        return historyService.createHistoricTaskInstanceQuery()
+                .taskId(taskId)
+                .singleResult();
     }
 
     @Override
@@ -442,9 +535,53 @@ public class CamundaServiceImpl implements CamundaService {
         }
     }
 
+
+
+
     @Override
     public FormData getFormData(String taskId) {
         return formService.getTaskFormData(taskId);
+    }
+
+    @Override
+    public List<TaskFormData> getUserTasksWithForms(String processDefinitionKey) {
+        List<TaskFormData> tasksWithForms = new ArrayList<>();
+
+        ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(processDefinitionKey);
+
+        List<ProcessDefinition> definitions = query.list();
+
+        for (ProcessDefinition definition : definitions) {
+            BpmnModelInstance modelInstance = repositoryService.getBpmnModelInstance(definition.getId());
+            Collection<UserTask> userTasks = modelInstance.getModelElementsByType(UserTask.class);
+
+            for (UserTask userTask : userTasks) {
+                TaskFormData taskFormData = formService.getTaskFormData(userTask.getId());
+                if (taskFormData != null) {
+                    tasksWithForms.add(taskFormData);
+                }
+            }
+        }
+        return tasksWithForms;
+    }
+
+    @Override
+    public Map<String, Object>  retrieveCompletedProcessVariables(String processInstanceId) {
+        HistoricVariableInstanceQuery query = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstanceId);
+
+        List<HistoricVariableInstance> variables = query.list();
+
+        Map<String, Object> variablesMap = new HashMap<>();
+
+        for (HistoricVariableInstance variable : variables) {
+            System.out.println("Variable Name: " + variable.getName() + ", Value: " + variable.getValue());
+            variablesMap.put(variable.getName(), variable.getValue());
+        }
+
+        return variablesMap;
     }
 
     //-------------------------------------------Group Function---------------------------------------------------------

@@ -14,7 +14,6 @@
   <bpmn:process id="resumption" name="Reprise de Service" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:laneSet id="LaneSet_16ij7gv">
       <bpmn:lane id="Lane_0q9uw07" name="STAFF">
-        <bpmn:flowNodeRef>Activity_1vsqa29</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_101y7yt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Validation</bpmn:flowNodeRef>
@@ -48,24 +47,17 @@
     <bpmn:sequenceFlow id="Flow_08qdowr" sourceRef="Gateway_1i5cgi2" targetRef="Activity_1tio0nt">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0dne6dz" sourceRef="Gateway_1i5cgi2" targetRef="Activity_1vsqa29" />
+    <bpmn:sequenceFlow id="Flow_0dne6dz" sourceRef="Gateway_1i5cgi2" targetRef="Validation" />
     <bpmn:exclusiveGateway id="Gateway_1i5cgi2" default="Flow_0dne6dz">
       <bpmn:incoming>Flow_1r78jna</bpmn:incoming>
       <bpmn:outgoing>Flow_08qdowr</bpmn:outgoing>
       <bpmn:outgoing>Flow_0dne6dz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0xhopaz" sourceRef="Activity_1vsqa29" targetRef="Event_101y7yt" />
-    <bpmn:serviceTask id="Activity_1vsqa29" name="Email de Refus" camunda:delegateExpression="${sendDefaultRejectEmail}">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_0dne6dz</bpmn:incoming>
-      <bpmn:outgoing>Flow_0xhopaz</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_1tio0nt" name="Notification au Capital Humain" camunda:delegateExpression="${sendResumptionToRH}">
       <bpmn:incoming>Flow_08qdowr</bpmn:incoming>
       <bpmn:outgoing>Flow_1hifhye</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_101y7yt">
-      <bpmn:incoming>Flow_0xhopaz</bpmn:incoming>
       <bpmn:incoming>Flow_1hifhye</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:startEvent id="StartEvent_1" name="Nouvelle Reprise de Travail">
@@ -119,8 +111,12 @@
       <bpmn:outgoing>Flow_0vz8aqg</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1xtbzby" sourceRef="Validation" targetRef="Activity_1d4pc5r" />
-    <bpmn:userTask id="Validation" name="Validation">
+    <bpmn:userTask id="Validation" name="Validation" camunda:assignee="${owner}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ValidationListener" event="create" id="Validation" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vz8aqg</bpmn:incoming>
+      <bpmn:incoming>Flow_0dne6dz</bpmn:incoming>
       <bpmn:outgoing>Flow_1xtbzby</bpmn:outgoing>
     </bpmn:userTask>
   </bpmn:process>
@@ -146,9 +142,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1i5cgi2_di" bpmnElement="Gateway_1i5cgi2" isMarkerVisible="true">
         <dc:Bounds x="585" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_18261rs_di" bpmnElement="Activity_1vsqa29">
-        <dc:Bounds x="560" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0eqhuz0_di" bpmnElement="Activity_1tio0nt">
         <dc:Bounds x="730" y="170" width="100" height="80" />
@@ -189,33 +182,29 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0dne6dz_di" bpmnElement="Flow_0dne6dz">
         <di:waypoint x="610" y="235" />
-        <di:waypoint x="610" y="380" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xhopaz_di" bpmnElement="Flow_0xhopaz">
-        <di:waypoint x="610" y="460" />
-        <di:waypoint x="610" y="490" />
-        <di:waypoint x="942" y="490" />
+        <di:waypoint x="610" y="400" />
+        <di:waypoint x="340" y="400" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xtbzby_di" bpmnElement="Flow_1xtbzby">
         <di:waypoint x="290" y="360" />
         <di:waypoint x="290" y="250" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ybsmtv_di" bpmnElement="Association_1ybsmtv">
+        <di:waypoint x="475" y="400" />
+        <di:waypoint x="479" y="340" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1s3ijb9_di" bpmnElement="TextAnnotation_1s3ijb9">
         <dc:Bounds x="633" y="110" width="100" height="30" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0z52ols_di" bpmnElement="TextAnnotation_0z52ols">
-        <dc:Bounds x="633" y="280" width="100" height="30" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1o0qy6v_di" bpmnElement="Association_1o0qy6v">
         <di:waypoint x="682.5" y="210" />
         <di:waypoint x="683" y="140" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1ybsmtv_di" bpmnElement="Association_1ybsmtv">
-        <di:waypoint x="610" y="307.5" />
-        <di:waypoint x="633" y="304" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0z52ols_di" bpmnElement="TextAnnotation_0z52ols">
+        <dc:Bounds x="430" y="310" width="100" height="30" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

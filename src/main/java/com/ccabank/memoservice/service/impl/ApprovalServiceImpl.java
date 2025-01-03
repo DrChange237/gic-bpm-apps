@@ -8,6 +8,7 @@ import com.ccabank.memoservice.entity.*;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
+import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.camunda.Mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,13 +16,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -54,6 +58,8 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Autowired
     private Mapping mapping;
 
+    @Autowired
+    private ApprobationRepository approbationRepository;
 
 
     @Override
@@ -92,23 +98,54 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
 
-
+    @Transactional
     public AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto, String assignee) {
         try {
             logger.info(MEMO_SERVICE + "approve : methode invocation");
 
             List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
             Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
+            camundaService.addLocalVariableToTask(task.getId(), "signature", true);
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
             request.setLastModification(LocalDateTime.now());
+            request.setStatus(RequestStatus.PENDING);
             requestRepository.save(request);
+
+
             Map<String, Object> variables = mapping.getVariablesFromField(incommingFields);
+            if(!incommingFields.isEmpty()){
+                List<FieldDto> oldFields = (List<FieldDto>) variables.get("otherFields");
+                System.out.println("Begin add other fields");
+                if(oldFields == null){
+                    oldFields =new ArrayList<>();
+                }
+                incommingFields.addAll(oldFields);
+                System.out.println("Add Fields : " + incommingFields);
+                variables.put("otherFields", incommingFields);
+            }
             variables.put("decision", true);
             variables.put(task.getTaskDefinitionKey(), assignee);
             camundaService.claimTask(task.getId(), assignee);
             variables.put("comments", acceptedApprovalDto.getComments());
             camundaService.completeTask(task.getId(), variables);
+
+            Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
+            if(approbationOptional.isPresent()){
+                Approbation approbation = approbationOptional.get();
+                approbation.setStatus(ApprovalStatus.ACCEPTED);
+                approbation.setComments(acceptedApprovalDto.getComments());
+                approbationRepository.save(approbation);
+            }else {
+                Approbation approbation = new Approbation();
+                approbation.setStatus(ApprovalStatus.ACCEPTED);
+                approbation.setComments(acceptedApprovalDto.getComments());
+                approbation.setTaskId(task.getId());
+                approbationRepository.save(approbation);
+
+            }
+
+
 
             return new AppServiceResult<>(true, 0, "Succeed!", null);
 
@@ -120,7 +157,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         }
     }
 
-
+    @Transactional
     public AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
@@ -131,6 +168,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 
             Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
+            camundaService.addLocalVariableToTask(task.getId(), "signature", false);
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
 
@@ -141,8 +179,22 @@ public class ApprovalServiceImpl implements ApprovalService {
             Map<String, Object> variables = new HashMap<>();
             variables.put("decision", false);
             variables.put("comments", acceptedApprovalDto.getComments());
-
+            request.setComments(acceptedApprovalDto.getComments());
             camundaService.completeTask(task.getId(), variables);
+
+            Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
+            if(approbationOptional.isPresent()){
+                Approbation approbation = approbationOptional.get();
+                approbation.setStatus(ApprovalStatus.REJECTED);
+                approbation.setComments(acceptedApprovalDto.getComments());
+                approbationRepository.save(approbation);
+            }else {
+                Approbation approbation = new Approbation();
+                approbation.setStatus(ApprovalStatus.REJECTED);
+                approbation.setComments(acceptedApprovalDto.getComments());
+                approbation.setTaskId(task.getId());
+                approbationRepository.save(approbation);
+            }
 
             this.requestRepository.save(request);
             return new AppServiceResult<>(true, 0, "Succeed!", null);
@@ -168,14 +220,37 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             System.out.println("UserName Employe" + employeeInfo.getUsername());
 
-            List<Task> tasks = camundaService.getActiveTasksForUser(employeeInfo.getUsername());
+            List<Task> tasks = new ArrayList<>();
+            List<HistoricTaskInstance> historicTaskInstances = new ArrayList<>();
+            List<ApprovalListDto> approvalDtos = new ArrayList<>();
 
-            tasks.sort(Comparator.comparing(Task::getCreateTime).reversed());
 
-            System.out.println("Get Tasks " + tasks.size());
+            switch (status){
+                case "WAITING":
+                    tasks = camundaService.getActiveTasksForUser(employeeInfo.getUsername());
+                    tasks.sort(Comparator.comparing(Task::getCreateTime).reversed());
+                    System.out.println("Get Tasks " + tasks.size());
+                    approvalDtos = this.mapTaskToApprovalDto(tasks);
+                    System.out.println("Mapping Complete " + tasks.size());
+                break;
 
-            List<ApprovalListDto> approvalDtos = this.mapTaskToApprovalDto(tasks);
-            System.out.println("Mapping Complete " + tasks.size());
+                case "ACCEPTED":
+                    historicTaskInstances = camundaService.getConfirmTasksForUser(employeeInfo.getUsername(), true);
+                   // historicTaskInstances.sort(Comparator.comparing(HistoricTaskInstance::getEndTime).reversed());
+                    System.out.println("Get Accepted Tasks " + historicTaskInstances.size());
+                    approvalDtos = this.mapHistoryTaskToApprovalDto(historicTaskInstances, status);
+                    System.out.println("Mapping Complete " + historicTaskInstances.size());
+                break;
+
+                case "REJECTED":
+                    historicTaskInstances = camundaService.getConfirmTasksForUser(employeeInfo.getUsername(), false);
+                   // historicTaskInstances.sort(Comparator.comparing(HistoricTaskInstance::getEndTime).reversed());
+                    System.out.println("Get Rejected Tasks " + historicTaskInstances.size());
+                    approvalDtos = this.mapHistoryTaskToApprovalDto(historicTaskInstances, status);
+                    System.out.println("Mapping Complete " + historicTaskInstances.size());
+                break;
+            }
+
 
             return new AppServiceResult<List<ApprovalListDto>>(true, 0, "Succeed!", approvalDtos);
 
@@ -198,12 +273,22 @@ public class ApprovalServiceImpl implements ApprovalService {
         DocumentType documentType = documentTypeRepository.findOneByStructure(processDefinition.getKey());
         requestInfo.setDocumentType(documentType.getName());
 
+
+
         System.out.println("Task " + position);
 
         ApprovalListDto approvalDto = new ApprovalListDto();
         StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
         Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
-        requestInfo.setFields(Mapping.getFieldFromFormField(formData, variables));
+        List<FieldDto> formfield = Mapping.getFieldFromFormField(formData, variables);
+        List<FieldDto> oldFields = (List<FieldDto>) variables.get("otherFields");
+
+        if(oldFields != null){
+            formfield.addAll(oldFields);
+        }
+
+        requestInfo.setFields(formfield);
+
         approvalDto.setRequest(requestInfo);
         approvalDto.setId(task.getId());
         approvalDto.setRole(task.getName());
@@ -215,14 +300,24 @@ public class ApprovalServiceImpl implements ApprovalService {
         approvalDto.setPriority(task.getPriority());
         approvalDto.setDueDate(task.getDueDate());
 
-        /*Optional<HistoricTaskInstance> history = camundaService.getLastHistoricTaskInstance(request.getInstanceId(), task.getTaskDefinitionKey());
-        if(history.isPresent()){
-            approvalDto.setApprovalDate(history.get().getEndTime().toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime());
-        }*/
+        if(task.getId() != null){
+            HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(task.getId());
+            if(taskInstance != null){
+                System.out.println("Get Task " + taskInstance.toString());
+                if(taskInstance.getEndTime() != null){
+                    approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(taskInstance.getEndTime()));
+                }
+            }
+        }
 
-        FormData data =  camundaService.getFormData(task.getId());
+        FormData data = null;
+
+        try {
+            data =  camundaService.getFormData(task.getId());
+        }catch (Exception e){
+            System.out.println("Erreur lors de la recupération de la form Data : " + e.getMessage() );
+            return null;
+        }
 
         List<FieldDto> outFields = new ArrayList<>();
 
@@ -290,6 +385,42 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     }
 
+    public ApprovalListDto mapOneHistoryTaskToApprovalDto(HistoricTaskInstance task, int position, String status) {
+
+        String instanceId = task.getProcessInstanceId();
+        Request request = requestRepository.findByInstanceId(instanceId);
+        RequestInfo requestInfo = requestInfoMapper.toDto(request);
+
+        String processDefinitionId = task.getProcessDefinitionId();
+        ProcessDefinition processDefinition = camundaService.getProcessDefinition(processDefinitionId);
+        DocumentType documentType = documentTypeRepository.findOneByStructure(processDefinition.getKey());
+        requestInfo.setDocumentType(documentType.getName());
+
+        System.out.println("Task " + position);
+
+        ApprovalListDto approvalDto = new ApprovalListDto();
+        StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+        requestInfo.setFields(Mapping.getFieldFromFormField(formData, variables));
+
+
+        approvalDto.setRequest(requestInfo);
+        approvalDto.setId(task.getId());
+        approvalDto.setRole(task.getName());
+        approvalDto.setPosition(position);
+        approvalDto.setStaff(task.getAssignee());
+
+        approvalDto.setStatus(ApprovalStatus.valueOf(status));
+        approvalDto.setFields(new ArrayList<>());
+        approvalDto.setType(ApprovalType.OPEN);
+        approvalDto.setPriority(task.getPriority());
+        approvalDto.setDueDate(task.getDueDate());
+        approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(task.getEndTime()));
+
+        return approvalDto;
+
+    }
+
 
     public  List<ApprovalListDto> mapTaskToApprovalDto(List<Task> tasks) {
 
@@ -299,11 +430,27 @@ public class ApprovalServiceImpl implements ApprovalService {
         for (Task task : tasks) {
 
             ApprovalListDto approvalDto = this.mapOneTaskToApprovalDto(task, tasks.indexOf(task));
+            if(approvalDto == null){
+                continue;
+            }
 
             approvalDtos.add(approvalDto);
 
         }
 
+        return approvalDtos;
+    }
+
+    public  List<ApprovalListDto> mapHistoryTaskToApprovalDto(List<HistoricTaskInstance> tasks, String status) {
+        List<ApprovalListDto> approvalDtos = new ArrayList<>();
+
+        for (HistoricTaskInstance task : tasks) {
+            ApprovalListDto approvalDto = this.mapOneHistoryTaskToApprovalDto(task, tasks.indexOf(task), status);
+            if(approvalDto == null){
+                continue;
+            }
+            approvalDtos.add(approvalDto);
+        }
         return approvalDtos;
     }
 

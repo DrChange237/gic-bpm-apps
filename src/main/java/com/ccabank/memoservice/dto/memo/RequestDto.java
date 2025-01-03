@@ -4,12 +4,13 @@ import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.RequestStatus;
 import org.springframework.http.RequestEntity;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestDto {
+public class RequestDto implements Serializable {
 
     private Long id;
 

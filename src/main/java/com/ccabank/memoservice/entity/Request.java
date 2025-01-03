@@ -54,12 +54,24 @@ public class Request  {
     @Column(name = "INSTANCE_ID", nullable = false, unique = true)
     private String instanceId;
 
+    @Basic(optional = true)
+    @Column(name = "COMMENTS")
+    @Size(max = 100)
+    private String comments;
+
 
 
     public Long getId() {
         return id;
     }
 
+    public @Size(max = 100) String getComments() {
+        return comments;
+    }
+
+    public void setComments(@Size(max = 100) String comments) {
+        this.comments = comments;
+    }
 
     public String getInstanceId() {
         return instanceId;

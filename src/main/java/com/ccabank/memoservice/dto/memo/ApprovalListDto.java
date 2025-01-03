@@ -5,12 +5,13 @@ import com.ccabank.memoservice.entity.ApprovalType;
 import lombok.Data;
 
 import javax.validation.constraints.Null;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class ApprovalListDto  {
+public class ApprovalListDto implements Serializable {
 
     private  String id;
 

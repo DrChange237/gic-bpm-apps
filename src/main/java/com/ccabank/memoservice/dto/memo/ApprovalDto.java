@@ -4,11 +4,12 @@ import com.ccabank.memoservice.entity.ApprovalStatus;
 import com.ccabank.memoservice.entity.ApprovalType;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ApprovalDto {
+public class ApprovalDto implements Serializable {
 
     private  String id;
 

@@ -3,11 +3,14 @@ package com.ccabank.memoservice.process.absence.implementation;
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
 import com.ccabank.memoservice.dto.reporting.AbsenceForm;
+import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.dto.user.FunctionInfo;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.util.WorkDayCalculator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
@@ -17,8 +20,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 
 import com.ccabank.memoservice.process.general.service.RequestService;
 
@@ -49,14 +52,24 @@ public class SendAbsence implements JavaDelegate {
         EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
 
         form.setName(staff.getFirstName() + " " + staff.getLastName());
-        form.setFunction(staff.getFunction().getFunction().getName());
+        form.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
         form.setDate(LocalDate.now());
         form.setMatricule(staff.getMatricule());
         form.setPlace("DOUALA");
         form.setUnity(staff.getDepartment().getName());
 
-        LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
-        LocalDate endDate = (LocalDate) delegateExecution.getVariable("endDate");
+        Date startDateD = (Date) delegateExecution.getVariable("startDate") ;
+        LocalDate startDate = startDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+
+
+        int nbDays = (Integer) delegateExecution.getVariable("nbDays");
+        LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays);
+        delegateExecution.setVariable("endDate", endDate);
+
+         endDate = (LocalDate) delegateExecution.getVariable("endDate");
 
         String reason = (String) delegateExecution.getVariable("reason");
 
@@ -115,6 +128,13 @@ public class SendAbsence implements JavaDelegate {
 
         Long rights = (Long) delegateExecution.getVariable("rights");
         form.setRights(rights.doubleValue());
+
+        List<String> signatures = new ArrayList<String>();
+        signatures.add(supervisor.getSignature());
+        signatures.add(supervisor2.getSignature());
+        //signatures.add(DG.getSignature());
+
+        form.setSignatures(signatures);
 
 
         //Envoyer le HandOver Par Email à l'intérimaire

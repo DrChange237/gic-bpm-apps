@@ -3,7 +3,9 @@ package com.ccabank.memoservice.dto.memo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.multipart.MultipartFile;
 
-public class FileDto {
+import java.io.Serializable;
+
+public class FileDto implements Serializable {
 
     private Long id;
 

@@ -11,6 +11,7 @@ import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
+import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.WorkDayCalculator;
@@ -21,7 +22,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -40,11 +43,12 @@ public class SendVacation implements JavaDelegate {
     @Autowired
     private CamundaService camundaService;
 
+    @Autowired
+    private RequestService requestService;
+
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-
-        try{
 
             System.out.println("Send Valided Vacation");
 
@@ -54,14 +58,18 @@ public class SendVacation implements JavaDelegate {
             String owner = (String) delegateExecution.getVariable("owner");
             EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
             form.setName(staff.getFirstName() + " " + staff.getLastName());
-            form.setFunction(staff.getFunction().getFunction().getName());
+            form.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             form.setMatricule(staff.getMatricule());
             form.setPlace("DOUALA");
             form.setUnity(staff.getDepartment().getName());
             String signature = userRestClient.getEmployeeSignature(staff.getUsername());
             form.setSignature(signature);
 
-            LocalDate startDate = (LocalDate) delegateExecution.getVariable("startDate");
+
+            Date startDateD = (Date) delegateExecution.getVariable("startDate");
+            LocalDate startDate = startDateD.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
             form.setStartDate(startDate);
 
             Long nbDays = (Long) delegateExecution.getVariable("nbDays");
@@ -69,7 +77,10 @@ public class SendVacation implements JavaDelegate {
 
             form.setEndDate(endDate);
 
-            LocalDate lastVacationDate = (LocalDate) delegateExecution.getVariable("lastVacationDate");
+            Date lastVacationDateD = (Date) delegateExecution.getVariable("realLastVacationDate");
+            LocalDate lastVacationDate = lastVacationDateD.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
             form.setLastVacationDate(lastVacationDate);
 
             VacationForm.Interim interim = new VacationForm.Interim();
@@ -82,7 +93,7 @@ public class SendVacation implements JavaDelegate {
             }else{
                 EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
                 interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-                interim.setFunction(interimaire.getFunction().getFunction().getName());
+                interim.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
                 interim.setUnity(interimaire.getDepartment().getName());
             }
 
@@ -108,7 +119,7 @@ public class SendVacation implements JavaDelegate {
             VacationDecision decision = new VacationDecision();
 
             decision.setDate(LocalDate.now());
-            decision.setFunction(staff.getFunction().getFunction().getName());
+            decision.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             decision.setEmployee(staff.getFirstName() + " " + staff.getLastName());
             decision.setMatricule(staff.getMatricule());
             decision.setStartDate(startDate);
@@ -159,14 +170,7 @@ public class SendVacation implements JavaDelegate {
             emailDto.setAttachments(new AttachmentDto[]{attachment, attachmentDecision});
             this.emailRestClient.send(emailDto);
 
-        }catch (Exception e){
-
-            camundaService.createIncident(delegateExecution.getProcessInstanceId(), IncidentTypeConstant.TECHNICAL, "Vacation Generation " + e.getMessage() );
-            throw new Exception(e.getMessage());
-
-        }
-
-
+            requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
 
     }
