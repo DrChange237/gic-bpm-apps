@@ -3,6 +3,7 @@ package com.ccabank.memoservice.util.camunda;
 import com.ccabank.memoservice.constant.FieldTypeConstant;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.entity.ApprovalType;
+import com.ccabank.memoservice.entity.File;
 import com.ccabank.memoservice.openfeign.FileRestClient;
 import com.ccabank.memoservice.util.file.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -88,8 +89,8 @@ public class Mapping {
                 case FieldTypeConstant.FILE:
 
                     for(FileDto file : field.getFiles()) {
-                      file = fileRestClient.uploadFileToFolder("paperless", "paperless", FileUtils.convertBase64ToMultipartFile(file.getFile(), file.getName(), "application/octet-stream"));
-                      variables.put(file.getName(), file.getUrl());
+                      FileDto fileFinal = fileRestClient.uploadFileToFolder("paperless", "paperless", FileUtils.convertBase64ToMultipartFile(file.getFile(), file.getName(), file.getType()));
+                      variables.put(field.getKey(), fileFinal.getUrl());
                     }
                     break;
 

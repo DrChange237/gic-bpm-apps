@@ -25,7 +25,7 @@ public interface CamundaService {
 
     ProcessInstance getProcessInstance(String processInstanceId);
 
-    ProcessInstance createProcessInstance(String processDefinitionKey, Map<String, Object> variables);
+    ProcessInstance createProcessInstance(String processDefinitionKey, String businessKey, Map<String, Object> variables);
 
     void setProcessVariables(String processInstanceId, Map<String, Object> variables);
 
@@ -64,6 +64,10 @@ public interface CamundaService {
     List<Task> getTasksForProcessInstance(String processInstanceId);
 
     Task getOneTaskForProcessInstanceAndKey(String processInstanceId, String definitionKey);
+
+    boolean isUserInCandidateGroups(String taskId, String username);
+
+    boolean isTaskCandidateGroup(String taskId);
 
     void completeTask(String taskId, Map<String, Object> variables);
 

@@ -34,12 +34,27 @@ public class InterimForm {
     @NotNull
     private Subject subject = Subject.INTERIM;
 
-    @Schema(example = " ", description = "Base64-encoded image contenant le cachet rond, le cachet nominatif et la signature du DGA")
-    private String cachet = " ";
+    @Schema(example = "true", description = "Permet de savoir si l'intérimaire occupe le poste cumulativement à ses fonctions")
+    private Boolean cumulate = true;
+
+    @Schema(description = "Directeur Général Adjoint")
+    private Signatory signatory;
+
+
+    @Data
+    @Schema(name = "Avis")
+    public static class Signatory {
+        @NotBlank
+        @Schema(example = "SIMO PATRICK")
+        private String name = "SIMO PATRICK";
+        @Schema(example = " ", description = "Base64-encoded image")
+        private String signature = "";
+        @NotNull
+        private LocalDate date = LocalDate.now();
+    }
 
 
     @Getter
-
     public enum Subject {
         NONE,
         CONTINUITY,

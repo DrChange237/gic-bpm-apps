@@ -8,6 +8,8 @@ public class EmailAskApprovalDto {
 
     private String sender;
 
+    private String bCC ;
+
     private String approver;
 
     private String reference;
@@ -15,6 +17,8 @@ public class EmailAskApprovalDto {
     private String role;
 
     private String type;
+
+    private AttachmentDto[] attachments;
 
 
     public String getSubject() {
@@ -63,5 +67,21 @@ public class EmailAskApprovalDto {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public AttachmentDto[] getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(AttachmentDto[] attachments) {
+        this.attachments = attachments;
+    }
+
+    public String getbCC() {
+        return bCC;
+    }
+
+    public void setbCC(String bCC) {
+        this.bCC = bCC;
     }
 }

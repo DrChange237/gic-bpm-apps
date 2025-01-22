@@ -25,6 +25,49 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private UserRestClient userRestClient;
 
+    @Override
+    public boolean sendFiles(EmailAskApprovalDto ask){
+        try{
+            System.out.println("sendFiles-------------------------------------------------------------------------------------");
+
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setTo(sender.getEmail());
+            emailDto.setCc(ask.getbCC());
+            emailDto.setFrom("notification@cca-bank.com");
+            emailDto.setSubject(ask.getSubject());
+
+
+            emailDto.setBody("<table class=\"row\" align=\"center\" bgcolor=\"#F8F8F8\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">\n" +
+                    "    <tr>\n" +
+                    "        <td class=\"spacer\" height=\"40\" style=\"line-height: 40px;\">&nbsp;</td>\n" +
+                    "    </tr>\n" +
+                    "    <tr>\n" +
+                    "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getName() +"</span>, <br> Votre document a été généré avec succès bien vouloir prendre connaissance  </div>\n" +
+                    "            \n" +
+                    "            \n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +
+                    "            <div style=\"color: #969AA1; font-size: 13px; margin-top: 30px;\">Merci, <br><strong>CCA BANK</strong></div>\n" +
+                    "        </th>\n" +
+                    "    </tr>\n" +
+                    "    <tr>\n" +
+                    "        <td class=\"spacer\" height=\"40\" style=\"line-height: 40px;\">&nbsp;</td>\n" +
+                    "    </tr>\n" +
+                    "</table>");
+
+
+            emailDto.setAttachments(ask.getAttachments());
+            emailRestClient.send(emailDto);
+        }catch (Exception e){
+            System.out.println("Email Error" + e.getMessage());
+        }
+
+
+        return true;
+    }
+
 
     @Override
     public boolean sendAskApproval(EmailAskApprovalDto ask){

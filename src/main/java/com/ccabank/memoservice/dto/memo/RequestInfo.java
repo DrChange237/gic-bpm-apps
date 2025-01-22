@@ -24,6 +24,8 @@ public class RequestInfo implements Serializable {
 
     private List<FieldDto> fields;
 
+    private List<FileDto> files;
+
     private List<ApprovalDto> approvals;
 
     private String comments;
@@ -108,5 +110,13 @@ public class RequestInfo implements Serializable {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public List<FileDto> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileDto> files) {
+        this.files = files;
     }
 }

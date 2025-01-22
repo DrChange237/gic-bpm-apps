@@ -4,6 +4,7 @@ import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.AcceptedApprovalDto;
 import com.ccabank.memoservice.dto.memo.ApprovalListDto;
 import com.ccabank.memoservice.dto.memo.ReassignDto;
+import com.ccabank.memoservice.dto.memo.TakeLeaveDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -12,6 +13,8 @@ public interface ApprovalService {
 
 
     AppServiceResult<?> reassign(ReassignDto reassignDto);
+
+    AppServiceResult<?> freeless(HttpServletRequest request, TakeLeaveDto takeLeaveDto);
 
     AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto);
 

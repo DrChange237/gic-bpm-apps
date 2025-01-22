@@ -5,6 +5,8 @@ import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 public interface EmailService {
 
 
+    boolean sendFiles(EmailAskApprovalDto ask);
+
     boolean sendAskApproval(EmailAskApprovalDto ask);
 
 

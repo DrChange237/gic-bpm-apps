@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class FileDto implements Serializable {
 
@@ -17,9 +18,13 @@ public class FileDto implements Serializable {
 
     private long size;
 
+    private LocalDateTime addDate;
+
     private String project;
 
     private String file;
+
+    private MultipartFile multipartFile;
 
     public String getId() {
         return id;
@@ -75,5 +80,21 @@ public class FileDto implements Serializable {
 
     public void setFile(String file) {
         this.file = file;
+    }
+
+    public LocalDateTime getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(LocalDateTime addDate) {
+        this.addDate = addDate;
+    }
+
+    public MultipartFile getMultipartFile() {
+        return multipartFile;
+    }
+
+    public void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
     }
 }

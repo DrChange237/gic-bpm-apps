@@ -2,13 +2,17 @@ package com.ccabank.memoservice.process.workform.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.reporting.WorkForm;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.service.faces.FileService;
+import com.ccabank.memoservice.util.CustomMultipartFile;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
@@ -18,6 +22,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +44,9 @@ public class SendWorkForm implements JavaDelegate {
 
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private FileService fileService;
 
 
     @Override
@@ -120,7 +128,17 @@ public class SendWorkForm implements JavaDelegate {
         emailDto.setAttachments(new AttachmentDto[]{attachment});
         this.emailRestClient.send(emailDto);
 
-        requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+        CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+        FileDto fileDto = new FileDto();
+        fileDto.setAddDate(LocalDateTime.now());
+        fileDto.setName("Demande de Congés Validées");
+        fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
+        fileDto.setMultipartFile(multipartFile);
+        fileDto.setType("application/pdf");
+        Request request =   requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+        fileService.saveFile(request, fileDto);
+
 
     }
 }

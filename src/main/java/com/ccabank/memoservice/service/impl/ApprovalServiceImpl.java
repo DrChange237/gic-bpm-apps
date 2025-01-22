@@ -16,20 +16,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
-import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotAuthorizedException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -79,13 +77,57 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
+    public AppServiceResult<?> freeless(HttpServletRequest request, TakeLeaveDto takeLeaveDto)  {
+
+        EmployeeInfo employeeInfo = securityService.getCurrentUser(request);
+        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        Task task = camundaService.getTaskDetails(takeLeaveDto.getIdApproval());
+        if(task != null){
+            if(takeLeaveDto.isDecision()){
+
+                if(task.getAssignee() != null){
+                    throw new NotAuthorizedException("Cette tâche est déjà prise");
+                }
+
+                if(camundaService.isTaskCandidateGroup(task.getId())){
+                    if(!camundaService.isUserInCandidateGroups(task.getId(), employeeInfo.getUsername())){
+                        throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
+                    }
+                }
+
+                camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
+                camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+                return new AppServiceResult<>(true, 0, "Succeed! Claim", null);
+            }else{
+
+                if(camundaService.isTaskCandidateGroup(task.getId())){
+                    if(!camundaService.isUserInCandidateGroups(task.getId(), employeeInfo.getUsername())){
+                        throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
+                    }
+                }
+                camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), null);
+                camundaService.claimTask(task.getId(), null);
+                return new AppServiceResult<>(true, 0, "Succeed! Unclaim", null);
+
+            }
+        }
+        return new AppServiceResult<>(false, 0, "No Task Id", null);
+    }
+
+    @Override
     public AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto)  {
 
         EmployeeInfo employeeInfo = securityService.getCurrentUser(request);
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
+
         if(task != null){
             camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
+            if(task.getAssignee() != null){
+                if(!task.getAssignee().equals(employeeInfo.getUsername())){
+                    throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
+                }
+            }
             camundaService.claimTask(task.getId(), employeeInfo.getUsername());
         }
 
@@ -146,8 +188,6 @@ public class ApprovalServiceImpl implements ApprovalService {
                 approbationRepository.save(approbation);
 
             }
-
-
 
             return new AppServiceResult<>(true, 0, "Succeed!", null);
 
@@ -302,12 +342,17 @@ public class ApprovalServiceImpl implements ApprovalService {
         approvalDto.setPriority(task.getPriority());
         approvalDto.setDueDate(task.getDueDate());
 
+        if(task.getCreateTime() != null){
+            approvalDto.setTime(DateUtil.timeAgo(DateUtil.convertDateToLocalDateTime(task.getCreateTime())));
+        }
+
         if(task.getId() != null){
             HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(task.getId());
             if(taskInstance != null){
                 System.out.println("Get Task " + taskInstance.toString());
                 if(taskInstance.getEndTime() != null){
                     approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(taskInstance.getEndTime()));
+                    approvalDto.setTime(DateUtil.timeAgo(DateUtil.convertDateToLocalDateTime(taskInstance.getEndTime())));
                 }
             }
         }
@@ -377,6 +422,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 field.setValue(String.valueOf(f.getDefaultValue()));
                 field.setDefaultValue(String.valueOf(f.getDefaultValue()));
             }
+
+            if(variables.get(f.getId()) != null){
+                field.setValue(String.valueOf(variables.get(f.getId())));
+                field.setDefaultValue(String.valueOf(variables.get(f.getId())));
+            }
+
             outFields.add(field);
             System.out.println("Add complete " + f.getLabel());
         }

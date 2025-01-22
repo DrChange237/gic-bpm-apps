@@ -1,7 +1,9 @@
 package com.ccabank.memoservice.process.vacation.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.reporting.HandOverForm;
 import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
@@ -14,6 +16,9 @@ import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.service.faces.EmailService;
+import com.ccabank.memoservice.service.faces.FileService;
+import com.ccabank.memoservice.util.CustomMultipartFile;
 import com.ccabank.memoservice.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -23,6 +28,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
 
@@ -38,19 +44,17 @@ public class SendHandOver implements JavaDelegate {
     private final ReportingRestClient reportingRestClient;
 
     @Autowired
-    private final EmailRestClient emailRestClient;
+    private final EmailService emailService;
 
     @Autowired
     private final UserRestClient userRestClient;
 
     @Autowired
-    private final CamundaService camundaService;
+    private final FileService fileService;
 
     @Autowired
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    private RequestService requestService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -138,7 +142,28 @@ public class SendHandOver implements JavaDelegate {
             //Envoyer le HandOver Par Email à l'intérimaire
             ByteArrayResource resource = this.reportingRestClient.handover(handOverForm);
 
+            EmailAskApprovalDto ask = new EmailAskApprovalDto();
+            ask.setSender(interimaire.getUsername());
+            ask.setSubject("Formulaire de Hand Over");
+            ask.setbCC(staff.getEmail());
+            AttachmentDto attachment = new AttachmentDto();
+            attachment.setName("handover_" + delegateExecution.getBusinessKey() + ".pdf");
+            attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            ask.setAttachments(new AttachmentDto[]{attachment});
+            emailService.sendFiles(ask);
+
+            CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+            FileDto fileDto = new FileDto();
+            fileDto.setAddDate(LocalDateTime.now());
+            fileDto.setName("Hand Over");
+            fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            fileDto.setMultipartFile(multipartFile);
+            fileDto.setType("application/pdf");
             Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
+            fileService.saveFile(request, fileDto);
+
+            /*Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
 
             EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
@@ -150,7 +175,7 @@ public class SendHandOver implements JavaDelegate {
             attachment.setName("handover_" + request.getReference() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             emailDto.setAttachments(new AttachmentDto[]{attachment});
-            this.emailRestClient.send(emailDto);
+            this.emailRestClient.send(emailDto);*/
 
     }
 }

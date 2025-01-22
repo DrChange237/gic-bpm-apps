@@ -1,18 +1,25 @@
 package com.ccabank.memoservice.process.resumption.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.reporting.ResumptionForm;
 import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.dto.user.FunctionInfo;
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
+import com.ccabank.memoservice.process.general.constant.EmailGroup;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.repository.GroupRepository;
 import com.ccabank.memoservice.security.Authority;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.service.faces.EmailService;
+import com.ccabank.memoservice.service.faces.FileService;
+import com.ccabank.memoservice.util.CustomMultipartFile;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.identity.Group;
@@ -23,8 +30,10 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
@@ -41,7 +50,7 @@ public class SendResumptionToRH implements JavaDelegate {
     private  ReportingRestClient reportingRestClient;
 
     @Autowired
-    private  EmailRestClient emailRestClient;
+    private EmailService emailService;
 
     @Autowired
     private  RequestService requestService;
@@ -49,12 +58,14 @@ public class SendResumptionToRH implements JavaDelegate {
     @Autowired
     private CamundaService camundaService;
 
+    @Autowired
+    private FileService fileService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        try{
 
-            requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+            Request request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
             ResumptionForm form = new ResumptionForm();
 
@@ -118,7 +129,27 @@ public class SendResumptionToRH implements JavaDelegate {
 
             emailList = emailList + supervisor.getEmail() + ",";
 
-            EmailDto emailDto = new EmailDto();
+            EmailAskApprovalDto ask = new EmailAskApprovalDto();
+            ask.setSender(staff.getUsername());
+            ask.setSubject("Fiche de Reprise de Service");
+            ask.setbCC(emailList + "," + EmailGroup.EMAIL_HABILITATION);
+            AttachmentDto attachment = new AttachmentDto();
+            attachment.setName("reprise_service" + delegateExecution.getBusinessKey() + ".pdf");
+            attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            ask.setAttachments(new AttachmentDto[]{attachment});
+            emailService.sendFiles(ask);
+
+            CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+            FileDto fileDto = new FileDto();
+            fileDto.setAddDate(LocalDateTime.now());
+            fileDto.setName("Fiche de reprise de service");
+            fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            fileDto.setMultipartFile(multipartFile);
+            fileDto.setType("application/pdf");
+            fileService.saveFile(request, fileDto);
+
+            /*EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
             emailDto.setTo(staff.getEmail());
             emailDto.setSubject("Fiche de Reprise de Service");
@@ -128,12 +159,7 @@ public class SendResumptionToRH implements JavaDelegate {
             attachment.setName("reprise_service.pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             emailDto.setAttachments(new AttachmentDto[]{attachment});
-            this.emailRestClient.send(emailDto);
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
+            this.emailRestClient.send(emailDto);*/
 
 
     }

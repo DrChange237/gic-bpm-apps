@@ -32,6 +32,8 @@ public class RequestDto implements Serializable {
 
     private List<FieldDto> fields;
 
+    private List<FileDto> files;
+
     public Long getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class RequestDto implements Serializable {
 
     public void setLastModification(LocalDateTime lastModification) {
         this.lastModification = lastModification;
+    }
+
+    public List<FileDto> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileDto> files) {
+        this.files = files;
     }
 }

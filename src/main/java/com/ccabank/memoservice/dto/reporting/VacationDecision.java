@@ -3,6 +3,7 @@ package com.ccabank.memoservice.dto.reporting;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -30,8 +31,9 @@ public class VacationDecision {
     @NotNull
     @Schema(description = "Date de reprise", example = "2024-12-20")
     private LocalDate endDate = LocalDate.now();
-    @Schema(example = " ", description = "Base64-encoded image")
-    private String signature = "";
+
+    @Schema(description = "Responsable du capital humain")
+    private Signatory signatory;
 
     @Schema(description = "Congé principal", example = "18", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer principalVacation = 18;
@@ -47,6 +49,18 @@ public class VacationDecision {
     private Integer permissions = 0;
     @Schema(description = "Nombre de jours total accordés", example = "30", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer providedVacation = 18;
+
+    @Data
+    @Schema(name = "Avis")
+    public static class Signatory {
+        @NotBlank
+        @Schema(example = "SIMO PATRICK")
+        private String name = "SIMO PATRICK";
+        @Schema(example = " ", description = "Base64-encoded image")
+        private String signature = "";
+        @NotNull
+        private LocalDate date = LocalDate.now();
+    }
 
 
 }

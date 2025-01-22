@@ -1,12 +1,16 @@
 package com.ccabank.memoservice.entity;
 
 import com.ccabank.memoservice.security.Authority;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "T_DOCUMENT_TYPE")
+@Getter
+@Setter
 public class DocumentType {
 
 
@@ -24,6 +28,11 @@ public class DocumentType {
     @Size(max = 1000)
     private String structure;
 
+    @Basic(optional = true)
+    @Column(name = "VISIBLE")
+    private Boolean visible = true;
+
+
     public DocumentType(String name, String structure) {
         this.name = name;
         this.structure = structure;
@@ -34,7 +43,7 @@ public class DocumentType {
     }
 
     public String getAuthority(){
-        return "ADD_" + this.name.toUpperCase();
+        return "VIEW_PROCESS_" + this.structure.toUpperCase();
     }
 
     public Long getId() {

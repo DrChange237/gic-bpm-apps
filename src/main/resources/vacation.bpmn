@@ -44,7 +44,7 @@
         <bpmn:flowNodeRef>Apbt_dg</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1r39ltk</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0l3we0m</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0e7kgfv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Apbt_ca_validation</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1o8exiw</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0unmym4</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0iyomu0</bpmn:flowNodeRef>
@@ -123,7 +123,7 @@
     <bpmn:startEvent id="startVacation" name="Nouvelle demande de congés">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="lastVacationDate" label="Derniers Jours de Vacance" type="date">
+          <camunda:formField id="lastVacationDate" label="Dernier jour de Congés" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="required" value="false" />
@@ -297,14 +297,14 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1hz1pp1" sourceRef="Gateway_0l3we0m" targetRef="Activity_1a1lsde" />
-    <bpmn:sequenceFlow id="Flow_10xdp2l" sourceRef="Activity_0e7kgfv" targetRef="Gateway_04krg3n" />
+    <bpmn:sequenceFlow id="Flow_10xdp2l" sourceRef="Apbt_ca_validation" targetRef="Gateway_04krg3n" />
     <bpmn:exclusiveGateway id="Gateway_0u83qwk" default="Flow_1ur5b1t">
       <bpmn:incoming>Flow_08a9t8l</bpmn:incoming>
       <bpmn:outgoing>Flow_1ur5b1t</bpmn:outgoing>
       <bpmn:outgoing>Flow_1p18hnq</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0jybnww" sourceRef="Gateway_1o8exiw" targetRef="Apbt_n1" />
-    <bpmn:userTask id="Activity_0e7kgfv" name="Validation Captial Humain" camunda:candidateGroups="capital-humain">
+    <bpmn:userTask id="Apbt_ca_validation" name="Validation Captial Humain" camunda:candidateGroups="capital-humain">
       <bpmn:incoming>Flow_04jq8eb</bpmn:incoming>
       <bpmn:outgoing>Flow_10xdp2l</bpmn:outgoing>
     </bpmn:userTask>
@@ -323,7 +323,7 @@
       <bpmn:outgoing>Flow_04jq8eb</bpmn:outgoing>
       <bpmn:outgoing>Flow_049qpdc</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_04jq8eb" sourceRef="Gateway_0iyomu0" targetRef="Activity_0e7kgfv">
+    <bpmn:sequenceFlow id="Flow_04jq8eb" sourceRef="Gateway_0iyomu0" targetRef="Apbt_ca_validation">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1p18hnq" sourceRef="Gateway_0u83qwk" targetRef="Apbt_rh">
@@ -333,7 +333,7 @@
     <bpmn:userTask id="Apbt_rh" name="Saisie Capital Humain" camunda:candidateGroups="capital-humain">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="realLastVacationDate" label="Date de derniers vacances" type="date">
+          <camunda:formField id="realLastVacationDate" label="Date de derniers congés" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="date" />
@@ -394,6 +394,14 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="choice" />
               <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="cummulatif" label="Fonction Cummulative" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="choice" />
+              <camunda:property id="required" value="true" />
+              <camunda:property id="choices" value="[     {&#34;label&#34;:&#34;Oui&#34;,&#34;value&#34;: &#34;CUMUL&#34;},     {&#34;label&#34;:&#34;Non&#34;,&#34;value&#34;: &#34;NON_CUMUL&#34;} ]" />
             </camunda:properties>
           </camunda:formField>
         </camunda:formData>
@@ -525,7 +533,7 @@
       <bpmndi:BPMNShape id="Gateway_0u83qwk_di" bpmnElement="Gateway_0u83qwk" isMarkerVisible="true">
         <dc:Bounds x="2065" y="625" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0iam8jv_di" bpmnElement="Activity_0e7kgfv">
+      <bpmndi:BPMNShape id="Activity_0iam8jv_di" bpmnElement="Apbt_ca_validation">
         <dc:Bounds x="1370" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1o8exiw_di" bpmnElement="Gateway_1o8exiw" isMarkerVisible="true">

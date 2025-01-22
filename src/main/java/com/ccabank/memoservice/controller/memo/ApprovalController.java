@@ -38,6 +38,15 @@ public class ApprovalController {
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @PostMapping("/approval/take")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
+    public ResponseEntity<?> take(HttpServletRequest request, @RequestBody TakeLeaveDto takeLeaveDto) {
+        AppServiceResult<?> result = approvalService.freeless(request, takeLeaveDto);
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/approval/reassign")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> reassign(@RequestBody ReassignDto reassignDto) {

@@ -49,6 +49,10 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Autowired
+    private FileService fileService;
+
+
+    @Autowired
     private SecurityService securityService;
 
     @Autowired
@@ -59,6 +63,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private ApprobationRepository approbationRepository;
+
 
 
     @Override
@@ -99,7 +104,7 @@ public class RequestServiceImpl implements RequestService {
             List<FieldDto> otherFields = new ArrayList<>();
             variables.put("otherFields", otherFields);
 
-            ProcessInstance instance = camundaService.createProcessInstance(request.getType().getStructure(), variables);
+            ProcessInstance instance = camundaService.createProcessInstance(request.getType().getStructure(), request.getReference(), variables);
 
             request.setInstanceId(instance.getId());
 
@@ -231,6 +236,7 @@ public class RequestServiceImpl implements RequestService {
             }
 
             dto.setFields(updateFields);
+            dto.setFiles(fileService.getAllFiles(request.getReference(), ""));
 
             //List<HistoricActivityInstance> historics = camundaService.getHistoricActivityInstances(request.getInstanceId());
 
@@ -238,6 +244,7 @@ public class RequestServiceImpl implements RequestService {
 
             List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(histories);
             dto.setApprovals(approvalDtos);
+
             return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", dto );
 
         } catch (Exception e) {
@@ -277,9 +284,11 @@ public class RequestServiceImpl implements RequestService {
                     System.out.println("Assigne : " + historic.getAssignee());
                     approvalDto.setStaff(historic.getAssignee());
                 }
+
                 if(historic.getEndTime() != null){
                     System.out.println("EndTime : " + historic.getAssignee());
                     approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(historic.getEndTime()));
+                    approvalDto.setTime(DateUtil.timeAgo(DateUtil.convertDateToLocalDateTime(historic.getEndTime())));
                 }
             }
 
@@ -416,6 +425,7 @@ public class RequestServiceImpl implements RequestService {
                 List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(historics);
                 dto.setApprovals(approvalDtos);
 
+                dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));
                 result.add(dto);
             }
         }

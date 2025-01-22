@@ -1,17 +1,23 @@
 package com.ccabank.memoservice.process.vacation.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.reporting.VacationDecision;
 import com.ccabank.memoservice.dto.reporting.VacationForm;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.dto.user.FunctionInfo;
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.service.faces.EmailService;
+import com.ccabank.memoservice.service.faces.FileService;
+import com.ccabank.memoservice.util.CustomMultipartFile;
 import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.util.WorkDayCalculator;
@@ -22,7 +28,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
@@ -38,13 +46,16 @@ public class SendVacation implements JavaDelegate {
     private ReportingRestClient reportingRestClient;
 
     @Autowired
-    private EmailRestClient emailRestClient;
+    private EmailService emailService;
 
     @Autowired
     private CamundaService camundaService;
 
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private FileService fileService;
 
 
     @Override
@@ -53,7 +64,7 @@ public class SendVacation implements JavaDelegate {
 
             System.out.println("Send Valided Vacation");
 
-            requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+            Request request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
 
             VacationForm form = new VacationForm();
@@ -122,13 +133,19 @@ public class SendVacation implements JavaDelegate {
 
             VacationDecision decision = new VacationDecision();
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate currentDate = LocalDate.now();
+            currentDate.format(formatter);
+
+            decision.setReference(currentDate.format(formatter) + "/DG/DGA/DAF/RCH/DAAS/CORH");
+
             decision.setDate(LocalDate.now());
             decision.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             decision.setEmployee(staff.getFirstName() + " " + staff.getLastName());
             decision.setMatricule(staff.getMatricule());
             decision.setStartDate(startDate);
             decision.setEndDate(endDate);
-            decision.setPeriod(WorkDayCalculator.getDateRangeAsString(startDate, endDate));
+            decision.setPeriod(WorkDayCalculator.getDateRangeAsString(lastVacationDate, startDate));
             decision.setUnity(staff.getDepartment().getName());
 
             Long allocationDueLong = (Long) delegateExecution.getVariable("allocationDue");
@@ -152,12 +169,55 @@ public class SendVacation implements JavaDelegate {
             Integer permDeduction = permDeductionLong.intValue();
             decision.setPermissions(permDeduction);
 
+            String respCA = (String) delegateExecution.getVariable("Apbt_ca_validation");
+            EmployeeInfo respCAInfo = userRestClient.getStaffByUsername(respCA);
+            signature = userRestClient.getEmployeeSignature(respCA);
+
+            VacationDecision.Signatory signatory = new VacationDecision.Signatory();
+            signatory.setSignature(signature);
+            signatory.setDate(LocalDate.now());
+            signatory.setName(respCAInfo.getFirstName() + " " + respCAInfo.getLastName());
+            decision.setSignatory(signatory);
+
             ByteArrayResource decisionVacation = reportingRestClient.vacationDecision(decision);
 
 
             ByteArrayResource resource = reportingRestClient.vacation(form);
 
-            EmailDto emailDto = new EmailDto();
+            EmailAskApprovalDto ask = new EmailAskApprovalDto();
+            ask.setSender(staff.getUsername());
+            ask.setSubject("Demande de Congés Validées");
+            ask.setbCC(supervisorInfo.getEmail());
+            AttachmentDto attachment = new AttachmentDto();
+            attachment.setName("demande_congés" + delegateExecution.getBusinessKey() + ".pdf");
+            attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            AttachmentDto attachmentDecision = new AttachmentDto();
+            attachmentDecision.setName("decision_congés.pdf");
+            attachmentDecision.setData(Base64.getEncoder().encodeToString(decisionVacation.getByteArray()));
+            ask.setAttachments(new AttachmentDto[]{attachment, attachmentDecision});
+            emailService.sendFiles(ask);
+
+            CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+            FileDto fileDto = new FileDto();
+            fileDto.setAddDate(LocalDateTime.now());
+            fileDto.setName("Demande de Congés Validées");
+            fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            fileDto.setMultipartFile(multipartFile);
+            fileDto.setType("application/pdf");
+            fileService.saveFile(request, fileDto);
+
+            multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+            fileDto = new FileDto();
+            fileDto.setAddDate(LocalDateTime.now());
+            fileDto.setName("Decision de Congés");
+            fileDto.setFile(Base64.getEncoder().encodeToString(decisionVacation.getByteArray()));
+            fileDto.setMultipartFile(multipartFile);
+            fileDto.setType("application/pdf");
+            fileService.saveFile(request, fileDto);
+
+            /*EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
             emailDto.setTo(staff.getEmail());
             emailDto.setSubject("Demande de Congés Validées");
@@ -172,7 +232,7 @@ public class SendVacation implements JavaDelegate {
             attachmentDecision.setData(Base64.getEncoder().encodeToString(decisionVacation.getByteArray()));
 
             emailDto.setAttachments(new AttachmentDto[]{attachment, attachmentDecision});
-            this.emailRestClient.send(emailDto);
+            this.emailRestClient.send(emailDto);*/
 
 
     }

@@ -60,7 +60,7 @@ public class AbsenceForm {
 
     @NotBlank
     @Schema(example = "SIMO TRÉSOR WILFRIED")
-    private String interim = "SIMO TRÉSOR WILFRIED";
+    private String interim = "";
 
     @NotNull
     private Signatory signatory1  = new Signatory();
@@ -77,6 +77,8 @@ public class AbsenceForm {
     private Double advice = 0.0;
     @NotNull
     private Double rights = 0.0;
+
+    private List<Signatory> signatories;
 
     private List<String> signatures = new ArrayList<>();
 

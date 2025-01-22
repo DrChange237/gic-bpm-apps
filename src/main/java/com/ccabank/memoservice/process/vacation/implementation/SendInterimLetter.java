@@ -1,8 +1,11 @@
 package com.ccabank.memoservice.process.vacation.implementation;
 
 import com.ccabank.memoservice.dto.email.AttachmentDto;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.memo.FileDto;
 import com.ccabank.memoservice.dto.reporting.InterimForm;
+import com.ccabank.memoservice.dto.reporting.VacationDecision;
 import com.ccabank.memoservice.dto.user.EmployeeFunctionInfo;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.dto.user.FunctionInfo;
@@ -12,8 +15,12 @@ import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.IncidentTypeConstant;
+import com.ccabank.memoservice.process.vacation.constant.CumulConstant;
 import com.ccabank.memoservice.repository.RequestRepository;
 import com.ccabank.memoservice.service.faces.CamundaService;
+import com.ccabank.memoservice.service.faces.EmailService;
+import com.ccabank.memoservice.service.faces.FileService;
+import com.ccabank.memoservice.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -22,10 +29,12 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -41,10 +50,13 @@ public class SendInterimLetter implements JavaDelegate {
     private  UserRestClient userRestClient;
 
     @Autowired
-    private  CamundaService camundaService;
+    private EmailService emailService;
 
     @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    private FileService fileService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -67,7 +79,7 @@ public class SendInterimLetter implements JavaDelegate {
             }
             form.setInterim(interim);
 
-            String owner = (String) delegateExecution.getVariable("Apbt_interimaire");
+            String owner = (String) delegateExecution.getVariable("owner");
             EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
 
             InterimForm.Employee employee = new InterimForm.Employee();
@@ -93,7 +105,13 @@ public class SendInterimLetter implements JavaDelegate {
 
 
             //Note à Generer
-            form.setNoteId("NOTE 2024 N° 2970/DGA/DAF/RCH/DAAS/CORH");
+            int currentYear = LocalDate.now().getYear();
+            int currentMonth = LocalDate.now().getMonthValue();
+            Random random = new Random();
+            int rnd = random.nextInt(1000);
+            String number = String.valueOf(currentMonth) + String.valueOf(rnd);
+
+            form.setNoteId("NOTE "+currentYear+" N° " + number + "/DGA/DAF/RCH/DAAS/CORH");
 
             Date startDateD = (Date) delegateExecution.getVariable("realStartDate");
             LocalDate startDate = startDateD.toInstant()
@@ -106,15 +124,51 @@ public class SendInterimLetter implements JavaDelegate {
             form.setEndDate(endDate);
 
 
+            EmployeeInfo info = userRestClient.getStaffByUsername(interimaire.getUsername());
             String signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
-            form.setCachet(signature);
+
+            InterimForm.Signatory signatory = new InterimForm.Signatory();
+            signatory.setSignature(signature);
+            signatory.setDate(LocalDate.now());
+            signatory.setName(info.getFirstName() + " " + info.getLastName());
+            form.setSignatory(signatory);
+
+             String cumul = (String) delegateExecution.getVariable("cummulatif") ;
+
+             if(cumul != null){
+                 form.setCumulate(true);
+                 if(cumul.equals(CumulConstant.NON_CUMUL)){
+                     form.setCumulate(false);
+                 }
+             }
 
 
             System.out.println(form);
 
             ByteArrayResource resource = reportingRestClient.interim(form);
 
+            EmailAskApprovalDto ask = new EmailAskApprovalDto();
+            ask.setSender(interimaire.getUsername());
+            ask.setSubject("Lettre d'intérim");
+            ask.setbCC(staff.getEmail());
+            AttachmentDto attachment = new AttachmentDto();
+            attachment.setName("lettre_interim_" + delegateExecution.getBusinessKey() + ".pdf");
+            attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            ask.setAttachments(new AttachmentDto[]{attachment});
+            emailService.sendFiles(ask);
+
+            CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+            FileDto fileDto = new FileDto();
+            fileDto.setAddDate(LocalDateTime.now());
+            fileDto.setName("Lettre d'intérim");
+            fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
+            fileDto.setMultipartFile(multipartFile);
+            fileDto.setType("application/pdf");
             Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
+            fileService.saveFile(request, fileDto);
+
+            /*Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
 
             EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
@@ -127,7 +181,7 @@ public class SendInterimLetter implements JavaDelegate {
             attachment.setName("lettre_interim_" + request.getReference() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             emailDto.setAttachments(new AttachmentDto[]{attachment});
-            this.emailRestClient.send(emailDto);
+            this.emailRestClient.send(emailDto);*/
 
     }
 }

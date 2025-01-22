@@ -37,6 +37,8 @@ public class ApprovalDto implements Serializable {
 
     private RequestInfo request;
 
+    private String time;
+
     private boolean required;
 
 }

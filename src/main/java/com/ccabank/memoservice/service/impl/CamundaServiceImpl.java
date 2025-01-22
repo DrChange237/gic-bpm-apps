@@ -16,6 +16,7 @@ import org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
 import org.camunda.bpm.engine.runtime.*;
+import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -82,12 +83,12 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
-    public ProcessInstance createProcessInstance(String processDefinitionKey, Map<String, Object> variables) {
+    public ProcessInstance createProcessInstance(String processDefinitionKey, String businessKey,  Map<String, Object> variables) {
         // Créer une instance de processus sans la démarrer
         // Note : Camunda ne permet pas de créer une instance sans la démarrer,
         // mais vous pouvez stocker les variables pour un démarrage ultérieur.
         // Démarre le processus avec les variables
-        return runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
+        return runtimeService.startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
     }
 
     @Override
@@ -350,6 +351,33 @@ public class CamundaServiceImpl implements CamundaService {
 
         // Exécuter la requête et retourner la liste des tâches
         return query.singleResult();
+    }
+
+    @Override
+    public boolean isUserInCandidateGroups(String taskId, String username) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (task != null) {
+            List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+            for (IdentityLink link : identityLinks) {
+                if (link.getGroupId() != null && identityService.createGroupQuery().groupId(link.getGroupId()).count() > 0) {
+                    if (identityService.createUserQuery().userId(username).memberOfGroup(link.getGroupId()).count() > 0) {
+                        return true; // L'utilisateur fait partie du groupe candidat
+                    }
+                }
+            }
+        }
+        return false; // L'utilisateur n'est pas dans les groupes candidats
+    }
+
+    @Override
+    public boolean isTaskCandidateGroup(String taskId) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (task != null) {
+            List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+            // Vérifie si au moins un groupe candidat est présent
+            return identityLinks.stream().anyMatch(link -> link.getGroupId() != null);
+        }
+        return false; // La tâche n'existe pas ou n'a pas de groupes candidats
     }
 
     @Override

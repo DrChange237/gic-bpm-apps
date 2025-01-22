@@ -19,10 +19,12 @@ public class StartAbsenceListener implements ExecutionListener {
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
         List<ChoiceDto> transport = new ArrayList<>();
-        ChoiceDto choice = new ChoiceDto("Maternité", ReasonAbsence.MATERNITY);
-        transport.add(choice);
-        choice = new ChoiceDto("Baptème", ReasonAbsence.BAPTEME);
-        transport.add(choice);
+
+        // Boucle sur l'enum avec for
+        for (ReasonAbsence reasonAbsence : ReasonAbsence.values()) {
+            ChoiceDto choice = new ChoiceDto(reasonAbsence.getName() + "(" + reasonAbsence.getNbDays() + " jours )", reasonAbsence.name());
+            transport.add(choice);
+        }
         delegateExecution.setVariable("reason" + "_choices" , transport);
 
     }

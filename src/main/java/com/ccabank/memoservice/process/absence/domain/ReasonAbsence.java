@@ -6,9 +6,15 @@ import lombok.Getter;
 @Getter
 public enum ReasonAbsence {
      MARIAGE("Mariage", true, 5),
-     MATERNITY("Maternité", true, 3),
-     BAPTEME("Baptème", true, 3),
-     OTHER("Autres", false, 0);
+     CHILDBIRTH("Accouchement de l'épouse", true, 3),
+     BAPTEME("Baptème d'un enfant", true, 2),
+     COMMUNION("Première communion d'un enfant ", true, 1),
+     MARIAGE_CHILD("Mariage d'un enfant", true, 2),
+     DEATH_SPOUSE("Déces Conjoint", true, 5),
+    DEATH_CHILD("Déces d'un enfant", true, 3),
+    DEATH_PARENT("Déces d'un parent", true, 3),
+    DEATH_BROTHER("Déces d'un frère ou d'une soeur", true, 2),
+    OTHER("Autres", false, 0);
 
      private final String name;
      private final boolean conventional;

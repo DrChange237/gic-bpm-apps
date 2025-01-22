@@ -12,6 +12,7 @@ public class ControlBudgetEndListener implements ExecutionListener {
     public void notify(DelegateExecution delegateExecution) throws Exception {
 
         String avaibility = (String) delegateExecution.getVariable("budget");
+        delegateExecution.setVariable("budgetAvaibility", false);
         if(avaibility.equals(BudgetAvaibility.AVAILABLE)){
             delegateExecution.setVariable("budgetAvaibility", true);
         }

@@ -56,8 +56,9 @@ public class MissionForm {
     @Schema(example = " ")
     private String signature = "";
 
-    @Schema(description = "Signature du donneur d'ordre", example = " ")
-    private String requesterSignature = "";
+    @NotNull
+    @Schema(description = "Donneur d'ordre")
+    private Signatory requester;
 
     private String chargeSupport = "Douala";
     private Double missionFees = 0.0;

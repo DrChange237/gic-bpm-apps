@@ -12,7 +12,6 @@ public class AcceptedApprovalDto {
     @Schema(example = "2")
     private int positionRejected = 1;
 
-
     @Schema(example = "Liste des champs")
     private List<FieldDto> fields;
 
