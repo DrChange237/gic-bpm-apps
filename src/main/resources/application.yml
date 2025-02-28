@@ -1,9 +1,6 @@
 spring:
   application:
-    name: paperless-service
-
-
-  #  # DATASOURCE (POSTGRESSSQL)
+    name: PAPERLESS-SERVICE
 
 
 
