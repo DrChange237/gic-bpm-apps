@@ -37,6 +37,8 @@ public class ApprovalController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+
+
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/approval/take")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
@@ -69,6 +71,15 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
         AppServiceResult<List<ApprovalListDto>> result = approvalService.getApprovalByStaff(request, status);
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @GetMapping("/approval/getAll")
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
+    public ResponseEntity<?> getAll(HttpServletRequest request) {
+        AppServiceResult<List<ApprovalListDto>> result = approvalService.getAllApprobations(request);
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }

@@ -2,6 +2,9 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.RequestStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.checkerframework.checker.formatter.qual.Format;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.RequestEntity;
 
 import java.io.Serializable;
@@ -18,8 +21,12 @@ public class RequestDto implements Serializable {
 
     private String staff;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime lastModification;
 
     private int approbationLevel;

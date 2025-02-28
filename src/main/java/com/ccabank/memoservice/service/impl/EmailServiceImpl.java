@@ -1,9 +1,14 @@
 package com.ccabank.memoservice.service.impl;
 
 
+import com.ccabank.memoservice.constant.FieldTypeConstant;
 import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.dto.email.EmailDto;
+import com.ccabank.memoservice.dto.memo.ApprovalDto;
+import com.ccabank.memoservice.dto.memo.FieldDto;
 import com.ccabank.memoservice.dto.user.UserRestDto;
+import com.ccabank.memoservice.entity.ApprovalKey;
+import com.ccabank.memoservice.entity.ApprovalStatus;
 import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.service.faces.EmailService;
@@ -11,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 
@@ -24,6 +31,95 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private UserRestClient userRestClient;
+
+
+    @Override
+    public boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos){
+        try{
+            System.out.println("sendForValidation-------------------------------------------------------------------------------------");
+
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
+            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
+
+
+            EmailDto emailDto = new EmailDto();
+
+            //emailDto.setCc(sender.getEmail());
+            emailDto.setFrom("notification@cca-bank.com");
+            emailDto.setSubject(ask.getSubject());
+            emailDto.setTo(approver.getEmail());
+
+            StringBuilder htmlContent = new StringBuilder();
+
+            htmlContent.append("<html><head>")
+                    .append("<style>")
+                    .append("body { font-family: Arial, sans-serif; margin: 20px; }")
+                    .append(".container { padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }")
+                    .append("h2 { color: #333; }")
+                    .append("ul { list-style-type: none; padding: 0; }")
+                    .append("li { margin: 10px 0; }")
+                    .append(".button { background-color: #683d98; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; }")
+                    .append(".button-refuse { background-color: #dc3545; }")
+                    .append("</style>")
+                    .append("</head><body>")
+                    .append("<div class='container'>")
+                    .append("<p> Bonjour M. " + approver.getName() + ", <br> <br> Ce message vous est envoyé automatiquement par <b>Paperless</b>. Nous vous prions de bien vouloir valider la demande suivante : </p>")
+                    .append("<ul>");
+
+            htmlContent.append("<li><strong>").append("Type").append(":</strong> ").append(ask.getType()).append("</li>");
+            htmlContent.append("<li><strong>").append("Reference").append(":</strong> ").append(ask.getReference()).append("</li>");
+            htmlContent.append("<li><strong>").append("Initiateur").append(":</strong> ").append(sender.getName()).append(" - " + sender.getFunction() + " - " + sender.getDepartment()).append("</li>");
+
+
+            for (FieldDto field : fields) {
+                if(field.getValue() != null){
+                    if(field.getType().equals(FieldTypeConstant.FILE)){
+                        htmlContent.append("<li><strong>").append(field.getName()).append(":</strong> <a href=").append(field.getValue()).append("> Télécharger ").append(" </a> </li>");
+                    }else{
+                        htmlContent.append("<li><strong>").append(field.getName()).append(":</strong> ").append(field.getValue()).append("</li>");
+                    }
+                }
+            }
+
+            htmlContent.append("</ul>");
+
+            htmlContent.append("<h3> Personnels ayant déjà approuvés </h3>");
+            htmlContent.append("<ul>");
+
+
+            for (ApprovalDto approvalDto : approvalDtos) {
+
+                UserRestDto approver2 = userRestClient.getAgencyByStaffUsername(approvalDto.getStaff(), "key", "secret");
+                htmlContent.append("<li>");
+
+                htmlContent.append("<strong>").append(approvalDto.getRole()).append("  </strong> - ").append(approver2.getName() + " - ").append(approver2.getFunction() + "  ");
+
+                /*if(approvalDto.getStatus().equals(ApprovalStatus.ACCEPTED)){
+                    htmlContent.append("<strong>[ ACCEPTE ]</strong>");
+                }else if (approvalDto.getStatus().equals(ApprovalStatus.REJECTED)){
+                    htmlContent.append("<strong>[ REJETE ]</strong> Raison : " + approvalDto.getComments());
+                }*/
+
+                htmlContent.append("</li>");
+
+            }
+
+            htmlContent.append("</ul><br>");
+
+
+            htmlContent.append("<a href='https://developer.ccabank-app.com/sandbox/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
+                    .append("</div>")
+                    .append("</body></html>");
+
+            emailDto.setBody(htmlContent.toString());
+
+            emailRestClient.send(emailDto);
+        }catch (Exception e){
+            System.out.println("Email Error" + e.getMessage());
+        }
+
+        return true;
+    }
 
     @Override
     public boolean sendFiles(EmailAskApprovalDto ask){
@@ -135,7 +231,7 @@ public class EmailServiceImpl implements EmailService {
                     "                    </td>\n" +
                     "                </tr>\n" +
                     "            </table>\n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande en <a href=\"https://applications.cca.ad/paperless/newRequest\">Cliquant ici</a> </div>\n" +
                     "            <div style=\"color: #969AA1; font-size: 13px; margin-top: 30px;\">Merci, <br><strong>CCA BANK</strong></div>\n" +
                     "        </th>\n" +
                     "    </tr>\n" +

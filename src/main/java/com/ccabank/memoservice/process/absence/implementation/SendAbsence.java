@@ -36,6 +36,8 @@ import java.util.Base64;
 
 import com.ccabank.memoservice.process.general.service.RequestService;
 
+import javax.ws.rs.BadRequestException;
+
 
 @Component
 public class SendAbsence implements JavaDelegate {
@@ -99,8 +101,11 @@ public class SendAbsence implements JavaDelegate {
             form.setInterim(interimaire.getFirstName() + " " + interimaire.getLastName());
         }
 
-
-        form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+        try{
+            form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+        }catch (Exception e){
+            throw new BadRequestException("La Signature de la employee " + staff.getUsername() +  " n'existe pas");
+        }
 
         String n1 = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_N1);
         EmployeeInfo Apbt_n1 =  userRestClient.getStaffByUsername(n1);
@@ -111,14 +116,27 @@ public class SendAbsence implements JavaDelegate {
 
         form.setSignatory1(supervisor);
 
-        String n2 = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_N2);
-        EmployeeInfo Apbt_n2 =  userRestClient.getStaffByUsername(n2);
-        AbsenceForm.Signatory supervisor2 = new AbsenceForm.Signatory();
-        supervisor2.setDate(LocalDate.now());
-        supervisor2.setName(Apbt_n2.getFirstName() + " " + Apbt_n2.getLastName());
-        supervisor2.setSignature(userRestClient.getEmployeeSignature(Apbt_n2.getUsername()));
+        List<AbsenceForm.Signatory> signatures = new ArrayList<AbsenceForm.Signatory>();
 
-        form.setSignatory2(supervisor2);
+
+        String apbt_n2 = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_N2);
+
+        if(apbt_n2 != null){
+            String n2 = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_N2);
+            EmployeeInfo Apbt_n2 =  userRestClient.getStaffByUsername(n2);
+            AbsenceForm.Signatory supervisor2 = new AbsenceForm.Signatory();
+            supervisor2.setDate(LocalDate.now());
+            supervisor2.setName(Apbt_n2.getFirstName() + " " + Apbt_n2.getLastName());
+            supervisor2.setSignature(userRestClient.getEmployeeSignature(Apbt_n2.getUsername()));
+            form.setSignatory2(supervisor2);
+
+            AbsenceForm.Signatory supervisor2Signatory = new AbsenceForm.Signatory();
+            supervisor2Signatory.setDate(LocalDate.now());
+            supervisor2Signatory.setName(supervisor2.getName());
+            supervisor2Signatory.setSignature(supervisor2.getSignature());
+            signatures.add(supervisor2Signatory);
+        }
+
 
         String direction = "";
 
@@ -147,7 +165,6 @@ public class SendAbsence implements JavaDelegate {
         Long rights = (Long) delegateExecution.getVariable("rights");
         form.setRights(rights.doubleValue());
 
-        List<AbsenceForm.Signatory> signatures = new ArrayList<AbsenceForm.Signatory>();
 
         AbsenceForm.Signatory supervisorSignatory = new AbsenceForm.Signatory();
         supervisorSignatory.setDate(LocalDate.now());
@@ -156,11 +173,7 @@ public class SendAbsence implements JavaDelegate {
         signatures.add(supervisorSignatory);
 
 
-        AbsenceForm.Signatory supervisor2Signatory = new AbsenceForm.Signatory();
-        supervisor2Signatory.setDate(LocalDate.now());
-        supervisor2Signatory.setName(supervisor2.getName());
-        supervisor2Signatory.setSignature(supervisor2.getSignature());
-        signatures.add(supervisor2Signatory);
+
         //signatures.add(DG.getSignature());
 
         String apbt_ca = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_SAISIE);
@@ -200,7 +213,7 @@ public class SendAbsence implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Autorisation d'absence");
-        ask.setbCC(Apbt_n1.getEmail() + "," + Apbt_n2.getEmail()+ "," + EmailGroup.EMAIL_HABILITATION);
+        ask.setbCC(Apbt_n1.getEmail() + "," + EmailGroup.EMAIL_HABILITATION);
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("absence" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

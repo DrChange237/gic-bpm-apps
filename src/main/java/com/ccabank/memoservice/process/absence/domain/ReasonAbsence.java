@@ -14,6 +14,7 @@ public enum ReasonAbsence {
     DEATH_CHILD("Déces d'un enfant", true, 3),
     DEATH_PARENT("Déces d'un parent", true, 3),
     DEATH_BROTHER("Déces d'un frère ou d'une soeur", true, 2),
+    MOVING("Déménagement du travailleur", true, 2),
     OTHER("Autres", false, 0);
 
      private final String name;

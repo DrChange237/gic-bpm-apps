@@ -1,6 +1,8 @@
 package com.ccabank.memoservice.entity.camunda;
 
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -9,11 +11,11 @@ import java.io.Serializable;
 public class MemberShip {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
     @Basic(optional = false)
-    @Column(name = "ID", columnDefinition = "serial")
-    private Long id;
-
+    @Column(name = "id_")
+    private String id;
 
     @Basic(optional = false)
     @Column(name = "user_id_")
@@ -25,7 +27,7 @@ public class MemberShip {
     private String groupId;
 
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

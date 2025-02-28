@@ -8,6 +8,7 @@ import com.ccabank.memoservice.dto.HttpResponseSuccess;
 import com.ccabank.memoservice.dto.memo.ArchivageDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.dto.memo.RequestInfo;
+import com.ccabank.memoservice.exception.BadRequestException;
 import com.ccabank.memoservice.security.Authority;
 import com.ccabank.memoservice.service.faces.RequestService;
 import io.swagger.annotations.Api;
@@ -64,19 +65,15 @@ public class RequestController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> archived(@RequestBody ArchivageDto archivageDto) {
         AppServiceResult<RequestInfo> result = requestService.achivage(archivageDto);
-        return result.isSuccess()
-                ? ResponseEntity.ok(new HttpResponseSuccess<RequestInfo>(result.getData()))
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(new HttpResponseSuccess<RequestInfo>(result.getData()));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/request/validate")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> validate(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<?> validate(@RequestParam(value = "id") Long id)  {
         AppBaseResult result = requestService.validateRequest(id);
-        return result.isSuccess()
-                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully validated"))
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully validated"));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -84,9 +81,7 @@ public class RequestController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> download(@RequestParam(value = "id") Long id) {
         AppBaseResult result = requestService.download(id);
-        return result.isSuccess()
-                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully downloaded"))
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully downloaded"));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -94,8 +89,7 @@ public class RequestController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
         AppServiceResult<List<RequestInfo>> result = requestService.getRequestByStaff(staff, status);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(result.getData());
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -103,8 +97,7 @@ public class RequestController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getByReference(@RequestParam(value = "reference") String reference) {
         AppServiceResult<RequestInfo> result = requestService.getRequestByReference(reference);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(result.getData());
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -112,8 +105,7 @@ public class RequestController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getAll(HttpServletRequest request) {
         AppServiceResult<List<RequestInfo>> result = requestService.getRequestAll(request);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(result.getData());
     }
 
 

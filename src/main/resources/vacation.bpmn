@@ -42,7 +42,7 @@
         <bpmn:flowNodeRef>Activity_1a1lsde</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1dd5ctc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Apbt_dg</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1r39ltk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Apbt_daf</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0l3we0m</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Apbt_ca_validation</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1o8exiw</bpmn:flowNodeRef>
@@ -235,7 +235,7 @@
       <bpmn:outgoing>Flow_1adbvqz</bpmn:outgoing>
       <bpmn:outgoing>Flow_1o7k07n</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1adbvqz" sourceRef="Gateway_111s2pa" targetRef="Activity_1r39ltk" />
+    <bpmn:sequenceFlow id="Flow_1adbvqz" sourceRef="Gateway_111s2pa" targetRef="Apbt_daf" />
     <bpmn:sequenceFlow id="Flow_1o7k07n" sourceRef="Gateway_111s2pa" targetRef="Event_1dd5ctc">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('typeInterim') == "NONE")}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -268,7 +268,7 @@
       <bpmn:incoming>Flow_1o7k07n</bpmn:incoming>
       <bpmn:incoming>Flow_1jb3oxc</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="Apbt_dg" name="Approbation de Direction Générale">
+    <bpmn:userTask id="Apbt_dg" name="Approbation de Direction Générale" camunda:candidateGroups="direction_general">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
@@ -276,14 +276,16 @@
         </camunda:formData>
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDGListener" event="create" id="ApbtDG" />
         <camunda:executionListener delegateExpression="${validateVacationListener}" event="end" />
+        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0oios1b</bpmn:incoming>
       <bpmn:outgoing>Flow_0dcx7cz</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0dlrepe" sourceRef="Activity_1r39ltk" targetRef="Gateway_0l3we0m" />
-    <bpmn:userTask id="Activity_1r39ltk" name="Approbation du DAF" camunda:candidateGroups="DAF">
+    <bpmn:sequenceFlow id="Flow_0dlrepe" sourceRef="Apbt_daf" targetRef="Gateway_0l3we0m" />
+    <bpmn:userTask id="Apbt_daf" name="Approbation du DAF" camunda:candidateGroups="daf">
       <bpmn:extensionElements>
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDAFListener" event="create" id="ApbtDAF" />
+        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1adbvqz</bpmn:incoming>
       <bpmn:outgoing>Flow_0dlrepe</bpmn:outgoing>
@@ -304,7 +306,10 @@
       <bpmn:outgoing>Flow_1p18hnq</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0jybnww" sourceRef="Gateway_1o8exiw" targetRef="Apbt_n1" />
-    <bpmn:userTask id="Apbt_ca_validation" name="Validation Captial Humain" camunda:candidateGroups="capital-humain">
+    <bpmn:userTask id="Apbt_ca_validation" name="Validation Captial Humain" camunda:candidateGroups="vacation_ca_validation">
+      <bpmn:extensionElements>
+        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_04jq8eb</bpmn:incoming>
       <bpmn:outgoing>Flow_10xdp2l</bpmn:outgoing>
     </bpmn:userTask>
@@ -314,7 +319,10 @@
       <bpmn:outgoing>Flow_09n9nyi</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1w348xn" sourceRef="Activity_0unmym4" targetRef="Gateway_0iyomu0" />
-    <bpmn:userTask id="Activity_0unmym4" name="Supervision Capital Humain" camunda:candidateGroups="capital-humain-supervision">
+    <bpmn:userTask id="Activity_0unmym4" name="Supervision Capital Humain" camunda:candidateGroups="vacation_ca_supervision">
+      <bpmn:extensionElements>
+        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_09n9nyi</bpmn:incoming>
       <bpmn:outgoing>Flow_1w348xn</bpmn:outgoing>
     </bpmn:userTask>
@@ -330,7 +338,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15ljfhp" sourceRef="Apbt_rh" targetRef="Gateway_1o8exiw" />
-    <bpmn:userTask id="Apbt_rh" name="Saisie Capital Humain" camunda:candidateGroups="capital-humain">
+    <bpmn:userTask id="Apbt_rh" name="Saisie Capital Humain" camunda:candidateGroups="vacation_ca_saisie">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="realLastVacationDate" label="Date de derniers congés" type="date">
@@ -406,6 +414,7 @@
           </camunda:formField>
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
+        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1p18hnq</bpmn:incoming>
       <bpmn:incoming>Flow_1l5vpd9</bpmn:incoming>
@@ -524,7 +533,7 @@
       <bpmndi:BPMNShape id="Activity_0ghy7g8_di" bpmnElement="Apbt_dg">
         <dc:Bounds x="600" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1av85i5_di" bpmnElement="Activity_1r39ltk">
+      <bpmndi:BPMNShape id="Activity_1av85i5_di" bpmnElement="Apbt_daf">
         <dc:Bounds x="840" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0l3we0m_di" bpmnElement="Gateway_0l3we0m" isMarkerVisible="true">

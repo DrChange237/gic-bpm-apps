@@ -1,10 +1,12 @@
 package com.ccabank.memoservice.service.faces;
 
 import com.ccabank.memoservice.domain.AppServiceResult;
+import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.ArchivageDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
 import com.ccabank.memoservice.dto.memo.RequestInfo;
 import com.ccabank.memoservice.entity.Request;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.core.io.ByteArrayResource;
 
 import javax.servlet.http.HttpServletRequest;

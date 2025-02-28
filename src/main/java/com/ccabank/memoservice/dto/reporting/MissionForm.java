@@ -73,12 +73,12 @@ public class MissionForm {
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
-        private String name = "SIMO PATRICK";
+        private String name = "";
 
         @Schema(example = "Chef de département")
-        private String function = "Chef de département";
+        private String function = "";
         @NotNull
-        private LocalDate date = LocalDate.now();
+        private LocalDate date;
         @Schema(example = " ", description = "Base64-encoded image")
         private String signature =  "";
     }

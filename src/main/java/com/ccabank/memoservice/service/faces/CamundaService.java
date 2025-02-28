@@ -46,6 +46,8 @@ public interface CamundaService {
 
     Task getTaskDetails(String taskId);
 
+    List<String> getAllAssigneInTask(String taskId);
+
     String getTaskAssigneeNature(String taskId);
 
     void cancelOthersToken(String processInstanceId, String executionId);
@@ -78,12 +80,17 @@ public interface CamundaService {
 
     void addLocalVariableToTask(String taskId, String variableName, Object value);
 
+
     List<Task> getActiveTasksForUser(String userId);
 
+
+    List<Task> getAllTasksForUser();
 
     List<HistoricTaskInstance> getConfirmTasksForUser(String userId, boolean decision);
 
     HistoricTaskInstance getHistoryTaskInstance(String taskId);
+
+    void stopAllActiveProcessInstances();
 
     List<Task> getActiveTasksByAssignee(String username);
 

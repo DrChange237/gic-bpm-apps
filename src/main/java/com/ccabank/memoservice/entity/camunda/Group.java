@@ -8,7 +8,7 @@ public class Group {
 
     @Id
     @Basic(optional = false)
-    @Column(name = "id_", columnDefinition = "serial")
+    @Column(name = "id_")
     private String id;
 
     @Basic(optional = true)

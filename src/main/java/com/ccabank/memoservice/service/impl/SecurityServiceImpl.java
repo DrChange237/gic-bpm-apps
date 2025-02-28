@@ -7,14 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
-import java.util.Optional;
-import java.security.Principal;
-
 
 
 @Service
@@ -22,6 +18,23 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Autowired
     UserRestClient userRestClient;
+
+    @Override
+    public boolean checkUserSignature(String username){
+        String signature = null;
+        try{
+            signature = userRestClient.getEmployeeSignature(username);
+        }catch (Exception e){
+            signature = null;
+        }
+        if(signature == null){
+            return false;
+        }
+        if(signature.isEmpty()){
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public EmployeeInfo getCurrentUser(HttpServletRequest request){

@@ -12,7 +12,7 @@ public class UserCamunda  {
 
     @Id
     @Basic(optional = false)
-    @Column(name = "id_", columnDefinition = "serial")
+    @Column(name = "id_")
     private String userName;
 
     @Basic(optional = true)

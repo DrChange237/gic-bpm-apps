@@ -5,14 +5,13 @@ import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
+import com.ccabank.memoservice.exception.BadRequestException;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
 import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.camunda.Mapping;
-import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
-import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,7 +47,6 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private DocumentTypeRepository documentTypeRepository;
 
-
     @Autowired
     private FileService fileService;
 
@@ -62,8 +61,7 @@ public class RequestServiceImpl implements RequestService {
     private Mapping mapping;
 
     @Autowired
-    private ApprobationRepository approbationRepository;
-
+    private MapService mapService;
 
 
     @Override
@@ -161,35 +159,34 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public AppServiceResult<?> validateRequest(Long id) {
-        try {
-            Request request = requestRepository.getOne(id);
-            request.setLastModification(LocalDateTime.now());
 
-            if(request == null){
-                throw new Exception("Aucune requete retrouvée");
-            }
 
-            if(!request.getStatus().equals(RequestStatus.DRAFT)){
-                throw new Exception("Cette requete à déjà été validée");
-            }
+        Request request = requestRepository.getOne(id);
+        request.setLastModification(LocalDateTime.now());
 
-            request.setStatus(RequestStatus.PENDING);
-            request = requestRepository.save(request);
-            RequestInfo requestDto = this.requestMapper.toDto(request);
-            Task task = camundaService.getTaskByProcessInstanceIdAndTaskKey(request.getInstanceId(), "Validation");
-            Map<String, Object> variables = new HashMap<>();
-            task.setAssignee(requestDto.getStaff());
-            camundaService.completeTask(task.getId(), variables);
+        boolean signature = securityService.checkUserSignature(request.getStaff());
 
-            return new AppServiceResult<>(true, 0, "Succeed!", request );
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
+        if(!signature){
+            throw new BadRequestException("l'utilisateur " + request.getStaff() + " n'a pas de signature");
         }
 
+        if(request == null){
+            throw new BadRequestException("Aucune requete retrouvée");
+        }
+
+        if(!request.getStatus().equals(RequestStatus.DRAFT)){
+            throw new BadRequestException("Cette requete à déjà été validée");
+        }
+
+        request.setStatus(RequestStatus.PENDING);
+        request = requestRepository.save(request);
+        RequestInfo requestDto = this.requestMapper.toDto(request);
+        Task task = camundaService.getTaskByProcessInstanceIdAndTaskKey(request.getInstanceId(), "Validation");
+        Map<String, Object> variables = new HashMap<>();
+        task.setAssignee(requestDto.getStaff());
+        camundaService.completeTask(task.getId(), variables);
+
+        return new AppServiceResult<>(true, 0, "Succeed!", request );
 
     }
 
@@ -242,7 +239,7 @@ public class RequestServiceImpl implements RequestService {
 
             List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
 
-            List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(histories);
+            List<ApprovalDto> approvalDtos = mapService.mapTaskToApprovalDto(histories);
             dto.setApprovals(approvalDtos);
 
             return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", dto );
@@ -254,71 +251,8 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    public  List<ApprovalDto> mapTaskToApprovalDto(List<HistoricTaskInstance> historics) {
 
-        List<ApprovalDto> approvalDtos = new ArrayList<>();
 
-        for (HistoricTaskInstance historic : historics) {
-
-            System.out.println(historic);
-
-            String taskId = historic.getId();
-
-            ApprovalDto approvalDto = new ApprovalDto();
-            approvalDto.setType(ApprovalType.STATIC);
-            approvalDto.setStatus(ApprovalStatus.PENDING);
-
-            if(taskId != null){
-                approvalDto.setType(ApprovalType.OPEN);
-                System.out.println("Task Id : " + taskId);
-                approvalDto.setId(historic.getId());
-                System.out.println("ActivitiName : " + historic.getName());
-                approvalDto.setRole(historic.getName());
-                System.out.println("Position : " + historics.indexOf(historic));
-                approvalDto.setPosition(historics.indexOf(historic));
-                String natureTask = camundaService.getTaskAssigneeNature(taskId);
-                if(natureTask.equals("GROUP")){
-                    approvalDto.setType(ApprovalType.STATIC);
-                }
-                if(historic.getAssignee() != null){
-                    System.out.println("Assigne : " + historic.getAssignee());
-                    approvalDto.setStaff(historic.getAssignee());
-                }
-
-                if(historic.getEndTime() != null){
-                    System.out.println("EndTime : " + historic.getAssignee());
-                    approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(historic.getEndTime()));
-                    approvalDto.setTime(DateUtil.timeAgo(DateUtil.convertDateToLocalDateTime(historic.getEndTime())));
-                }
-            }
-
-            if(historic.getDurationInMillis() != null){
-                System.out.println("Duration : " + historic.getDurationInMillis());
-                if(historic.getDurationInMillis() > 0){
-                    approvalDto.setStatus(ApprovalStatus.WAITING);
-                }
-            }
-
-            if(historic.getEndTime() != null){
-                System.out.println("Is Complete : ");
-                if(historic.getId() != null){
-                    Optional<Approbation> approbationOptional = approbationRepository.findByTaskId(historic.getId());
-                    if(approbationOptional.isPresent()){
-                        Approbation approbation = approbationOptional.get();
-                        approvalDto.setStatus(approbation.getStatus());
-                        approvalDto.setComments(approbation.getComments());
-                    }else{
-                        approvalDto.setStatus(ApprovalStatus.ACCEPTED);
-                    }
-                }
-            }
-
-            approvalDto.setFields(new ArrayList<>());
-            approvalDtos.add(approvalDto);
-        }
-
-        return approvalDtos;
-    }
 
     @Override
     public AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto) {
@@ -422,7 +356,7 @@ public class RequestServiceImpl implements RequestService {
                 dto.setFields(Mapping.getFieldFromFormField(formData, variables));
 
                 List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
-                List<ApprovalDto> approvalDtos = this.mapTaskToApprovalDto(historics);
+                List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(historics);
                 dto.setApprovals(approvalDtos);
 
                 dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));

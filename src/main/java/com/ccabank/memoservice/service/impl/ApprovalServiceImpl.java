@@ -5,7 +5,9 @@ import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
+import com.ccabank.memoservice.exception.BadRequestException;
 import com.ccabank.memoservice.mappers.RequestMapper;
+import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
 import com.ccabank.memoservice.util.DateUtil;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -58,6 +61,12 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Autowired
     private ApprobationRepository approbationRepository;
+
+    @Autowired
+    private ApprovalKeyRepository approvalKeyRepository;
+
+    @Autowired
+    private UserRestClient userRestClient;
 
 
     @Override
@@ -139,67 +148,115 @@ public class ApprovalServiceImpl implements ApprovalService {
         }
     }
 
+    @Override
+    public AppServiceResult<?> decisionViaEmail(String key, String TaskId, boolean decision, String comment)  {
 
-    @Transactional
-    public AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto, String assignee) {
-        try {
-            logger.info(MEMO_SERVICE + "approve : methode invocation");
+        ApprovalKey approvalKey = approvalKeyRepository.getOne(key);
+        if(approvalKey == null){
+            throw new NotFoundException("Approval key not found");
+        }
 
-            List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
-            Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
-            camundaService.addLocalVariableToTask(task.getId(), "signature", true);
-            String instanceId = task.getProcessInstanceId();
-            Request request = requestRepository.findByInstanceId(instanceId);
-            request.setLastModification(LocalDateTime.now());
-            if(!request.getStatus().equals(RequestStatus.ACCEPTED)){
-                request.setStatus(RequestStatus.PENDING);
-            }
-            requestRepository.save(request);
+        if(!approvalKey.getTaskId().equals(TaskId)){
+            throw new NotAuthorizedException("Approval key doesn't match");
+        }
 
+        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(approvalKey.getUsername());
+        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
-            Map<String, Object> variables = mapping.getVariablesFromField(incommingFields);
-            if(!incommingFields.isEmpty()){
-                List<FieldDto> oldFields = (List<FieldDto>) variables.get("otherFields");
-                System.out.println("Begin add other fields");
-                if(oldFields == null){
-                    oldFields =new ArrayList<>();
+        if(task != null){
+            camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
+            if(task.getAssignee() != null){
+                if(!task.getAssignee().equals(employeeInfo.getUsername())){
+                    //throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
                 }
-                incommingFields.addAll(oldFields);
-                System.out.println("Add Fields : " + incommingFields);
-                variables.put("otherFields", incommingFields);
             }
-            variables.put("decision", true);
-            variables.put(task.getTaskDefinitionKey(), assignee);
-            camundaService.claimTask(task.getId(), assignee);
-            variables.put("comments", acceptedApprovalDto.getComments());
-            camundaService.completeTask(task.getId(), variables);
+            camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+        }
 
-            Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
-            if(approbationOptional.isPresent()){
-                Approbation approbation = approbationOptional.get();
-                approbation.setStatus(ApprovalStatus.ACCEPTED);
-                approbation.setComments(acceptedApprovalDto.getComments());
-                approbationRepository.save(approbation);
-            }else {
-                Approbation approbation = new Approbation();
-                approbation.setStatus(ApprovalStatus.ACCEPTED);
-                approbation.setComments(acceptedApprovalDto.getComments());
-                approbation.setTaskId(task.getId());
-                approbationRepository.save(approbation);
+        AcceptedApprovalDto acceptedApprovalDto = new AcceptedApprovalDto();
+        acceptedApprovalDto.setIdApproval(approvalKey.getTaskId());
+        acceptedApprovalDto.setDecision(decision);
+        acceptedApprovalDto.setComments(comment);
 
-            }
-
-            return new AppServiceResult<>(true, 0, "Succeed!", null);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
+        if(acceptedApprovalDto.isDecision()){
+            return this.approve(acceptedApprovalDto, employeeInfo.getUsername());
+        }else{
+            return this.rejected(acceptedApprovalDto);
         }
     }
 
+
     @Transactional
+    @Override
+    public AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto, String assignee)  {
+
+        boolean signature = securityService.checkUserSignature(assignee);
+        if(!signature){
+            throw new BadRequestException("l'utilisateur " + assignee + " n'a pas de signature");
+        }
+
+        logger.info(MEMO_SERVICE + "approve : methode invocation");
+        List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
+        if(incommingFields == null){
+            incommingFields = new ArrayList<>();
+        }
+        Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
+        camundaService.addLocalVariableToTask(task.getId(), "signature", true);
+        String instanceId = task.getProcessInstanceId();
+        Request request = requestRepository.findByInstanceId(instanceId);
+        request.setLastModification(LocalDateTime.now());
+
+        if(!request.getStatus().equals(RequestStatus.ACCEPTED)){
+            request.setStatus(RequestStatus.PENDING);
+        }
+        requestRepository.save(request);
+
+
+        Map<String, Object> variables = new HashMap<>();
+        try {
+            variables = mapping.getVariablesFromField(incommingFields);
+        } catch (Exception e) {
+            throw new BadRequestException("Soucis avec le mapping des variables");
+        }
+
+        if(!incommingFields.isEmpty()){
+            List<FieldDto> oldFields = (List<FieldDto>) variables.get("otherFields");
+            System.out.println("Begin add other fields");
+            if(oldFields == null){
+                oldFields =new ArrayList<>();
+            }
+            incommingFields.addAll(oldFields);
+            System.out.println("Add Fields : " + incommingFields);
+            variables.put("otherFields", incommingFields);
+        }
+
+        variables.put("decision", true);
+        variables.put(task.getTaskDefinitionKey(), assignee);
+        camundaService.claimTask(task.getId(), assignee);
+        variables.put("comments", acceptedApprovalDto.getComments());
+        camundaService.completeTask(task.getId(), variables);
+
+        Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
+        if(approbationOptional.isPresent()){
+            Approbation approbation = approbationOptional.get();
+            approbation.setStatus(ApprovalStatus.ACCEPTED);
+            approbation.setComments(acceptedApprovalDto.getComments());
+            approbationRepository.save(approbation);
+        }else {
+        Approbation approbation = new Approbation();
+            approbation.setStatus(ApprovalStatus.ACCEPTED);
+            approbation.setComments(acceptedApprovalDto.getComments());
+            approbation.setTaskId(task.getId());
+            approbationRepository.save(approbation);
+        }
+
+        return new AppServiceResult<>(true, 0, "Succeed!", null);
+
+    }
+
+    @Transactional
+    @Override
     public AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
@@ -293,6 +350,36 @@ public class ApprovalServiceImpl implements ApprovalService {
                 break;
             }
 
+
+            return new AppServiceResult<List<ApprovalListDto>>(true, 0, "Succeed!", approvalDtos);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
+            return new AppServiceResult<List<ApprovalListDto>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<List<ApprovalListDto>> getAllApprobations(HttpServletRequest req) {
+        try {
+            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+
+            if(employeeInfo == null){
+                System.out.println("EmployeeInfo is null");
+            }
+
+            System.out.println("UserName Employe" + employeeInfo.getUsername());
+
+            List<Task> tasks = new ArrayList<>();
+            List<HistoricTaskInstance> historicTaskInstances = new ArrayList<>();
+            List<ApprovalListDto> approvalDtos = new ArrayList<>();
+
+            tasks = camundaService.getAllTasksForUser();
+            tasks.sort(Comparator.comparing(Task::getCreateTime).reversed());
+            System.out.println("Get Tasks " + tasks.size());
+            approvalDtos = this.mapTaskToApprovalDto(tasks);
+            System.out.println("Mapping Complete " + tasks.size());
 
             return new AppServiceResult<List<ApprovalListDto>>(true, 0, "Succeed!", approvalDtos);
 

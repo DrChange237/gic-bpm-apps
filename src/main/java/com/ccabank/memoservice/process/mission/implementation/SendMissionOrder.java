@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.BadRequestException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -67,9 +68,14 @@ public class SendMissionOrder implements JavaDelegate {
         MissionForm missionForm = new MissionForm();
         String owner = (String) delegateExecution.getVariable("owner");
         EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
-        String signature = userRestClient.getEmployeeSignature(owner);
-        missionForm.setSignature(signature);
+        String signature = "";
 
+        try{
+            signature = userRestClient.getEmployeeSignature(owner);
+            missionForm.setSignature(signature);
+        }catch (Exception e){
+            throw new BadRequestException("La signature de l'initiateur n'est pas disponible");
+        }
 
         missionForm.setName(staff.getFirstName() + " " + staff.getLastName());
         missionForm.setDate(LocalDate.now());
@@ -125,35 +131,54 @@ public class SendMissionOrder implements JavaDelegate {
         supervisor.setDate(LocalDate.now());
         supervisor.setName(n1.getFirstName() + " " + n1.getLastName());
         supervisor.setFunction(Optional.ofNullable(n1.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
-        signature = userRestClient.getEmployeeSignature(apbt_n1);
+        try{
+            signature = userRestClient.getEmployeeSignature(apbt_n1);
+        }catch (Exception e){
+            throw new BadRequestException("La signature de lemployé " + apbt_n1 + " n'est pas disponible");
+        }
         supervisor.setSignature(signature);
         missionForm.setSupervisor(supervisor);
 
         String apbt_n2 = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_N2);
 
-        EmployeeInfo n2 =  userRestClient.getStaffByUsername(apbt_n2);
-        MissionForm.Signatory supervisor2 = new MissionForm.Signatory();
-        supervisor2.setDate(LocalDate.now());
-        supervisor2.setName(n2.getFirstName() + " " + n1.getLastName());
-        supervisor2.setFunction(Optional.ofNullable(n2.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
-        signature = userRestClient.getEmployeeSignature(apbt_n2);
-        supervisor2.setSignature(signature);
-        missionForm.setSupervisorNext(supervisor2);
+        if(apbt_n2 != null){
+            EmployeeInfo n2 =  userRestClient.getStaffByUsername(apbt_n2);
+            MissionForm.Signatory supervisor2 = new MissionForm.Signatory();
+            supervisor2.setDate(LocalDate.now());
+            supervisor2.setName(n2.getFirstName() + " " + n1.getLastName());
+            supervisor2.setFunction(Optional.ofNullable(n2.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            try{
+                signature = userRestClient.getEmployeeSignature(apbt_n2);
+            }catch (Exception e){
+                throw new BadRequestException("La signature de lemployé " + apbt_n2 + " n'est pas disponible");
+            }
+            supervisor2.setSignature(signature);
+            missionForm.setSupervisorNext(supervisor2);
+        }
+
 
 
         String apbt_uch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
-
-
         EmployeeInfo n_uch =  userRestClient.getStaffByUsername(apbt_uch);
         MissionForm.Signatory uch = new MissionForm.Signatory();
         uch.setDate(LocalDate.now());
         uch.setName(n_uch.getFirstName() + " " + n_uch.getLastName());
         uch.setFunction(Optional.ofNullable(n_uch.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
-        signature = userRestClient.getEmployeeSignature(apbt_uch);
+        try{
+            signature = userRestClient.getEmployeeSignature(apbt_uch);
+        }catch (Exception e){
+            throw new BadRequestException("La signature de lemployé " + apbt_uch + " n'est pas disponible");
+        }
         uch.setSignature(signature);
         missionForm.setUch(uch);
 
-        String apbt_daf = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DAF);
+        String apbt_daf = "";
+
+        try{
+            apbt_daf = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DAF);
+        }catch (Exception e){
+            throw new BadRequestException("La signature de lemployé " + apbt_daf + " n'est pas disponible");
+        }
 
         EmployeeInfo n_daf =  userRestClient.getStaffByUsername(apbt_daf);
         MissionForm.Signatory daf = new MissionForm.Signatory();
@@ -163,7 +188,6 @@ public class SendMissionOrder implements JavaDelegate {
         signature = userRestClient.getEmployeeSignature(apbt_daf);
         daf.setSignature(signature);
         missionForm.setRequester(daf);
-
 
 
 
@@ -180,15 +204,13 @@ public class SendMissionOrder implements JavaDelegate {
         missionForm.setTransport(transport);
 
 
-
-
         //Envoyer le HandOver Par Email à l'intérimaire
         ByteArrayResource resource = this.reportingRestClient.mission(missionForm);
 
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Ordre de Mission");
-        ask.setbCC(n1.getEmail() + "," + n2.getEmail() + "," + n_uch.getEmail());
+        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail());
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("ordre_mission" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

@@ -47,6 +47,7 @@ public class WorkDayCalculator {
         return Math.toIntExact(ChronoUnit.DAYS.between(checkIn, checkOut));
     }
 
+
     public static long calculateWorkdays(LocalDate startDate, LocalDate endDate) {
         long workdays = 0;
         while (startDate.isBefore(endDate) || startDate.isEqual(endDate)) {

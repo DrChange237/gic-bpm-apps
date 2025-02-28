@@ -22,6 +22,8 @@ public class RHThreadListener implements ExecutionListener {
         baseDeductions.add(choice);
         choice = new ChoiceDto("Salaire", AbsenceForm.Deduction.SALARY);
         baseDeductions.add(choice);
+        choice = new ChoiceDto("Conventionnel", AbsenceForm.Deduction.CONVENTION);
+        baseDeductions.add(choice);
 
         delegateExecution.setVariable("deduction_choices" , baseDeductions);
 

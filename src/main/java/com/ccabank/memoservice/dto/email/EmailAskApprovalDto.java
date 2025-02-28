@@ -10,6 +10,8 @@ public class EmailAskApprovalDto {
 
     private String bCC ;
 
+    private  String cC;
+
     private String approver;
 
     private String reference;
@@ -83,5 +85,13 @@ public class EmailAskApprovalDto {
 
     public void setbCC(String bCC) {
         this.bCC = bCC;
+    }
+
+    public String getcC() {
+        return cC;
+    }
+
+    public void setcC(String cC) {
+        this.cC = cC;
     }
 }

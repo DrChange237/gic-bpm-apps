@@ -27,7 +27,7 @@ public class CalculDaysListener implements ExecutionListener {
                 .toLocalDate();
 
         Date endDateD = (Date) delegateExecution.getVariable("endDate");
-        LocalDate endDate = startDateD.toInstant()
+        LocalDate endDate = endDateD.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
@@ -36,13 +36,14 @@ public class CalculDaysListener implements ExecutionListener {
         ReasonAbsence absenceReason = ReasonAbsence.valueOf(reason);
 
         int nbDays = WorkDayCalculator.calculateNights(startDate, endDate);
+
         if(!absenceReason.equals(ReasonAbsence.OTHER)){
             Long plusDays = (Long) delegateExecution.getVariable("plusDays");
             nbDays = absenceReason.getNbDays() + plusDays.intValue();
             endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays);
             delegateExecution.setVariable("endDate", endDate);
-
         }
+
         delegateExecution.setVariable("nbDays", nbDays);
 
     }

@@ -87,16 +87,17 @@ public class AbsenceForm {
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
-        private String name = "SIMO PATRICK";
+        private String name = "";
         @Schema(example = " ", description = "Base64-encoded image")
         private String signature = "";
         @NotNull
-        private LocalDate date = LocalDate.now();
+        private LocalDate date;
     }
 
     public enum Deduction {
         SALARY,
-        VACATION
+        VACATION,
+        CONVENTION
     }
 
 

@@ -188,6 +188,55 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public List<String> getAllAssigneInTask(String taskId) {
+        List<String> assignes = new ArrayList<>();
+
+        // Récupérer la tâche par son ID
+        Task task = taskService.createTaskQuery()
+                .taskId(taskId)
+                .singleResult();
+
+        // Vérifier si la tâche existe
+        if (task == null) {
+            System.out.println("TASK IS NULL");
+            return assignes;
+            //throw new IllegalArgumentException("Task not found with ID: " + taskId);
+        }
+
+        // Vérifier si l'assigné est un groupe ou un utilisateur
+        String assignee = task.getAssignee();
+        if(assignee != null) {
+            assignes.add(assignee);
+        }
+
+        // Récupérer les groupes candidats
+        List<String> candidateUsers = taskService.getIdentityLinksForTask(taskId).stream()
+                .filter(link -> link.getUserId() != null)
+                .map(link -> link.getUserId()).collect(Collectors.toList());
+
+        if (!candidateUsers.isEmpty()) {
+            // Si l'assigné est null, mais qu'il y a des groupes candidats, c'est un groupe
+            assignes.addAll(candidateUsers);
+        }
+
+        // Récupérer les groupes candidats
+        List<String> candidateGroups = taskService.getIdentityLinksForTask(taskId).stream()
+                .filter(link -> link.getGroupId() != null)
+                .map(link -> link.getGroupId()).collect(Collectors.toList());
+
+        if (!candidateGroups.isEmpty()) {
+            // Si l'assigné est null, mais qu'il y a des groupes candidats, c'est un groupe
+            for (String groupId : candidateGroups) {
+                List<User> users = identityService.createUserQuery().memberOfGroup(groupId).list();
+                List<String> userNames = users.stream().map(User::getId).collect(Collectors.toList());
+                assignes.addAll(userNames);
+            }
+        }
+
+        return assignes;
+    }
+
+    @Override
     public String getTaskAssigneeNature(String taskId) {
         // Récupérer la tâche par son ID
         Task task = taskService.createTaskQuery()
@@ -448,6 +497,23 @@ public class CamundaServiceImpl implements CamundaService {
         return taskQuery.list();
     }
 
+    @Override
+    public List<Task> getAllTasksForUser() {
+        // Récupérer les groupes de l'utilisateur
+        List<Group> groups = identityService.createGroupQuery().list();
+
+        List<String> groupIds = groups.stream().map(group -> group.getId()).collect(Collectors.toList());
+
+        // Créer une requête de tâches pour les tâches assignées aux groupes
+        TaskQuery taskQuery = taskService.createTaskQuery()
+                .active() // Récupérer uniquement les tâches actives
+                .or()
+                .endOr();
+
+        // Exécuter la requête et retourner la liste des tâches
+        return taskQuery.list();
+    }
+
 
     @Override
     public List<HistoricTaskInstance> getConfirmTasksForUser(String userId, boolean decision) {
@@ -468,6 +534,22 @@ public class CamundaServiceImpl implements CamundaService {
                 .taskId(taskId)
                 .singleResult();
     }
+
+    @Override
+    public void stopAllActiveProcessInstances() {
+        // Récupérer toutes les instances de processus actives
+        List<ProcessInstance> activeInstances = runtimeService.createProcessInstanceQuery()
+                .active() // Filtrer pour les instances actives
+                .list();
+
+        // Parcourir et supprimer chaque instance active
+        for (ProcessInstance processInstance : activeInstances) {
+            runtimeService.deleteProcessInstance(processInstance.getId(), "Stopped by admin"); // Motif d'arrêt
+        }
+
+        System.out.println(activeInstances.size() + " instances de processus arrêtées.");
+    }
+
 
     @Override
     public List<Task> getActiveTasksByAssignee(String username) {
