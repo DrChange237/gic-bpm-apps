@@ -32,6 +32,7 @@
         <bpmn:flowNodeRef>Gateway_0569ide</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_080hkki</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1e1vu8a</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0n0qjnh</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1gb5eel" name="N + 1">
         <bpmn:flowNodeRef>Activity_1p1a1e5</bpmn:flowNodeRef>
@@ -123,7 +124,7 @@
         <camunda:inputOutput>
           <camunda:outputParameter name="fifo">"1"</camunda:outputParameter>
         </camunda:inputOutput>
-        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidationDG" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_02e2dax</bpmn:incoming>
       <bpmn:outgoing>Flow_0a2j8yj</bpmn:outgoing>
@@ -234,7 +235,7 @@
     </bpmn:endEvent>
     <bpmn:userTask id="Apbt_daf" name="Approbation du DAF" camunda:candidateGroups="daf">
       <bpmn:extensionElements>
-        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1j6esps</bpmn:incoming>
       <bpmn:outgoing>Flow_1x5msuv</bpmn:outgoing>
@@ -357,7 +358,7 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="nbDays" label="Nombre de jours" type="long">
+          <camunda:formField id="nbDays" label="Nombre de nuitées" type="long">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="number" />
@@ -369,7 +370,7 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="choice" />
               <camunda:property id="required" value="true" />
-              <camunda:property id="choices" value="[     {&#34;label&#34;:&#34;Véhicule de Service&#34;,&#34;value&#34;:&#34;SERVICE&#34;},     {&#34;label&#34;:&#34;Transport en Commun&#34;,&#34;value&#34;:&#34;COMMON&#34;} ]" />
+              <camunda:property id="choices" value="[     {&#34;label&#34;:&#34;Véhicule de Service&#34;,&#34;value&#34;:&#34;SERVICE&#34;},     {&#34;label&#34;:&#34;Transport en Commun&#34;,&#34;value&#34;:&#34;COMMUN&#34;} ]" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="immatriculation" label="Immatriculation du véhicule" type="string">
@@ -427,6 +428,14 @@
       <bpmn:incoming>Flow_17cn2qn</bpmn:incoming>
       <bpmn:outgoing>Flow_0im6ec1</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:boundaryEvent id="Event_0n0qjnh" attachedToRef="Apbt_n2">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${daylyRemindTaskListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0js1h9v">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">R/PT1M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0omaou6">
@@ -548,6 +557,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0btqrev_di" bpmnElement="Apbt_DGA">
         <dc:Bounds x="1620" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bglle8_di" bpmnElement="Event_0n0qjnh">
+        <dc:Bounds x="1102" y="602" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0a2j8yj_di" bpmnElement="Flow_0a2j8yj">
         <di:waypoint x="2150" y="320" />

@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.Task;
 
 import java.util.List;
@@ -41,6 +42,8 @@ public interface CamundaService {
     List<HistoricTaskInstance> getHistoricTasksForProcessInstance(String processInstanceId);
 
     List<HistoricActivityInstance> getHistoricActivityInstances(String processInstanceId);
+
+    List<IdentityLink> getTaskCandidates(String taskId);
 
     List<HistoricTaskInstance> getExecutedTasksForProcessInstance(String processInstanceId);
 
@@ -93,6 +96,8 @@ public interface CamundaService {
     void stopAllActiveProcessInstances();
 
     List<Task> getActiveTasksByAssignee(String username);
+
+    List<Task> getActiveTasksByInstance(String processInstanceId);
 
     List<Task> getTasksAssignedToUserWithStatus(String userId, ApprovalStatus status);
 

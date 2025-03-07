@@ -61,6 +61,6 @@ public class WorkDayCalculator {
 
     private static boolean isWeekday(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
+        return  dayOfWeek != DayOfWeek.SUNDAY;
     }
 }

@@ -94,7 +94,7 @@ public class FormValidationController {
                     throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
                 }
             }
-            camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+            //camundaService.claimTask(task.getId(), employeeInfo.getUsername());
             model.addAttribute("name", task.getName());
 
             return "commentForm";

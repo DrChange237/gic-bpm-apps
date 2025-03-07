@@ -32,4 +32,6 @@ public interface ApprovalService {
     AppServiceResult<List<ApprovalListDto>> getAllApprobations(HttpServletRequest req);
 
     AppServiceResult<ApprovalListDto> getApprovalDetail(String id);
+
+    AppServiceResult<?> relanceApprobation(String taskId);
 }

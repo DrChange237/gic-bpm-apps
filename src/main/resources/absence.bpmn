@@ -132,7 +132,7 @@
     <bpmn:userTask id="Apbt_DG" name="Approbation de la Direction Générale" camunda:candidateGroups="direction_general">
       <bpmn:extensionElements>
         <camunda:formData />
-        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ni90o8</bpmn:incoming>
       <bpmn:outgoing>Flow_1b6j7sy</bpmn:outgoing>

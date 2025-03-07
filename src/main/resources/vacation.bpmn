@@ -150,6 +150,9 @@
               <camunda:property id="type" value="table" />
               <camunda:property id="required" value="true" />
             </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="maxlength" config="5000" />
+            </camunda:validation>
           </camunda:formField>
           <camunda:formField id="mainWork" label="Principales Responsabilités" type="string" defaultValue="&#60;figure class=&#34;table&#34;&#62;&#60;table style=&#34;;&#34;&#62;&#60;tbody&#62;&#60;tr&#62;&#60;td style=&#34;background-color:#E6E6E6;border:1.0pt solid windowtext;height:16.45pt;padding:0cm 3.5pt;width:545.8pt;&#34; colspan=&#34;3&#34;&#62;&#60;p style=&#34;text-align:center;&#34;&#62;&#60;strong&#62;RESPONSABILITES PRINCIPALES&#60;/strong&#62;&#60;/p&#62;&#60;/td&#62;&#60;/tr&#62;&#60;tr&#62;&#60;td style=&#34;background-color:#E6E6E6;border-bottom-style:solid;border-color:windowtext;border-left-style:solid;border-right-style:solid;border-top-style:none;border-width:1.0pt;height:14.8pt;padding:0cm 3.5pt;width:112.8pt;&#34;&#62;&#60;p style=&#34;text-align:center;&#34;&#62;&#60;strong&#62;Domaines&#60;/strong&#62;&#60;/p&#62;&#60;/td&#62;&#60;td style=&#34;background-color:#E6E6E6;border-bottom:1.0pt solid windowtext;border-left-style:none;border-right:1.0pt solid windowtext;border-top-style:none;height:14.8pt;padding:0cm 3.5pt;width:204.0pt;&#34;&#62;&#60;p style=&#34;text-align:center;&#34;&#62;&#60;strong&#62;Actions &#38;amp; Délais de transmission&#60;/strong&#62;&#60;/p&#62;&#60;/td&#62;&#60;td style=&#34;background-color:#E6E6E6;border-bottom:1.0pt solid windowtext;border-left-style:none;border-right:1.0pt solid windowtext;border-top-style:none;height:14.8pt;padding:0cm 3.5pt;width:229.0pt;&#34;&#62;&#60;p style=&#34;text-align:center;&#34;&#62;&#60;strong&#62;Interlocuteur(s) clé/Destinataires&#60;/strong&#62;&#60;/p&#62;&#60;/td&#62;&#60;/tr&#62;&#60;tr&#62;&#60;td style=&#34;border-bottom-style:solid;border-color:windowtext;border-left-style:solid;border-right-style:solid;border-top-style:none;border-width:1.0pt;height:10.65pt;padding:0cm 3.5pt;width:112.8pt;&#34;&#62;&#38;nbsp;&#60;/td&#62;&#60;td style=&#34;border-bottom:1.0pt solid windowtext;border-left-style:none;border-right:1.0pt solid windowtext;border-top-style:none;height:10.65pt;padding:0cm 3.5pt;width:204.0pt;&#34;&#62;&#38;nbsp;&#60;/td&#62;&#60;td style=&#34;border-bottom:1.0pt solid windowtext;border-left-style:none;border-right:1.0pt solid windowtext;border-top-style:none;height:10.65pt;padding:0cm 3.5pt;width:229.0pt;&#34;&#62;&#60;p&#62;&#38;nbsp;&#60;/p&#62;&#60;p&#62;&#38;nbsp;&#60;/p&#62;&#60;/td&#62;&#60;/tr&#62;&#60;tr&#62;&#60;td style=&#34;border-bottom-style:solid;border-color:windowtext;border-left-style:solid;border-right-style:solid;border-top-style:none;border-width:1.0pt;height:3.95pt;padding:0cm 3.5pt;width:112.8pt;&#34;&#62;&#38;nbsp;&#60;/td&#62;&#60;td style=&#34;border-bottom:1.0pt solid windowtext;border-left-style:none;border-right:1.0pt solid windowtext;border-top-style:none;height:3.95pt;padding:0cm 3.5pt;width:204.0pt;&#34;&#62;&#38;nbsp;&#60;/td&#62;&#60;td style=&#34;border-bottom:1.0pt solid windowtext;border-left-style:none;border-right:1.0pt solid windowtext;border-top-style:none;height:3.95pt;padding:0cm 3.5pt;width:229.0pt;&#34;&#62;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#38;nbsp;&#38;nbsp; &#38;nbsp;&#60;/td&#62;&#60;/tr&#62;&#60;/tbody&#62;&#60;/table&#62;&#60;/figure&#62;">
             <camunda:properties>
@@ -157,6 +160,9 @@
               <camunda:property id="type" value="table" />
               <camunda:property id="required" value="true" />
             </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="maxlength" config="5000" />
+            </camunda:validation>
           </camunda:formField>
           <camunda:formField id="Apbt_interimaire" label="Intérimaire" type="string">
             <camunda:properties>
@@ -276,7 +282,7 @@
         </camunda:formData>
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDGListener" event="create" id="ApbtDG" />
         <camunda:executionListener delegateExpression="${validateVacationListener}" event="end" />
-        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0oios1b</bpmn:incoming>
       <bpmn:outgoing>Flow_0dcx7cz</bpmn:outgoing>
@@ -285,7 +291,7 @@
     <bpmn:userTask id="Apbt_daf" name="Approbation du DAF" camunda:candidateGroups="daf">
       <bpmn:extensionElements>
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDAFListener" event="create" id="ApbtDAF" />
-        <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1adbvqz</bpmn:incoming>
       <bpmn:outgoing>Flow_0dlrepe</bpmn:outgoing>

@@ -2,6 +2,7 @@ package com.ccabank.memoservice.service.impl;
 
 import com.ccabank.memoservice.constant.AppError;
 import com.ccabank.memoservice.domain.AppServiceResult;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
 import com.ccabank.memoservice.dto.memo.*;
 import com.ccabank.memoservice.dto.user.EmployeeInfo;
 import com.ccabank.memoservice.entity.*;
@@ -15,11 +16,14 @@ import com.ccabank.memoservice.util.camunda.Mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
+import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
 
@@ -67,6 +72,15 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Autowired
     private UserRestClient userRestClient;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private IdentityService identityService;
+
+    @Autowired
+    private MapService mapService;
 
 
     @Override
@@ -171,7 +185,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                     //throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
                 }
             }
+
             camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+
         }
 
         AcceptedApprovalDto acceptedApprovalDto = new AcceptedApprovalDto();
@@ -628,5 +644,85 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         }
         return new AppServiceResult<List<ApprovalDto>>(true, 0, "Succeed!", result);
+    }
+
+    @Override
+    public AppServiceResult<?> relanceApprobation(String taskId){
+
+        Task delegateTask = camundaService.getTaskDetails(taskId);
+
+
+        System.out.println("SendEmailForValidation Task Listener");
+        List<String> candidateUsers = getCandidateUserIds(delegateTask);
+        EmailAskApprovalDto ask = new EmailAskApprovalDto();
+
+        String processDefinitionId = delegateTask.getProcessDefinitionId();
+        ProcessDefinition definition = camundaService.getProcessDefinition(processDefinitionId);
+
+        Request request = requestRepository.findByInstanceId(delegateTask.getProcessInstanceId());
+        ask.setType(request.getType().getName());
+
+        String owner = request.getStaff();
+        System.out.println("Owner :" + owner);
+        String reference = request.getReference();
+        ask.setSender(owner);
+        ask.setReference(reference);
+
+        ask.setSubject("[Action Requise] Relance Approbation de  - " + definition.getName());
+        ask.setRole(delegateTask.getName());
+
+        StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+
+        System.out.println("Recupération des Champs");
+        List<FieldDto> fields = Mapping.getFieldFromFormField(formData, variables);
+
+        System.out.println("Recupération des Approbations");
+        List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+        List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(histories);
+
+        System.out.println(candidateUsers);
+
+        for (String user : candidateUsers) {
+
+            System.out.println("Envoi de mail a " + user);
+            ApprovalListDto approvalDto = this.mapOneTaskToApprovalDto(delegateTask, 0);
+            ask.setApprover(user);
+
+            if(approvalDto.getFields().isEmpty()){
+                ApprovalKey approvalKey = new ApprovalKey();
+                approvalKey.setUsername(user);
+                approvalKey.setTaskId(delegateTask.getId());
+                approvalKey.setReference(request.getReference());
+                approvalKeyRepository.save(approvalKey);
+                emailService.sendForValidation(approvalKey, ask, fields, approvalDtos);
+            }else{
+                emailService.sendAskApproval(ask);
+            }
+
+        }
+        return new AppServiceResult<>(true, 0, "Succeed!", null);
+    }
+
+    public List<String> getCandidateUserIds(Task delegateTask) {
+        List<IdentityLink> candidates = camundaService.getTaskCandidates(delegateTask.getId());
+        Set<String> userIds = new HashSet<>();
+
+        // Récupération des userIds des utilisateurs
+        for (IdentityLink link : candidates) {
+            if (link.getUserId() != null) {
+                userIds.add(link.getUserId());
+            } else if (link.getGroupId() != null) {
+                // Ajout des utilisateurs du groupe
+                List<User> groupMembers = identityService.createUserQuery()
+                        .memberOfGroup(link.getGroupId())
+                        .list();
+                userIds.addAll(groupMembers.stream()
+                        .map(User::getId)
+                        .collect(Collectors.toSet()));
+            }
+        }
+
+        return List.copyOf(userIds);
     }
 }

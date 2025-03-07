@@ -35,12 +35,15 @@ public class CalculDaysListener implements ExecutionListener {
         String reason = (String) delegateExecution.getVariable("reason");
         ReasonAbsence absenceReason = ReasonAbsence.valueOf(reason);
 
-        int nbDays = WorkDayCalculator.calculateNights(startDate, endDate);
+        int nbDays = (int) WorkDayCalculator.calculateWorkdays(startDate, endDate);
+
+        delegateExecution.setVariable("nbDays", nbDays);
+
 
         if(!absenceReason.equals(ReasonAbsence.OTHER)){
             Long plusDays = (Long) delegateExecution.getVariable("plusDays");
             nbDays = absenceReason.getNbDays() + plusDays.intValue();
-            endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays);
+            endDate = WorkDayCalculator.addBusinessDays(startDate,  nbDays);
             delegateExecution.setVariable("endDate", endDate);
         }
 

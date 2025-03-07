@@ -57,9 +57,6 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         return null;
-       /* EmployeeInfo employeeInfo = getCurrentUserInfo();
-
-        return employeeInfo;*/
 
     }
 

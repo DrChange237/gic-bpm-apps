@@ -66,6 +66,15 @@ public class ApprovalController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @GetMapping("/approval/follow-up")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
+    public ResponseEntity<?> followUp(@RequestParam(value = "id") String id) {
+        AppServiceResult<?> result = approvalService.relanceApprobation(id);
+        return result.isSuccess() ? ResponseEntity.ok(result.getData())
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
     @GetMapping("/approval/getApprovalByStaffAndStatus")
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PreAuthorize(Authority.IS_AUTHENTICATED)

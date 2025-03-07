@@ -161,6 +161,8 @@ public class SendAbsence implements JavaDelegate {
 
         Long advice = (Long) delegateExecution.getVariable("advice");
         form.setAdvice(advice.doubleValue());
+        form.setDays(advice.intValue());
+
 
         Long rights = (Long) delegateExecution.getVariable("rights");
         form.setRights(rights.doubleValue());

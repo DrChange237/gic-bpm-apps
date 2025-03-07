@@ -328,7 +328,7 @@ public class RequestServiceImpl implements RequestService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
+            logger.error(MEMO_SERVICE + " getRequestAll : Exception {}", e.getMessage());
             return new AppServiceResult<List<RequestInfo>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }

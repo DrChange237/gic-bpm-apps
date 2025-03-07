@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
@@ -75,7 +76,14 @@ public class EmailServiceImpl implements EmailService {
                 if(field.getValue() != null){
                     if(field.getType().equals(FieldTypeConstant.FILE)){
                         htmlContent.append("<li><strong>").append(field.getName()).append(":</strong> <a href=").append(field.getValue()).append("> Télécharger ").append(" </a> </li>");
-                    }else{
+                    }if(field.getType().equals(FieldTypeConstant.DATE)){
+                        // Définir le format souhaité
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        // Formater la date en chaîne
+                        String formattedDate = formatter.format(field.getValue());
+                        htmlContent.append("<li><strong>").append(field.getName()).append(":</strong> ").append(formattedDate).append("</li>");
+                    }
+                    else{
                         htmlContent.append("<li><strong>").append(field.getName()).append(":</strong> ").append(field.getValue()).append("</li>");
                     }
                 }
@@ -171,12 +179,12 @@ public class EmailServiceImpl implements EmailService {
             System.out.println("sendAskApproval-------------------------------------------------------------------------------------");
 
             UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
-            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
+            UserRestDto approve = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
 
-            System.out.println("Email :" + approver.getEmail());
+            System.out.println("Email :" + approve.getEmail());
             EmailDto emailDto = new EmailDto();
 
-            emailDto.setTo(approver.getEmail());
+            emailDto.setTo(approve.getEmail());
             emailDto.setCc(sender.getEmail());
             emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject(ask.getSubject());
@@ -189,7 +197,7 @@ public class EmailServiceImpl implements EmailService {
                     "    <tr>\n" +
                     "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center\"><strong>Demande d'approbation - <span>" + ask.getType() + "</span> </strong></div>\n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ approver.getName() +"</span>, <br>  Une demande d'approbation de document à été initié et est en attente</div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ approve.getName() +"</span>, <br>  Une demande d'approbation de document à été initié et est en attente</div>\n" +
                     "            \n" +
                     "            \n" +
                     "            <table align=\"center\"  cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: auto; word-break: break-all;\" role=\"presentation\">\n" +

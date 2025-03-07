@@ -167,6 +167,13 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public List<IdentityLink> getTaskCandidates(String taskId) {
+        // Récupérer les liens d'identité pour la tâche donnée
+        List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+        return identityLinks;
+    }
+
+    @Override
     public List<HistoricTaskInstance> getExecutedTasksForProcessInstance(String processInstanceId) {
         // Créer une requête pour récupérer les instances de tâches historiques associées à une instance de processus
         HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
@@ -555,6 +562,14 @@ public class CamundaServiceImpl implements CamundaService {
     public List<Task> getActiveTasksByAssignee(String username) {
         return taskService.createTaskQuery()
                 .taskAssignee(username) // Filtrer par utilisateur assigné
+                .active() // Récupérer uniquement les tâches actives
+                .list(); // Exécuter la requête et retourner la liste
+    }
+
+    @Override
+    public List<Task> getActiveTasksByInstance(String processInstanceId) {
+        return taskService.createTaskQuery()
+                .processInstanceId(processInstanceId)
                 .active() // Récupérer uniquement les tâches actives
                 .list(); // Exécuter la requête et retourner la liste
     }
