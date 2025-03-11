@@ -21,6 +21,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     Request findOneByReference(String reference);
 
+    List<Request> findByOrderByLastModificationDesc();
+
 
     List<Request> findByStaffAndArchivedOrderByLastModificationDesc(String staff, boolean archived);
 

@@ -23,7 +23,6 @@ public class RemindTask {
     private final ApprovalService approvalService;
     private final CamundaService camundaService;
 
-   // @Scheduled(cron = "0 0 9,12,15 * * 1-6")
     @Scheduled(cron = "0 0 8 * * 1-6")
     public void remindStaffForValidationTask() {
         log.info("Remind tasks for validation :: Execution Time - {} ", new Date());

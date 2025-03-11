@@ -31,4 +31,6 @@ public interface RequestService {
     AppServiceResult<List<RequestInfo>> getRequestByStaff(String staff, String status);
 
     AppServiceResult<List<RequestInfo>> getRequestAll(HttpServletRequest req);
+
+    AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req);
 }

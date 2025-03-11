@@ -108,5 +108,13 @@ public class RequestController {
         return ResponseEntity.ok(result.getData());
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @GetMapping("/request/getHistory")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
+    public ResponseEntity<?> getHistory(HttpServletRequest request) {
+        AppServiceResult<List<RequestInfo>> result = requestService.getRequestHistory(request);
+        return ResponseEntity.ok(result.getData());
+    }
+
 
 }

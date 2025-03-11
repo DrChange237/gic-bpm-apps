@@ -9,7 +9,6 @@ import com.ccabank.memoservice.exception.BadRequestException;
 import com.ccabank.memoservice.mappers.RequestMapper;
 import com.ccabank.memoservice.repository.*;
 import com.ccabank.memoservice.service.faces.*;
-import com.ccabank.memoservice.util.DateUtil;
 import com.ccabank.memoservice.util.camunda.Mapping;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -329,6 +327,23 @@ public class RequestServiceImpl implements RequestService {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " getRequestAll : Exception {}", e.getMessage());
+            return new AppServiceResult<List<RequestInfo>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+
+        }
+    }
+
+    @Override
+    public AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req) {
+        try {
+
+            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            System.out.println("UserName Employe" + employeeInfo.getUsername());
+            List<Request> requests = requestRepository.findByOrderByLastModificationDesc();
+            return getConvertedResult(requests, "getRequestHistory ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " getRequestHistory : Exception {}", e.getMessage());
             return new AppServiceResult<List<RequestInfo>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
