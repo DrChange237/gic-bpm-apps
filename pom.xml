@@ -447,7 +447,7 @@
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
     </properties>
 
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <repositories>
         <repository>
