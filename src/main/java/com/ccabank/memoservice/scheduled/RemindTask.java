@@ -33,4 +33,14 @@ public class RemindTask {
         }
     }
 
+    @Scheduled(cron = "* /5 * * * 1-6")
+    public void remindStaffForDueDateTask() {
+        log.info("Remind tasks for due date :: Execution Time - {} ", new Date());
+        List<Task> tasks = new ArrayList<>();
+        tasks = camundaService.getAllTasksForUser();
+        for (Task task : tasks) {
+            approvalService.relanceForDueDate(task.getId());
+        }
+    }
+
 }

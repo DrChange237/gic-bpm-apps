@@ -34,4 +34,6 @@ public interface ApprovalService {
     AppServiceResult<ApprovalListDto> getApprovalDetail(String id);
 
     AppServiceResult<?> relanceApprobation(String taskId);
+
+    AppServiceResult<?> relanceForDueDate(String taskId);
 }

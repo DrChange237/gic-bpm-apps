@@ -39,6 +39,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ccabank.memoservice.constant.BeanIdConstant.MEMO_SERVICE;
+import static com.ccabank.memoservice.util.DateUtil.isDatePassed;
 
 @Service
 public class ApprovalServiceImpl implements ApprovalService {
@@ -701,6 +702,65 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
 
         }
+        return new AppServiceResult<>(true, 0, "Succeed!", null);
+    }
+
+    @Override
+    public AppServiceResult<?> relanceForDueDate(String taskId){
+
+        Task delegateTask = camundaService.getTaskDetails(taskId);
+
+
+        System.out.println("relanceForDueDate Task Listener");
+        List<String> candidateUsers = getCandidateUserIds(delegateTask);
+        EmailAskApprovalDto ask = new EmailAskApprovalDto();
+        String processDefinitionId = delegateTask.getProcessDefinitionId();
+        ProcessDefinition definition = camundaService.getProcessDefinition(processDefinitionId);
+        Request request = requestRepository.findByInstanceId(delegateTask.getProcessInstanceId());
+        ask.setType(request.getType().getName());
+        String reference = request.getReference();
+        ask.setReference(reference);
+
+        ask.setSubject("[Action Requise] Relance Approbation de  - " + definition.getName());
+        ask.setRole(delegateTask.getName());
+
+        StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+
+        System.out.println("Recupération des Champs");
+        List<FieldDto> fields = Mapping.getFieldFromFormField(formData, variables);
+
+        System.out.println("Recupération des Approbations");
+        List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+        List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(histories);
+
+        System.out.println(candidateUsers);
+
+        if(delegateTask.getDueDate() != null){
+            if (isDatePassed(delegateTask.getDueDate())) {
+                for (String user : candidateUsers) {
+                    System.out.println("Envoi de mail a " + user);
+                    ask.setApprover(user);
+                    EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(user);
+                    ask.setSender(employeeInfo.getSupervisor().getUsername());
+                    ApprovalListDto approvalDto = this.mapOneTaskToApprovalDto(delegateTask, 0);
+
+                    if(approvalDto.getFields().isEmpty()){
+                        ApprovalKey approvalKey = new ApprovalKey();
+                        approvalKey.setUsername(user);
+                        approvalKey.setTaskId(delegateTask.getId());
+                        approvalKey.setReference(request.getReference());
+                        approvalKeyRepository.save(approvalKey);
+                        emailService.sendForValidation(approvalKey, ask, fields, approvalDtos);
+                    }else{
+                        emailService.sendAskApproval(ask);
+                    }
+
+                    emailService.sendAskApproval(ask);
+                }
+            }
+        }
+
         return new AppServiceResult<>(true, 0, "Succeed!", null);
     }
 

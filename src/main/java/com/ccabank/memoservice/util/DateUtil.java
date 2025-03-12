@@ -11,6 +11,11 @@ import java.util.Date;
 
 public class DateUtil {
 
+    public static boolean isDatePassed(Date date) {
+        Instant instant = date.toInstant();
+        return instant.isBefore(Instant.now());
+    }
+
     public static LocalDateTime convertDateToLocalDateTime(Date date) {
         Instant instant = date.toInstant();
         return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
