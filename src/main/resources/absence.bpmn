@@ -49,7 +49,7 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="choice" />
               <camunda:property id="required" value="true" />
-              <camunda:property id="choices" value="[   {&#34;label&#34;:&#34;Mariage (5 Jours)&#34;,&#34;value&#34;:&#34;MARIAGE&#34;},          {&#34;label&#34;:&#34;Accouchement de l&#39;épouse (3 Jours)&#34;,&#34;value&#34;:&#34;CHILDBIRTH&#34;},          {&#34;label&#34;:&#34;Baptème d&#39;un enfant (2 Jours)&#34;,&#34;value&#34;:&#34;BAPTEME&#34;},          {&#34;label&#34;:&#34;Première communion d&#39;un enfant (1 Jour)&#34;,&#34;value&#34;:&#34;COMMUNION&#34;},          {&#34;label&#34;:&#34;Mariage d&#39;un enfant (2 Jours)&#34;,&#34;value&#34;:&#34;MARIAGE_CHILD&#34;},          {&#34;label&#34;:&#34;Déces Conjoint (5 Jours)&#34;,&#34;value&#34;:&#34;DEATH_SPOUSE&#34;},          {&#34;label&#34;:&#34;Déces d&#39;un enfant (3 Jours)&#34;,&#34;value&#34;:&#34;DEATH_CHILD&#34;},          {&#34;label&#34;:&#34;Déces d&#39;un parent (3 Jours)&#34;,&#34;value&#34;:&#34;DEATH_PARENT&#34;},          {&#34;label&#34;:&#34;Déces d&#39;un frère ou d&#39;une soeur (2 Jours)&#34;,&#34;value&#34;:&#34;DEATH_BROTHER&#34;},       {&#34;label&#34;:&#34;Déménagement Travailleur (2 Jours)&#34;,&#34;value&#34;:&#34;MOVING&#34;},         {&#34;label&#34;:&#34;Autres (A Préciser)&#34;,&#34;value&#34;:&#34;OTHER&#34;}  ]" />
+              <camunda:property id="choices" value="[   {&#34;label&#34;:&#34;Mariage (5 Jours)&#34;,&#34;value&#34;:&#34;MARIAGE&#34;},          {&#34;label&#34;:&#34;Accouchement de l&#39;épouse (3 Jours)&#34;,&#34;value&#34;:&#34;ACCOUCHEMENT&#34;},          {&#34;label&#34;:&#34;Baptème d&#39;un enfant (2 Jours)&#34;,&#34;value&#34;:&#34;BAPTEME&#34;},          {&#34;label&#34;:&#34;Première communion d&#39;un enfant (1 Jour)&#34;,&#34;value&#34;:&#34;COMMUNION&#34;},          {&#34;label&#34;:&#34;Mariage d&#39;un enfant (2 Jours)&#34;,&#34;value&#34;:&#34;MARIAGE_ENFANT&#34;},          {&#34;label&#34;:&#34;Déces Conjoint (5 Jours)&#34;,&#34;value&#34;:&#34;DECES_CONJOINT&#34;},          {&#34;label&#34;:&#34;Déces d&#39;un enfant (3 Jours)&#34;,&#34;value&#34;:&#34;DECES_ENFANT&#34;},          {&#34;label&#34;:&#34;Déces d&#39;un parent (3 Jours)&#34;,&#34;value&#34;:&#34;DECES_PARENT&#34;},          {&#34;label&#34;:&#34;Déces d&#39;un frère ou d&#39;une soeur (2 Jours)&#34;,&#34;value&#34;:&#34;DECES_FRERE&#34;},       {&#34;label&#34;:&#34;Déménagement Travailleur (2 Jours)&#34;,&#34;value&#34;:&#34;DEMENAGEMENT&#34;},         {&#34;label&#34;:&#34;Autres (A Préciser)&#34;,&#34;value&#34;:&#34;OTHER&#34;}  ]" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="endDate" label="Date de reprise de Service" type="date">
@@ -292,7 +292,7 @@
       <bpmn:incoming>Flow_0nginhu</bpmn:incoming>
       <bpmn:outgoing>Flow_1h84a7b</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Apbt_n1" name="Approbation Signataire 1">
+    <bpmn:userTask id="Apbt_n1" name="Approbation Signataire 1" camunda:dueDate="${dateTime().plusDays(1).toDate()}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
