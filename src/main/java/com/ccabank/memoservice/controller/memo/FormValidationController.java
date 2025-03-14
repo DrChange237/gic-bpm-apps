@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +46,8 @@ public class FormValidationController {
     @Autowired
     private ApprovalService approvalService;
 
-
-    private final static String api = "https://developer.ccabank-app.com/sandbox/api/paperless/" ;
+    @Value("${base_url}")
+    private String api ;
 
 
     @GetMapping("/empty")

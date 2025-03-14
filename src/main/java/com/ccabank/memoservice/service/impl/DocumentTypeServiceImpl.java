@@ -39,7 +39,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Override
     public AppServiceResult<List<DocumentTypeDto>> getDocumentTypes() {
         try {
-            List<DocumentType> documentTypes = documentTypeRepository.findAll();
+            List<DocumentType> documentTypes = documentTypeRepository.findByVisible(true);
             List<DocumentTypeDto> documentsDto = new ArrayList<>();
 
             for(DocumentType type : documentTypes){
