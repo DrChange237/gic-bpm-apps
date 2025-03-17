@@ -167,6 +167,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     public AppServiceResult<?> decisionViaEmail(String key, String TaskId, boolean decision, String comment)  {
 
         ApprovalKey approvalKey = approvalKeyRepository.getOne(key);
+
         if(approvalKey == null){
             throw new NotFoundException("Approval key not found");
         }
@@ -210,7 +211,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         boolean signature = securityService.checkUserSignature(assignee);
         if(!signature){
-            //throw new BadRequestException("l'utilisateur " + assignee + " n'a pas de signature");
+            throw new BadRequestException("l'utilisateur " + assignee + " n'a pas de signature");
         }
 
         logger.info(MEMO_SERVICE + "approve : methode invocation");
