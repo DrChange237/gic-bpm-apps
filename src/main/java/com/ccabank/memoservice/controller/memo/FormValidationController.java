@@ -114,12 +114,15 @@ public class FormValidationController {
     public String decisionAccept(Model model,@RequestParam("key") String key, @RequestParam("taskId") String taskId,  @RequestParam("reference") String reference) {
 
         ApprovalKey approvalKey = approvalKeyRepository.getOne(key);
+
         if(approvalKey == null){
-            throw new NotFoundException("Approval key not found");
+            model.addAttribute("error", "Approval key not found");
+            return "error";
         }
 
         if(!approvalKey.getTaskId().equals(taskId)){
-            throw new NotAuthorizedException("Approval key doesn't match");
+            model.addAttribute("error", "Approval key doesn't match");
+            return "error";
         }
 
         EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(approvalKey.getUsername());
@@ -139,12 +142,18 @@ public class FormValidationController {
             camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
             if(task.getAssignee() != null){
                 if(!task.getAssignee().equals(employeeInfo.getUsername())){
-                    throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
+                    model.addAttribute("error", "Vous n'etes pas autorisé à complete cette tâche");
+                    return "error";
                 }
             }
             camundaService.claimTask(task.getId(), employeeInfo.getUsername());
             model.addAttribute("name", task.getName());
-            approvalService.decisionViaEmail(key, taskId, true, "");
+            try {
+                approvalService.decisionViaEmail(key, taskId, true, "");
+            }catch (Exception e){
+                model.addAttribute("error", e.getMessage());
+                return "error";
+            }
             return "success";
         }
 
