@@ -120,16 +120,16 @@ public class SendVacation implements JavaDelegate {
             String supervisorId = (String) delegateExecution.getVariable("Apbt_n1");
             EmployeeInfo supervisorInfo =  userRestClient.getStaffByUsername(supervisorId);
             supervisor.setName(supervisorInfo.getFirstName() + " " + supervisorInfo.getLastName());
-            signature = userRestClient.getEmployeeSignature(supervisorId);
-            supervisor.setSignature(signature);
+            /*signature = userRestClient.getEmployeeSignature(supervisorId);
+            supervisor.setSignature(signature);*/
             form.setSupervisor(supervisor);
 
             supervisor = new VacationForm.Signatory();
             supervisorId = (String) delegateExecution.getVariable("Apbt_n2");
             EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
             supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
-            signature = userRestClient.getEmployeeSignature(supervisorId);
-            supervisor.setSignature(signature);
+            /*signature = userRestClient.getEmployeeSignature(supervisorId);
+            supervisor.setSignature(signature);*/
             form.setSupervisorNext(supervisor);
 
 
@@ -180,7 +180,7 @@ public class SendVacation implements JavaDelegate {
 
             String respCA = (String) delegateExecution.getVariable("Apbt_ca_validation");
             EmployeeInfo respCAInfo = userRestClient.getStaffByUsername(respCA);
-            signature = userRestClient.getEmployeeSignature(respCA);
+            /*signature = userRestClient.getEmployeeSignature(respCA);*/
 
             VacationDecision.Signatory signatory = new VacationDecision.Signatory();
             signatory.setSignature(signature);
