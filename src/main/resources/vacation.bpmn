@@ -182,6 +182,14 @@
               <camunda:property id="required" value="false" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="complementary_p" label="Congés Complémentaires ?" type="boolean" defaultValue="false">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="required" value="false" />
+              <camunda:property id="type" value="choice" />
+              <camunda:property id="choices" value="[        {&#34;label&#34;:&#34;Oui&#34;,&#34;value&#34;: true},               {&#34;label&#34;:&#34;Non&#34;,&#34;value&#34;: false}   ]" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener class="com.ccabank.memoservice.process.vacation.StartEventListener" event="end" />
       </bpmn:extensionElements>

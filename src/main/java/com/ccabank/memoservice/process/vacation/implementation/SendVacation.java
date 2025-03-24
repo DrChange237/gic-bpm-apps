@@ -171,6 +171,13 @@ public class SendVacation implements JavaDelegate {
             Integer permDeduction = permDeductionLong.intValue();
             decision.setPermissions(permDeduction);
 
+            Long consumedVacationLong = (Long) delegateExecution.getVariable("consumedVacation");
+            Integer consumedVacation = consumedVacationLong.intValue();
+            decision.setConsumedVacation(consumedVacation);
+
+            Boolean complementary = (Boolean) delegateExecution.getVariable("complementary");
+            decision.setComplementary(complementary);
+
             String respCA = (String) delegateExecution.getVariable("Apbt_ca_validation");
             EmployeeInfo respCAInfo = userRestClient.getStaffByUsername(respCA);
             signature = userRestClient.getEmployeeSignature(respCA);
