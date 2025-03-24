@@ -211,7 +211,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         boolean signature = securityService.checkUserSignature(assignee);
         if(!signature){
-            throw new BadRequestException("l'utilisateur " + assignee + " n'a pas de signature");
+            //throw new BadRequestException("l'utilisateur " + assignee + " n'a pas de signature");
         }
 
         logger.info(MEMO_SERVICE + "approve : methode invocation");
