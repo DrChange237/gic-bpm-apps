@@ -56,7 +56,7 @@ public class WorkDayCalculator {
             }
             startDate = startDate.plusDays(1);
         }
-        return workdays;
+        return workdays - 1;
     }
 
     private static boolean isWeekday(LocalDate date) {
