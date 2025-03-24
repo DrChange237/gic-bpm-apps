@@ -23,7 +23,7 @@ public class RemindTask {
     private final ApprovalService approvalService;
     private final CamundaService camundaService;
 
-    @Scheduled(cron = "0 0 8 * * 1-6")
+    @Scheduled(cron = "0 0 8 * * 1-6", zone = "GMT+1")
     public void remindStaffForValidationTask() {
         log.info("Remind tasks for validation :: Execution Time - {} ", new Date());
         List<Task> tasks = new ArrayList<>();
@@ -33,7 +33,7 @@ public class RemindTask {
         }
     }
 
-    @Scheduled(cron = "0 0 15 * * 1-6")
+    @Scheduled(cron = "0 0 15 * * 1-6", zone = "GMT+1")
     public void remindStaffForDueDateTask() {
         log.info("Remind tasks for due date :: Execution Time - {} ", new Date());
         List<Task> tasks = new ArrayList<>();

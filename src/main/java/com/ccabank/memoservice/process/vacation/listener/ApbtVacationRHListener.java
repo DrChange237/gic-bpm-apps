@@ -36,5 +36,13 @@ public class ApbtVacationRHListener implements ExecutionListener {
 
         delegateExecution.setVariable("typeInterim" + "_choices" , typeInterim);
 
+        List<ChoiceDto> complementary = new ArrayList<>();
+
+        choice = new ChoiceDto("Oui", true);
+        complementary.add(choice);
+        choice = new ChoiceDto("Non", false);
+        complementary.add(choice);
+        delegateExecution.setVariable("complementary" + "_choices" , complementary);
+
     }
 }

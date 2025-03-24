@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.ccabank.memoservice.process.general.constant.EmailGroup.EMAIL_CAPITAL_HUMAIN;
+
 @Component
 public class SendVacation implements JavaDelegate {
 
@@ -187,7 +189,7 @@ public class SendVacation implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Demande de Congés Validées");
-            ask.setbCC(supervisorInfo.getEmail());
+            ask.setbCC(supervisorInfo.getEmail() + "," + EMAIL_CAPITAL_HUMAIN);
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("demande_congés" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
@@ -207,7 +209,7 @@ public class SendVacation implements JavaDelegate {
             fileDto.setType("application/pdf");
             fileService.saveFile(request, fileDto);
 
-            multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+            multipartFile = new CustomMultipartFile(decisionVacation.getByteArray(), attachment.getName(), "application/pdf");
 
             fileDto = new FileDto();
             fileDto.setAddDate(LocalDateTime.now());

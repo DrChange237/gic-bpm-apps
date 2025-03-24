@@ -50,6 +50,11 @@ public class VacationDecision {
     @Schema(description = "Nombre de jours total accordés", example = "30", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer providedVacation = 18;
 
+    private Boolean complementary = false;
+
+    @Schema(description = "Première partie du congé consommé", example = "0")
+    private Integer consumedVacation = 0;
+
     @Data
     @Schema(name = "Avis")
     public static class Signatory {

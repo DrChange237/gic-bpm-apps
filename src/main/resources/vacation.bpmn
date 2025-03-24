@@ -418,6 +418,13 @@
               <camunda:property id="choices" value="[     {&#34;label&#34;:&#34;Oui&#34;,&#34;value&#34;: &#34;CUMUL&#34;},     {&#34;label&#34;:&#34;Non&#34;,&#34;value&#34;: &#34;NON_CUMUL&#34;} ]" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="complementary" label="Congés Complémentaires ?" type="boolean" defaultValue="false">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="required" value="false" />
+              <camunda:property id="type" value="choice" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />

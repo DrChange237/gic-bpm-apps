@@ -132,7 +132,7 @@ public class SendResumptionToRH implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Fiche de Reprise de Service");
-            ask.setbCC(emailList + "," + EmailGroup.EMAIL_HABILITATION);
+            ask.setbCC(emailList + "," + EmailGroup.EMAIL_HABILITATION + "," + EmailGroup.EMAIL_CAPITAL_HUMAIN);
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("reprise_service" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
