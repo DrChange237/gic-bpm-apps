@@ -215,7 +215,7 @@ public class SendAbsence implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Autorisation d'absence");
-        ask.setbCC(Apbt_n1.getEmail() + "," + EmailGroup.EMAIL_HABILITATION + "," + EmailGroup.EMAIL_CAPITAL_HUMAIN);
+        ask.setbCC(Apbt_n1.getEmail() + ";" + EmailGroup.EMAIL_HABILITATION + ";" + EmailGroup.EMAIL_CAPITAL_HUMAIN);
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("absence" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

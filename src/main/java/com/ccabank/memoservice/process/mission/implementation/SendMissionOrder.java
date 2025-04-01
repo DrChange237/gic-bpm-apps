@@ -210,7 +210,7 @@ public class SendMissionOrder implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Ordre de Mission");
-        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail());
+        ask.setbCC(n1.getEmail() + ";" + n_uch.getEmail());
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("ordre_mission" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

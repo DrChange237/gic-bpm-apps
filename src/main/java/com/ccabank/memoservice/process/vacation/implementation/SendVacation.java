@@ -211,7 +211,7 @@ public class SendVacation implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Demande de Congés Validées");
-            ask.setbCC(supervisorInfo.getEmail() + "," + EMAIL_CAPITAL_HUMAIN);
+            ask.setbCC(supervisorInfo.getEmail() + ";" + EMAIL_CAPITAL_HUMAIN);
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("demande_congés" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
