@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
+@Profile("prod")
 public class RemindTask {
 
     private final ApprovalService approvalService;

@@ -44,6 +44,13 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
+           <camunda:formField id="days" label="Nombre de jours souhaité" type="long">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="number" />
+              <camunda:property id="required" value="false" />
+            </camunda:properties>
+          </camunda:formField>
           <camunda:formField id="reason" label="Motif de l&#39;absence" type="string">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
@@ -103,6 +110,7 @@
               <camunda:property id="required" value="false" />
             </camunda:properties>
           </camunda:formField>
+         
         </camunda:formData>
         <camunda:executionListener delegateExpression="${calculDaysListener}" event="end" />
       </bpmn:extensionElements>

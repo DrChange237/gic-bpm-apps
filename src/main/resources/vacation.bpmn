@@ -296,7 +296,7 @@
       <bpmn:outgoing>Flow_0dcx7cz</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0dlrepe" sourceRef="Apbt_daf" targetRef="Gateway_0l3we0m" />
-    <bpmn:userTask id="Apbt_daf" name="Approbation du DAF" camunda:candidateGroups="daf">
+    <bpmn:userTask id="Apbt_daf" name="Approbation du DCR" camunda:candidateGroups="dcr">
       <bpmn:extensionElements>
         <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDAFListener" event="create" id="ApbtDAF" />
         <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation" />
@@ -433,6 +433,13 @@
               <camunda:property id="type" value="choice" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="reprise_date" label="Date de Reprise" type="date">
+            <camunda:properties>
+              <camunda:property id="fieldType " value="field" />
+              <camunda:property id="type" value="date" />
+            </camunda:properties>
+            <camunda:validation />
+          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
@@ -556,6 +563,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1av85i5_di" bpmnElement="Apbt_daf">
         <dc:Bounds x="840" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0l3we0m_di" bpmnElement="Gateway_0l3we0m" isMarkerVisible="true">
         <dc:Bounds x="745" y="475" width="50" height="50" />

@@ -94,6 +94,16 @@ public class SendVacation implements JavaDelegate {
 
             form.setEndDate(endDate);
 
+            Date repriseDateD = (Date) delegateExecution.getVariable("reprise_date");
+            if(repriseDateD != null) {
+                    LocalDate repriseDate = repriseDateD.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
+
+                    form.setEndDate(repriseDate);
+
+            }
+
             Date lastVacationDateD = (Date) delegateExecution.getVariable("realLastVacationDate");
             LocalDate lastVacationDate = lastVacationDateD.toInstant()
                     .atZone(ZoneId.systemDefault())
@@ -139,7 +149,7 @@ public class SendVacation implements JavaDelegate {
             LocalDate currentDate = LocalDate.now();
             currentDate.format(formatter);
 
-            decision.setReference(currentDate.format(formatter) + "/DG/DGA/DAF/RCH/DAAS/CORH");
+            decision.setReference(currentDate.format(formatter) + "/DG/DGA/DAF/RCH/DAAS/CORH/" + request.getId());
 
             decision.setDate(LocalDate.now());
             decision.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
@@ -154,6 +164,11 @@ public class SendVacation implements JavaDelegate {
             Integer allocationDue = allocationDueLong.intValue();
             decision.setAllocation(allocationDue);
             decision.setPrincipalVacation(allocationDue);
+
+            Long daysLong = (Long) delegateExecution.getVariable("days");
+            Integer days = daysLong.intValue();
+            decision.setProvidedVacation(days);
+
 
             Long majAncieneteLong = (Long) delegateExecution.getVariable("majAncienete");
             Integer majAncienete = majAncieneteLong.intValue();
