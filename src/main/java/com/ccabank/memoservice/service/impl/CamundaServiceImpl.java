@@ -557,6 +557,12 @@ public class CamundaServiceImpl implements CamundaService {
         System.out.println(activeInstances.size() + " instances de processus arrêtées.");
     }
 
+    @Override
+    public void deleteProcessInstance(String processInstanceId) {
+        runtimeService.deleteProcessInstance(processInstanceId, "Stopped by admin"); // Motif d'arrêt
+        System.out.println(" instances de processus arrêtées.");
+    }
+
 
     @Override
     public List<Task> getActiveTasksByAssignee(String username) {

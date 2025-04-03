@@ -95,6 +95,8 @@ public interface CamundaService {
 
     void stopAllActiveProcessInstances();
 
+    void deleteProcessInstance(String processInstanceId);
+
     List<Task> getActiveTasksByAssignee(String username);
 
     List<Task> getActiveTasksByInstance(String processInstanceId);

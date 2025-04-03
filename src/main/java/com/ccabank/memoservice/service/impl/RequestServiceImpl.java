@@ -249,6 +249,27 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+    @Override
+    public AppServiceResult<RequestInfo> suspend(Long id) {
+        try {
+
+            Request request = requestRepository.getOne(id);
+
+            if(request.getStatus().equals(RequestStatus.ACCEPTED)){
+                throw new BadRequestException("Cette requete a déjà été validé");
+            }
+
+            camundaService.deleteProcessInstance(request.getInstanceId());
+
+            return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", null );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " suspend : Exception {}", e.getMessage());
+            return new AppServiceResult<RequestInfo>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        }
+    }
+
 
 
 

@@ -24,6 +24,8 @@ public interface RequestService {
 
     AppServiceResult<RequestInfo> details(Long id);
 
+    AppServiceResult<RequestInfo> suspend(Long id);
+
     AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto);
 
     AppServiceResult<RequestInfo> getRequestByReference(String reference);
