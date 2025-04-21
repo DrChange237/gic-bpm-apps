@@ -94,14 +94,13 @@ public class SendVacation implements JavaDelegate {
 
             form.setEndDate(endDate);
 
-            Date repriseDateD = (Date) delegateExecution.getVariable("reprise_date");
+            Date repriseDateD = (Date) delegateExecution.getVariable("repriseDate");
             if(repriseDateD != null) {
                     LocalDate repriseDate = repriseDateD.toInstant()
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate();
 
                     form.setEndDate(repriseDate);
-
             }
 
             Date lastVacationDateD = (Date) delegateExecution.getVariable("realLastVacationDate");
@@ -187,11 +186,14 @@ public class SendVacation implements JavaDelegate {
             decision.setPermissions(permDeduction);
 
             Long consumedVacationLong = (Long) delegateExecution.getVariable("consumedVacation");
-            Integer consumedVacation = consumedVacationLong.intValue();
-            decision.setConsumedVacation(consumedVacation);
+            if(consumedVacationLong != null){
+                    Integer consumedVacation = consumedVacationLong.intValue();
+                    decision.setConsumedVacation(consumedVacation);
+            }
 
-            Boolean complementary = (Boolean) delegateExecution.getVariable("complementary");
-            decision.setComplementary(complementary);
+
+            String complementary = (String) delegateExecution.getVariable("complementary");
+            decision.setComplementary(Boolean.valueOf(complementary));
 
             String respCA = (String) delegateExecution.getVariable("Apbt_ca_validation");
             EmployeeInfo respCAInfo = userRestClient.getStaffByUsername(respCA);

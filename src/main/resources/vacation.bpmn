@@ -431,12 +431,14 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="required" value="false" />
               <camunda:property id="type" value="choice" />
+              <camunda:property id="choices" value="[        {&#34;label&#34;:&#34;Oui&#34;,&#34;value&#34;: true},               {&#34;label&#34;:&#34;Non&#34;,&#34;value&#34;: false}   ]" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="reprise_date" label="Date de Reprise" type="date">
+          <camunda:formField id="repriseDate" label="Date de Reprise" type="date">
             <camunda:properties>
-              <camunda:property id="fieldType " value="field" />
+              <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="date" />
+              <camunda:property id="required" value="false" />
             </camunda:properties>
             <camunda:validation />
           </camunda:formField>
