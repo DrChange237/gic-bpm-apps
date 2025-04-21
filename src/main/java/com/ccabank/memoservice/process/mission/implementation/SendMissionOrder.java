@@ -97,6 +97,7 @@ public class SendMissionOrder implements JavaDelegate {
         Long nbDays = (Long) delegateExecution.getVariable("nbDays");
 
         missionForm.setMissionFees(missionFeesLong.doubleValue() * nbDays.intValue());
+
         if(nbDays.intValue()==0){
             missionForm.setMissionFees(missionFeesLong.doubleValue());
         }
