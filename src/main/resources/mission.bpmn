@@ -186,6 +186,13 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="nbDays" label="Nombre de Nuités" type="long">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="number" />
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener expression="${apbtMissionRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
