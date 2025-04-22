@@ -150,7 +150,7 @@ public class SendMissionOrder implements JavaDelegate {
             EmployeeInfo n2 =  userRestClient.getStaffByUsername(apbt_n2);
             MissionForm.Signatory supervisor2 = new MissionForm.Signatory();
             supervisor2.setDate(LocalDate.now());
-            supervisor2.setName(n2.getFirstName() + " " + n1.getLastName());
+            supervisor2.setName(n2.getFirstName() + " " + n2.getLastName());
             supervisor2.setFunction(Optional.ofNullable(n2.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             try{
                 signature = userRestClient.getEmployeeSignature(apbt_n2);
