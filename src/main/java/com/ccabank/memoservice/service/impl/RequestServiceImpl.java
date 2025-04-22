@@ -261,6 +261,10 @@ public class RequestServiceImpl implements RequestService {
 
             camundaService.deleteProcessInstance(request.getInstanceId());
 
+            request.setStatus(RequestStatus.SUSPENDED);
+
+            requestRepository.save(request);
+
             return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", null );
 
         } catch (Exception e) {
