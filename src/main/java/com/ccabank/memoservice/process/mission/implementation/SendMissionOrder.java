@@ -15,6 +15,7 @@ import com.ccabank.memoservice.openfeign.EmailRestClient;
 import com.ccabank.memoservice.openfeign.ReportingRestClient;
 import com.ccabank.memoservice.openfeign.UserRestClient;
 import com.ccabank.memoservice.process.general.constant.ApprobationLevel;
+import com.ccabank.memoservice.process.general.constant.EmailGroup;
 import com.ccabank.memoservice.process.general.service.RequestService;
 import com.ccabank.memoservice.process.mission.constant.TransportCommonConstant;
 import com.ccabank.memoservice.repository.RequestRepository;
@@ -214,7 +215,7 @@ public class SendMissionOrder implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Ordre de Mission");
-        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail());
+        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail() + "," + EmailGroup.EMAIL_CAPITAL_HUMAIN);
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("ordre_mission" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
