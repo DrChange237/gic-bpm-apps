@@ -86,7 +86,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Override
     public AppServiceResult<?> reassign(ReassignDto reassignDto)  {
-        try {
+
             Task task = camundaService.getTaskDetails(reassignDto.getIdApproval());
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
@@ -94,10 +94,6 @@ public class ApprovalServiceImpl implements ApprovalService {
             requestRepository.save(request);
             camundaService.assignTask(instanceId, task.getId(), reassignDto.getStaff());
             return new AppServiceResult<>(true, 0, "Succeed!", null);
-
-        } catch (Exception e) {
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-        }
     }
 
     @Override
