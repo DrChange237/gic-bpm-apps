@@ -621,7 +621,7 @@ public class CamundaServiceImpl implements CamundaService {
     public void assignTask(String processInstanceId, String taskId, String assignee) {
 
         // Vérifier que l'utilisateur et le groupe existent
-        UserCamunda user = userCamundaService.getUser(assignee);
+        /*UserCamunda user = userCamundaService.getUser(assignee);
         if (identityService.createUserQuery().userId(user.getId()).count() == 0) {
             userCamundaService.newUser(assignee);
             //throw new IllegalArgumentException("User with ID " + userId + " not found.");
@@ -629,7 +629,7 @@ public class CamundaServiceImpl implements CamundaService {
 
         if (taskService.createTaskQuery().taskId(taskId).singleResult() == null) {
             throw new IllegalArgumentException("Task not found with ID: " + taskId);
-        }
+        }*/
 
         // Réassigner la tâche à un nouvel utilisateur
         taskService.setAssignee(taskId, assignee);
