@@ -206,7 +206,7 @@
     </bpmn:userTask>
     <bpmn:userTask id="Apbt_director" name="Approbation Directeur">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.mission.listener.ApbtDirectorListener" event="create" id="Apbt_Director" />
+        <camunda:taskListener class="com.ccabank.paperless.process.mission.listener.ApbtDirectorListener" event="create" id="Apbt_Director" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1b5h6le</bpmn:incoming>
       <bpmn:outgoing>Flow_1sg8gq3</bpmn:outgoing>
@@ -303,14 +303,14 @@
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Apbt_n2" name="Approbation N+2">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1g6unlu</bpmn:incoming>
       <bpmn:outgoing>Flow_1rmkd2a</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Apbt_n1" name="Approbation N+1">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vby8w3</bpmn:incoming>
       <bpmn:incoming>Flow_1pzfzm3</bpmn:incoming>
@@ -325,7 +325,7 @@
     </bpmn:serviceTask>
     <bpmn:userTask id="Validation" name="Validation" camunda:assignee="${owner}">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ValidationListener" event="create" id="Validation" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.ValidationListener" event="create" id="Validation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1wcpetx</bpmn:incoming>
       <bpmn:incoming>Flow_0lefioh</bpmn:incoming>
