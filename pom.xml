@@ -52,7 +52,7 @@
             <groupId>org.springframework.boot</groupId>
         </dependency>
 
-        <!-- Config clinet -->
+        <!-- Config client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
