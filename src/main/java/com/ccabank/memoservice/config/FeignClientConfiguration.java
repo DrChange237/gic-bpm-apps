@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
 
 import feign.RequestInterceptor;
 
+
 @SuppressWarnings("ALL")
 @Configuration
 @EnableConfigurationProperties

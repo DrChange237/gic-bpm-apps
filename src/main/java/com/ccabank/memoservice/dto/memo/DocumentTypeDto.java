@@ -3,8 +3,10 @@ package com.ccabank.memoservice.dto.memo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DocumentTypeDto {
+public class DocumentTypeDto implements Serializable {
 
      private String name;
 

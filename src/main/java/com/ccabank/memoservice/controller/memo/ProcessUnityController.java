@@ -8,11 +8,15 @@ import com.ccabank.memoservice.dto.HttpResponseSuccess;
 import com.ccabank.memoservice.dto.memo.DocumentTypeDto;
 import com.ccabank.memoservice.dto.memo.ProcessUnityDto;
 import com.ccabank.memoservice.dto.memo.RequestDto;
+import com.ccabank.memoservice.security.Authority;
 import com.ccabank.memoservice.service.faces.ProcessUnityService;
 import com.ccabank.memoservice.service.faces.RequestService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +29,9 @@ public class ProcessUnityController {
     @Autowired
     private ProcessUnityService processUnityService;
 
-
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/processUnity/getAll")
+    //@PreAuthorize(Authority.ProcessUnity.VIEWALL_PROCESSUNITY)
     public ResponseEntity<?> getAll() {
         try{
             List<ProcessUnityDto> processUnityDtos = processUnityService.getAll().getData();
@@ -38,7 +43,9 @@ public class ProcessUnityController {
     }
 
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/processUnity/getDetails")
+    //@PreAuthorize(Authority.ProcessUnity.VIEW_PROCESSUNITY)
     public ResponseEntity<?> getTypeDetails(@RequestParam(value = "id") Long id) {
 
         try{
@@ -50,8 +57,9 @@ public class ProcessUnityController {
         }
     }
 
-
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/processUnity/create")
+    //@PreAuthorize(Authority.ProcessUnity.ADD_PROCESSUNITY)
     public ResponseEntity<?> create(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.create(processUnityDto);
         return result.isSuccess()
@@ -59,7 +67,9 @@ public class ProcessUnityController {
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PutMapping("/processUnity/update")
+    //@PreAuthorize(Authority.ProcessUnity.UPDATE_PROCESSUNITY)
     public ResponseEntity<?> update(@RequestBody ProcessUnityDto processUnityDto) {
         AppBaseResult result = processUnityService.update(processUnityDto);
         return result.isSuccess()

@@ -3,9 +3,12 @@ package com.ccabank.memoservice.dto.memo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.multipart.MultipartFile;
 
-public class FileDto {
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
-    private Long id;
+public class FileDto implements Serializable {
+
+    private String id;
 
     private String url;
 
@@ -15,15 +18,19 @@ public class FileDto {
 
     private long size;
 
+    private LocalDateTime addDate;
+
     private String project;
 
     private String file;
 
-    public Long getId() {
+    private MultipartFile multipartFile;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -73,5 +80,21 @@ public class FileDto {
 
     public void setFile(String file) {
         this.file = file;
+    }
+
+    public LocalDateTime getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(LocalDateTime addDate) {
+        this.addDate = addDate;
+    }
+
+    public MultipartFile getMultipartFile() {
+        return multipartFile;
+    }
+
+    public void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
     }
 }

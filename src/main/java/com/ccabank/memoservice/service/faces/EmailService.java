@@ -1,18 +1,27 @@
 package com.ccabank.memoservice.service.faces;
 
-import com.ccabank.memoservice.entity.Approval;
-import com.ccabank.memoservice.entity.ProcessUnity;
-import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.dto.email.EmailAskApprovalDto;
+import com.ccabank.memoservice.dto.memo.ApprovalDto;
+import com.ccabank.memoservice.dto.memo.FieldDto;
+import com.ccabank.memoservice.entity.ApprovalKey;
+
+import java.util.List;
 
 public interface EmailService {
 
-    boolean sendAskApprovalUnity(Request request, Approval approval, ProcessUnity unity);
 
-    boolean sendAskApproval(Request request, Approval approval);
+    boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos);
 
-    boolean sendConfirmApproval(Request request, Approval approval);
+    boolean sendFiles(EmailAskApprovalDto ask);
 
-    boolean sendRejectedApproval(Request request, Approval approval);
+    boolean sendAskApproval(EmailAskApprovalDto ask);
 
-    boolean sendConfirmRequest(Request request);
+
+    boolean sendConfirmApproval(EmailAskApprovalDto ask);
+
+
+    boolean sendRejectedApproval(EmailAskApprovalDto ask);
+
+
+    boolean sendConfirmRequest(EmailAskApprovalDto ask);
 }

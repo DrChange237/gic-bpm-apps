@@ -2,33 +2,38 @@ package com.ccabank.memoservice.service.faces;
 
 import com.ccabank.memoservice.domain.AppServiceResult;
 import com.ccabank.memoservice.dto.memo.AcceptedApprovalDto;
-import com.ccabank.memoservice.dto.memo.ApprovalDto;
 import com.ccabank.memoservice.dto.memo.ApprovalListDto;
 import com.ccabank.memoservice.dto.memo.ReassignDto;
-import com.ccabank.memoservice.entity.Approval;
-import com.ccabank.memoservice.entity.Request;
+import com.ccabank.memoservice.dto.memo.TakeLeaveDto;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface ApprovalService {
 
-    Approval getApprovalWithPosition(Request request, int position);
-
-    Approval getNextPendingApproval(Approval approval);
-
-    Approval getNextApproval(Request request);
-
-    Approval getCurrentApproval(Request request);
-
-    AppServiceResult<?> decision(AcceptedApprovalDto acceptedApprovalDto);
 
     AppServiceResult<?> reassign(ReassignDto reassignDto);
 
-    AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto);
+    AppServiceResult<?> freeless(HttpServletRequest request, TakeLeaveDto takeLeaveDto);
 
+    AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto);
+
+    AppServiceResult<?> decisionViaEmail(String key, String TaskId, boolean decision, String comment);
+
+    @Transactional
+    AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto, String assignee) throws Exception;
+
+    @Transactional
     AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto);
 
-    AppServiceResult<List<ApprovalListDto>> getApprovalByStaff(String staff, String status);
+    AppServiceResult<List<ApprovalListDto>> getApprovalByStaff(HttpServletRequest request, String status);
 
-    AppServiceResult<ApprovalDto> getApprovalDetail(Long id);
+    AppServiceResult<List<ApprovalListDto>> getAllApprobations(HttpServletRequest req);
+
+    AppServiceResult<ApprovalListDto> getApprovalDetail(String id);
+
+    AppServiceResult<?> relanceApprobation(String taskId);
+
+    AppServiceResult<?> relanceForDueDate(String taskId);
 }

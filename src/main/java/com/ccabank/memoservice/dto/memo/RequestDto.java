@@ -1,12 +1,19 @@
 package com.ccabank.memoservice.dto.memo;
 
+import com.ccabank.memoservice.entity.Request;
 import com.ccabank.memoservice.entity.RequestStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.checkerframework.checker.formatter.qual.Format;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.RequestEntity;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-public class RequestDto {
+public class RequestDto implements Serializable {
 
     private Long id;
 
@@ -14,8 +21,12 @@ public class RequestDto {
 
     private String staff;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime lastModification;
 
     private int approbationLevel;
@@ -28,7 +39,7 @@ public class RequestDto {
 
     private List<FieldDto> fields;
 
-
+    private List<FileDto> files;
 
     public Long getId() {
         return id;
@@ -37,6 +48,7 @@ public class RequestDto {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getStaff() {
         return staff;
@@ -108,5 +120,13 @@ public class RequestDto {
 
     public void setLastModification(LocalDateTime lastModification) {
         this.lastModification = lastModification;
+    }
+
+    public List<FileDto> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileDto> files) {
+        this.files = files;
     }
 }

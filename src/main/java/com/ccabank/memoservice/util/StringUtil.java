@@ -11,12 +11,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * @project : entity-service
- * @Package : com.ccabank.userservice.util
- * <p>
- * @date: 20/06/2023
- * @time: 09:54
- * <p>
  * Created with IntelliJ IDEA To change this template use File | Settings | File Templates.
  */
 public final class StringUtil {
@@ -25,7 +19,7 @@ public final class StringUtil {
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\"([^\"]*)\"|(\\S+)");
 
-    private static final Set<String> CONJUNCTIONS = new HashSet<>(Arrays.asList("et", "ou", "ni", "car", "donc", "mais", "or", "si", "que", "à", "de", "des", "au", "aux"));
+    private static final Set<String> CONJUNCTIONS = new HashSet<>(Arrays.asList("et", "ou", "ni", "car", "donc", "mais", "or", "si", "que", "à", "de", "des", "au", "aux", "&"));
 
     public static  String getFirstLetters(String input) {
         return Arrays.stream(input.split(" "))

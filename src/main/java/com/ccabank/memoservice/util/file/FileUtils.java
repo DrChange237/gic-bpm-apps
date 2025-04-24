@@ -1,11 +1,14 @@
 package com.ccabank.memoservice.util.file;
 
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Base64;
 
 public class FileUtils {
@@ -24,6 +27,60 @@ public class FileUtils {
         System.arraycopy(bytes2, 0, mergedBytes, bytes1.length, bytes2.length);
 
         return new ByteArrayResource(mergedBytes);
+    }
+
+    public static MultipartFile convertToMultipartFile(ByteArrayResource byteArrayResource, String fileName) {
+
+        return new MultipartFile() {
+            @Override
+            public String getName() {
+                return fileName;
+            }
+
+            @Override
+            public String getOriginalFilename() {
+                return fileName;
+            }
+
+            @Override
+            public String getContentType() {
+                return "application/pdf"; // ou un type MIME approprié
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return byteArrayResource.contentLength() == 0;
+            }
+
+            @Override
+            public long getSize() {
+                return byteArrayResource.contentLength();
+            }
+
+            @Override
+            public byte[] getBytes() throws IOException {
+                return byteArrayResource.getByteArray();
+            }
+
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return new ByteArrayInputStream(byteArrayResource.getByteArray());
+            }
+
+            @Override
+            public Resource getResource() {
+                return MultipartFile.super.getResource();
+            }
+
+            @Override
+            public void transferTo(File file) throws IOException, IllegalStateException {
+            }
+
+            @Override
+            public void transferTo(Path dest) throws IOException, IllegalStateException {
+                MultipartFile.super.transferTo(dest);
+            }
+        };
     }
 
     public static MultipartFile convertBase64ToMultipartFile(String base64Content, String fileName, String contentType) throws IOException {

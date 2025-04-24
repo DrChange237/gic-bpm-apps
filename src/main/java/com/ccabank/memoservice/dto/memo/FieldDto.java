@@ -6,10 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FieldDto {
+public class FieldDto implements Serializable {
 
     private Long id;
 
@@ -22,6 +23,10 @@ public class FieldDto {
     private String  name;
 
     private String type;
+
+    private String description;
+
+    private String ngIf = "true";
 
     private List<ChoiceDto> choices;
 
@@ -113,5 +118,21 @@ public class FieldDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNgIf() {
+        return ngIf;
+    }
+
+    public void setNgIf(String ngIf) {
+        this.ngIf = ngIf;
     }
 }

@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "REPORTING-SERVICE")
 public interface ReportingRestClient {
 
-    @PostMapping(path = "/api/reporting/vacation/full/sheet")
-    ByteArrayResource vacation(@RequestBody VacationFullForm form);
+    @PostMapping(path = "/api/reporting/vacation/sheet")
+    ByteArrayResource vacation(@RequestBody VacationForm form);
+
+    @PostMapping(path = "/api/reporting/vacation/decision")
+    ByteArrayResource vacationDecision(@RequestBody VacationDecision form);
 
     @PostMapping(path = "/api/reporting/service/resumption")
     ByteArrayResource resumption(@RequestBody ResumptionForm form);
@@ -35,4 +38,7 @@ public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/handover/sheet/v2")
     ByteArrayResource handover(@RequestBody HandOverForm form);
+
+    @PostMapping(path = "/api/reporting/interim/letter")
+    ByteArrayResource interim(@RequestBody InterimForm form);
 }

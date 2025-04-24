@@ -8,8 +8,11 @@ import com.ccabank.memoservice.dto.memo.DocumentTypeDto;
 import com.ccabank.memoservice.entity.ApprovalType;
 import com.ccabank.memoservice.entity.DocumentType;
 import com.ccabank.memoservice.repository.DocumentTypeRepository;
+import com.ccabank.memoservice.service.faces.CamundaService;
 import com.ccabank.memoservice.service.faces.DocumentTypeService;
+import com.ccabank.memoservice.util.camunda.Mapping;
 import com.ccabank.memoservice.util.field.FieldUtils;
+import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,10 +32,14 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Autowired
     private DocumentTypeRepository documentTypeRepository;
 
+    @Autowired
+    private CamundaService camundaService;
+
+
     @Override
     public AppServiceResult<List<DocumentTypeDto>> getDocumentTypes() {
         try {
-            List<DocumentType> documentTypes = documentTypeRepository.findAll();
+            List<DocumentType> documentTypes = documentTypeRepository.findByVisible(true);
             List<DocumentTypeDto> documentsDto = new ArrayList<>();
 
             for(DocumentType type : documentTypes){
@@ -56,12 +63,16 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     public AppServiceResult<DocumentTypeDto> getDocumentType(String structure) {
         try {
             DocumentType type = documentTypeRepository.findOneByStructure(structure);
-
+            if(type == null){
+                throw new Exception("Structure not found");
+            }
             DocumentTypeDto dto = new DocumentTypeDto();
             dto.setName(type.getStructure());
             dto.setDescription(type.getName());
-            dto.setStructure(FieldUtils.getStructure(type.getStructure()));
+            StartFormData formData = camundaService.getStartForm(type.getStructure());
 
+            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+            dto.setStructure(documentStructure);
             return new AppServiceResult<DocumentTypeDto>(true, 0, "Succeed!", dto);
 
         } catch (Exception e) {
@@ -71,42 +82,4 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
         }
     }
 
-    @Override
-    public List<ApprovalDto> getApprobals(String name) {
-        try {
-            DocumentStructure structure = FieldUtils.getStructure(name);
-            List<ApprovalDto> approvalDtos = structure.getApprovals();
-            List<ApprovalDto> staticApprobals = new ArrayList<>();
-
-            for(ApprovalDto approbalDto: approvalDtos){
-                    staticApprobals.add(approbalDto);
-
-            }
-
-            return  staticApprobals;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  null;
-        }
-    }
-
-    @Override
-    public List<ApprovalDto> getStaticApprobals(String name) {
-        try {
-            DocumentStructure structure = FieldUtils.getStructure(name);
-            List<ApprovalDto> approvalDtos = structure.getApprovals();
-            List<ApprovalDto> staticApprobals = new ArrayList<>();
-
-            for(ApprovalDto approbalDto: approvalDtos){
-                if(approbalDto.getType() == ApprovalType.STATIC){
-                    staticApprobals.add(approbalDto);
-                }
-            }
-
-            return  staticApprobals;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  null;
-        }
-    }
 }

@@ -46,6 +46,9 @@ public class ResumptionForm {
     @NotNull
     private Signatory supervisor = new Signatory();
 
+    @Schema(example = "Autre raison de reprise de service")
+    private String explication = "Formation";
+
     public String getPlace() {
         return place;
     }
@@ -142,11 +145,20 @@ public class ResumptionForm {
         this.supervisor = supervisor;
     }
 
+    public String getExplication() {
+        return explication;
+    }
+
+    public void setExplication(String explication) {
+        this.explication = explication;
+    }
+
     public enum Reason {
         ANNUAL,
         MATERNITY,
         MEDICAL,
-        ABSENCE
+        ABSENCE,
+        OTHER
     }
 
     @Data

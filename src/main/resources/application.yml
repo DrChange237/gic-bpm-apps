@@ -2,9 +2,6 @@ spring:
   application:
     name: PAPERLESS-SERVICE
 
-
-
-
   # JAP
   jpa:
     hibernate:
@@ -19,13 +16,13 @@ spring:
 security:
   oauth2:
     resource:
-      user-info-uri: http://10.4.4.111:9100/api/user
+      user-info-uri: http://localhost:9100/api/user
 
     client:
       client-id: trusted-app
       client-secret: XY7kmzoNzl100
       grant-type: client_credentials
-      access-token-uri: http://10.4.4.111:9100/api/oauth/token
+      access-token-uri: http://localhost:9100/api/oauth/token
 
 feign:
   httpclient:

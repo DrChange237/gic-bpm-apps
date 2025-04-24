@@ -45,7 +45,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Memo Services services",
+                "Paperless Services services",
                 "All the ends point user API",
                 "0.0.1",
                 "Terms of service",
