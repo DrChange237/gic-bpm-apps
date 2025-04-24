@@ -11,12 +11,6 @@ import java.util.Date;
 
 /**
  * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * @project : cca-bank-microservices
- * @Package : com.ccabank.userservice.dto.employee
- * <p>
- * @date: 18/12/2023
- * @time: 19:24
- * <p>
  * Created with IntelliJ IDEA
  * To change this template use File | Settings | File Templates.
  */

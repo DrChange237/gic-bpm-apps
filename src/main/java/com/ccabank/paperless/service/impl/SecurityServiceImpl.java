@@ -6,13 +6,17 @@ import com.ccabank.paperless.service.faces.SecurityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Base64;
+import java.util.Optional;
 
-
+@Slf4j
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
@@ -38,8 +42,9 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public EmployeeInfo getCurrentUser(HttpServletRequest request){
+        String username = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Principal::getName).orElse("");
         // get current user details
-        if (
+        /*if (
                 !request.getServletPath().contains("import")   // if not importing users file
                         && request.getHeader("Authorization") != null
         ) {
@@ -54,9 +59,11 @@ public class SecurityServiceImpl implements SecurityService {
             }
 
             return employeeInfo;
-        }
+        }*/
 
-        return null;
+        log.info("Current user is : {}", username);
+
+        return userRestClient.getStaffByUsername(username);
 
     }
 
