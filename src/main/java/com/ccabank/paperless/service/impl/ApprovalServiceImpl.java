@@ -99,7 +99,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Override
     public AppServiceResult<?> freeless(HttpServletRequest request, TakeLeaveDto takeLeaveDto)  {
 
-        EmployeeInfo employeeInfo = securityService.getCurrentUser(request);
+        EmployeeInfo employeeInfo = securityService.getCurrentUser();
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(takeLeaveDto.getIdApproval());
         if(task != null){
@@ -137,7 +137,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Override
     public AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto)  {
 
-        EmployeeInfo employeeInfo = securityService.getCurrentUser(request);
+        EmployeeInfo employeeInfo = securityService.getCurrentUser();
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
 
@@ -325,7 +325,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Override
     public AppServiceResult<List<ApprovalListDto>> getApprovalByStaff(HttpServletRequest req, String status) {
         try {
-            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            EmployeeInfo employeeInfo = securityService.getCurrentUser();
 
             if(employeeInfo == null){
                 System.out.println("EmployeeInfo is null");
@@ -377,7 +377,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     @Override
     public AppServiceResult<List<ApprovalListDto>> getAllApprobations(HttpServletRequest req) {
         try {
-            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            EmployeeInfo employeeInfo = securityService.getCurrentUser();
 
             if(employeeInfo == null){
                 System.out.println("EmployeeInfo is null");

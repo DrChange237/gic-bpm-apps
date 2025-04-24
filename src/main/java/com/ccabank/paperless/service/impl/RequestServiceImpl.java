@@ -67,7 +67,7 @@ public class RequestServiceImpl implements RequestService {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
 
-            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            EmployeeInfo employeeInfo = securityService.getCurrentUser();
 
             if(employeeInfo == null){
                 System.out.println("Erreur : employeeInfo is null");
@@ -342,7 +342,7 @@ public class RequestServiceImpl implements RequestService {
     public AppServiceResult<List<RequestInfo>> getRequestAll(HttpServletRequest req) {
         try {
 
-            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            EmployeeInfo employeeInfo = securityService.getCurrentUser();
             System.out.println("UserName Employe" + employeeInfo.getUsername());
             List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
 
@@ -361,7 +361,7 @@ public class RequestServiceImpl implements RequestService {
     public AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req) {
         try {
 
-            EmployeeInfo employeeInfo = securityService.getCurrentUser(req);
+            EmployeeInfo employeeInfo = securityService.getCurrentUser();
             System.out.println("UserName Employe" + employeeInfo.getUsername());
             List<Request> requests = requestRepository.findByOrderByLastModificationDesc();
             return getConvertedResult(requests, "getRequestHistory ");
@@ -369,7 +369,7 @@ public class RequestServiceImpl implements RequestService {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " getRequestHistory : Exception {}", e.getMessage());
-            return new AppServiceResult<List<RequestInfo>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }

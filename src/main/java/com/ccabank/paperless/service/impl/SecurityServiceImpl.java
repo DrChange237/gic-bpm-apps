@@ -3,9 +3,6 @@ package com.ccabank.paperless.service.impl;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.SecurityService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Base64;
 import java.util.Optional;
 
 @Slf4j
@@ -41,44 +37,10 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public EmployeeInfo getCurrentUser(HttpServletRequest request){
+    public EmployeeInfo getCurrentUser(){
         String username = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Principal::getName).orElse("");
-        // get current user details
-        /*if (
-                !request.getServletPath().contains("import")   // if not importing users file
-                        && request.getHeader("Authorization") != null
-        ) {
-            String token = request.getHeader("Authorization");
-            token = token.substring(7, token.length());
-
-            EmployeeInfo employeeInfo = null;
-            try {
-                employeeInfo = getCurrentUserInfo(token);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-
-            return employeeInfo;
-        }*/
-
-        log.info("Current user is : {}", username);
-
         return userRestClient.getStaffByUsername(username);
 
     }
-
-    private EmployeeInfo
-    getCurrentUserInfo(String token) throws JsonProcessingException {
-        String[] chunks = token.split("\\.");
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode actualObj = mapper.readTree(payload);
-        String username = actualObj.get("user_name").textValue();
-        //String username = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Principal::getName).orElse("");
-        return userRestClient.getStaffByUsername(username);
-    }
-
-
 
 }
