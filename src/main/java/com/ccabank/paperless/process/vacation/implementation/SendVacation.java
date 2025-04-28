@@ -14,6 +14,7 @@ import com.ccabank.paperless.process.general.service.RequestService;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
+import com.ccabank.paperless.service.faces.ProcessUnityService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.util.WorkDayCalculator;
@@ -32,6 +33,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_CAPITAL_HUMAIN;
+import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_HABILITATION;
 
 @Component
 public class SendVacation implements JavaDelegate {
@@ -53,6 +55,9 @@ public class SendVacation implements JavaDelegate {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ProcessUnityService processUnityService;
 
 
     @Override
@@ -206,7 +211,7 @@ public class SendVacation implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Demande de Congés Validées");
-            ask.setbCC(supervisorInfo.getEmail() + "," + EMAIL_CAPITAL_HUMAIN);
+            ask.setbCC(supervisorInfo.getEmail() + "," + processUnityService.getEmailUnity(EMAIL_CAPITAL_HUMAIN));
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("demande_congés" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

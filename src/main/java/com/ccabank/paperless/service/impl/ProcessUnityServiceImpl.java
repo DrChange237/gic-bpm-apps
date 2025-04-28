@@ -105,6 +105,21 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
     }
 
     @Override
+    public String getEmailUnity(String unityCode) {
+            logger.info(MEMO_SERVICE + "getEmailUnity : methode invocation");
+            Group group = camundaService.getGroup(unityCode);
+            List<User> members = camundaService.getGroupDetailsWithMembers(group.getId());
+            System.out.println("Membres : " + members.size());
+            String staffList = "";
+            for(User m : members){
+                staffList =  m.getEmail() + "," + staffList;
+            }
+            return staffList;
+    }
+
+
+
+    @Override
     public AppServiceResult<List<ProcessUnityDto>> getAll() {
         try {
             logger.info(MEMO_SERVICE + "getAll : methode invocation");

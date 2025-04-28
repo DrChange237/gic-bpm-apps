@@ -15,6 +15,7 @@ import com.ccabank.paperless.process.general.constant.EmailGroup;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
+import com.ccabank.paperless.service.faces.ProcessUnityService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.util.WorkDayCalculator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -56,6 +57,9 @@ public class SendAbsence implements JavaDelegate {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ProcessUnityService processUnityService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -212,7 +216,7 @@ public class SendAbsence implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Autorisation d'absence");
-        ask.setbCC(Apbt_n1.getEmail() + "," + EmailGroup.EMAIL_HABILITATION + "," + EmailGroup.EMAIL_CAPITAL_HUMAIN);
+        ask.setbCC(Apbt_n1.getEmail() + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN) + "," + EmailGroup.EMAIL_HABILITATION);
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("absence" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));

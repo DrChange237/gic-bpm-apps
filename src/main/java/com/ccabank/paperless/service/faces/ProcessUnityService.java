@@ -12,5 +12,7 @@ public interface ProcessUnityService {
 
     AppServiceResult<ProcessUnityDto> getDetail(Long id);
 
+    String getEmailUnity(String unityCode);
+
     AppServiceResult<List<ProcessUnityDto>> getAll();
 }

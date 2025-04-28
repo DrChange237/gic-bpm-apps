@@ -17,6 +17,7 @@ import com.ccabank.paperless.process.mission.constant.TransportCommonConstant;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
+import com.ccabank.paperless.service.faces.ProcessUnityService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class SendMissionOrder implements JavaDelegate {
     private final FileService fileService;
 
     @Autowired
-    private RequestRepository requestRepository;
+    private ProcessUnityService processUnityService;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -210,7 +211,7 @@ public class SendMissionOrder implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Ordre de Mission");
-        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail() + "," + EmailGroup.EMAIL_CAPITAL_HUMAIN);
+        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail() + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("ordre_mission" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
