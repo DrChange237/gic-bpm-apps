@@ -90,6 +90,9 @@ public class ApprovalServiceImpl implements ApprovalService {
             Task task = camundaService.getTaskDetails(reassignDto.getIdApproval());
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
+            if(!request.getStatus().equals(RequestStatus.PENDING)){
+                throw new BadRequestException("Request is not PENDING");
+            }
             request.setLastModification(LocalDateTime.now());
             requestRepository.save(request);
             camundaService.assignTask(instanceId, task.getId(), reassignDto.getStaff());
