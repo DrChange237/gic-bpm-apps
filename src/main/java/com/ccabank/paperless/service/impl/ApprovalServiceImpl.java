@@ -502,7 +502,12 @@ public class ApprovalServiceImpl implements ApprovalService {
                 System.out.println("Is Choice " + f.getLabel());
                 Object choices = camundaService.getProcessVariable(request.getInstanceId(), f.getId() + "_choices");
                 if(choices != null){
-                    field.setChoices((List<ChoiceDto>) choices);
+                    try{
+                        field.setChoices((List<ChoiceDto>) choices);
+                    }catch (Exception e){
+                        logger.warn(MEMO_SERVICE + " mapOneTaskToApprovalDto : Exception {}", e.getMessage());
+                    }
+
                 }else{
                     ObjectMapper objectMapper = new ObjectMapper();
                     List<ChoiceDto> choicesString = new ArrayList<>();
