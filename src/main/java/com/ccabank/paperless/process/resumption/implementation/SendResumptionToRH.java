@@ -16,10 +16,13 @@ import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.service.faces.ProcessUnityService;
+import com.ccabank.paperless.service.impl.ApprovalServiceImpl;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.core.io.ByteArrayResource;
@@ -56,6 +59,10 @@ public class SendResumptionToRH implements JavaDelegate {
 
     @Autowired
     private ProcessUnityService processUnityService;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(SendResumptionToRH.class);
+
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -128,6 +135,7 @@ public class SendResumptionToRH implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Fiche de Reprise de Service");
+            logger.info("Notification MTN",processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
             ask.setbCC(emailList + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_HABILITATION) + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("reprise_service" + delegateExecution.getBusinessKey() + ".pdf");
