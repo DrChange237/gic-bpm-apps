@@ -135,7 +135,7 @@ public class SendResumptionToRH implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Fiche de Reprise de Service");
-            logger.info("Notification MTN",processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
+            logger.info(processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
             ask.setbCC(emailList + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_HABILITATION) + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("reprise_service" + delegateExecution.getBusinessKey() + ".pdf");
