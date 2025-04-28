@@ -499,15 +499,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 
             if(f.getProperties().get("type").equals("choice")){
+                try{
                 System.out.println("Is Choice " + f.getLabel());
                 Object choices = camundaService.getProcessVariable(request.getInstanceId(), f.getId() + "_choices");
                 if(choices != null){
-                    try{
                         field.setChoices((List<ChoiceDto>) choices);
-                    }catch (Exception e){
-                        logger.warn(MEMO_SERVICE + " mapOneTaskToApprovalDto : Exception {}", e.getMessage());
-                    }
-
                 }else{
                     ObjectMapper objectMapper = new ObjectMapper();
                     List<ChoiceDto> choicesString = new ArrayList<>();
@@ -517,6 +513,9 @@ public class ApprovalServiceImpl implements ApprovalService {
                         System.out.println("JSON Not Valid Exception " + e.getMessage());
                     }
                     field.setChoices(choicesString);
+                }
+                }catch (Exception e){
+                    logger.warn(MEMO_SERVICE + " mapOneTaskToApprovalDto : Exception {}", e.getMessage());
                 }
             }
 
