@@ -118,7 +118,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
                     staffList =  staffList + "," +  m.getEmail() ;
                 }
             }
-            return staffList;
+            return staffList.replace(",,",",");
     }
 
 
