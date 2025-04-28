@@ -112,7 +112,11 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
             System.out.println("Membres : " + members.size());
             String staffList = "";
             for(User m : members){
-                staffList =  m.getEmail() + "," + staffList;
+                if(members.indexOf(m) == 0){
+                    staffList =  m.getEmail() ;
+                }else{
+                    staffList =  staffList + "," +  m.getEmail() ;
+                }
             }
             return staffList;
     }
