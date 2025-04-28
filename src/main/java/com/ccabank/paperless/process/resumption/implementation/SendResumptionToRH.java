@@ -130,7 +130,7 @@ public class SendResumptionToRH implements JavaDelegate {
                 emailList += user.getEmail() + ",";
             }
 
-            emailList = emailList + supervisor.getEmail() + ",";
+            emailList = emailList + supervisor.getEmail() ;
 
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
