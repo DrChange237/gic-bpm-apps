@@ -279,7 +279,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- Project developpers -->
+    <!-- Project developers -->
     <developers>
         <developer>
             <email>patrick.simo@cca-bank.com</email>
@@ -298,7 +298,7 @@
     <!-- Group ID -->
     <groupId>com.ccabank</groupId>
 
-    <!-- Pome model version -->
+    <!-- Pom model version -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project name -->
