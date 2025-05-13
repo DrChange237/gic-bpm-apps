@@ -1,16 +1,6 @@
 package com.ccabank.paperless.domain;
 
-/**
- * @author : <a href="mailto:herve.foudjo@cca-bank.com">Herve FOUDJO</a>
- * @project : entityservice
- * @Package : com.ccabank.entityservice.domain
- * <p>
- * @date: 08/08/2023
- * @time: 10:22
- * <p>
- * Created with IntelliJ IDEA
- * To change this template use File | Settings | File Templates.
- */
+
 public class AppBaseResult {
 
     private boolean success;
@@ -24,14 +14,6 @@ public class AppBaseResult {
         this.success = success;
         this.errorCode = errorCode;
         this.message = message;
-    }
-
-    public static AppBaseResult GenarateIsSucceed() {
-        return new AppBaseResult(true, 0, "Succeed!");
-    }
-
-    public static AppBaseResult GenarateIsFailed(int errorCode, String message) {
-        return new AppBaseResult(false, errorCode, message);
     }
 
     public boolean isSuccess() {

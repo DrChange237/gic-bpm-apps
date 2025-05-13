@@ -1,8 +1,6 @@
 package com.ccabank.paperless.entity.camunda;
 
 
-import org.camunda.bpm.engine.identity.User;
-
 import javax.persistence.*;
 
 @Entity

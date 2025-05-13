@@ -9,7 +9,6 @@ import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.entity.user.Gender;
-import com.ccabank.paperless.openfeign.EmailRestClient;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.process.vacation.constant.CumulConstant;
@@ -38,9 +37,6 @@ public class SendInterimLetter implements JavaDelegate {
 
     @Autowired
     private  ReportingRestClient reportingRestClient;
-
-    @Autowired
-    private  EmailRestClient emailRestClient;
 
     @Autowired
     private  UserRestClient userRestClient;

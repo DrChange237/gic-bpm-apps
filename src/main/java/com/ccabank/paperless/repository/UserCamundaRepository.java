@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface UserCamundaRepository extends JpaRepository<UserCamunda, String> {
-
     Optional<UserCamunda> findByUserName(String userName);
 }

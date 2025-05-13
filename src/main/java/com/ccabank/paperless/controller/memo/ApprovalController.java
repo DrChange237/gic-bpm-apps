@@ -89,8 +89,4 @@ public class ApprovalController {
         return result.isSuccess() ? ResponseEntity.ok(result.getData())
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
-
-
-
-
 }

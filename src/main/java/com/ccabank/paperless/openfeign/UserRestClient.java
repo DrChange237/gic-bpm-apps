@@ -9,12 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-/**
- * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * Created with IntelliJ IDEA
- * To change this template use File | Settings | File Templates.
- */
-
 
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientConfiguration.class)
 //@FeignClient(value = "userRestClient", url = "https://developer.ccabank-app.com", configuration = FeignClientProperties.FeignClientConfiguration.class)

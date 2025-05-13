@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface EmailService {
 
-
     boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos);
 
     boolean sendFiles(EmailAskApprovalDto ask);

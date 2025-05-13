@@ -6,8 +6,6 @@ import feign.codec.ErrorDecoder;
 
 public class CustomErrorDecoder implements ErrorDecoder {
 
-    private final ErrorDecoder errorDecoder = new ErrorDecoder.Default();
-
     @Override
     public Exception decode(String methodKey, Response response) {
         switch (response.status()) {
