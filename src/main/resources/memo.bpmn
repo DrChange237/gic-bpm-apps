@@ -90,7 +90,7 @@
       <bpmn:incoming>Flow_04scvqs</bpmn:incoming>
       <bpmn:incoming>Flow_1k4437b</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_04q6d4a" name="Email de Refus" camunda:class="com.ccabank.memoservice.process.vacation.SendEmailRefusInterimaire">
+    <bpmn:serviceTask id="Activity_04q6d4a" name="Email de Refus" camunda:class="com.ccabank.paperless.process.vacation.SendEmailRefusInterimaire">
       <bpmn:outgoing>Flow_04scvqs</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_126s47a" default="Flow_1b0d8mf">
@@ -112,7 +112,7 @@
     </bpmn:serviceTask>
     <bpmn:userTask id="Apbt_n2" name="Approbation 2">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN2" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17ssiz4</bpmn:incoming>
       <bpmn:incoming>Flow_01unrvk</bpmn:incoming>
@@ -145,7 +145,7 @@
     </bpmn:serviceTask>
     <bpmn:userTask id="Apbt_n1" name="Approbation 1">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
@@ -176,7 +176,7 @@
     <bpmn:sequenceFlow id="Flow_0pry3cw" sourceRef="Activity_17r8tui" targetRef="Apbt_n3" />
     <bpmn:userTask id="Apbt_n3" name="Approbation 3">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN3" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN3" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0pry3cw</bpmn:incoming>
       <bpmn:incoming>Flow_17ibnmx</bpmn:incoming>
@@ -214,7 +214,7 @@
     <bpmn:sequenceFlow id="Flow_0zabj0d" sourceRef="Apbt_n4" targetRef="Gateway_0i1wshm" />
     <bpmn:userTask id="Apbt_n4" name="Approbation 4">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN4" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN4" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1dlpdti</bpmn:incoming>
       <bpmn:incoming>Flow_07h10qb</bpmn:incoming>
@@ -240,7 +240,7 @@
     <bpmn:sequenceFlow id="Flow_0c338a4" sourceRef="Activity_1jjti73" targetRef="Apbt_n5" />
     <bpmn:userTask id="Apbt_n5" name="Approbation 5">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN5" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN5" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0c338a4</bpmn:incoming>
       <bpmn:outgoing>Flow_0pbub6m</bpmn:outgoing>

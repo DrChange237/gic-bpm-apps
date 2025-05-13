@@ -1,0 +1,41 @@
+package com.ccabank.paperless.dto.memo;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.io.Serializable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DocumentTypeDto implements Serializable {
+
+     private String name;
+
+     private  String description;
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    private DocumentStructure structure;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DocumentStructure getStructure() {
+        return structure;
+    }
+
+    public void setStructure(DocumentStructure structure) {
+        this.structure = structure;
+    }
+}
