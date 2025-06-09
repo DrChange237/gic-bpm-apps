@@ -12,7 +12,6 @@ spring:
       hibernate.default_schema: public
 
 
-
 security:
   oauth2:
     resource:
