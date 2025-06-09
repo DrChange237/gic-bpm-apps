@@ -14,8 +14,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     List<Request> findByStaffAndStatus(String staff, RequestStatus status);
 
-    List<Request> findByStaff(String staff);
-
     @Query("SELECT COUNT(r) FROM Request r WHERE DATE(r.createdAt) = CURRENT_DATE")
     long countRequestsCreatedToday();
 

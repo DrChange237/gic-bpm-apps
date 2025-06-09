@@ -148,7 +148,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
         if (groups == null) {
             logger.warn(MEMO_SERVICE, functionName,
                     "Feedback not exist!, Cannot further process!");
-            return new AppServiceResult<List<ProcessUnityDto>>(false, AppError.Validattion.errorCode(),
+            return new AppServiceResult<List<ProcessUnityDto>>(false, AppError.Validation.errorCode(),
                     "Process Unity not exist!", null);
         }
         List<ProcessUnityDto> result =  new ArrayList<ProcessUnityDto>();

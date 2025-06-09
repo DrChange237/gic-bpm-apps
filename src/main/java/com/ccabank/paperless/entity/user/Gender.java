@@ -7,18 +7,11 @@ public enum Gender {
     OTHER("OTHER");
     private final String gender;
 
-    /**
-     * @param gender
-     */
-    private Gender(String gender) {
+    Gender(String gender) {
         this.gender = gender;
     }
 
-    /**
-     * This function returns the gender of an object.
-     *
-     * @return The method is returning the value of the `gender` variable.
-     */
+
     public String getGender() {
         return gender;
     }

@@ -1,16 +1,5 @@
 package com.ccabank.paperless.security;
 
-/**
- * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * @project : cca-bank-microservices
- * @Package : com.ccabank.entityservice.security
- * <p>
- * @date: 22/02/2024
- * @time: 10:47
- * <p>
- * Created with IntelliJ IDEA
- * To change this template use File | Settings | File Templates.
- */
 public class Authority {
 
     public static final String IS_AUTHENTICATED = "hasAuthority('isAuthenticated()')";

@@ -58,12 +58,6 @@ public class CamundaServiceImpl implements CamundaService {
     private GroupRepository groupRepository;
 
 
-    @Autowired
-    private ManagementService managementService;
-
-
-
-
 
     //-------------------------------------------Process Instance---------------------------------------------------------
     @Override
@@ -817,7 +811,6 @@ public class CamundaServiceImpl implements CamundaService {
 
         // Récupérer les membres du groupe
         List<User> members =   identityService.createUserQuery().memberOfGroup(groupId).list();
-
 
         return members;
     }

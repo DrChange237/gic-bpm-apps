@@ -11,10 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.Executor;
 
-/**
- * @author : <a href="mailto:herve.foudjo@cca-bank.com">Herve FOUDJO</a>
- * Created with IntelliJ IDEA To change this template use File | Settings | File Templates.
- */
 @Configuration
 @EnableAsync
 public class SpringAsyncConfig implements AsyncConfigurer {

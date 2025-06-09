@@ -5,7 +5,6 @@ import com.ccabank.paperless.config.HolidayConfig;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,14 +36,6 @@ public class WorkDayCalculator {
             }
         }
         return currentDate;
-    }
-
-
-    public static int calculateNights(LocalDate checkIn, LocalDate checkOut) {
-        if (checkIn.isAfter(checkOut)) {
-            throw new IllegalArgumentException("La date d'arrivée doit être avant la date de départ");
-        }
-        return Math.toIntExact(ChronoUnit.DAYS.between(checkIn, checkOut));
     }
 
 

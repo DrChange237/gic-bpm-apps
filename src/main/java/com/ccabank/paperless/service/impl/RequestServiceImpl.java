@@ -106,12 +106,12 @@ public class RequestServiceImpl implements RequestService {
 
             request = requestRepository.save(request);
 
-            return new AppServiceResult<Request>(true, 0, "Succeed!", request );
+            return new AppServiceResult<>(true, 0, "Succeed!", request);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " newRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<Request>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -144,12 +144,12 @@ public class RequestServiceImpl implements RequestService {
 
             request = requestRepository.save(request);
 
-            return new AppServiceResult<Request>(true, 0, "Succeed!", request );
+            return new AppServiceResult<>(true, 0, "Succeed!", request);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " newRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<Request>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -240,12 +240,12 @@ public class RequestServiceImpl implements RequestService {
             List<ApprovalDto> approvalDtos = mapService.mapTaskToApprovalDto(histories);
             dto.setApprovals(approvalDtos);
 
-            return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", dto );
+            return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<RequestInfo>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
         }
     }
 
@@ -265,12 +265,12 @@ public class RequestServiceImpl implements RequestService {
 
             requestRepository.save(request);
 
-            return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", null );
+            return new AppServiceResult<>(true, 0, "Succeed!", null);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " suspend : Exception {}", e.getMessage());
-            return new AppServiceResult<RequestInfo>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
         }
     }
 
@@ -293,12 +293,12 @@ public class RequestServiceImpl implements RequestService {
 
             //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
 
-            return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", dto );
+            return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<RequestInfo>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -312,14 +312,14 @@ public class RequestServiceImpl implements RequestService {
 
             RequestInfo requestDto = requestMapper.toDto(request);
 
-            return new AppServiceResult<RequestInfo>(true, 0, "Succeed!", requestDto );
+            return new AppServiceResult<>(true, 0, "Succeed!", requestDto);
 
 
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<RequestInfo>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -329,11 +329,11 @@ public class RequestServiceImpl implements RequestService {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
             List<Request> requests = requestRepository.findByStaffAndStatus(staff, RequestStatus.valueOf(status));
-            return getConvertedResult(requests, "getRequestByStaff ");
+            return getConvertedResult(requests);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<List<RequestInfo>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -346,13 +346,13 @@ public class RequestServiceImpl implements RequestService {
             System.out.println("UserName Employe" + employeeInfo.getUsername());
             List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
 
-            return getConvertedResult(requests, "getRequestAll ");
+            return getConvertedResult(requests);
 
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " getRequestAll : Exception {}", e.getMessage());
-            return new AppServiceResult<List<RequestInfo>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
     }
@@ -364,7 +364,7 @@ public class RequestServiceImpl implements RequestService {
             EmployeeInfo employeeInfo = securityService.getCurrentUser();
             System.out.println("UserName Employe" + employeeInfo.getUsername());
             List<Request> requests = requestRepository.findByOrderByLastModificationDesc();
-            return getConvertedResult(requests, "getRequestHistory ");
+            return getConvertedResult(requests);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -374,14 +374,14 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    private AppServiceResult<List<RequestInfo>> getConvertedResult(List<Request> requests, String functionName) {
+    private AppServiceResult<List<RequestInfo>> getConvertedResult(List<Request> requests) {
         if (requests == null) {
 
-            return new AppServiceResult<List<RequestInfo>>(false, AppError.Validattion.errorCode(),
+            return new AppServiceResult<>(false, AppError.Validation.errorCode(),
                     "Request not exist!", null);
         }
         List<RequestInfo> result =  new ArrayList<RequestInfo>();
-        if (requests.size() > 0) {
+        if (!requests.isEmpty()) {
             for (Request request : requests) {
                 RequestInfo dto = requestMapper.toDto(request);
                 dto.setDocumentType(request.getType().getName());
@@ -403,7 +403,7 @@ public class RequestServiceImpl implements RequestService {
                 result.add(dto);
             }
         }
-        return new AppServiceResult<List<RequestInfo>>(true, 0, "Succeed!", result);
+        return new AppServiceResult<>(true, 0, "Succeed!", result);
     }
 
 }

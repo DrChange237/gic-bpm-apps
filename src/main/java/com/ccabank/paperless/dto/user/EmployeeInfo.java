@@ -1,7 +1,5 @@
 package com.ccabank.paperless.dto.user;
 
-
-
 import com.ccabank.paperless.entity.user.Gender;
 import com.ccabank.paperless.util.StringUtil;
 import lombok.Data;
@@ -9,11 +7,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * Created with IntelliJ IDEA
- * To change this template use File | Settings | File Templates.
- */
 
 @Data
 public class EmployeeInfo implements Serializable {

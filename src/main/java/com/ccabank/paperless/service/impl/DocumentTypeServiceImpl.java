@@ -47,11 +47,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 documentsDto.add(dto);
             }
 
-            return new AppServiceResult<List<DocumentTypeDto>>(true, 0, "Succeed!", documentsDto);
+            return new AppServiceResult<>(true, 0, "Succeed!", documentsDto);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new AppServiceResult<List<DocumentTypeDto>>(false, AppError.Unknown.errorCode(),
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
                     AppError.Unknown.errorMessage(), null);
         }
     }
@@ -70,11 +70,11 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
             DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
             dto.setStructure(documentStructure);
-            return new AppServiceResult<DocumentTypeDto>(true, 0, "Succeed!", dto);
+            return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new AppServiceResult<DocumentTypeDto>(false, AppError.Unknown.errorCode(),
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
                     AppError.Unknown.errorMessage(), null);
         }
     }

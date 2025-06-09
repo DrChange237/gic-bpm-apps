@@ -18,8 +18,8 @@ public class Approbation {
     @Column(name = "STATUS")
     private ApprovalStatus status;
 
-    @Column(name = "COMMENTS", nullable = true)
-    @Basic(optional = true)
+    @Column(name = "COMMENTS")
+    @Basic
     private String comments;
 
     public Long getId() {

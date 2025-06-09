@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_CAPITAL_HUMAIN;
-import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_HABILITATION;
 
 @Component
 public class SendVacation implements JavaDelegate {

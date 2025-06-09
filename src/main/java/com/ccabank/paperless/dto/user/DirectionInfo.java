@@ -2,17 +2,6 @@ package com.ccabank.paperless.dto.user;
 
 import java.util.Date;
 
-/**
- * @author : <a href="mailto:marcelin.hamidou@cca-bank.com">Marcelin HAMIDOU NDAM</a>
- * @project : email-service
- * @Package : com.ccabank.userservice.dto.user
- * <p>
- * @date: 14/12/2023
- * @time: 11:50
- * <p>
- * Created with IntelliJ IDEA
- * To change this template use File | Settings | File Templates.
- */
 public class DirectionInfo {
 
     private String id;

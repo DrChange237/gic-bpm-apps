@@ -1,15 +1,5 @@
 package com.ccabank.paperless.provider.file.util;
 
-/**
- * @author : <a href="mailto:patrick.simo@cca-bank.com">Patrick SIMO</a>
- * @project : entity-service
- * @Package : com.ccabank.userservice.provider.file.util
- * <p>
- * @date: 19/06/2023
- * @time: 09:51
- * <p>
- * Created with IntelliJ IDEA To change this template use File | Settings | File Templates.
- */
 public class DateUtil {
 
     /**

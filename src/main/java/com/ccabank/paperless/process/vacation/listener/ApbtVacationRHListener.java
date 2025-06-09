@@ -2,12 +2,8 @@ package com.ccabank.paperless.process.vacation.listener;
 
 import com.ccabank.paperless.dto.memo.ChoiceDto;
 import com.ccabank.paperless.dto.reporting.InterimForm;
-import com.ccabank.paperless.service.faces.CamundaService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,9 +11,6 @@ import java.util.List;
 
 @Component
 public class ApbtVacationRHListener implements ExecutionListener {
-
-    @Autowired
-    private CamundaService camundaService;
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {

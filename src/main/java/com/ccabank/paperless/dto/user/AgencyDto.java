@@ -7,17 +7,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * @author : <a href="mailto:marcelin.hamidou@cca-bank.com">Marcelin HAMIDOU NDAM</a>
- * @project : user-service
- * @Package : com.ccabank.userservice.dto.user
- * <p>
- * @date: 10/08/2023
- * @time: 15:54
- * <p>
- * Created with IntelliJ IDEA
- * To change this template use File | Settings | File Templates.
- */
 @ApiModel
 public class AgencyDto implements Serializable {
 

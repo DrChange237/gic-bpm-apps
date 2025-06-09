@@ -1,6 +1,5 @@
 package com.ccabank.paperless.process.resumption.listener;
 
-import com.ccabank.paperless.service.faces.CamundaService;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class StartResumptionListener implements ExecutionListener {
-
-    private final CamundaService camundaService;
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {

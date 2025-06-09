@@ -12,7 +12,6 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.IdentityLink;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

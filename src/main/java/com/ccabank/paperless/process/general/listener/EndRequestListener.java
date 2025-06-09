@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class EndRequestListener implements ExecutionListener {
-    private final CamundaService camundaService;
     private final RequestRepository requestRepository;
 
     @Override

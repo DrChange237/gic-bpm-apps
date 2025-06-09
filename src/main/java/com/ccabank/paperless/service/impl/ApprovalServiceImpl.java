@@ -648,14 +648,14 @@ public class ApprovalServiceImpl implements ApprovalService {
         if (approvals == null) {
             logger.warn(MEMO_SERVICE, functionName,
                     "Approval not exist!, Cannot further process!");
-            return new AppServiceResult<List<ApprovalDto>>(false, AppError.Validattion.errorCode(),
+            return new AppServiceResult<>(false, AppError.Validation.errorCode(),
                     "Approval not exist!", null);
         }
         List<ApprovalDto> result =  new ArrayList<ApprovalDto>();
         if (approvals.size() > 0) {
 
         }
-        return new AppServiceResult<List<ApprovalDto>>(true, 0, "Succeed!", result);
+        return new AppServiceResult<>(true, 0, "Succeed!", result);
     }
 
     @Override
