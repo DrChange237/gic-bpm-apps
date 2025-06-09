@@ -190,8 +190,8 @@ public class SendVacation implements JavaDelegate {
             Integer consumedVacation = consumedVacationLong.intValue();
             decision.setConsumedVacation(consumedVacation);
 
-            Boolean complementary = (Boolean) delegateExecution.getVariable("complementary");
-            decision.setComplementary(complementary);
+            String complementaryString = (String) delegateExecution.getVariable("complementary");
+            decision.setComplementary(Boolean.valueOf(complementaryString));
 
             String respCA = (String) delegateExecution.getVariable("Apbt_ca_validation");
             EmployeeInfo respCAInfo = userRestClient.getStaffByUsername(respCA);

@@ -483,10 +483,17 @@ public class ApprovalServiceImpl implements ApprovalService {
                 continue;
             }
 
+            if(f.getProperties().get("fieldType") == null){
+                camundaService.deleteProcessInstance(request.getInstanceId());
+                request.setStatus(RequestStatus.SUSPENDED);
+                requestRepository.save(request);
+            }
+
             if(f.getProperties().get("fieldType").isEmpty() ){
                 System.out.println("Is not empty " + f.getLabel());
                 continue;
             }
+
 
             if(!f.getProperties().get("fieldType").equals("field")){
                 System.out.println("Is not fielType field " + f.getLabel());
