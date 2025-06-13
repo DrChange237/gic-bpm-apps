@@ -259,7 +259,7 @@
     <bpmn:endEvent id="Event_1ad8lv2">
       <bpmn:incoming>Flow_1ek6q1v</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="Activity_0q01eok" name="Traitement Déduction Salaire">
+    <bpmn:userTask id="Activity_0q01eok" name="Traitement Déduction Salaire" camunda:candidateGroups="mission_ca_saisie">
       <bpmn:incoming>Flow_0gsjie0</bpmn:incoming>
       <bpmn:outgoing>Flow_1ek6q1v</bpmn:outgoing>
     </bpmn:userTask>
