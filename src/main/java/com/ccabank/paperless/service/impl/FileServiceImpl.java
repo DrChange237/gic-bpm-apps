@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
     private FileRestClient fileRestClient;
 
 
-    @Value("${file_url}")
+    @Value("${file_service_url}")
     private String fileUrl;
 
 
