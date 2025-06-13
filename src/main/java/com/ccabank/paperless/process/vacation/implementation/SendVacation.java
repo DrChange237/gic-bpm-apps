@@ -134,6 +134,7 @@ public class SendVacation implements JavaDelegate {
             supervisor.setSignature(signature);*/
             form.setSupervisor(supervisor);
 
+
             supervisor = new VacationForm.Signatory();
             supervisorId = (String) delegateExecution.getVariable("Apbt_n2");
             EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
