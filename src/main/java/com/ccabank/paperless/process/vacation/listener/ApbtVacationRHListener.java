@@ -1,31 +1,22 @@
-package com.ccabank.memoservice.process.vacation.listener;
+package com.ccabank.paperless.process.vacation.listener;
 
-import com.ccabank.memoservice.dto.memo.ChoiceDto;
-import com.ccabank.memoservice.dto.reporting.InterimForm;
-import com.ccabank.memoservice.process.absence.constant.BaseDeductionConstant;
-import com.ccabank.memoservice.process.resumption.constant.ReasonConstant;
-import com.ccabank.memoservice.service.faces.CamundaService;
-import com.ccabank.memoservice.util.WorkDayCalculator;
+import com.ccabank.paperless.dto.memo.ChoiceDto;
+import com.ccabank.paperless.dto.reporting.InterimForm;
+import com.ccabank.paperless.util.WorkDayCalculator;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @Component
 public class ApbtVacationRHListener implements ExecutionListener {
 
-    @Autowired
-    private CamundaService camundaService;
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
