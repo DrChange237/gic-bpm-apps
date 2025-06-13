@@ -8,6 +8,7 @@ import com.ccabank.paperless.dto.reporting.VacationForm;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.entity.Request;
+import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.process.general.service.RequestService;
@@ -136,6 +137,9 @@ public class SendVacation implements JavaDelegate {
             supervisor = new VacationForm.Signatory();
             supervisorId = (String) delegateExecution.getVariable("Apbt_n2");
             EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
+            if(supervisorInfo2 == null){
+                    throw new BadRequestException("User N + 2 not found " + supervisorId);
+            }
             supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
             /*signature = userRestClient.getEmployeeSignature(supervisorId);
             supervisor.setSignature(signature);*/
