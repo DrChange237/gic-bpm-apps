@@ -116,7 +116,7 @@
       <bpmn:incoming>Flow_1ciciia</bpmn:incoming>
       <bpmn:outgoing>Flow_0oll56d</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Apbt_n2" name="Approbation Signataire 2">
+    <bpmn:userTask id="Apbt_n2" name="Approbation N+2">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
@@ -264,7 +264,7 @@
       <bpmn:incoming>Flow_0nginhu</bpmn:incoming>
       <bpmn:outgoing>Flow_1h84a7b</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Apbt_n1" name="Approbation Signataire 1" camunda:dueDate="${dateTime().plusDays(1).toDate()}">
+    <bpmn:userTask id="Apbt_n1" name="Approbation N+1" camunda:dueDate="${dateTime().plusDays(1).toDate()}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
@@ -323,6 +323,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1ekazeb_di" bpmnElement="Apbt_n2">
         <dc:Bounds x="1280" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ko8fbo_di" bpmnElement="Gateway_1ko8fbo" isMarkerVisible="true">
         <dc:Bounds x="1465" y="425" width="50" height="50" />
@@ -367,6 +368,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1s61ye9_di" bpmnElement="Apbt_n1">
         <dc:Bounds x="680" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0z5wpcn_di" bpmnElement="Gateway_0z5wpcn" isMarkerVisible="true">
         <dc:Bounds x="915" y="425" width="50" height="50" />
