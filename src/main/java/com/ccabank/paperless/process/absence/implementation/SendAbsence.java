@@ -139,7 +139,7 @@ public class SendAbsence implements JavaDelegate {
         }
 
 
-        String direction = "";
+       /*String direction = "";
 
         direction = (String) delegateExecution.getVariable("Apbt_DG");
         if(direction != null){
@@ -149,7 +149,7 @@ public class SendAbsence implements JavaDelegate {
             directionG.setName(DG.getFirstName() + " " + DG.getLastName());
             directionG.setSignature(userRestClient.getEmployeeSignature(DG.getUsername()));
             form.setHeadOffice(directionG);
-        }
+        }*/
 
         String deduction = (String) delegateExecution.getVariable("deduction");
         form.setDeduction(AbsenceForm.Deduction.valueOf(deduction));

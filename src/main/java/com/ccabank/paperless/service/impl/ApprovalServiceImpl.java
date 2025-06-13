@@ -90,6 +90,9 @@ public class ApprovalServiceImpl implements ApprovalService {
             Task task = camundaService.getTaskDetails(reassignDto.getIdApproval());
             String instanceId = task.getProcessInstanceId();
             Request request = requestRepository.findByInstanceId(instanceId);
+            if(!request.getStatus().equals(RequestStatus.PENDING)){
+                throw new BadRequestException("Request is not PENDING");
+            }
             request.setLastModification(LocalDateTime.now());
             requestRepository.save(request);
             camundaService.assignTask(instanceId, task.getId(), reassignDto.getStaff());
@@ -408,8 +411,6 @@ public class ApprovalServiceImpl implements ApprovalService {
     public ApprovalListDto mapOneTaskToApprovalDto(Task task, int position) {
 
         String instanceId = task.getProcessInstanceId();
-
-
         Request request = requestRepository.findByInstanceId(instanceId);
         RequestInfo requestInfo = requestInfoMapper.toDto(request);
 
@@ -482,30 +483,22 @@ public class ApprovalServiceImpl implements ApprovalService {
                 continue;
             }
 
-            System.out.println("Have Properties " + f.getLabel());
-
-            System.out.println("Instance ID " + task.getProcessInstanceId());
-
-
-            System.out.println("fieldType : " + f.getProperties().get("fieldType"));
-
-
+            if(f.getProperties().get("fieldType") == null){
+                camundaService.deleteProcessInstance(request.getInstanceId());
+                request.setStatus(RequestStatus.SUSPENDED);
+                requestRepository.save(request);
+            }
 
             if(f.getProperties().get("fieldType").isEmpty() ){
                 System.out.println("Is not empty " + f.getLabel());
                 continue;
             }
 
-            System.out.println("fieldType is not empty " + f.getLabel());
-
 
             if(!f.getProperties().get("fieldType").equals("field")){
                 System.out.println("Is not fielType field " + f.getLabel());
                 continue;
             }
-
-            System.out.println("FielType == field " + f.getLabel());
-
 
 
             FieldDto field = new FieldDto();
