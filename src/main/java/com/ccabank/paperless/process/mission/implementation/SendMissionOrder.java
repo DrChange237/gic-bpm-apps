@@ -2,16 +2,12 @@ package com.ccabank.paperless.process.mission.implementation;
 
 import com.ccabank.paperless.dto.email.AttachmentDto;
 import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
-import com.ccabank.paperless.dto.email.EmailDto;
-import com.ccabank.paperless.dto.entity.AgencyInfo;
 import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.dto.reporting.MissionForm;
-import com.ccabank.paperless.dto.user.AgencyDto;
 import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.entity.Request;
-import com.ccabank.paperless.openfeign.EmailRestClient;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.process.general.constant.ApprobationLevel;
@@ -21,10 +17,8 @@ import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.util.CustomMultipartFile;
-import com.ccabank.paperless.util.DateUtil;
 import com.ccabank.paperless.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.cert.ocsp.Req;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +32,8 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+
+
 
 @Component
 @RequiredArgsConstructor
