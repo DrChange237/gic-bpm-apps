@@ -191,7 +191,7 @@
             </camunda:properties>
           </camunda:formField>
         </camunda:formData>
-        <camunda:executionListener class="com.ccabank.memoservice.process.vacation.StartEventListener" event="end" />
+        <camunda:executionListener class="com.ccabank.paperless.process.vacation.StartEventListener" event="end" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_157mz8o</bpmn:outgoing>
     </bpmn:startEvent>
@@ -201,7 +201,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wpjrvf</bpmn:incoming>
       <bpmn:incoming>Flow_1ur5b1t</bpmn:incoming>
@@ -216,7 +216,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Validation" name="Validation" camunda:assignee="${owner}">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ValidationListener" event="create" id="Validation" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.ValidationListener" event="create" id="Validation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_157mz8o</bpmn:incoming>
       <bpmn:incoming>Flow_09n19n7</bpmn:incoming>
@@ -234,7 +234,7 @@
             <camunda:properties />
           </camunda:formField>
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.vacation.listener.ApbtInterimaireListener" event="create" id="ApbtInterimaire" />
+        <camunda:taskListener class="com.ccabank.paperless.process.vacation.listener.ApbtInterimaireListener" event="create" id="ApbtInterimaire" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_057x7ds</bpmn:incoming>
       <bpmn:outgoing>Flow_0fudpob</bpmn:outgoing>
@@ -288,7 +288,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDGListener" event="create" id="ApbtDG" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.ApbtDGListener" event="create" id="ApbtDG" />
         <camunda:executionListener delegateExpression="${validateVacationListener}" event="end" />
         <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation" />
       </bpmn:extensionElements>
@@ -298,7 +298,7 @@
     <bpmn:sequenceFlow id="Flow_0dlrepe" sourceRef="Apbt_daf" targetRef="Gateway_0l3we0m" />
     <bpmn:userTask id="Apbt_daf" name="Approbation du DCR" camunda:candidateGroups="dcr">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ApbtDAFListener" event="create" id="ApbtDAF" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.ApbtDAFListener" event="create" id="ApbtDAF" />
         <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1adbvqz</bpmn:incoming>
@@ -463,7 +463,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN2" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1pgh58l</bpmn:incoming>
       <bpmn:outgoing>Flow_08a9t8l</bpmn:outgoing>

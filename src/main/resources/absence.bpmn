@@ -126,7 +126,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0oll56d</bpmn:incoming>
       <bpmn:incoming>Flow_0lcm3zb</bpmn:incoming>
@@ -290,7 +290,7 @@
     </bpmn:userTask>
     <bpmn:userTask id="Validation" name="Validation" camunda:assignee="${owner}">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.ValidationListener" event="create" id="Validation" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.ValidationListener" event="create" id="Validation" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09nlzmc</bpmn:incoming>
       <bpmn:incoming>Flow_07m9fdy</bpmn:incoming>
@@ -306,7 +306,7 @@
           <camunda:formField id="decision" label="Décision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1h84a7b</bpmn:incoming>
       <bpmn:incoming>Flow_0tkidp3</bpmn:incoming>

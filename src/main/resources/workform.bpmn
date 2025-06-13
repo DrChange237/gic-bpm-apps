@@ -71,7 +71,7 @@
     </bpmn:serviceTask>
     <bpmn:userTask id="Apbt_n1" name="Approbation N+1">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n1" />
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
         </camunda:formData>
@@ -91,7 +91,7 @@
     </bpmn:serviceTask>
     <bpmn:userTask id="Apbt_n2" name="Approbation N+2">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.ccabank.memoservice.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
+        <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
         <camunda:formData>
           <camunda:formField id="decision" label="Décision" type="boolean" />
         </camunda:formData>

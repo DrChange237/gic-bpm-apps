@@ -1,0 +1,48 @@
+package com.ccabank.paperless.scheduled;
+
+
+import com.ccabank.paperless.service.faces.ApprovalService;
+import com.ccabank.paperless.service.faces.CamundaService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.engine.task.Task;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Slf4j
+@Configuration
+@EnableScheduling
+@RequiredArgsConstructor
+@Profile("prod")
+public class RemindTask {
+
+    private final ApprovalService approvalService;
+    private final CamundaService camundaService;
+
+    @Scheduled(cron = "0 0 8 * * 1-6", zone = "GMT+1")
+    public void remindStaffForValidationTask() {
+        log.info("Remind tasks for validation :: Execution Time - {} ", new Date());
+        List<Task> tasks = new ArrayList<>();
+        tasks = camundaService.getAllTasksForUser();
+        for (Task task : tasks) {
+            approvalService.relanceApprobation(task.getId());
+        }
+    }
+
+    @Scheduled(cron = "0 0 15 * * 1-6", zone = "GMT+1")
+    public void remindStaffForDueDateTask() {
+        log.info("Remind tasks for due date :: Execution Time - {} ", new Date());
+        List<Task> tasks = new ArrayList<>();
+        tasks = camundaService.getAllTasksForUser();
+        for (Task task : tasks) {
+            approvalService.relanceForDueDate(task.getId());
+        }
+    }
+
+}
