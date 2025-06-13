@@ -19,8 +19,12 @@ import com.ccabank.paperless.service.faces.ProcessUnityService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.util.WorkDayCalculator;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
@@ -36,28 +40,24 @@ import java.util.Optional;
 import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_CAPITAL_HUMAIN;
 
 @Component
+@RequiredArgsConstructor
 public class SendVacation implements JavaDelegate {
 
-    @Autowired
-    private UserRestClient userRestClient;
+        private static final Logger log = LoggerFactory.getLogger(SendVacation.class);
 
-    @Autowired
-    private ReportingRestClient reportingRestClient;
+        private final UserRestClient userRestClient;
 
-    @Autowired
-    private EmailService emailService;
+        private final ReportingRestClient reportingRestClient;
 
-    @Autowired
-    private CamundaService camundaService;
+        private final EmailService emailService;
 
-    @Autowired
-    private RequestService requestService;
+        private final CamundaService camundaService;
 
-    @Autowired
-    private FileService fileService;
+        private final RequestService requestService;
 
-    @Autowired
-    private ProcessUnityService processUnityService;
+        private final FileService fileService;
+
+        private final ProcessUnityService processUnityService;
 
 
     @Override
@@ -138,6 +138,7 @@ public class SendVacation implements JavaDelegate {
             supervisor = new VacationForm.Signatory();
             supervisorId = (String) delegateExecution.getVariable("Apbt_n2");
             EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
+            log.info(supervisorId);
             if(supervisorInfo2 == null){
                     throw new BadRequestException("User N + 2 not found " + supervisorId);
             }
