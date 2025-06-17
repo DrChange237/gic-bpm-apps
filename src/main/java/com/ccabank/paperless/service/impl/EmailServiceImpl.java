@@ -13,6 +13,7 @@ import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private UserRestClient userRestClient;
+
+    @Value("${server_url}")
+    private String server_url;
 
 
     @Override
@@ -114,7 +118,7 @@ public class EmailServiceImpl implements EmailService {
             htmlContent.append("</ul><br>");
 
 
-            htmlContent.append("<a href='https://developer.ccabank-app.com/sandbox/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
+            htmlContent.append("<a href='" + server_url + "/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
                     .append("</div>")
                     .append("</body></html>");
 
