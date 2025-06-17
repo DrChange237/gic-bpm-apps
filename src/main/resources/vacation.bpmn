@@ -38,9 +38,9 @@
         <bpmn:flowNodeRef>Apbt_rh</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0tdet0e</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1dd5ctc</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1yakt0g</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1a08z7h</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_01ta0md</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1yakt0g</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0n95jq3" name="N+ 2">
         <bpmn:flowNodeRef>Gateway_0u83qwk</bpmn:flowNodeRef>
@@ -405,10 +405,6 @@
     <bpmn:endEvent id="Event_1dd5ctc">
       <bpmn:incoming>Flow_1xij44i</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_1yakt0g" name="Envoi du HandOver à l&#39;intérimaire" camunda:delegateExpression="${sendHandOver}">
-      <bpmn:incoming>Flow_1ou2pre</bpmn:incoming>
-      <bpmn:outgoing>Flow_1s2zqlv</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_1a08z7h" name="Envoi de la lettre d&#39;interim aux Habilitations" camunda:delegateExpression="${sendInterimLetter}">
       <bpmn:incoming>Flow_1s2zqlv</bpmn:incoming>
       <bpmn:outgoing>Flow_1jb3oxc</bpmn:outgoing>
@@ -418,6 +414,10 @@
       <bpmn:incoming>Flow_1jb3oxc</bpmn:incoming>
       <bpmn:outgoing>Flow_1xij44i</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1yakt0g" name="Envoi du HandOver à l&#39;intérimaire" camunda:delegateExpression="${sendHandOver}">
+      <bpmn:incoming>Flow_1ou2pre</bpmn:incoming>
+      <bpmn:outgoing>Flow_1s2zqlv</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_2uluack" name="Download" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -513,9 +513,6 @@
       <bpmndi:BPMNShape id="Event_1dd5ctc_di" bpmnElement="Event_1dd5ctc">
         <dc:Bounds x="592" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ncyvgn_di" bpmnElement="Activity_1yakt0g">
-        <dc:Bounds x="970" y="460" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ayanwd_di" bpmnElement="Activity_1a08z7h">
         <dc:Bounds x="790" y="460" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -524,8 +521,11 @@
         <dc:Bounds x="624" y="460" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ncyvgn_di" bpmnElement="Activity_1yakt0g">
+        <dc:Bounds x="940" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1s2zqlv_di" bpmnElement="Flow_1s2zqlv">
-        <di:waypoint x="970" y="500" />
+        <di:waypoint x="940" y="500" />
         <di:waypoint x="890" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hbqwlh_di" bpmnElement="Flow_1hbqwlh">
@@ -655,7 +655,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ou2pre_di" bpmnElement="Flow_1ou2pre">
         <di:waypoint x="1110" y="500" />
-        <di:waypoint x="1070" y="500" />
+        <di:waypoint x="1040" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xij44i_di" bpmnElement="Flow_1xij44i">
         <di:waypoint x="674" y="460" />

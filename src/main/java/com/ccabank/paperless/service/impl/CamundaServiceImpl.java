@@ -353,15 +353,13 @@ public class CamundaServiceImpl implements CamundaService {
         if (processInstanceId == null || variableName == null) {
             throw new IllegalArgumentException("Process instance ID and variable name must not be null");
         }
-
         // Récupérer la valeur de la variable
-        Object variableValue = runtimeService.getVariable(processInstanceId, variableName);
-
-        // Vérifiez si la variable existe
-        if (variableValue == null) {
+        Object variableValue = null;
+        try{
+            variableValue = runtimeService.getVariable(processInstanceId, variableName);
+        }catch (Exception e){
             return null;
         }
-
         return variableValue;
     }
 
