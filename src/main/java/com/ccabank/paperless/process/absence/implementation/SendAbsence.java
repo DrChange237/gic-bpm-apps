@@ -22,6 +22,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -60,6 +61,12 @@ public class SendAbsence implements JavaDelegate {
 
     @Autowired
     private ProcessUnityService processUnityService;
+
+    @Value("${auth.key}")
+    private String api_key;
+
+    @Value("${auth.secret}")
+    private String secret;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -103,7 +110,7 @@ public class SendAbsence implements JavaDelegate {
         }
 
         try{
-            form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
+            form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername(), api_key, secret));
         }catch (Exception e){
             throw new BadRequestException("La Signature de la employee " + staff.getUsername() +  " n'existe pas");
         }
@@ -113,7 +120,7 @@ public class SendAbsence implements JavaDelegate {
         AbsenceForm.Signatory supervisor = new AbsenceForm.Signatory();
         supervisor.setDate(LocalDate.now());
         supervisor.setName(Apbt_n1.getFirstName() + " " + Apbt_n1.getLastName());
-        supervisor.setSignature(userRestClient.getEmployeeSignature(Apbt_n1.getUsername()));
+        supervisor.setSignature(userRestClient.getEmployeeSignature(Apbt_n1.getUsername(), api_key, secret));
 
         form.setSignatory1(supervisor);
 
@@ -128,7 +135,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory supervisor2 = new AbsenceForm.Signatory();
             supervisor2.setDate(LocalDate.now());
             supervisor2.setName(Apbt_n2.getFirstName() + " " + Apbt_n2.getLastName());
-            supervisor2.setSignature(userRestClient.getEmployeeSignature(Apbt_n2.getUsername()));
+            supervisor2.setSignature(userRestClient.getEmployeeSignature(Apbt_n2.getUsername(), api_key, secret));
             form.setSignatory2(supervisor2);
 
             AbsenceForm.Signatory supervisor2Signatory = new AbsenceForm.Signatory();
@@ -185,7 +192,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory apbtSignatory = new AbsenceForm.Signatory();
             apbtSignatory.setDate(LocalDate.now());
             apbtSignatory.setName(apbt.getFirstName() + " " + apbt.getLastName());
-            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca));
+            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca, api_key, secret));
             signatures.add(apbtSignatory);
         }
         apbt_ca = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_SUPERVISION);
@@ -194,7 +201,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory apbtSignatory = new AbsenceForm.Signatory();
             apbtSignatory.setDate(LocalDate.now());
             apbtSignatory.setName(apbt.getFirstName() + " " + apbt.getLastName());
-            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca));
+            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca, api_key, secret));
             signatures.add(apbtSignatory);
         }
         apbt_ca = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
@@ -203,7 +210,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory apbtSignatory = new AbsenceForm.Signatory();
             apbtSignatory.setDate(LocalDate.now());
             apbtSignatory.setName(apbt.getFirstName() + " " + apbt.getLastName());
-            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca));
+            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca, api_key, secret));
             signatures.add(apbtSignatory);
         }
 
