@@ -140,8 +140,8 @@ public class FormValidationController {
             camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
             if(task.getAssignee() != null){
                 if(!task.getAssignee().equals(employeeInfo.getUsername())){
-                    model.addAttribute("error", "Vous n'etes pas autorisé à complete cette tâche");
-                    return "error";
+                    //model.addAttribute("error", "Vous n'etes pas autorisé à complete cette tâche");
+                    //return "error";
                 }
             }
             camundaService.claimTask(task.getId(), employeeInfo.getUsername());
