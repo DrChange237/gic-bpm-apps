@@ -38,14 +38,20 @@ public class EmailServiceImpl implements EmailService {
     @Value("${server_url}")
     private String server_url;
 
+    @Value("${auth.key}")
+    private String key;
+
+    @Value("${auth.secret}")
+    private String secret;
+
 
     @Override
     public boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos){
         try{
             System.out.println("sendForValidation-------------------------------------------------------------------------------------");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
-            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
+            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), key, secret);
 
 
             EmailDto emailDto = new EmailDto();
@@ -102,7 +108,7 @@ public class EmailServiceImpl implements EmailService {
 
             for (ApprovalDto approvalDto : approvalDtos) {
 
-                UserRestDto approver2 = userRestClient.getAgencyByStaffUsername(approvalDto.getStaff(), "key", "secret");
+                UserRestDto approver2 = userRestClient.getAgencyByStaffUsername(approvalDto.getStaff(), key, secret);
                 htmlContent.append("<li>");
 
                 htmlContent.append("<strong>").append(approvalDto.getRole()).append("  </strong> - ").append(approver2.getName() + " - ").append(approver2.getFunction() + "  ");
@@ -139,7 +145,7 @@ public class EmailServiceImpl implements EmailService {
         try{
             System.out.println("sendFiles-------------------------------------------------------------------------------------");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
 
             EmailDto emailDto = new EmailDto();
             emailDto.setTo(sender.getEmail());
@@ -183,8 +189,8 @@ public class EmailServiceImpl implements EmailService {
         try{
             System.out.println("sendAskApproval-------------------------------------------------------------------------------------");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
-            UserRestDto approve = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
+            UserRestDto approve = userRestClient.getAgencyByStaffUsername(ask.getApprover(), key, secret);
 
             System.out.println("Email :" + approve.getEmail());
             EmailDto emailDto = new EmailDto();
@@ -268,12 +274,12 @@ public class EmailServiceImpl implements EmailService {
 
         try {
                 System.out.println("sendConfirmApproval");
-                UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
+                UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
 
                 String emailApprover = "";
                 String nameApprover = "";
 
-                UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
+                UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), key, secret);
                 System.out.println("Email :" + approver.getEmail());
                 emailApprover = approver.getEmail();
                 nameApprover = approver.getName();
@@ -354,9 +360,9 @@ public class EmailServiceImpl implements EmailService {
 
             System.out.println("sendRejectedApproval");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
 
-            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), "key", "secret");
+            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), key, secret);
 
 
             EmailDto emailDto = new EmailDto();
@@ -432,7 +438,7 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendConfirmRequest(EmailAskApprovalDto ask){
 
 
-        UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), "key", "secret");
+        UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
 
         String from = sender.getEmail();
 

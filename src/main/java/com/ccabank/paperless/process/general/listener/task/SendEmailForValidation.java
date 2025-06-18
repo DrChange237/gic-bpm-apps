@@ -21,6 +21,8 @@ import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.task.IdentityLink;
+import org.hibernate.annotations.ValueGenerationType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -39,6 +41,8 @@ public class SendEmailForValidation  implements TaskListener {
     private final IdentityService identityService;
     private final ApprovalKeyRepository approvalKeyRepository;
     private final MapService mapService;
+
+
 
     @Override
     public void notify(DelegateTask delegateTask) {
