@@ -7,6 +7,7 @@ import com.ccabank.paperless.dto.reporting.ResumptionForm;
 import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
+import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
@@ -61,6 +63,13 @@ public class SendResumptionToRH implements JavaDelegate {
     private ProcessUnityService processUnityService;
 
 
+    @Value("${auth.key}")
+    private String api_key;
+
+    @Value("${auth.secret}")
+    private String secret;
+
+
     private static final Logger logger = LoggerFactory.getLogger(SendResumptionToRH.class);
 
 
@@ -68,90 +77,90 @@ public class SendResumptionToRH implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
 
-            Request request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
+        Request request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 
-            ResumptionForm form = new ResumptionForm();
+        ResumptionForm form = new ResumptionForm();
 
-            String owner = (String) delegateExecution.getVariable("owner");
-            EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
-
-
-            form.setDate(LocalDate.now());
-            form.setName(staff.getFirstName() + " " + staff.getLastName());
-            form.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
-            form.setMatricule(staff.getMatricule());
-            form.setUnity(staff.getDepartment().getName());
-            form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
-
-            Date startDateD = (Date) delegateExecution.getVariable("startDate");
-            LocalDate startDate = startDateD.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
-
-            Date endDateD = (Date) delegateExecution.getVariable("endDate");
-            LocalDate endDate = endDateD.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
-
-            Date realEndDateD = (Date) delegateExecution.getVariable("realEndDate");
-            LocalDate realEndDate = realEndDateD.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
-
-            form.setStartDate(startDate);
-            form.setEndDate(endDate);
-            form.setRealEndDate(realEndDate);
-            form.setPlace("DOUALA");
-            String reason = (String) delegateExecution.getVariable("reason");
-            form.setReason(ResumptionForm.Reason.valueOf(reason));
-            if(form.getReason().equals(ResumptionForm.Reason.OTHER)){
-                String explication = (String) delegateExecution.getVariable("explication");
-                form.setExplication(explication);
-            }
-
-            String supervisorUser = (String) delegateExecution.getVariable("Apbt_n1");
-            System.out.println("Apbt_n1 :" + supervisorUser);
-            EmployeeInfo supervisor =  userRestClient.getStaffByUsername(supervisorUser);
+        String owner = (String) delegateExecution.getVariable("owner");
+        UserRestDto staff =  userRestClient.getAgencyByStaffUsername(owner, api_key, secret);
 
 
-            ResumptionForm.Signatory signatory = new ResumptionForm.Signatory();
-            signatory.setName(supervisor.getFirstName() + " " + supervisor.getLastName());
-            signatory.setSignature(userRestClient.getEmployeeSignature(supervisor.getUsername()));
-            form.setSupervisor(signatory);
+        form.setDate(LocalDate.now());
+        form.setName(staff.getName());
+        form.setFunction(staff.getFunction());
+        form.setMatricule(staff.getMatricule());
+        form.setUnity(staff.getDepartment());
+        form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
 
-            //Envoyer le HandOver Par Email à l'intérimaire
-            ByteArrayResource resource = this.reportingRestClient.resumption(form);
+        Date startDateD = (Date) delegateExecution.getVariable("startDate");
+        LocalDate startDate = startDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
-            List<User> users = camundaService.getGroupDetailsWithMembers("notification-capital-humain");
+        Date endDateD = (Date) delegateExecution.getVariable("endDate");
+        LocalDate endDate = endDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
-            String emailList = "";
+        Date realEndDateD = (Date) delegateExecution.getVariable("realEndDate");
+        LocalDate realEndDate = realEndDateD.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
-            for (User user : users) {
-                emailList += user.getEmail() + ",";
-            }
+        form.setStartDate(startDate);
+        form.setEndDate(endDate);
+        form.setRealEndDate(realEndDate);
+        form.setPlace("DOUALA");
+        String reason = (String) delegateExecution.getVariable("reason");
+        form.setReason(ResumptionForm.Reason.valueOf(reason));
+        if(form.getReason().equals(ResumptionForm.Reason.OTHER)){
+            String explication = (String) delegateExecution.getVariable("explication");
+            form.setExplication(explication);
+        }
 
-            emailList = emailList + supervisor.getEmail() ;
+        String supervisorUser = (String) delegateExecution.getVariable("Apbt_n1");
+        System.out.println("Apbt_n1 :" + supervisorUser);
+        EmployeeInfo supervisor =  userRestClient.getStaffByUsername(supervisorUser);
 
-            EmailAskApprovalDto ask = new EmailAskApprovalDto();
-            ask.setSender(staff.getUsername());
-            ask.setSubject("Fiche de Reprise de Service");
-            logger.info(processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
-            ask.setbCC(emailList + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_HABILITATION) + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
-            AttachmentDto attachment = new AttachmentDto();
-            attachment.setName("reprise_service" + delegateExecution.getBusinessKey() + ".pdf");
-            attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
-            ask.setAttachments(new AttachmentDto[]{attachment});
-            emailService.sendFiles(ask);
 
-            CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+        ResumptionForm.Signatory signatory = new ResumptionForm.Signatory();
+        signatory.setName(supervisor.getFirstName() + " " + supervisor.getLastName());
+        signatory.setSignature(userRestClient.getEmployeeSignature(supervisor.getUsername()));
+        form.setSupervisor(signatory);
 
-            FileDto fileDto = new FileDto();
-            fileDto.setAddDate(LocalDateTime.now());
-            fileDto.setName("Fiche de reprise de service");
-            fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
-            fileDto.setMultipartFile(multipartFile);
-            fileDto.setType("application/pdf");
-            fileService.saveFile(request, fileDto);
+        //Envoyer le HandOver Par Email à l'intérimaire
+        ByteArrayResource resource = this.reportingRestClient.resumption(form);
+
+        List<User> users = camundaService.getGroupDetailsWithMembers("notification-capital-humain");
+
+        String emailList = "";
+
+        for (User user : users) {
+            emailList += user.getEmail() + ",";
+        }
+
+        emailList = emailList + supervisor.getEmail() ;
+
+        EmailAskApprovalDto ask = new EmailAskApprovalDto();
+        ask.setSender(staff.getUsername());
+        ask.setSubject("Fiche de Reprise de Service");
+        logger.info(processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
+        ask.setbCC(emailList + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_HABILITATION) + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
+        AttachmentDto attachment = new AttachmentDto();
+        attachment.setName("reprise_service" + delegateExecution.getBusinessKey() + ".pdf");
+        attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
+        ask.setAttachments(new AttachmentDto[]{attachment});
+        emailService.sendFiles(ask);
+
+        CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
+
+        FileDto fileDto = new FileDto();
+        fileDto.setAddDate(LocalDateTime.now());
+        fileDto.setName("Fiche de reprise de service");
+        fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
+        fileDto.setMultipartFile(multipartFile);
+        fileDto.setType("application/pdf");
+        fileService.saveFile(request, fileDto);
 
             /*EmailDto emailDto = new EmailDto();
             emailDto.setFrom("notification@cca-bank.com");
