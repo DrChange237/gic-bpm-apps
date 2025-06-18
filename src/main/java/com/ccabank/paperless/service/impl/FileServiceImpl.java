@@ -29,8 +29,10 @@ public class FileServiceImpl implements FileService {
     private FileRestClient fileRestClient;
 
 
-    @Value("${file_service_url}")
-    private String fileUrl;
+    @Value("${server_url}")
+    private String serverUrl;
+
+    private final String pathFile = "/api/files/";
 
 
     @Override
@@ -61,7 +63,7 @@ public class FileServiceImpl implements FileService {
             file.setRequest(request);
             file.setName(fileDto.getName());
             file.setType(fileDto.getType());
-            file.setUrl(fileUrl + fileFinal.getUrl());
+            file.setUrl(serverUrl + pathFile + fileFinal.getUrl());
             file.setAddDate(LocalDateTime.now());
             fileRepository.save(file);
 
