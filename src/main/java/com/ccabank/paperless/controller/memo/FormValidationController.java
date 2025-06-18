@@ -1,6 +1,7 @@
 package com.ccabank.paperless.controller.memo;
 
 import com.ccabank.paperless.dto.user.EmployeeInfo;
+import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.ApprovalKey;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.openfeign.UserRestClient;
@@ -44,6 +45,12 @@ public class FormValidationController {
     @Value("${base_url}")
     private String api ;
 
+    @Value("${auth.key}")
+    private String key;
+
+    @Value("${auth.secret}")
+    private String secret;
+
 
     @GetMapping("/empty")
     public String empty() {
@@ -64,14 +71,17 @@ public class FormValidationController {
             throw new NotAuthorizedException("Approval key doesn't match");
         }
 
-        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(approvalKey.getUsername());
-        model.addAttribute("user", employeeInfo.getFirstName() + " " + employeeInfo.getLastName());
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), key, secret );
+        String[] fullname = employeeInfo.getUsername().split(".");
+        model.addAttribute("user", fullname[0].toUpperCase() + " " + fullname[1].toUpperCase() );
 
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
-        employeeInfo = userRestClient.getStaffByUsername(request.getStaff());
+        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), key, secret);
+        fullname = employeeInfo.getUsername().split(".");
+
 
         String  apiAccept = api + "validate?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() ;
         String  apiReject = api + "reject?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() ;
@@ -79,7 +89,7 @@ public class FormValidationController {
 
         model.addAttribute("type", request.getType().getName());
         model.addAttribute("approval", approvalKey);
-        model.addAttribute("owner", employeeInfo.getFirstName() + " " + employeeInfo.getLastName());
+        model.addAttribute("owner", fullname[0].toUpperCase()  + " " + fullname[1].toUpperCase() );
         model.addAttribute("apiAccept", apiAccept);
         model.addAttribute("apiReject", apiReject);
 
@@ -98,8 +108,8 @@ public class FormValidationController {
 
         HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(taskId);
         model.addAttribute("name", taskInstance.getName());
-        employeeInfo = userRestClient.getStaffByUsername(taskInstance.getAssignee());
-        model.addAttribute("collaborator", employeeInfo.getFirstName() + " " + employeeInfo.getLastName());
+        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), key, secret);
+        model.addAttribute("collaborator", fullname[0].toUpperCase()  + " " + fullname[1].toUpperCase() );
 
         return "already";
 
