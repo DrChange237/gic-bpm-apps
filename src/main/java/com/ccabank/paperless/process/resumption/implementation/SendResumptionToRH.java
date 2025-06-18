@@ -82,7 +82,7 @@ public class SendResumptionToRH implements JavaDelegate {
         ResumptionForm form = new ResumptionForm();
 
         String owner = (String) delegateExecution.getVariable("owner");
-        UserRestDto staff =  userRestClient.getAgencyByStaffUsername(owner, api_key, secret);
+        UserRestDto staff =  userRestClient.getAgencyByStaffUsername(owner);
 
 
         form.setDate(LocalDate.now());
@@ -90,7 +90,7 @@ public class SendResumptionToRH implements JavaDelegate {
         form.setFunction(staff.getFunction());
         form.setMatricule(staff.getMatricule());
         form.setUnity(staff.getDepartment());
-        form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername(), api_key, secret));
+        form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
 
         Date startDateD = (Date) delegateExecution.getVariable("startDate");
         LocalDate startDate = startDateD.toInstant()
@@ -125,7 +125,7 @@ public class SendResumptionToRH implements JavaDelegate {
 
         ResumptionForm.Signatory signatory = new ResumptionForm.Signatory();
         signatory.setName(supervisor.getFirstName() + " " + supervisor.getLastName());
-        signatory.setSignature(userRestClient.getEmployeeSignature(supervisor.getUsername(), api_key, secret));
+        signatory.setSignature(userRestClient.getEmployeeSignature(supervisor.getUsername()));
         form.setSupervisor(signatory);
 
         //Envoyer le HandOver Par Email à l'intérimaire

@@ -183,7 +183,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             throw new NotAuthorizedException("Approval key doesn't match");
         }
 
-        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret);
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 

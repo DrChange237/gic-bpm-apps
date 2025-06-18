@@ -110,7 +110,7 @@ public class SendAbsence implements JavaDelegate {
         }
 
         try{
-            form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername(), api_key, secret));
+            form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
         }catch (Exception e){
             throw new BadRequestException("La Signature de la employee " + staff.getUsername() +  " n'existe pas");
         }
@@ -120,7 +120,7 @@ public class SendAbsence implements JavaDelegate {
         AbsenceForm.Signatory supervisor = new AbsenceForm.Signatory();
         supervisor.setDate(LocalDate.now());
         supervisor.setName(Apbt_n1.getFirstName() + " " + Apbt_n1.getLastName());
-        supervisor.setSignature(userRestClient.getEmployeeSignature(Apbt_n1.getUsername(), api_key, secret));
+        supervisor.setSignature(userRestClient.getEmployeeSignature(Apbt_n1.getUsername()));
 
         form.setSignatory1(supervisor);
 
@@ -135,7 +135,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory supervisor2 = new AbsenceForm.Signatory();
             supervisor2.setDate(LocalDate.now());
             supervisor2.setName(Apbt_n2.getFirstName() + " " + Apbt_n2.getLastName());
-            supervisor2.setSignature(userRestClient.getEmployeeSignature(Apbt_n2.getUsername(), api_key, secret));
+            supervisor2.setSignature(userRestClient.getEmployeeSignature(Apbt_n2.getUsername()));
             form.setSignatory2(supervisor2);
 
             AbsenceForm.Signatory supervisor2Signatory = new AbsenceForm.Signatory();
@@ -192,7 +192,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory apbtSignatory = new AbsenceForm.Signatory();
             apbtSignatory.setDate(LocalDate.now());
             apbtSignatory.setName(apbt.getFirstName() + " " + apbt.getLastName());
-            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca, api_key, secret));
+            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca));
             signatures.add(apbtSignatory);
         }
         apbt_ca = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_SUPERVISION);
@@ -201,7 +201,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory apbtSignatory = new AbsenceForm.Signatory();
             apbtSignatory.setDate(LocalDate.now());
             apbtSignatory.setName(apbt.getFirstName() + " " + apbt.getLastName());
-            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca, api_key, secret));
+            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca));
             signatures.add(apbtSignatory);
         }
         apbt_ca = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
@@ -210,7 +210,7 @@ public class SendAbsence implements JavaDelegate {
             AbsenceForm.Signatory apbtSignatory = new AbsenceForm.Signatory();
             apbtSignatory.setDate(LocalDate.now());
             apbtSignatory.setName(apbt.getFirstName() + " " + apbt.getLastName());
-            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca, api_key, secret));
+            apbtSignatory.setSignature(userRestClient.getEmployeeSignature(apbt_ca));
             signatures.add(apbtSignatory);
         }
 
