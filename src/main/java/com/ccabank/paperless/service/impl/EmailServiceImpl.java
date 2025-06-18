@@ -260,7 +260,7 @@ public class EmailServiceImpl implements EmailService {
                     "</table>");
 
 
-                emailRestClient.send(emailDto);
+            emailRestClient.send(emailDto);
         }catch (Exception e){
             System.out.println("Email Error" + e.getMessage());
         }
@@ -273,80 +273,80 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendConfirmApproval(EmailAskApprovalDto ask){
 
         try {
-                System.out.println("sendConfirmApproval");
-                UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
+            System.out.println("sendConfirmApproval");
+            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender(), key, secret);
 
-                String emailApprover = "";
-                String nameApprover = "";
+            String emailApprover = "";
+            String nameApprover = "";
 
-                UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), key, secret);
-                System.out.println("Email :" + approver.getEmail());
-                emailApprover = approver.getEmail();
-                nameApprover = approver.getName();
-
-
-                EmailDto emailDto = new EmailDto();
-
-                emailDto.setTo(sender.getEmail());
-                emailDto.setCc(emailApprover);
-                emailDto.setFrom("notification@cca-bank.com");
-                emailDto.setSubject("Confirmation d'approbation");
-
-                emailDto.setBody("<table class=\"row\" align=\"center\" bgcolor=\"#F8F8F8\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">\n" +
-                        "    <tr>\n" +
-                        "        <td class=\"spacer\" height=\"40\" style=\"line-height: 40px;\">&nbsp;</td>\n" +
-                        "    </tr>\n" +
-                        "    <tr>\n" +
-                        "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
-                        "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center\"><strong>Confirmation d'approbation - <span>"+ ask.getType() +"</span> </strong></div>\n" +
-                        "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getName() +"</span>, <br> Votre demande d'approbation a été confimé par <strong><span> "+ ask.getRole() + "</span></p></strong> </div>\n" +
-                        "            \n" +
-                        "            \n" +
-                        "            <table align=\"center\"  cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: auto; word-break: break-all;\" role=\"presentation\">\n" +
-                        "            \n" +
-                        "                <tr>\n" +
-                        "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"border-radius: 3px; text-align: right;\">\n" +
-                        "                        <span style=\"font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;\">\n" +
-                        "                            <strong>Type de Document  </strong></span>\n" +
-                        "                    </td>\n" +
-                        "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px; text-align: left; \">\n" +
-                        "                        <span>"+ ask.getType() +"</span>\n" +
-                        "                    </td>\n" +
-                        "                </tr>\n" +
-                        "                <tr>\n" +
-                        "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"border-radius: 3px; text-align: right;\">\n" +
-                        "                        <span style=\"font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;\">\n" +
-                        "                            <strong>Référence  </strong></span>\n" +
-                        "                    </td>\n" +
-                        "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px; \">\n" +
-                        "                        <span>"+ ask.getReference() +"</span>\n" +
-                        "                    </td>\n" +
-                        "                </tr>\n" +
-                        "                <tr>\n" +
-                        "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"border-radius: 3px; text-align: right;\">\n" +
-                        "                        <span style=\"font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;\">\n" +
-                        "                            <strong>Approbateur  </strong> </span>\n" +
-                        "                    </td>\n" +
-                        "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px;\">\n" +
-                        "                        <span>" + nameApprover +  "</span>\n" +
-                        "                    </td>\n" +
-                        "                </tr>\n" +
-                        "            </table>\n" +
-                        "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +
-                        "            <div style=\"color: #969AA1; font-size: 13px; margin-top: 30px;\">Merci, <br><strong>CCA BANK</strong></div>\n" +
-                        "        </th>\n" +
-                        "    </tr>\n" +
-                        "    <tr>\n" +
-                        "        <td class=\"spacer\" height=\"40\" style=\"line-height: 40px;\">&nbsp;</td>\n" +
-                        "    </tr>\n" +
-                        "</table>");
+            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover(), key, secret);
+            System.out.println("Email :" + approver.getEmail());
+            emailApprover = approver.getEmail();
+            nameApprover = approver.getName();
 
 
+            EmailDto emailDto = new EmailDto();
+
+            emailDto.setTo(sender.getEmail());
+            emailDto.setCc(emailApprover);
+            emailDto.setFrom("notification@cca-bank.com");
+            emailDto.setSubject("Confirmation d'approbation");
+
+            emailDto.setBody("<table class=\"row\" align=\"center\" bgcolor=\"#F8F8F8\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">\n" +
+                    "    <tr>\n" +
+                    "        <td class=\"spacer\" height=\"40\" style=\"line-height: 40px;\">&nbsp;</td>\n" +
+                    "    </tr>\n" +
+                    "    <tr>\n" +
+                    "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center\"><strong>Confirmation d'approbation - <span>"+ ask.getType() +"</span> </strong></div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getName() +"</span>, <br> Votre demande d'approbation a été confimé par <strong><span> "+ ask.getRole() + "</span></p></strong> </div>\n" +
+                    "            \n" +
+                    "            \n" +
+                    "            <table align=\"center\"  cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: auto; word-break: break-all;\" role=\"presentation\">\n" +
+                    "            \n" +
+                    "                <tr>\n" +
+                    "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"border-radius: 3px; text-align: right;\">\n" +
+                    "                        <span style=\"font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;\">\n" +
+                    "                            <strong>Type de Document  </strong></span>\n" +
+                    "                    </td>\n" +
+                    "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px; text-align: left; \">\n" +
+                    "                        <span>"+ ask.getType() +"</span>\n" +
+                    "                    </td>\n" +
+                    "                </tr>\n" +
+                    "                <tr>\n" +
+                    "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"border-radius: 3px; text-align: right;\">\n" +
+                    "                        <span style=\"font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;\">\n" +
+                    "                            <strong>Référence  </strong></span>\n" +
+                    "                    </td>\n" +
+                    "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px; \">\n" +
+                    "                        <span>"+ ask.getReference() +"</span>\n" +
+                    "                    </td>\n" +
+                    "                </tr>\n" +
+                    "                <tr>\n" +
+                    "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"border-radius: 3px; text-align: right;\">\n" +
+                    "                        <span style=\"font-family: 'IBM Plex Sans', Arial, sans-serif; color: #333333; font-size: 14px; font-weight: 400; line-height: 15px; margin: 0px 0px 0px 0px;\">\n" +
+                    "                            <strong>Approbateur  </strong> </span>\n" +
+                    "                    </td>\n" +
+                    "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px;\">\n" +
+                    "                        <span>" + nameApprover +  "</span>\n" +
+                    "                    </td>\n" +
+                    "                </tr>\n" +
+                    "            </table>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +
+                    "            <div style=\"color: #969AA1; font-size: 13px; margin-top: 30px;\">Merci, <br><strong>CCA BANK</strong></div>\n" +
+                    "        </th>\n" +
+                    "    </tr>\n" +
+                    "    <tr>\n" +
+                    "        <td class=\"spacer\" height=\"40\" style=\"line-height: 40px;\">&nbsp;</td>\n" +
+                    "    </tr>\n" +
+                    "</table>");
 
 
 
 
-                    emailRestClient.send(emailDto);
+
+
+            emailRestClient.send(emailDto);
         }catch (Exception e){
             System.out.println("Email Error" + e.getMessage());
         }
@@ -426,7 +426,7 @@ public class EmailServiceImpl implements EmailService {
 
 
 
-                emailRestClient.send(emailDto);
+            emailRestClient.send(emailDto);
         }catch (Exception e){
             System.out.println("Email Error" + e.getMessage());
         }
