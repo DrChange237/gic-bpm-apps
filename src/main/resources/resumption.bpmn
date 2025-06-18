@@ -36,7 +36,6 @@
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
         <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
-        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidationN1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09if7lr</bpmn:incoming>
       <bpmn:outgoing>Flow_1r78jna</bpmn:outgoing>
