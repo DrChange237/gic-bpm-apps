@@ -72,15 +72,14 @@ public class FormValidationController {
         }
 
         UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret );
-        String[] fullname = employeeInfo.getUsername().split(".");
-        model.addAttribute("user", fullname[0].toUpperCase() + " " + fullname[1].toUpperCase() );
+
+        model.addAttribute("user", employeeInfo.getName() );
 
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
         employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), api_key, secret);
-        fullname = employeeInfo.getUsername().split(".");
 
 
         String  apiAccept = api + "validate?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() ;
@@ -89,7 +88,7 @@ public class FormValidationController {
 
         model.addAttribute("type", request.getType().getName());
         model.addAttribute("approval", approvalKey);
-        model.addAttribute("owner", fullname[0].toUpperCase()  + " " + fullname[1].toUpperCase() );
+        model.addAttribute("owner", employeeInfo.getName() );
         model.addAttribute("apiAccept", apiAccept);
         model.addAttribute("apiReject", apiReject);
 
@@ -109,7 +108,7 @@ public class FormValidationController {
         HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(taskId);
         model.addAttribute("name", taskInstance.getName());
         employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), api_key, secret);
-        model.addAttribute("collaborator", fullname[0].toUpperCase()  + " " + fullname[1].toUpperCase() );
+        model.addAttribute("collaborator", employeeInfo.getName() );
 
         return "already";
 
