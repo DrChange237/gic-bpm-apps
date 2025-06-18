@@ -5,6 +5,7 @@ import com.ccabank.paperless.domain.AppServiceResult;
 import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.*;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
+import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.*;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.mappers.RequestMapper;
@@ -28,6 +29,7 @@ import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +84,12 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     @Autowired
     private MapService mapService;
+
+    @Value("${auth.key}")
+    private String api_key;
+
+    @Value("${auth.secret}")
+    private String secret;
 
 
     @Override
@@ -175,7 +183,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             throw new NotAuthorizedException("Approval key doesn't match");
         }
 
-        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(approvalKey.getUsername());
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret);
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
