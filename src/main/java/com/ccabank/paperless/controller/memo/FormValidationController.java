@@ -45,12 +45,6 @@ public class FormValidationController {
     @Value("${base_url}")
     private String api ;
 
-    @Value("${auth.key}")
-    private String api_key;
-
-    @Value("${auth.secret}")
-    private String secret;
-
 
     @GetMapping("/empty")
     public String empty() {
@@ -71,7 +65,7 @@ public class FormValidationController {
             throw new NotAuthorizedException("Approval key doesn't match");
         }
 
-        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret );
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername() );
 
         model.addAttribute("user", employeeInfo.getName() );
 
@@ -79,7 +73,7 @@ public class FormValidationController {
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
-        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), api_key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff());
 
 
         String  apiAccept = api + "validate?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() ;
@@ -107,7 +101,7 @@ public class FormValidationController {
 
         HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(taskId);
         model.addAttribute("name", taskInstance.getName());
-        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), api_key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee());
         model.addAttribute("collaborator", employeeInfo.getName() );
 
         return "already";
@@ -129,14 +123,14 @@ public class FormValidationController {
             return "error";
         }
 
-        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret);
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         model.addAttribute("user", employeeInfo.getName());
 
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
-        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), api_key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff());
 
         model.addAttribute("type", request.getType().getName());
         model.addAttribute("approval", approvalKey);
@@ -163,7 +157,7 @@ public class FormValidationController {
 
         HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(taskId);
         model.addAttribute("name", taskInstance.getName());
-        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), api_key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee());
         model.addAttribute("collaborator", employeeInfo.getName());
 
         return "already";
@@ -179,14 +173,14 @@ public class FormValidationController {
             throw new NotAuthorizedException("Approval key doesn't match");
         }
 
-        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret);
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         model.addAttribute("user", employeeInfo.getName());
 
         System.out.println("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
-        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), api_key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff());
 
         model.addAttribute("type", request.getType().getName());
         model.addAttribute("approval", approvalKey);
@@ -207,7 +201,7 @@ public class FormValidationController {
 
         HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(taskId);
         model.addAttribute("name", taskInstance.getName());
-        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), api_key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee());
         model.addAttribute("collaborator", employeeInfo.getName());
 
         return "already";

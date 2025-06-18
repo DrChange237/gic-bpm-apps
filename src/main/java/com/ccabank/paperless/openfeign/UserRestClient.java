@@ -20,18 +20,10 @@ public interface UserRestClient {
 
 
     @GetMapping(path = "/api/users/exposed/findByUsername/{username}")
-    @Headers({
-            "x-api-key: key",
-            "secret : secret"
-    })
-    UserRestDto getAgencyByStaffUsername(@PathVariable("username") String username,
-                                         @RequestHeader("x-api-key") String token,
-                                         @RequestHeader("secret") String customValue);
+    UserRestDto getAgencyByStaffUsername(@PathVariable("username") String username);
 
     @GetMapping(path = "/api/users/employees/getEmployeeSignatureB64/{username}")
-    String getEmployeeSignature(@PathVariable("username") String username,
-                                @RequestHeader("x-api-key") String key,
-                                @RequestHeader("secret") String secret);
+    String getEmployeeSignature(@PathVariable("username") String username);
 
 
 }
