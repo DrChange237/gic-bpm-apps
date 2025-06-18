@@ -46,7 +46,7 @@ public class FormValidationController {
     private String api ;
 
     @Value("${auth.key}")
-    private String key;
+    private String api_key;
 
     @Value("${auth.secret}")
     private String secret;
@@ -54,8 +54,8 @@ public class FormValidationController {
 
     @GetMapping("/empty")
     public String empty() {
-          camundaService.stopAllActiveProcessInstances();
-          return "test";
+        camundaService.stopAllActiveProcessInstances();
+        return "test";
     }
 
     @GetMapping("/validationForm")
@@ -71,7 +71,7 @@ public class FormValidationController {
             throw new NotAuthorizedException("Approval key doesn't match");
         }
 
-        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), key, secret );
+        UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername(), api_key, secret );
         String[] fullname = employeeInfo.getUsername().split(".");
         model.addAttribute("user", fullname[0].toUpperCase() + " " + fullname[1].toUpperCase() );
 
@@ -79,7 +79,7 @@ public class FormValidationController {
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
-        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(request.getStaff(), api_key, secret);
         fullname = employeeInfo.getUsername().split(".");
 
 
@@ -108,7 +108,7 @@ public class FormValidationController {
 
         HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(taskId);
         model.addAttribute("name", taskInstance.getName());
-        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), key, secret);
+        employeeInfo = userRestClient.getAgencyByStaffUsername(taskInstance.getAssignee(), api_key, secret);
         model.addAttribute("collaborator", fullname[0].toUpperCase()  + " " + fullname[1].toUpperCase() );
 
         return "already";
