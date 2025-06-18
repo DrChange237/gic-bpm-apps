@@ -22,7 +22,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
         // Set permissions on endpoints
         http
             .authorizeRequests()
-            .antMatchers("rest-docs/**", "/swagger-ui/**", "/swagger-resources/**", String.format("%s/validationForm/**", baseUrl)).permitAll()
+            .antMatchers("rest-docs/**", "/swagger-ui/**", "/swagger-resources/**", String.format("%s/validationForm/**", baseUrl), "**/validationForm/**").permitAll()
             .anyRequest().authenticated();
     }
 }
