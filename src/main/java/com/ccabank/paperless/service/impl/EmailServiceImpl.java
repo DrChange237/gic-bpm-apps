@@ -38,12 +38,6 @@ public class EmailServiceImpl implements EmailService {
     @Value("${server_url}")
     private String server_url;
 
-    @Value("${auth.key}")
-    private String key;
-
-    @Value("${auth.secret}")
-    private String secret;
-
 
     @Override
     public boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos){

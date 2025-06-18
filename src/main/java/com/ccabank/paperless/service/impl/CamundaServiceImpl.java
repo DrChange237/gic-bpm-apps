@@ -21,6 +21,8 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ import static org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState.*;
 @Service
 public class CamundaServiceImpl implements CamundaService {
 
+    private static final Logger log = LoggerFactory.getLogger(CamundaServiceImpl.class);
     @Autowired
     private RepositoryService repositoryService;
 
@@ -551,7 +554,11 @@ public class CamundaServiceImpl implements CamundaService {
 
     @Override
     public void deleteProcessInstance(String processInstanceId) {
-        runtimeService.deleteProcessInstance(processInstanceId, "Stopped by admin"); // Motif d'arrêt
+        try{
+            runtimeService.deleteProcessInstance(processInstanceId, "Stopped by admin"); // Motif d'arrêt
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
         System.out.println(" instances de processus arrêtées.");
     }
 
