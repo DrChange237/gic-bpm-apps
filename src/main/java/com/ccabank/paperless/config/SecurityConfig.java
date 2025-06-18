@@ -23,10 +23,6 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
         http
             .authorizeRequests()
             .antMatchers("rest-docs/**", "/swagger-ui/**", "/swagger-resources/**", String.format("%s/validationForm/**", baseUrl)).permitAll()
-            .antMatchers("/validationForm/**").permitAll()
-            .antMatchers("validationForm/**").permitAll()
-            .antMatchers("**/validationForm/**").permitAll()
-            .antMatchers("/api/paperless/validationForm").permitAll() // Autorisé sans auth
             .anyRequest().authenticated();
     }
 }
