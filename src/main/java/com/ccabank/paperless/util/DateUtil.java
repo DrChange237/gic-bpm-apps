@@ -1,5 +1,7 @@
 package com.ccabank.paperless.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +12,43 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class DateUtil {
+
+    public static Date convertToDate(Object object) throws ParseException {
+        if (object == null) {
+            return null;
+        }
+
+        if (object instanceof Date) {
+            return (Date) object;
+        }
+
+        if (object instanceof Long) {
+            return new Date((Long) object); // milliseconds timestamp
+        }
+
+        if (object instanceof String) {
+            // Try multiple date formats
+            String str = (String) object;
+            String[] formats = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "MM/dd/yyyy"};
+
+            for (String format : formats) {
+                try {
+                    return new SimpleDateFormat(format).parse(str);
+                } catch (ParseException ignored) {}
+            }
+            throw new ParseException("Unparseable date: " + str, 0);
+        }
+
+        if (object instanceof LocalDate) {
+            return Date.from(((LocalDate) object).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        if (object instanceof LocalDateTime) {
+            return Date.from(((LocalDateTime) object).atZone(ZoneId.systemDefault()).toInstant());
+        }
+
+        throw new IllegalArgumentException("Cannot convert type to Date: " + object.getClass());
+    }
 
     public static boolean isDatePassed(Date date) {
         Instant instant = date.toInstant();
