@@ -29,14 +29,13 @@
       <bpmn:incoming>Flow_1xtbzby</bpmn:incoming>
       <bpmn:outgoing>Flow_09if7lr</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Apbt_n1" name="Approbation N+1" camunda:assignee="patrick.simo" camunda:candidateUsers="patrick.simo">
+    <bpmn:userTask id="Apbt_n1" name="Approbation N+1" camunda:candidateUsers="patrick.simo">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="decision" type="boolean" />
           <camunda:formField id="comments" label="Commentaires" type="string" />
         </camunda:formData>
         <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="ApbtN1" />
-        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidationN1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09if7lr</bpmn:incoming>
       <bpmn:outgoing>Flow_1r78jna</bpmn:outgoing>

@@ -186,6 +186,7 @@
         </camunda:formData>
         <camunda:executionListener delegateExpression="${RHThreadListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidationRH" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ug0uei</bpmn:incoming>
       <bpmn:incoming>Flow_1v8byfh</bpmn:incoming>
@@ -306,16 +307,16 @@
         <dc:Bounds x="160" y="80" width="1570" height="849" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_0qjg747_di" bpmnElement="Lane_0qjg747" isHorizontal="true">
-        <dc:Bounds x="190" y="600" width="1540" height="329" />
+      <bpmndi:BPMNShape id="Lane_1el7zi1_di" bpmnElement="Lane_1el7zi1" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1540" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0hq3oim_di" bpmnElement="Lane_0hq3oim" isHorizontal="true">
         <dc:Bounds x="190" y="340" width="1540" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_1el7zi1_di" bpmnElement="Lane_1el7zi1" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="1540" height="260" />
+      <bpmndi:BPMNShape id="Lane_0qjg747_di" bpmnElement="Lane_0qjg747" isHorizontal="true">
+        <dc:Bounds x="190" y="600" width="1540" height="329" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
