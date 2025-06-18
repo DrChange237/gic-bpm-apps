@@ -195,7 +195,7 @@ public class ApprovalServiceImpl implements ApprovalService {
                 }
             }
 
-            camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+            //camundaService.claimTask(task.getId(), employeeInfo.getUsername());
 
         }
 
