@@ -11,12 +11,15 @@ import com.ccabank.paperless.entity.ApprovalKey;
 import com.ccabank.paperless.openfeign.EmailRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.EmailService;
+import com.ccabank.paperless.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
@@ -31,6 +34,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private UserRestClient userRestClient;
+
+    @Value("${server_url}")
+    private String server_url;
 
 
     @Override
@@ -79,7 +85,7 @@ public class EmailServiceImpl implements EmailService {
                         // Définir le format souhaité
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                         // Formater la date en chaîne
-                        String formattedDate = formatter.format(field.getValue());
+                        String formattedDate = formatter.format((DateUtil.convertToDate(field.getValue())));
                         htmlContent.append("<li><strong>").append(field.getName()).append(":</strong> ").append(formattedDate).append("</li>");
                     }
                     else{
@@ -114,7 +120,7 @@ public class EmailServiceImpl implements EmailService {
             htmlContent.append("</ul><br>");
 
 
-            htmlContent.append("<a href='https://developer.ccabank-app.com/sandbox/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
+            htmlContent.append("<a href='" + server_url + "/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
                     .append("</div>")
                     .append("</body></html>");
 

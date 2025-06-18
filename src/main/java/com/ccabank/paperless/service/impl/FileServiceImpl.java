@@ -8,6 +8,7 @@ import com.ccabank.paperless.repository.FileRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,6 +27,12 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileRestClient fileRestClient;
+
+
+    @Value("${server_url}")
+    private String serverUrl;
+
+    private final String pathFile = "/api/files/";
 
 
     @Override
@@ -56,7 +63,7 @@ public class FileServiceImpl implements FileService {
             file.setRequest(request);
             file.setName(fileDto.getName());
             file.setType(fileDto.getType());
-            file.setUrl(fileFinal.getUrl());
+            file.setUrl(serverUrl + pathFile + fileFinal.getUrl());
             file.setAddDate(LocalDateTime.now());
             fileRepository.save(file);
 

@@ -259,10 +259,13 @@ public class RequestServiceImpl implements RequestService {
                 throw new BadRequestException("Cette requete a déjà été validé");
             }
 
-            camundaService.deleteProcessInstance(request.getInstanceId());
+
+
+            if(request.getInstanceId() != null){
+                camundaService.deleteProcessInstance(request.getInstanceId());
+            }
 
             request.setStatus(RequestStatus.SUSPENDED);
-
             requestRepository.save(request);
 
             return new AppServiceResult<>(true, 0, "Succeed!", null);
