@@ -22,6 +22,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
             .antMatchers("/validationForm/**").permitAll()
             .antMatchers("validationForm/**").permitAll()
             .antMatchers("**/validationForm/**").permitAll()
+            .antMatchers("/api/paperless/validationForm").permitAll() // Autorisé sans auth
             .anyRequest().authenticated();
     }
 }
