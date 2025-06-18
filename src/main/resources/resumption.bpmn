@@ -29,7 +29,7 @@
       <bpmn:incoming>Flow_1xtbzby</bpmn:incoming>
       <bpmn:outgoing>Flow_09if7lr</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Apbt_n1" name="Approbation N+1" camunda:candidateUsers="patrick.simo">
+    <bpmn:userTask id="Apbt_n1" name="Approbation N+1" camunda:assignee="patrick.simo">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="decision" label="decision" type="boolean" />
