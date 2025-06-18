@@ -29,7 +29,7 @@ public class DateUtil {
         if (object instanceof String) {
             // Try multiple date formats
             String str = (String) object;
-            String[] formats = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "MM/dd/yyyy"};
+            String[] formats = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "MM/dd/yyyy", "EEE MMM dd HH:mm:ss zzz yyyy"};
 
             for (String format : formats) {
                 try {
