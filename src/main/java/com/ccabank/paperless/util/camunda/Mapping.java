@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -25,6 +26,11 @@ public class Mapping {
 
     @Autowired
     private FileRestClient fileRestClient;
+
+    @Value("${server_url}")
+    private String serverUrl;
+
+    private final String pathFile = "/api/files/";
 
 
     public static  List<FieldDto> getFieldFromFormField(FormData data, Map<String, Object> variables){
@@ -89,7 +95,7 @@ public class Mapping {
 
                     for(FileDto file : field.getFiles()) {
                       FileDto fileFinal = fileRestClient.uploadFileToFolder("paperless", "paperless", FileUtils.convertBase64ToMultipartFile(file.getFile(), file.getName(), file.getType()));
-                      variables.put(field.getKey(), fileFinal.getUrl());
+                      variables.put(field.getKey(), serverUrl + pathFile + fileFinal.getUrl());
                     }
                     break;
 
