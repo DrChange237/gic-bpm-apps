@@ -22,13 +22,14 @@ public class FeignClientInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
+
+        requestTemplate.header("x-api-key", key);
+        requestTemplate.header("secret", secret);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
             OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
             requestTemplate.header(AUTHORIZATION_HEADER, String.format("%s %s", TOKEN_TYPE, details.getTokenValue()));
-            requestTemplate.header("x-api-key", key);
-            requestTemplate.header("secret", secret);
         }
     }
 }
