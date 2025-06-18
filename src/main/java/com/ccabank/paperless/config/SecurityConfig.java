@@ -21,6 +21,7 @@ public class SecurityConfig extends ResourceServerConfigurerAdapter {
             .antMatchers("rest-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
             .antMatchers("/validationForm/**").permitAll()
             .antMatchers("validationForm/**").permitAll()
+            .antMatchers("**/validationForm/**").permitAll()
             .anyRequest().authenticated();
     }
 }
