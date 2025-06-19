@@ -45,6 +45,8 @@
         <bpmn:flowNodeRef>Validation</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0w95g3g</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0oojvbb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0ibx57j</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_03gxddd</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_0a2j8yj" sourceRef="Apbt_DG" targetRef="Gateway_0szllfu" />
@@ -463,6 +465,16 @@
       <bpmn:outgoing>Flow_0lefioh</bpmn:outgoing>
       <bpmn:outgoing>Flow_0vk0vor</bpmn:outgoing>
     </bpmn:exclusiveGateway>
+    <bpmn:boundaryEvent id="Event_0ibx57j" attachedToRef="Validation">
+      <bpmn:outgoing>Flow_0csl3kp</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1rcd69m">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_03gxddd">
+      <bpmn:incoming>Flow_0csl3kp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0csl3kp" sourceRef="Event_0ibx57j" targetRef="Event_03gxddd" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0omaou6">
@@ -592,6 +604,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0rqv6xt_di" bpmnElement="Gateway_0rqv6xt" isMarkerVisible="true">
         <dc:Bounds x="615" y="835" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03gxddd_di" bpmnElement="Event_03gxddd">
+        <dc:Bounds x="392" y="1092" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lhxer4_di" bpmnElement="Event_0ibx57j">
+        <dc:Bounds x="302" y="1012" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0a2j8yj_di" bpmnElement="Flow_0a2j8yj">
         <di:waypoint x="2280" y="380" />
@@ -800,6 +818,11 @@
       <bpmndi:BPMNEdge id="Flow_1puv6f4_di" bpmnElement="Flow_1puv6f4">
         <di:waypoint x="1960" y="273" />
         <di:waypoint x="1960" y="355" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0csl3kp_di" bpmnElement="Flow_0csl3kp">
+        <di:waypoint x="320" y="1048" />
+        <di:waypoint x="320" y="1110" />
+        <di:waypoint x="392" y="1110" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
