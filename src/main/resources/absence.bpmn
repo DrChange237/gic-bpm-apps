@@ -12,6 +12,7 @@
         <bpmn:flowNodeRef>Validation</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_12dalqw</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_11xqe65</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1xnk37z</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0hq3oim" name="Hiérarchie">
         <bpmn:flowNodeRef>Activity_0406esr</bpmn:flowNodeRef>
@@ -303,15 +304,23 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ek6q1v" sourceRef="Activity_0q01eok" targetRef="Event_1ad8lv2" />
     <bpmn:boundaryEvent id="Event_12dalqw" attachedToRef="Validation">
-      <bpmn:outgoing>Flow_0txgp11</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0z4m631</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_01k7jde">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0zxajf8" sourceRef="Activity_1xnk37z" targetRef="Event_11xqe65" />
     <bpmn:endEvent id="Event_11xqe65">
-      <bpmn:incoming>Flow_0txgp11</bpmn:incoming>
+      <bpmn:incoming>Flow_0zxajf8</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0txgp11" sourceRef="Event_12dalqw" targetRef="Event_11xqe65" />
+    <bpmn:sequenceFlow id="Flow_0z4m631" sourceRef="Event_12dalqw" targetRef="Activity_1xnk37z" />
+    <bpmn:serviceTask id="Activity_1xnk37z" name="Suspendre la demande">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${suspendRequestListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z4m631</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zxajf8</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0q62hph">
@@ -400,7 +409,10 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_11xqe65_di" bpmnElement="Event_11xqe65">
-        <dc:Bounds x="902" y="783" width="36" height="36" />
+        <dc:Bounds x="942" y="852" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wba5vo_di" bpmnElement="Activity_1xnk37z">
+        <dc:Bounds x="910" y="720" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1u2x2do_di" bpmnElement="Event_12dalqw">
         <dc:Bounds x="732" y="712" width="36" height="36" />
@@ -513,10 +525,14 @@
         <di:waypoint x="320" y="200" />
         <di:waypoint x="268" y="200" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0txgp11_di" bpmnElement="Flow_0txgp11">
+      <bpmndi:BPMNEdge id="Flow_0zxajf8_di" bpmnElement="Flow_0zxajf8">
+        <di:waypoint x="960" y="800" />
+        <di:waypoint x="960" y="852" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z4m631_di" bpmnElement="Flow_0z4m631">
         <di:waypoint x="768" y="730" />
         <di:waypoint x="920" y="730" />
-        <di:waypoint x="920" y="783" />
+        <di:waypoint x="910" y="730" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
