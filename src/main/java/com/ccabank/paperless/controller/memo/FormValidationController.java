@@ -90,7 +90,7 @@ public class FormValidationController {
             camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
             if(task.getAssignee() != null){
                 if(!task.getAssignee().equals(employeeInfo.getUsername())){
-                    //throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
+                    throw new NotAuthorizedException("Vous n'etes pas autorisé à complete cette tâche");
                 }
             }
             //camundaService.claimTask(task.getId(), employeeInfo.getUsername());
@@ -140,11 +140,11 @@ public class FormValidationController {
             camundaService.setProcessVariable(task.getProcessInstanceId(), task.getId(), employeeInfo.getUsername());
             if(task.getAssignee() != null){
                 if(!task.getAssignee().equals(employeeInfo.getUsername())){
-                    //model.addAttribute("error", "Vous n'etes pas autorisé à complete cette tâche");
-                    //return "error";
+                    model.addAttribute("error", "Vous n'etes pas autorisé à complete cette tâche");
+                    return "error";
                 }
             }
-            camundaService.claimTask(task.getId(), employeeInfo.getUsername());
+            //camundaService.claimTask(task.getId(), employeeInfo.getUsername());
             model.addAttribute("name", task.getName());
             try {
                 approvalService.decisionViaEmail(key, taskId, true, "");

@@ -450,6 +450,7 @@ public class CamundaServiceImpl implements CamundaService {
     @Override
     public void claimTask(String taskId, String userId) {
         // Revendiquer la tâche pour l'utilisateur spécifié
+        taskService.claim(taskId, null);
         taskService.claim(taskId, userId);
     }
 
