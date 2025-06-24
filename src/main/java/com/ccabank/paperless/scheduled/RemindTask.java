@@ -54,13 +54,26 @@ public class RemindTask {
 
     @Scheduled(cron = "0 */2 * * * *") // toutes les 2 minutes
     public void cancelNotValidate() {
-        log.info("cancelNotValidate :: Execution Time - {} ", new Date());
+        log.info("DRAFT cancelNotValidate :: Execution Time - {} ", new Date());
         List<Request> requests = requestRepository.findByStatus(RequestStatus.DRAFT);
         for (Request request : requests) {
             boolean isOlderThan7Days = request.getCreatedAt().isBefore(LocalDateTime.now().minusDays(7));
             if (isOlderThan7Days) {
                 try {
                     requestService.suspend(request.getId(), "Pas de validation depuis plus de 7 jours");
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+
+        log.info("REJECTED cancelNotValidate :: Execution Time - {} ", new Date());
+        requests = requestRepository.findByStatus(RequestStatus.REJECTED);
+        for (Request request : requests) {
+            boolean isOlderThan7Days = request.getCreatedAt().isBefore(LocalDateTime.now().minusDays(10));
+            if (isOlderThan7Days) {
+                try {
+                    requestService.suspend(request.getId(), "Pas de mise à jour depuis plus de 10 jours");
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }
