@@ -24,7 +24,7 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
-@Profile("prod")
+@Profile("dev")
 public class RemindTask {
 
     private final ApprovalService approvalService;
