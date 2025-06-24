@@ -60,7 +60,7 @@ public class RemindTask {
             boolean isOlderThan7Days = request.getCreatedAt().isBefore(LocalDateTime.now().minusDays(7));
             if (isOlderThan7Days) {
                 try {
-                    requestService.suspend(request.getId());
+                    requestService.suspend(request.getId(), "Pas de validation depuis plus de 7 jours");
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }

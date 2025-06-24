@@ -6,6 +6,7 @@ import com.ccabank.paperless.dto.memo.RequestDto;
 import com.ccabank.paperless.dto.memo.RequestInfo;
 import com.ccabank.paperless.entity.Request;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -22,7 +23,8 @@ public interface RequestService {
 
     AppServiceResult<RequestInfo> details(Long id);
 
-    AppServiceResult<RequestInfo> suspend(Long id);
+    @Transactional
+    AppServiceResult<RequestInfo> suspend(Long id, String reason);
 
     AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto);
 

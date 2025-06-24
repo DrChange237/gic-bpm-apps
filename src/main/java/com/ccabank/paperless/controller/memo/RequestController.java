@@ -63,7 +63,7 @@ public class RequestController {
     @GetMapping("/request/suspend")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> suspend(@RequestParam(value = "id") Long id) {
-        AppServiceResult<RequestInfo> result = requestService.suspend(id);
+        AppServiceResult<RequestInfo> result = requestService.suspend(id, "Auto-Suspension");
         return result.isSuccess()
                 ? ResponseEntity.ok(new HttpResponseSuccess<RequestInfo>(result.getData()))
                 : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));

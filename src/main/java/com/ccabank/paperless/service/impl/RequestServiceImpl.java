@@ -2,7 +2,6 @@ package com.ccabank.paperless.service.impl;
 
 import com.ccabank.paperless.constant.AppError;
 import com.ccabank.paperless.domain.AppServiceResult;
-import com.ccabank.paperless.dto.email.EmailDto;
 import com.ccabank.paperless.dto.memo.*;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.entity.*;
@@ -18,7 +17,6 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -250,7 +248,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public AppServiceResult<RequestInfo> suspend(Long id) {
+    public AppServiceResult<RequestInfo> suspend(Long id, String reason) {
         try {
 
             Request request = requestRepository.getOne(id);
@@ -266,7 +264,7 @@ public class RequestServiceImpl implements RequestService {
 
             request.setStatus(RequestStatus.SUSPENDED);
             requestRepository.save(request);
-            emailService.sendSuspendRequest(request, "Pas de validation depuis plus de 7 jours");
+            emailService.sendSuspendRequest(request, reason);
 
             return new AppServiceResult<>(true, 0, "Succeed!", null);
 
