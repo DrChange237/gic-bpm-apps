@@ -1,8 +1,12 @@
 package com.ccabank.paperless.scheduled;
 
 
+import com.ccabank.paperless.entity.Request;
+import com.ccabank.paperless.entity.RequestStatus;
+import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.ApprovalService;
 import com.ccabank.paperless.service.faces.CamundaService;
+import com.ccabank.paperless.service.faces.RequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.task.Task;
@@ -11,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +29,8 @@ public class RemindTask {
 
     private final ApprovalService approvalService;
     private final CamundaService camundaService;
+    private final RequestService requestService;
+    private final RequestRepository requestRepository;
 
     @Scheduled(cron = "0 0 8 * * 1-6", zone = "GMT+1")
     public void remindStaffForValidationTask() {
@@ -42,6 +49,22 @@ public class RemindTask {
         tasks = camundaService.getAllTasksForUser();
         for (Task task : tasks) {
             approvalService.relanceForDueDate(task.getId());
+        }
+    }
+
+    @Scheduled(cron = "0 0 * * * *", zone = "GMT+1")
+    public void cancelNotValidate() {
+        log.info("cancelNotValidate :: Execution Time - {} ", new Date());
+        List<Request> requests = requestRepository.findByStatus(RequestStatus.DRAFT);
+        for (Request request : requests) {
+            boolean isOlderThan7Days = request.getCreatedAt().isBefore(LocalDateTime.now().minusDays(7));
+            if (isOlderThan7Days) {
+                try {
+                    requestService.suspend(request.getId());
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
         }
     }
 

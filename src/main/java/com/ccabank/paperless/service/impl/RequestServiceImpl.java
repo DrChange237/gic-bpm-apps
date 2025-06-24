@@ -10,6 +10,7 @@ import com.ccabank.paperless.mappers.RequestMapper;
 import com.ccabank.paperless.repository.*;
 import com.ccabank.paperless.service.faces.*;
 import com.ccabank.paperless.util.camunda.Mapping;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -32,34 +33,28 @@ import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 @Service
 @Transactional
 @Qualifier(MEMO_SERVICE)
+@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
-    @Autowired
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    private RequestMapper requestMapper;
+    private final RequestMapper requestMapper;
 
-    @Autowired
-    private DocumentTypeRepository documentTypeRepository;
+    private final DocumentTypeRepository documentTypeRepository;
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
 
+    private final SecurityService securityService;
 
-    @Autowired
-    private SecurityService securityService;
+    private final CamundaService camundaService;
 
-    @Autowired
-    private CamundaService camundaService;
+    private final Mapping mapping;
 
-    @Autowired
-    private Mapping mapping;
+    private final MapService mapService;
 
-    @Autowired
-    private MapService mapService;
+    private final EmailService emailService;
 
 
     @Override
@@ -258,7 +253,6 @@ public class RequestServiceImpl implements RequestService {
             if(request.getStatus().equals(RequestStatus.ACCEPTED)){
                 throw new BadRequestException("Cette requete a déjà été validé");
             }
-
 
 
             if(request.getInstanceId() != null){
