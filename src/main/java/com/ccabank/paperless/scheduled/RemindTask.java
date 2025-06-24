@@ -24,7 +24,7 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
-@Profile("dev")
+@Profile("prod")
 public class RemindTask {
 
     private final ApprovalService approvalService;
@@ -52,7 +52,7 @@ public class RemindTask {
         }
     }
 
-    @Scheduled(cron = "0 */2 * * * *") // toutes les 2 minutes
+    @Scheduled(cron = "0 0 * * * *", zone = "GMT+1")
     public void cancelNotValidate() {
         log.info("DRAFT cancelNotValidate :: Execution Time - {} ", new Date());
         List<Request> requests = requestRepository.findByStatus(RequestStatus.DRAFT);
