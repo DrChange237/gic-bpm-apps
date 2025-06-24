@@ -52,7 +52,7 @@ public class RemindTask {
         }
     }
 
-    @Scheduled(cron = "0 0 * * * *", zone = "GMT+1")
+    @Scheduled(cron = "0 */2 * * * *") // toutes les 2 minutes
     public void cancelNotValidate() {
         log.info("cancelNotValidate :: Execution Time - {} ", new Date());
         List<Request> requests = requestRepository.findByStatus(RequestStatus.DRAFT);
