@@ -59,6 +59,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
+    @Transactional
     public AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest req) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
@@ -113,6 +114,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public AppServiceResult<Request> update(RequestDto requestDto) {
         try {
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
@@ -152,6 +154,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
+    @Transactional
     public AppServiceResult<?> validateRequest(Long id) {
 
 
@@ -246,6 +249,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public AppServiceResult<RequestInfo> suspend(Long id) {
         try {
 
@@ -277,6 +281,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
+    @Transactional
     public AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto) {
         try {
             logger.info(MEMO_SERVICE + "achivage : methode invocation");
