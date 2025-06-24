@@ -8,6 +8,7 @@ import com.ccabank.paperless.dto.memo.ApprovalDto;
 import com.ccabank.paperless.dto.memo.FieldDto;
 import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.ApprovalKey;
+import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.openfeign.EmailRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.EmailService;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
@@ -420,6 +420,26 @@ public class EmailServiceImpl implements EmailService {
 
 
 
+            emailRestClient.send(emailDto);
+        }catch (Exception e){
+            System.out.println("Email Error" + e.getMessage());
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean sendSuspendRequest(Request request, String reason){
+
+        UserRestDto sender = userRestClient.getAgencyByStaffUsername(request.getStaff());
+        EmailDto emailDto = new EmailDto();
+
+        emailDto.setTo(sender.getEmail());
+        emailDto.setFrom("notification@cca-bank.com");
+        emailDto.setSubject("Votre " + request.getType() + " a été suspendu(e)");
+        emailDto.setBody("Vous avez initié une " + request.getType() + ", elle a été suspendu(e) : " + reason);
+
+        try {
             emailRestClient.send(emailDto);
         }catch (Exception e){
             System.out.println("Email Error" + e.getMessage());

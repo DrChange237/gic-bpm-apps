@@ -4,6 +4,7 @@ import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.ApprovalDto;
 import com.ccabank.paperless.dto.memo.FieldDto;
 import com.ccabank.paperless.entity.ApprovalKey;
+import com.ccabank.paperless.entity.Request;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface EmailService {
 
     boolean sendRejectedApproval(EmailAskApprovalDto ask);
 
+    boolean sendSuspendRequest(Request request, String reason);
 
     boolean sendConfirmRequest(EmailAskApprovalDto ask);
 }

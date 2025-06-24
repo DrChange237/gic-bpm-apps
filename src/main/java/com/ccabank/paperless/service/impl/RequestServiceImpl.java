@@ -2,6 +2,7 @@ package com.ccabank.paperless.service.impl;
 
 import com.ccabank.paperless.constant.AppError;
 import com.ccabank.paperless.domain.AppServiceResult;
+import com.ccabank.paperless.dto.email.EmailDto;
 import com.ccabank.paperless.dto.memo.*;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.entity.*;
@@ -261,6 +262,7 @@ public class RequestServiceImpl implements RequestService {
 
             request.setStatus(RequestStatus.SUSPENDED);
             requestRepository.save(request);
+            emailService.sendSuspendRequest(request, "Pas de validation depuis plus de 7 jours");
 
             return new AppServiceResult<>(true, 0, "Succeed!", null);
 
