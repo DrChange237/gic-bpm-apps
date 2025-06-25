@@ -11,11 +11,13 @@ import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.process.general.constant.ApprobationLevel;
+import com.ccabank.paperless.process.general.constant.EmailGroup;
 import com.ccabank.paperless.process.general.service.RequestService;
 import com.ccabank.paperless.process.mission.constant.TransportCommonConstant;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
+import com.ccabank.paperless.service.faces.ProcessUnityService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +55,9 @@ public class SendMissionOrder implements JavaDelegate {
 
     @Autowired
     private final FileService fileService;
+
+    @Autowired
+    private final ProcessUnityService processUnityService;
 
     @Autowired
     private RequestRepository requestRepository;
@@ -209,9 +214,9 @@ public class SendMissionOrder implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Ordre de Mission");
-        ask.setbCC(n1.getEmail() + "," + n_uch.getEmail());
+        ask.setbCC(n1.getEmail() + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
         AttachmentDto attachment = new AttachmentDto();
-        attachment.setName("ordre_mission" + delegateExecution.getBusinessKey() + ".pdf");
+        attachment.setName("ordre_mission-" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
         ask.setAttachments(new AttachmentDto[]{attachment});
         emailService.sendFiles(ask);
