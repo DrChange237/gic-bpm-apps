@@ -3,12 +3,18 @@ package com.ccabank.paperless.service.impl;
 import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.entity.File;
 import com.ccabank.paperless.entity.Request;
+import com.ccabank.paperless.mappers.FileMapper;
 import com.ccabank.paperless.openfeign.FileRestClient;
 import com.ccabank.paperless.repository.FileRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.FileService;
+import com.ccabank.paperless.specification.FileSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,11 +34,29 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private FileRestClient fileRestClient;
 
+    @Autowired
+    private FileMapper fileMapper;
+
 
     @Value("${server_url}")
     private String serverUrl;
 
     private final String pathFile = "/api/files/";
+
+
+    @Override
+    public Page<FileDto> search(String reference, String type, String staff, int page, int size) {
+        // Commencez avec une spécification "vide" ou "vraie"
+        Specification<File> spec = Specification.where(null);
+        spec = FileSpecifications.withDynamicQuery(reference, type, staff);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<File> files = fileRepository.findAll(pageable);
+        if(spec != null){
+            files = fileRepository.findAll(spec, pageable);
+        }
+        // Convert Page<Element> to Page<ElementDto> using the map() method
+        return files.map(fileMapper::toDto);
+    }
 
 
     @Override
