@@ -23,6 +23,7 @@
         <bpmn:flowNodeRef>Apbt_n1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1i5cgi2</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1tio0nt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1uok86h</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:serviceTask id="Activity_1d4pc5r" name="Demande d&#39;approbation" camunda:delegateExpression="${sendAskEmailN1}">
@@ -55,6 +56,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="Activity_1tio0nt" name="Notification au Capital Humain et au Habilitation" camunda:delegateExpression="${sendResumptionToRH}">
       <bpmn:incoming>Flow_08qdowr</bpmn:incoming>
+      <bpmn:incoming>Flow_0sdzxga</bpmn:incoming>
       <bpmn:outgoing>Flow_1hifhye</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_101y7yt">
@@ -119,6 +121,13 @@
       <bpmn:incoming>Flow_0dne6dz</bpmn:incoming>
       <bpmn:outgoing>Flow_1xtbzby</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:boundaryEvent id="Event_1uok86h" attachedToRef="Apbt_n1">
+      <bpmn:outgoing>Flow_0sdzxga</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1ecnhq5">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT48H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0sdzxga" sourceRef="Event_1uok86h" targetRef="Activity_1tio0nt" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0jgj7zn">
@@ -160,6 +169,9 @@
         <dc:Bounds x="240" y="360" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06fdhy1_di" bpmnElement="Event_1uok86h">
+        <dc:Bounds x="512" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0vz8aqg_di" bpmnElement="Flow_0vz8aqg">
         <di:waypoint x="290" y="512" />
         <di:waypoint x="290" y="440" />
@@ -189,6 +201,11 @@
       <bpmndi:BPMNEdge id="Flow_1xtbzby_di" bpmnElement="Flow_1xtbzby">
         <di:waypoint x="290" y="360" />
         <di:waypoint x="290" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sdzxga_di" bpmnElement="Flow_0sdzxga">
+        <di:waypoint x="548" y="170" />
+        <di:waypoint x="740" y="170" />
+        <di:waypoint x="740" y="170" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1s3ijb9_di" bpmnElement="TextAnnotation_1s3ijb9">
         <dc:Bounds x="633" y="110" width="100" height="30" />

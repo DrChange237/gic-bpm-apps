@@ -27,8 +27,8 @@
         <bpmn:flowNodeRef>Activity_09e4eb8</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0kjo49a</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1vixsug</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1b0d9ah</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_14w5k91</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1b0d9ah</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1gep159" name="N + 2">
         <bpmn:flowNodeRef>Gateway_1e1vu8a</bpmn:flowNodeRef>
@@ -460,15 +460,15 @@
     <bpmn:endEvent id="Event_1vixsug">
       <bpmn:incoming>Flow_1d1wz4e</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_1b0d9ah" name="Envoi de l&#39;Ordre de Mission" camunda:delegateExpression="${sendMissionOrder}">
-      <bpmn:incoming>Flow_1008w1h</bpmn:incoming>
-      <bpmn:outgoing>Flow_1d1wz4e</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1008w1h" sourceRef="Activity_14w5k91" targetRef="Activity_1b0d9ah" />
     <bpmn:userTask id="Activity_14w5k91" name="Transmission en Paiement" camunda:candidateGroups="mission_ca_supervision">
       <bpmn:incoming>Flow_0hhbpy8</bpmn:incoming>
       <bpmn:outgoing>Flow_1008w1h</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1b0d9ah" name="Envoi de l&#39;Ordre de Mission" camunda:delegateExpression="${sendMissionOrder}">
+      <bpmn:incoming>Flow_1008w1h</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d1wz4e</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0omaou6">
@@ -596,11 +596,11 @@
       <bpmndi:BPMNShape id="Event_1vixsug_di" bpmnElement="Event_1vixsug">
         <dc:Bounds x="4032" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_00y8kgu_di" bpmnElement="Activity_1b0d9ah">
-        <dc:Bounds x="3810" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1phi4ow_di" bpmnElement="Activity_14w5k91">
         <dc:Bounds x="3600" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00y8kgu_di" bpmnElement="Activity_1b0d9ah">
+        <dc:Bounds x="3800" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0a2j8yj_di" bpmnElement="Flow_0a2j8yj">
         <di:waypoint x="2280" y="380" />
@@ -637,7 +637,7 @@
         <di:waypoint x="1566" y="159" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d1wz4e_di" bpmnElement="Flow_1d1wz4e">
-        <di:waypoint x="3910" y="250" />
+        <di:waypoint x="3900" y="250" />
         <di:waypoint x="4032" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jjogs8_di" bpmnElement="Flow_0jjogs8">
@@ -812,7 +812,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1008w1h_di" bpmnElement="Flow_1008w1h">
         <di:waypoint x="3700" y="250" />
-        <di:waypoint x="3810" y="250" />
+        <di:waypoint x="3800" y="250" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
