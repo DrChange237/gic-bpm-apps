@@ -14,6 +14,7 @@ import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,11 @@ public class MapServiceImpl implements MapService {
 
                 if(historic.getAssignee() != null){
                     System.out.println("Assigne : " + historic.getAssignee());
+                    try{
+                        approvalDto.setHaveSignature(true);
+                    }catch (Exception e){
+                        approvalDto.setHaveSignature(false);
+                    }
                     approvalDto.setHaveSignature(securityService.checkUserSignature(historic.getAssignee()));
                     approvalDto.setStaff(historic.getAssignee());
                 }

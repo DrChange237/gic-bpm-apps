@@ -184,8 +184,6 @@ public class SendAbsence implements JavaDelegate {
         supervisorSignatory.setSignature(supervisor.getSignature());
         signatures.add(supervisorSignatory);
 
-
-
         //signatures.add(DG.getSignature());
 
         String apbt_ca = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_SAISIE);
