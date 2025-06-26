@@ -23,7 +23,7 @@ public class Request  {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "VALIDATION_DATE", nullable = false)
+    @Column(name = "VALIDATION_DATE", nullable = true)
     private LocalDateTime validationDate;
 
     @Column(name = "LAST_MODIFICATION", nullable = false)
