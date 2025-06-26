@@ -23,6 +23,9 @@ public class Request  {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "VALIDATION_DATE", nullable = false)
+    private LocalDateTime validationDate;
+
     @Column(name = "LAST_MODIFICATION", nullable = false)
     private LocalDateTime lastModification;
 
@@ -119,6 +122,13 @@ public class Request  {
         this.type = type;
     }
 
+    public LocalDateTime getValidationDate() {
+        return validationDate;
+    }
+
+    public void setValidationDate(LocalDateTime validationDate) {
+        this.validationDate = validationDate;
+    }
 
     public Long getDocumentId() {
         return documentId;

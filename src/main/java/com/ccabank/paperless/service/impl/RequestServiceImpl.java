@@ -158,6 +158,7 @@ public class RequestServiceImpl implements RequestService {
 
         Request request = requestRepository.getOne(id);
         request.setLastModification(LocalDateTime.now());
+        request.setValidationDate(LocalDateTime.now());
 
         boolean signature = securityService.checkUserSignature(request.getStaff());
 
