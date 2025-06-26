@@ -145,19 +145,6 @@ public class SendAbsence implements JavaDelegate {
             signatures.add(supervisor2Signatory);
         }
 
-
-       /*String direction = "";
-
-        direction = (String) delegateExecution.getVariable("Apbt_DG");
-        if(direction != null){
-            EmployeeInfo DG =  userRestClient.getStaffByUsername(direction);
-            AbsenceForm.Signatory directionG = new AbsenceForm.Signatory();
-            directionG.setDate(LocalDate.now());
-            directionG.setName(DG.getFirstName() + " " + DG.getLastName());
-            directionG.setSignature(userRestClient.getEmployeeSignature(DG.getUsername()));
-            form.setHeadOffice(directionG);
-        }*/
-
         String deduction = (String) delegateExecution.getVariable("deduction");
         form.setDeduction(AbsenceForm.Deduction.valueOf(deduction));
 

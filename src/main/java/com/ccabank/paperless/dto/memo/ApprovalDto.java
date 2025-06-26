@@ -39,6 +39,8 @@ public class ApprovalDto implements Serializable {
 
     private String time;
 
+    private boolean haveSignature;
+
     private boolean required;
 
 }

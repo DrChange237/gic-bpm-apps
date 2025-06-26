@@ -4,9 +4,11 @@ import com.ccabank.paperless.dto.memo.ApprovalDto;
 import com.ccabank.paperless.entity.Approbation;
 import com.ccabank.paperless.entity.ApprovalStatus;
 import com.ccabank.paperless.entity.ApprovalType;
+import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.repository.ApprobationRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.MapService;
+import com.ccabank.paperless.service.faces.SecurityService;
 import com.ccabank.paperless.util.DateUtil;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class MapServiceImpl implements MapService {
 
     @Autowired
     private ApprobationRepository approbationRepository;
+
+    @Autowired
+    private SecurityService securityService;
 
     @Override
     public List<ApprovalDto> mapTaskToApprovalDto(List<HistoricTaskInstance> historics) {
@@ -52,8 +57,10 @@ public class MapServiceImpl implements MapService {
                 if(natureTask.equals("GROUP")){
                     approvalDto.setType(ApprovalType.STATIC);
                 }
+
                 if(historic.getAssignee() != null){
                     System.out.println("Assigne : " + historic.getAssignee());
+                    approvalDto.setHaveSignature(securityService.checkUserSignature(historic.getAssignee()));
                     approvalDto.setStaff(historic.getAssignee());
                 }
 
