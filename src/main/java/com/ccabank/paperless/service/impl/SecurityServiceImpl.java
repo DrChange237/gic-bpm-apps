@@ -25,11 +25,12 @@ public class SecurityServiceImpl implements SecurityService {
         try{
             signature = userRestClient.getEmployeeSignature(username);
         }catch (Exception e){
-            signature = null;
+
         }
         if(signature == null){
             return false;
         }
+
         if(signature.isEmpty()){
             return false;
         }

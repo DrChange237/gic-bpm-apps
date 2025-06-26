@@ -146,7 +146,11 @@ public class SendAbsence implements JavaDelegate {
         }
 
         String deduction = (String) delegateExecution.getVariable("deduction");
-        form.setDeduction(AbsenceForm.Deduction.valueOf(deduction));
+        try{
+            form.setDeduction(AbsenceForm.Deduction.valueOf(deduction));
+        }catch (Exception e){
+            form.setDeduction(AbsenceForm.Deduction.VACATION);
+        }
 
         Long absence = (Long) delegateExecution.getVariable("absence");
         form.setAbsence(absence.doubleValue());
