@@ -153,18 +153,30 @@ public class SendAbsence implements JavaDelegate {
         }
 
         Long absence = (Long) delegateExecution.getVariable("absence");
-        form.setAbsence(absence.doubleValue());
+        if(absence != null){
+            form.setAbsence(absence.doubleValue());
+        }
+
 
         Long stock = (Long) delegateExecution.getVariable("stock");
-        form.setStock(stock.doubleValue());
+        if(stock != null){
+            form.setStock(stock.doubleValue());
+        }
 
         Long advice = (Long) delegateExecution.getVariable("advice");
-        form.setAdvice(advice.doubleValue());
-        form.setDays(advice.intValue());
+        if(advice != null){
+            form.setAdvice(advice.doubleValue());
+            form.setDays(advice.intValue());
+        }
+
+
 
 
         Long rights = (Long) delegateExecution.getVariable("rights");
-        form.setRights(rights.doubleValue());
+        if(rights != null){
+            form.setRights(rights.doubleValue());
+        }
+
 
 
         AbsenceForm.Signatory supervisorSignatory = new AbsenceForm.Signatory();
@@ -172,7 +184,6 @@ public class SendAbsence implements JavaDelegate {
         supervisorSignatory.setName(supervisor.getName());
         supervisorSignatory.setSignature(supervisor.getSignature());
         signatures.add(supervisorSignatory);
-
 
 
         //signatures.add(DG.getSignature());
