@@ -178,12 +178,12 @@ public class SendAbsence implements JavaDelegate {
         }
 
 
-
         AbsenceForm.Signatory supervisorSignatory = new AbsenceForm.Signatory();
         supervisorSignatory.setDate(LocalDate.now());
         supervisorSignatory.setName(supervisor.getName());
         supervisorSignatory.setSignature(supervisor.getSignature());
         signatures.add(supervisorSignatory);
+
 
 
         //signatures.add(DG.getSignature());

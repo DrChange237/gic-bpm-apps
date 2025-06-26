@@ -40,8 +40,8 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public EmployeeInfo getCurrentUser(){
         String username = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Principal::getName).orElse("");
+        log.warn("Current user: " + username);
         return userRestClient.getStaffByUsername(username);
-
     }
 
 }
