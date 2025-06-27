@@ -26,9 +26,9 @@ public class FileController {
     @GetMapping("/files/search")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> search(
-            @RequestParam(value = "reference") String reference,
-            @RequestParam(value = "type") String type,
-            @RequestParam(value = "staff") String staff,
+            @RequestParam(value = "reference", required = false) String reference,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "staff", required = false) String staff,
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size)
            {
