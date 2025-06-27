@@ -23,6 +23,8 @@ public class FileDto implements Serializable {
 
     private String file;
 
+    private RequestDto request;
+
     private MultipartFile multipartFile;
 
     public String getId() {
@@ -95,5 +97,13 @@ public class FileDto implements Serializable {
 
     public void setMultipartFile(MultipartFile multipartFile) {
         this.multipartFile = multipartFile;
+    }
+
+    public RequestDto getRequest() {
+        return request;
+    }
+
+    public void setRequest(RequestDto request) {
+        this.request = request;
     }
 }
