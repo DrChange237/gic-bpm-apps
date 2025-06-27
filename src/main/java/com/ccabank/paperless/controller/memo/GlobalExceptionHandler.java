@@ -5,6 +5,7 @@ import com.ccabank.paperless.constant.MessageCode;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.HttpClientException;
 import com.ccabank.paperless.exception.NotFoundException;
+import com.ccabank.paperless.service.faces.EmailService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,7 +47,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
     private final MessageSource messageSource;
+
+    private final EmailService emailService;
 
 
     @Value("${server.error.include-stacktrace:never}")
@@ -110,6 +114,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> buildResponse(Exception exception, Object body, HttpHeaders headers, HttpStatus status, HttpServletRequest request) {
         log.error(exception.getClass().getSimpleName() + " {}\n", request.getRequestURI(), exception);
+        emailService.sendBug(exception.getMessage(), exception.getStackTrace().toString());
         if(body == null){
             ApiError response = new ApiError(status, exception, request);
             if(exception instanceof MethodArgumentNotValidException){

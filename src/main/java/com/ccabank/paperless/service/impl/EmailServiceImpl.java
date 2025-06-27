@@ -40,6 +40,18 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
+    public boolean sendBug(String title, String trace){
+        EmailDto emailDto = new EmailDto();
+        emailDto.setFrom("notification@cca-bank.com");
+        emailDto.setSubject(title);
+        emailDto.setTo("kevin.simo@cca-bank.com");
+        emailDto.setBody(trace);
+        emailRestClient.send(emailDto);
+        return true;
+    }
+
+
+    @Override
     public boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos){
         try{
             System.out.println("sendForValidation-------------------------------------------------------------------------------------");
