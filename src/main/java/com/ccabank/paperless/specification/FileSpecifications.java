@@ -23,7 +23,7 @@ public class FileSpecifications {
             }
 
             if (staff != null && !staff.isEmpty()) {
-                predicates.add(cb.like(root.get("staff").get("id"), staff));
+                predicates.add(cb.like(root.get("request").get("staff"), staff));
             }
 
             if(predicates.isEmpty()){
