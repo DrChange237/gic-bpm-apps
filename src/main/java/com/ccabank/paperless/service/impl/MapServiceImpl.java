@@ -55,18 +55,19 @@ public class MapServiceImpl implements MapService {
                 System.out.println("Position : " + historics.indexOf(historic));
                 approvalDto.setPosition(historics.indexOf(historic));
                 String natureTask = camundaService.getTaskAssigneeNature(taskId);
+
                 if(natureTask.equals("GROUP")){
                     approvalDto.setType(ApprovalType.STATIC);
+                    approvalDto.setHaveSignature(false);
                 }
 
                 if(historic.getAssignee() != null){
                     System.out.println("Assigne : " + historic.getAssignee());
                     try{
-                        approvalDto.setHaveSignature(true);
+                        approvalDto.setHaveSignature(securityService.checkUserSignature(historic.getAssignee()));
                     }catch (Exception e){
                         approvalDto.setHaveSignature(false);
                     }
-                    approvalDto.setHaveSignature(securityService.checkUserSignature(historic.getAssignee()));
                     approvalDto.setStaff(historic.getAssignee());
                 }
 

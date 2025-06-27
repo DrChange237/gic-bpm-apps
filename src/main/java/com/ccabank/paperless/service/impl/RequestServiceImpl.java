@@ -163,7 +163,7 @@ public class RequestServiceImpl implements RequestService {
         boolean signature = securityService.checkUserSignature(request.getStaff());
 
         if(!signature){
-            //throw new BadRequestException("l'utilisateur " + request.getStaff() + " n'a pas de signature");
+            throw new BadRequestException("l'utilisateur " + request.getStaff() + " n'a pas de signature, bien vouloir charger votre signature");
         }
 
         if(request == null){
