@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendBug(String title, String trace){
         EmailDto emailDto = new EmailDto();
         emailDto.setFrom("notification@cca-bank.com");
-        emailDto.setSubject(title);
+        emailDto.setSubject("[BUG] " + title);
         emailDto.setTo("kevin.simo@cca-bank.com");
         emailDto.setBody(trace);
         emailRestClient.send(emailDto);
