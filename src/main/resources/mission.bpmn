@@ -158,7 +158,7 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="nbDays" label="Nombre de Nuités" type="long">
+          <camunda:formField id="nbDays" label="Nombre de Nuitées Accordées" type="long">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="number" />
@@ -302,14 +302,14 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="nbDays" label="Nombre de nuitées" type="long">
+          <camunda:formField id="nbDays" label="Nombre de Nuitées Demandées" type="long">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="number" />
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-           <camunda:formField id="endDate" label="Date de Retour" type="date">
+          <camunda:formField id="endDate" label="Date de Retour" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="required" value="true" />
@@ -373,7 +373,6 @@
               <camunda:property id="description" value="Veuillez choisir la Direction Centrale qui va valider votre Ordre de mission" />
             </camunda:properties>
           </camunda:formField>
-         
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1wcpetx</bpmn:outgoing>
