@@ -213,7 +213,7 @@ public class SendMissionOrder implements JavaDelegate {
         MissionForm.Transport transport  = new MissionForm.Transport();
         String transportMoyen = (String) delegateExecution.getVariable("transport");
         transport.setCommon(false);
-        if(transportMoyen.equals(TransportCommonConstant.COMMON_TRANSPORT)){
+        if(transportMoyen.equals("COMMUN")){
             transport.setCommon(true);
         }
         String coursier = (String) delegateExecution.getVariable("coursier");
