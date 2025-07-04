@@ -98,8 +98,12 @@ public class SendAbsence implements JavaDelegate {
          endDate = (LocalDate) delegateExecution.getVariable("endDate");
 
         String reason = (String) delegateExecution.getVariable("reason");
-
         form.setReason(reason);
+        if(reason.equals("OTHER")){
+            String otherReason = (String) delegateExecution.getVariable("otherReason");
+            form.setReason(otherReason);
+        }
+
         form.setStartDate(startDate);
         form.setEndDate(endDate);
 
