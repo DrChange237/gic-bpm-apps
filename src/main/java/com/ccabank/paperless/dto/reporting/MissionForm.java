@@ -52,6 +52,9 @@ public class MissionForm {
     @Schema(description = "Décision de la Direction Générale", example = "Favorable")
     private String decision = "Favorable";
 
+    private Signatory headOffice = new Signatory();
+
+
     @Schema(example = " ")
     private String signature = "";
 

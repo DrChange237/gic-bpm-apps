@@ -160,7 +160,22 @@ public class SendMissionOrder implements JavaDelegate {
             missionForm.setSupervisorNext(supervisor2);
         }
 
+        String apbt_dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DG);
 
+        if(apbt_dg != null){
+            EmployeeInfo dg =  userRestClient.getStaffByUsername(apbt_dg);
+            MissionForm.Signatory headOffice = new MissionForm.Signatory();
+            headOffice.setDate(LocalDate.now());
+            headOffice.setName(dg.getFirstName() + " " + dg.getLastName());
+            headOffice.setFunction(Optional.ofNullable(dg.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            try{
+                signature = userRestClient.getEmployeeSignature(apbt_dg);
+            }catch (Exception e){
+                throw new BadRequestException("La signature de lemployé " + apbt_dg + " n'est pas disponible");
+            }
+            headOffice.setSignature(signature);
+            missionForm.setHeadOffice(headOffice);
+        }
 
         String apbt_uch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
         EmployeeInfo n_uch =  userRestClient.getStaffByUsername(apbt_uch);

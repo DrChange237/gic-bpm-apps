@@ -6,6 +6,8 @@ public class ApprobationLevel {
 
     public static String APPROBATION_N2 = "Apbt_n2";
 
+    public static String APPROBATION_DG = "Apbt_DG";
+
     public static String APPROBATION_CA_SAISIE = "Apbt_ca_saisie";
 
     public static String APPROBATION_CA_SUPERVISION = "Apbt_ca_supervision";
