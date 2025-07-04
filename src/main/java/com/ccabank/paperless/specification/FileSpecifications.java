@@ -1,5 +1,6 @@
 package com.ccabank.paperless.specification;
 
+import com.ccabank.paperless.entity.DocumentType;
 import com.ccabank.paperless.entity.File;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class FileSpecifications {
 
     // Exemple de spécification combinant plusieurs conditions optionnelles (alternative pour le service)
-    public static Specification<File> withDynamicQuery(String reference, String fileType, String staff) {
+    public static Specification<File> withDynamicQuery(String reference, DocumentType type, String staff) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -18,8 +19,8 @@ public class FileSpecifications {
                 predicates.add(cb.like(root.get("request").get("reference"), reference));
             }
 
-            if (fileType != null && !fileType.isEmpty()) {
-                predicates.add(cb.like(root.get("request").get("type").get("name"), fileType));
+            if (type != null) {
+                predicates.add(cb.equal(root.get("request").get("type"), type));
             }
 
             if (staff != null && !staff.isEmpty()) {
