@@ -42,17 +42,17 @@ public class RemindTask {
         }
     }
 
-    @Scheduled(cron = "0 0 15 * * 1-6", zone = "GMT+1")
+    //@Scheduled(cron = "0 0 15 * * 1-6", zone = "GMT+1")
     public void remindStaffForDueDateTask() {
         log.info("Remind tasks for due date :: Execution Time - {} ", new Date());
         List<Task> tasks = new ArrayList<>();
         tasks = camundaService.getAllTasksForUser();
         for (Task task : tasks) {
-            approvalService.relanceForDueDate(task.getId());
+            //approvalService.relanceForDueDate(task.getId());
         }
     }
 
-    @Scheduled(cron = "0 0 * * * *", zone = "GMT+1")
+    @Scheduled(cron = "0 0 10 * * 1-5", zone = "GMT+1")
     public void cancelNotValidate() {
         log.info("DRAFT cancelNotValidate :: Execution Time - {} ", new Date());
         List<Request> requests = requestRepository.findByStatus(RequestStatus.DRAFT);

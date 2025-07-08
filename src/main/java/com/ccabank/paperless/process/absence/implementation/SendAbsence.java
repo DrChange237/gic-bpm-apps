@@ -99,6 +99,7 @@ public class SendAbsence implements JavaDelegate {
 
         String reason = (String) delegateExecution.getVariable("reason");
         form.setReason(reason);
+
         if(reason.equals("OTHER")){
             String otherReason = (String) delegateExecution.getVariable("otherReason");
             form.setReason(otherReason);
