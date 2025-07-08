@@ -448,7 +448,7 @@ public class EmailServiceImpl implements EmailService {
 
         emailDto.setTo(sender.getEmail());
         emailDto.setFrom("notification@cca-bank.com");
-        emailDto.setSubject("Votre " + request.getType() + " a été suspendu(e)");
+        emailDto.setSubject("Votre " + request.getType().getName() + " a été suspendu(e)");
         emailDto.setBody("Vous avez initié une " + request.getType().getName() + ", elle a été suspendu(e) : " + reason);
 
         try {
