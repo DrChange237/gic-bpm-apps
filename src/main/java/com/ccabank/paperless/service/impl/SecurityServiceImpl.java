@@ -26,7 +26,7 @@ public class SecurityServiceImpl implements SecurityService {
         try{
             signature = userRestClient.getEmployeeSignature(username);
         }catch (Exception e){
-            throw new BadRequestException("l'utilisateur " + username + " n'existe pas !");
+            throw new BadRequestException("l'utilisateur " + username + " n'a pas de signature !");
         }
         if(signature == null){
             return false;
