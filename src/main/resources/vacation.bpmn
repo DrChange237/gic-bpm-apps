@@ -450,7 +450,7 @@
       <bpmn:outgoing>Flow_05z6tlj</bpmn:outgoing>
       <bpmn:outgoing>Flow_10h6jiz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Apbt_DG" name="Direction Générale">
+    <bpmn:userTask id="Apbt_DG" name="Direction Générale" camunda:candidateGroups="direction_general,direction_general_adjoint">
       <bpmn:incoming>Flow_10h6jiz</bpmn:incoming>
       <bpmn:outgoing>Flow_06xe4ss</bpmn:outgoing>
     </bpmn:userTask>
