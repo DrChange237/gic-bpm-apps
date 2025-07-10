@@ -146,6 +146,7 @@ public class SendMissionOrder implements JavaDelegate {
         String apbt_n2 = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_N2);
 
         if(apbt_n2 != null){
+
             EmployeeInfo n2 =  userRestClient.getStaffByUsername(apbt_n2);
             MissionForm.Signatory supervisor2 = new MissionForm.Signatory();
             supervisor2.setDate(LocalDate.now());
