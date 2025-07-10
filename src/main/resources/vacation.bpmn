@@ -433,7 +433,7 @@
       <bpmn:outgoing>Flow_1ou2pre</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_10h6jiz" sourceRef="Gateway_1x4wic3" targetRef="Apbt_DG">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('horsInterim) == 'HORS')}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('horsInterim') == 'HORS')}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_06xe4ss" sourceRef="Apbt_DG" targetRef="Gateway_1xyea0z" />
     <bpmn:sequenceFlow id="Flow_1lndoxd" sourceRef="Gateway_1xyea0z" targetRef="Activity_0tdet0e">

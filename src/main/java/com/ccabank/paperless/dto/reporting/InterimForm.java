@@ -49,6 +49,10 @@ public class InterimForm {
         private String name = "SIMO PATRICK";
         @Schema(example = " ", description = "Base64-encoded image")
         private String signature = "";
+
+        @Schema(example = "Le Directeur Général Adjoint")
+        private String function = "";
+
         @NotNull
         private LocalDate date = LocalDate.now();
     }
