@@ -19,12 +19,12 @@
         <bpmn:flowNodeRef>Activity_1xqimss</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_100xka6</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Apbt_daf</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Apbt_DGA</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Apbt_DCS</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1xs7zht</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0v8fs9w</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Apbt_DG</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0szllfu</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_09e4eb8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Apbt_DCR</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0kjo49a</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1vixsug</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_14w5k91</bpmn:flowNodeRef>
@@ -53,7 +53,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1sg8gq3" sourceRef="Apbt_director" targetRef="Gateway_1xftf0x" />
-    <bpmn:sequenceFlow id="Flow_0im6ec1" sourceRef="Apbt_DGA" targetRef="Gateway_1xs7zht" />
+    <bpmn:sequenceFlow id="Flow_0im6ec1" sourceRef="Apbt_DCS" targetRef="Gateway_1xs7zht" />
     <bpmn:sequenceFlow id="Flow_17cn2qn" sourceRef="Gateway_086ob0m" targetRef="Gateway_0kjo49a" />
     <bpmn:sequenceFlow id="Flow_0ivya1w" sourceRef="Gateway_086ob0m" targetRef="Apbt_ca_saisie">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('nbDays') == 1)}</bpmn:conditionExpression>
@@ -406,8 +406,8 @@
       <bpmn:outgoing>Flow_1x5msuv</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1x5msuv" sourceRef="Apbt_daf" targetRef="Gateway_100xka6" />
-    <bpmn:sequenceFlow id="Flow_0sj9qmm" sourceRef="Gateway_0kjo49a" targetRef="Apbt_DGA" />
-    <bpmn:userTask id="Apbt_DGA" name="Validation DCS" camunda:candidateGroups="direction_central_support">
+    <bpmn:sequenceFlow id="Flow_0sj9qmm" sourceRef="Gateway_0kjo49a" targetRef="Apbt_DCS" />
+    <bpmn:userTask id="Apbt_DCS" name="Validation DCS" camunda:candidateGroups="direction_central_support">
       <bpmn:extensionElements>
         <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidationDCS" />
       </bpmn:extensionElements>
@@ -440,17 +440,17 @@
       <bpmn:outgoing>Flow_1845il7</bpmn:outgoing>
       <bpmn:outgoing>Flow_035he9i</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_09e4eb8" name="Validation DCR" camunda:candidateGroups="direction_central_ressource">
+    <bpmn:userTask id="Apbt_DCR" name="Validation DCR" camunda:candidateGroups="direction_central_ressource">
       <bpmn:extensionElements>
         <camunda:taskListener delegateExpression="${sendEmailForValidation}" event="create" id="sendEmailForValidationDCR" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_15jo9sr</bpmn:incoming>
       <bpmn:outgoing>Flow_1puv6f4</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_15jo9sr" sourceRef="Gateway_0kjo49a" targetRef="Activity_09e4eb8">
+    <bpmn:sequenceFlow id="Flow_15jo9sr" sourceRef="Gateway_0kjo49a" targetRef="Apbt_DCR">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('direction') == 'dcr')}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1puv6f4" sourceRef="Activity_09e4eb8" targetRef="Gateway_1xs7zht" />
+    <bpmn:sequenceFlow id="Flow_1puv6f4" sourceRef="Apbt_DCR" targetRef="Gateway_1xs7zht" />
     <bpmn:exclusiveGateway id="Gateway_0kjo49a" default="Flow_0sj9qmm">
       <bpmn:incoming>Flow_17cn2qn</bpmn:incoming>
       <bpmn:outgoing>Flow_0sj9qmm</bpmn:outgoing>
@@ -574,7 +574,7 @@
         <dc:Bounds x="3290" y="210" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0btqrev_di" bpmnElement="Apbt_DGA">
+      <bpmndi:BPMNShape id="Activity_0btqrev_di" bpmnElement="Apbt_DCS">
         <dc:Bounds x="1640" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -591,7 +591,7 @@
       <bpmndi:BPMNShape id="Gateway_0szllfu_di" bpmnElement="Gateway_0szllfu" isMarkerVisible="true">
         <dc:Bounds x="2465" y="355" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ua3zym_di" bpmnElement="Activity_09e4eb8">
+      <bpmndi:BPMNShape id="Activity_1ua3zym_di" bpmnElement="Apbt_DCR">
         <dc:Bounds x="1910" y="193" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0kjo49a_di" bpmnElement="Gateway_0kjo49a" isMarkerVisible="true">

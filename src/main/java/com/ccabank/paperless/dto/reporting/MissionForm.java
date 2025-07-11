@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Schema(description = "Ordre de mission")
@@ -53,6 +55,8 @@ public class MissionForm {
     private String decision = "Favorable";
 
     private Signatory headOffice = new Signatory();
+
+    private List<Signatory> signatories = new ArrayList<>();
 
 
     @Schema(example = " ")

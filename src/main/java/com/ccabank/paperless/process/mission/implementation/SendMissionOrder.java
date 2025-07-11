@@ -31,10 +31,7 @@ import javax.ws.rs.BadRequestException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
-
+import java.util.*;
 
 
 @Component
@@ -67,6 +64,7 @@ public class SendMissionOrder implements JavaDelegate {
 
 
         MissionForm missionForm = new MissionForm();
+        List<MissionForm.Signatory> signatoryList = new ArrayList<>();
         String owner = (String) delegateExecution.getVariable("owner");
         EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
         String signature = "";
@@ -195,6 +193,7 @@ public class SendMissionOrder implements JavaDelegate {
 
         String apbt_daf = "";
 
+
         try{
             apbt_daf = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DAF);
         }catch (Exception e){
@@ -209,6 +208,60 @@ public class SendMissionOrder implements JavaDelegate {
         signature = userRestClient.getEmployeeSignature(apbt_daf);
         daf.setSignature(signature);
         missionForm.setRequester(daf);
+
+        String apbt_direction = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DIRECTOR);
+        if(apbt_direction != null){
+            EmployeeInfo signer =  userRestClient.getStaffByUsername(apbt_direction);
+            MissionForm.Signatory signatory = new MissionForm.Signatory();
+            signatory.setDate(LocalDate.now());
+            signatory.setName(signer.getFirstName() + " " + signer.getLastName());
+            signatory.setFunction(Optional.ofNullable(signer.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            try{
+                signature = userRestClient.getEmployeeSignature(apbt_direction);
+            }catch (Exception e){
+                throw new BadRequestException("La signature de lemployé " + apbt_direction + " n'est pas disponible");
+            }
+            signatory.setSignature(signature);
+            signatoryList.add(signatory);
+        }
+
+        String apbt_dcr = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DCR);
+        if(apbt_dcr != null){
+            EmployeeInfo signer =  userRestClient.getStaffByUsername(apbt_dcr);
+            MissionForm.Signatory signatory = new MissionForm.Signatory();
+            signatory.setDate(LocalDate.now());
+            signatory.setName(signer.getFirstName() + " " + signer.getLastName());
+            signatory.setFunction(Optional.ofNullable(signer.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            try{
+                signature = userRestClient.getEmployeeSignature(apbt_dcr);
+            }catch (Exception e){
+                throw new BadRequestException("La signature de lemployé " + apbt_dcr + " n'est pas disponible");
+            }
+            signatory.setSignature(signature);
+            signatoryList.add(signatory);
+        }
+
+        String apbt_dcs = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DCS);
+        if(apbt_dcs != null){
+            EmployeeInfo signer =  userRestClient.getStaffByUsername(apbt_dcs);
+            MissionForm.Signatory signatory = new MissionForm.Signatory();
+            signatory.setDate(LocalDate.now());
+            signatory.setName(signer.getFirstName() + " " + signer.getLastName());
+            signatory.setFunction(Optional.ofNullable(signer.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            try{
+                signature = userRestClient.getEmployeeSignature(apbt_dcs);
+            }catch (Exception e){
+                throw new BadRequestException("La signature de lemployé " + apbt_dcs + " n'est pas disponible");
+            }
+            signatory.setSignature(signature);
+            signatoryList.add(signatory);
+        }
+
+        signatoryList.add(daf);
+
+        missionForm.setSignatories(signatoryList);
+
+
 
 
 
