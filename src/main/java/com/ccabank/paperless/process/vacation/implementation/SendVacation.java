@@ -83,7 +83,7 @@ public class SendVacation implements JavaDelegate {
             form.setSignature(signature);
 
 
-            Date startDateD = (Date) delegateExecution.getVariable("startDate");
+            Date startDateD = (Date) delegateExecution.getVariable("realStartDate");
             LocalDate startDate = startDateD.toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
@@ -200,7 +200,7 @@ public class SendVacation implements JavaDelegate {
 
             String respCA = (String) delegateExecution.getVariable("Apbt_ca_validation");
             EmployeeInfo respCAInfo = userRestClient.getStaffByUsername(respCA);
-            /*signature = userRestClient.getEmployeeSignature(respCA);*/
+            signature = userRestClient.getEmployeeSignature(respCA);
 
             VacationDecision.Signatory signatory = new VacationDecision.Signatory();
             signatory.setSignature(signature);
