@@ -680,6 +680,11 @@ public class ApprovalServiceImpl implements ApprovalService {
         ProcessDefinition definition = camundaService.getProcessDefinition(processDefinitionId);
 
         Request request = requestRepository.findByInstanceId(delegateTask.getProcessInstanceId());
+
+        if(!request.getCreatedAt().equals(RequestStatus.PENDING)){
+            return null;
+        }
+
         ask.setType(request.getType().getName());
 
         String owner = request.getStaff();
