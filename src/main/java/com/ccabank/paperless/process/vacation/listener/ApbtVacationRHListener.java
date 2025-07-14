@@ -46,10 +46,11 @@ public class ApbtVacationRHListener implements ExecutionListener {
                 .toLocalDate();
 
         Long nbDays = (Long) delegateExecution.getVariable("nbDays");
-        LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays.intValue());
-        ZonedDateTime zonedDateTime = endDate.atStartOfDay(ZoneId.systemDefault());
-
-        delegateExecution.setVariable("repriseDate", Date.from(zonedDateTime.toInstant()));
+        if(nbDays != null){
+            LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, nbDays.intValue());
+            ZonedDateTime zonedDateTime = endDate.atStartOfDay(ZoneId.systemDefault());
+            delegateExecution.setVariable("repriseDate", Date.from(zonedDateTime.toInstant()));
+        }
 
     }
 }
