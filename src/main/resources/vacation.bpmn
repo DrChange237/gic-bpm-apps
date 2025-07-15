@@ -36,14 +36,15 @@
         <bpmn:flowNodeRef>Activity_0unmym4</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0iyomu0</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Apbt_rh</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1dd5ctc</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_01ta0md</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1a08z7h</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1yakt0g</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0tdet0e</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1xyea0z</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1x4wic3</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Apbt_DG</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_01ta0md</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1dd5ctc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0yl9f95</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1a08z7h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1yakt0g</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0n95jq3" name="N+ 2">
         <bpmn:flowNodeRef>Gateway_0u83qwk</bpmn:flowNodeRef>
@@ -69,7 +70,7 @@
     <bpmn:sequenceFlow id="Flow_1jb3oxc" sourceRef="Activity_1a08z7h" targetRef="Activity_01ta0md" />
     <bpmn:sequenceFlow id="Flow_1s2zqlv" sourceRef="Activity_1yakt0g" targetRef="Activity_1a08z7h" />
     <bpmn:sequenceFlow id="Flow_1xij44i" sourceRef="Activity_01ta0md" targetRef="Event_1dd5ctc" />
-    <bpmn:sequenceFlow id="Flow_1ou2pre" sourceRef="Activity_0tdet0e" targetRef="Activity_1yakt0g" />
+    <bpmn:sequenceFlow id="Flow_1ou2pre" sourceRef="Activity_0tdet0e" targetRef="Gateway_0yl9f95" />
     <bpmn:sequenceFlow id="Flow_1pgh58l" sourceRef="Activity_0143iql" targetRef="Apbt_n2" />
     <bpmn:sequenceFlow id="Flow_049qpdc" sourceRef="Gateway_0iyomu0" targetRef="Apbt_rh" />
     <bpmn:sequenceFlow id="Flow_1w348xn" sourceRef="Activity_0unmym4" targetRef="Gateway_0iyomu0" />
@@ -112,13 +113,6 @@
     <bpmn:sequenceFlow id="Flow_1ct1172" sourceRef="Gateway_1xmags4" targetRef="Gateway_1p2vqxs">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Activity_01ta0md" name="Traitement Paiement Intérim/Prime" camunda:candidateGroups="mission_ca_saisie">
-      <bpmn:incoming>Flow_1jb3oxc</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xij44i</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:endEvent id="Event_1dd5ctc">
-      <bpmn:incoming>Flow_1xij44i</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:serviceTask id="Activity_0143iql" name="Email Demande Approbation N+2" camunda:delegateExpression="${sendAskEmailN2}">
       <bpmn:incoming>Flow_07sv0w2</bpmn:incoming>
       <bpmn:outgoing>Flow_1pgh58l</bpmn:outgoing>
@@ -419,14 +413,6 @@
       <bpmn:outgoing>Flow_1l5vpd9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_05z6tlj" sourceRef="Gateway_1x4wic3" targetRef="Activity_0tdet0e" />
-    <bpmn:serviceTask id="Activity_1a08z7h" name="Envoi de la lettre d&#39;interim aux Habilitations" camunda:delegateExpression="${sendInterimLetter}">
-      <bpmn:incoming>Flow_1s2zqlv</bpmn:incoming>
-      <bpmn:outgoing>Flow_1jb3oxc</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1yakt0g" name="Envoi du HandOver à l&#39;intérimaire" camunda:delegateExpression="${sendHandOver}">
-      <bpmn:incoming>Flow_1ou2pre</bpmn:incoming>
-      <bpmn:outgoing>Flow_1s2zqlv</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_0tdet0e" name="Envoi de la demande de congés validée" camunda:delegateExpression="${sendVacation}">
       <bpmn:incoming>Flow_05z6tlj</bpmn:incoming>
       <bpmn:incoming>Flow_1lndoxd</bpmn:incoming>
@@ -454,6 +440,31 @@
       <bpmn:incoming>Flow_10h6jiz</bpmn:incoming>
       <bpmn:outgoing>Flow_06xe4ss</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:userTask id="Activity_01ta0md" name="Traitement Paiement Intérim/Prime" camunda:candidateGroups="mission_ca_saisie">
+      <bpmn:incoming>Flow_1jb3oxc</bpmn:incoming>
+      <bpmn:incoming>Flow_13zqmge</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xij44i</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1dd5ctc">
+      <bpmn:incoming>Flow_1xij44i</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_0yl9f95" default="Flow_073zdsz">
+      <bpmn:incoming>Flow_1ou2pre</bpmn:incoming>
+      <bpmn:outgoing>Flow_073zdsz</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13zqmge</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_073zdsz" sourceRef="Gateway_0yl9f95" targetRef="Activity_1yakt0g" />
+    <bpmn:serviceTask id="Activity_1a08z7h" name="Envoi de la lettre d&#39;interim aux Habilitations" camunda:delegateExpression="${sendInterimLetter}">
+      <bpmn:incoming>Flow_1s2zqlv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jb3oxc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1yakt0g" name="Envoi du HandOver à l&#39;intérimaire" camunda:delegateExpression="${sendHandOver}">
+      <bpmn:incoming>Flow_073zdsz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1s2zqlv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13zqmge" sourceRef="Gateway_0yl9f95" targetRef="Activity_01ta0md">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${(execution.getVariable('typeInterim') == 'NONE')}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_2uluack" name="Download" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -481,13 +492,6 @@
       <bpmndi:BPMNShape id="Lane_18qaou7_di" bpmnElement="Lane_18qaou7" isHorizontal="true">
         <dc:Bounds x="190" y="80" width="2400" height="510" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_002wme8_di" bpmnElement="Activity_01ta0md">
-        <dc:Bounds x="624" y="460" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1dd5ctc_di" bpmnElement="Event_1dd5ctc">
-        <dc:Bounds x="592" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1jzjq6f_di" bpmnElement="Activity_0143iql">
         <dc:Bounds x="1660" y="690" width="100" height="80" />
@@ -550,13 +554,6 @@
       <bpmndi:BPMNShape id="Gateway_1p2vqxs_di" bpmnElement="Gateway_1p2vqxs" isMarkerVisible="true">
         <dc:Bounds x="1375" y="885" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ayanwd_di" bpmnElement="Activity_1a08z7h">
-        <dc:Bounds x="770" y="460" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ncyvgn_di" bpmnElement="Activity_1yakt0g">
-        <dc:Bounds x="910" y="460" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1pf36lj_di" bpmnElement="Activity_0tdet0e">
         <dc:Bounds x="1050" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -569,22 +566,38 @@
       <bpmndi:BPMNShape id="Activity_1pvifws_di" bpmnElement="Apbt_DG">
         <dc:Bounds x="1160" y="280" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_002wme8_di" bpmnElement="Activity_01ta0md">
+        <dc:Bounds x="530" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dd5ctc_di" bpmnElement="Event_1dd5ctc">
+        <dc:Bounds x="562" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0yl9f95_di" bpmnElement="Gateway_0yl9f95" isMarkerVisible="true">
+        <dc:Bounds x="975" y="475" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ayanwd_di" bpmnElement="Activity_1a08z7h">
+        <dc:Bounds x="670" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ncyvgn_di" bpmnElement="Activity_1yakt0g">
+        <dc:Bounds x="810" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1jb3oxc_di" bpmnElement="Flow_1jb3oxc">
-        <di:waypoint x="770" y="500" />
-        <di:waypoint x="724" y="500" />
+        <di:waypoint x="670" y="500" />
+        <di:waypoint x="630" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1s2zqlv_di" bpmnElement="Flow_1s2zqlv">
-        <di:waypoint x="910" y="500" />
-        <di:waypoint x="870" y="500" />
+        <di:waypoint x="810" y="500" />
+        <di:waypoint x="770" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xij44i_di" bpmnElement="Flow_1xij44i">
-        <di:waypoint x="674" y="460" />
-        <di:waypoint x="674" y="150" />
-        <di:waypoint x="628" y="150" />
+        <di:waypoint x="580" y="460" />
+        <di:waypoint x="580" y="168" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ou2pre_di" bpmnElement="Flow_1ou2pre">
         <di:waypoint x="1050" y="500" />
-        <di:waypoint x="1010" y="500" />
+        <di:waypoint x="1025" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pgh58l_di" bpmnElement="Flow_1pgh58l">
         <di:waypoint x="1760" y="730" />
@@ -728,6 +741,16 @@
         <di:waypoint x="1100" y="180" />
         <di:waypoint x="1970" y="180" />
         <di:waypoint x="1970" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_073zdsz_di" bpmnElement="Flow_073zdsz">
+        <di:waypoint x="975" y="500" />
+        <di:waypoint x="910" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13zqmge_di" bpmnElement="Flow_13zqmge">
+        <di:waypoint x="1000" y="475" />
+        <di:waypoint x="1000" y="310" />
+        <di:waypoint x="720" y="310" />
+        <di:waypoint x="589" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1iiczsu_di" bpmnElement="TextAnnotation_1iiczsu">
         <dc:Bounds x="720" y="1390" width="100" height="41" />
