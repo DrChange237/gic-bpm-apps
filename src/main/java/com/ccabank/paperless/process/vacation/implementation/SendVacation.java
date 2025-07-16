@@ -51,8 +51,6 @@ public class SendVacation implements JavaDelegate {
 
         private final EmailService emailService;
 
-        private final CamundaService camundaService;
-
         private final RequestService requestService;
 
         private final FileService fileService;
@@ -130,8 +128,8 @@ public class SendVacation implements JavaDelegate {
             String supervisorId = (String) delegateExecution.getVariable("Apbt_n1");
             EmployeeInfo supervisorInfo =  userRestClient.getStaffByUsername(supervisorId);
             supervisor.setName(supervisorInfo.getFirstName() + " " + supervisorInfo.getLastName());
-            /*signature = userRestClient.getEmployeeSignature(supervisorId);
-            supervisor.setSignature(signature);*/
+            signature = userRestClient.getEmployeeSignature(supervisorId);
+            supervisor.setSignature(signature);
             form.setSupervisor(supervisor);
 
 
@@ -143,8 +141,8 @@ public class SendVacation implements JavaDelegate {
                     throw new BadRequestException("User N + 2 not found " + supervisorId);
             }
             supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
-            /*signature = userRestClient.getEmployeeSignature(supervisorId);
-            supervisor.setSignature(signature);*/
+            signature = userRestClient.getEmployeeSignature(supervisorId);
+            supervisor.setSignature(signature);
             form.setSupervisorNext(supervisor);
 
 
