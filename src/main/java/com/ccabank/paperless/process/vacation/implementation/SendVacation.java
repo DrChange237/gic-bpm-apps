@@ -250,8 +250,8 @@ public class SendVacation implements JavaDelegate {
                     signatory = new VacationDecision.Signatory();
                     signatory.setSignature(signature);
                     signatory.setDate(LocalDate.now());
+                    signatory.setFunction("Le Directeur Général Adjoint");
                     signatory.setName(dgInfo.getFirstName() + " " + dgInfo.getLastName());
-                    decision.setFunction("Le Directeur Général Adjoint");
                     decision.setSignatory(signatory);
             }
 
