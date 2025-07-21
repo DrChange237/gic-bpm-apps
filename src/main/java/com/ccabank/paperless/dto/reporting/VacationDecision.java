@@ -52,6 +52,9 @@ public class VacationDecision {
 
     private Boolean complementary = false;
 
+    @Schema(description = "Numéro de la note", example = "00448023", requiredMode = Schema.RequiredMode.AUTO)
+    private String number;
+
     @Schema(description = "Première partie du congé consommé", example = "0")
     private Integer consumedVacation = 0;
 

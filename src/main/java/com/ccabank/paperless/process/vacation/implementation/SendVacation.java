@@ -215,6 +215,7 @@ public class SendVacation implements JavaDelegate {
             signatory.setDate(LocalDate.now());
             signatory.setName(respCAInfo.getFirstName() + " " + respCAInfo.getLastName());
             decision.setSignatory(signatory);
+            decision.setNumber(request.getReference());
 
             ByteArrayResource decisionVacation = reportingRestClient.vacationDecision(decision);
 
