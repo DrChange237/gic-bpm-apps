@@ -131,6 +131,13 @@
     <bpmn:userTask id="Apbt_rh" name="Saisie Capital Humain" camunda:candidateGroups="vacation_ca_saisie">
       <bpmn:extensionElements>
         <camunda:formData>
+           <camunda:formField id="function" label="Poste du Staff" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="text" />
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
           <camunda:formField id="realLastVacationDate" label="Date de derniers congés" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
@@ -232,13 +239,7 @@
               <camunda:property id="type" value="number" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="function" label="Poste du Staff" type="string">
-            <camunda:properties>
-              <camunda:property id="fieldType" value="field" />
-              <camunda:property id="type" value="text" />
-              <camunda:property id="required" value="true" />
-            </camunda:properties>
-          </camunda:formField>
+         
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
