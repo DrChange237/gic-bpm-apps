@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_CAPITAL_HUMAIN;
+import static com.ccabank.paperless.process.general.constant.EmailGroup.EMAIL_HABILITATION;
 
 @Component
 @RequiredArgsConstructor
@@ -128,24 +129,31 @@ public class SendVacation implements JavaDelegate {
 
             VacationForm.Signatory supervisor = new VacationForm.Signatory();
             String supervisorId = (String) delegateExecution.getVariable("Apbt_n1");
-            EmployeeInfo supervisorInfo =  userRestClient.getStaffByUsername(supervisorId);
-            supervisor.setName(supervisorInfo.getFirstName() + " " + supervisorInfo.getLastName());
-            signature = userRestClient.getEmployeeSignature(supervisorId);
-            supervisor.setSignature(signature);
-            form.setSupervisor(supervisor);
+            EmployeeInfo supervisorInfo = new EmployeeInfo();
+            if(supervisorId != supervisorId){
+                    supervisorInfo =  userRestClient.getStaffByUsername(supervisorId);
+                    supervisor.setName(supervisorInfo.getFirstName() + " " + supervisorInfo.getLastName());
+                    signature = userRestClient.getEmployeeSignature(supervisorId);
+                    supervisor.setSignature(signature);
+                    form.setSupervisor(supervisor);
+            }
+
 
 
             supervisor = new VacationForm.Signatory();
             supervisorId = (String) delegateExecution.getVariable("Apbt_n2");
-            EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
-            log.info(supervisorId);
-            if(supervisorInfo2 == null){
-                    throw new BadRequestException("User N + 2 not found " + supervisorId);
+            if(supervisorId != null){
+                    EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
+                    log.info(supervisorId);
+                    if(supervisorInfo2 == null){
+                            throw new BadRequestException("User N + 2 not found " + supervisorId);
+                    }
+                    supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
+                    signature = userRestClient.getEmployeeSignature(supervisorId);
+                    supervisor.setSignature(signature);
+                    form.setSupervisorNext(supervisor);
             }
-            supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
-            signature = userRestClient.getEmployeeSignature(supervisorId);
-            supervisor.setSignature(signature);
-            form.setSupervisorNext(supervisor);
+
 
 
             VacationDecision decision = new VacationDecision();
@@ -216,7 +224,7 @@ public class SendVacation implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Demande de Congés Validées");
-            ask.setbCC(supervisorInfo.getEmail() + "," + processUnityService.getEmailUnity(EMAIL_CAPITAL_HUMAIN));
+            ask.setbCC(supervisorInfo.getEmail() + "," + processUnityService.getEmailUnity(EMAIL_CAPITAL_HUMAIN) + "," + processUnityService.getEmailUnity(EMAIL_HABILITATION));
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("demande_congés" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
