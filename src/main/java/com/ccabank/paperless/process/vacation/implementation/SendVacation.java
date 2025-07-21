@@ -3,6 +3,7 @@ package com.ccabank.paperless.process.vacation.implementation;
 import com.ccabank.paperless.dto.email.AttachmentDto;
 import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.FileDto;
+import com.ccabank.paperless.dto.reporting.MissionForm;
 import com.ccabank.paperless.dto.reporting.VacationDecision;
 import com.ccabank.paperless.dto.reporting.VacationForm;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
@@ -11,6 +12,7 @@ import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
+import com.ccabank.paperless.process.general.constant.ApprobationLevel;
 import com.ccabank.paperless.process.general.service.RequestService;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
@@ -147,6 +149,29 @@ public class SendVacation implements JavaDelegate {
                     log.info(supervisorId);
                     if(supervisorInfo2 == null){
                             throw new BadRequestException("User N + 2 not found " + supervisorId);
+                    }
+                    supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
+                    signature = userRestClient.getEmployeeSignature(supervisorId);
+                    supervisor.setSignature(signature);
+                    form.setSupervisorNext(supervisor);
+            }
+
+            String apbt_uch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            signature = userRestClient.getEmployeeSignature(apbt_uch);
+            form.setSignature(signature);
+            supervisor = new VacationForm.Signatory();
+            supervisorId = (String) delegateExecution.getVariable("Apbt_DG");
+            if(supervisorId != null){
+                    signature = userRestClient.getEmployeeSignature(supervisorId);
+                    form.setSignature(signature);
+                    form.setFunction("Le Directeur Général Adjoint");
+            }
+
+            if(supervisorId != null){
+                    EmployeeInfo supervisorInfo2 =  userRestClient.getStaffByUsername(supervisorId);
+                    log.info(supervisorId);
+                    if(supervisorInfo2 == null){
+                            throw new BadRequestException("DG not found " + supervisorId);
                     }
                     supervisor.setName(supervisorInfo2.getFirstName() + " " + supervisorInfo2.getLastName());
                     signature = userRestClient.getEmployeeSignature(supervisorId);

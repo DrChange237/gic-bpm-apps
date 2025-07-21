@@ -64,6 +64,10 @@ public class VacationDecision {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
         private String name = "SIMO PATRICK";
+
+        @Schema(example = "Chef de département")
+        private String function = "Le Responsable du Capital Humain";
+
         @Schema(example = " ", description = "Base64-encoded image")
         private String signature = "";
         @NotNull
