@@ -61,15 +61,15 @@ public class VacationForm {
     public static class Interim {
         @NotBlank
         @Schema(example = "SIMO TRÉSOR WILFRIED")
-        private String name = "SIMO TRÉSOR WILFRIED";
+        private String name = "";
 
         @NotBlank
         @Schema(example = "Développeur Back-End")
-        private String function = "Développeur Back-End";
+        private String function = "";
 
         @NotBlank
         @Schema(example = "Départment Etudes et Développement des Solutions Digitales")
-        private String unity = "Départment Etudes et Développement des Solutions Digitales";
+        private String unity = "";
 
         public String getName() {
             return name;
@@ -100,8 +100,7 @@ public class VacationForm {
     public static class Signatory {
         @NotBlank
         @Schema(example = "SIMO PATRICK")
-
-        private String name = "SIMO PATRICK";
+        private String name = "";
 
         @Schema(example = " ", description = "Base64-encoded image")
         private String signature = "";
