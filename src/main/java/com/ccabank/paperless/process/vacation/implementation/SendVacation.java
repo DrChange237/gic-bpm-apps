@@ -255,6 +255,9 @@ public class SendVacation implements JavaDelegate {
                     decision.setSignatory(signatory);
             }
 
+            String function = (String) delegateExecution.getVariable("function");
+            decision.setFunction(function);
+
             decision.setNumber(request.getReference());
 
             ByteArrayResource decisionVacation = reportingRestClient.vacationDecision(decision);

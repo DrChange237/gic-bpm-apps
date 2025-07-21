@@ -232,6 +232,13 @@
               <camunda:property id="type" value="number" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="function" label="Poste du Staff" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="type" value="text" />
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
