@@ -236,6 +236,8 @@ public class SendAbsence implements JavaDelegate {
         ask.setAttachments(new AttachmentDto[]{attachment});
         emailService.sendFiles(ask);
 
+
+
         CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
 
         FileDto fileDto = new FileDto();
