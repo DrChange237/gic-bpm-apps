@@ -147,7 +147,7 @@ public class SendAbsence implements JavaDelegate {
             supervisor2Signatory.setDate(LocalDate.now());
             supervisor2Signatory.setName(supervisor2.getName());
             supervisor2Signatory.setSignature(supervisor2.getSignature());
-            signatures.add(supervisor2Signatory);
+            //signatures.add(supervisor2Signatory);
         }
 
         String deduction = (String) delegateExecution.getVariable("deduction");
@@ -187,7 +187,7 @@ public class SendAbsence implements JavaDelegate {
         supervisorSignatory.setDate(LocalDate.now());
         supervisorSignatory.setName(supervisor.getName());
         supervisorSignatory.setSignature(supervisor.getSignature());
-        signatures.add(supervisorSignatory);
+        //signatures.add(supervisorSignatory);
 
         //signatures.add(DG.getSignature());
 
