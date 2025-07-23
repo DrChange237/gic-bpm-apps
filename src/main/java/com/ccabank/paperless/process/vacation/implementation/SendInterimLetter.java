@@ -64,7 +64,8 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm.Employee interim = new InterimForm.Employee();
             interim.setMatricule(interimaire.getMatricule());
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            interim.setFunction(Optional.ofNullable(interimaire.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            String function = (String) delegateExecution.getVariable("function");
+            interim.setFunction(function);
             interim.setSex(InterimForm.Employee.Sex.MALE);
             if(interimaire.getGender().equals(Gender.FEMALE)){
                 interim.setSex(InterimForm.Employee.Sex.FEMALE);

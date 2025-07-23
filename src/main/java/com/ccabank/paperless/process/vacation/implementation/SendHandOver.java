@@ -67,7 +67,8 @@ public class SendHandOver implements JavaDelegate {
 
             EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
             employee.setName(staff.getFirstName() + " " + staff.getLastName());
-            employee.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            String function = (String) delegateExecution.getVariable("function");
+            employee.setFunction(function);
 
             String signature = userRestClient.getEmployeeSignature(staff.getUsername());
             employee.setSignature(signature);
