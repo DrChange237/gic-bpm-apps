@@ -103,6 +103,25 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
             request.setLastModification(LocalDateTime.now());
             requestRepository.save(request);
+
+            EmailAskApprovalDto ask = new EmailAskApprovalDto();
+
+            String apbt_interimaire = reassignDto.getStaff();
+            String owner = request.getStaff();
+            String reference = request.getReference();
+            ask.setSender(owner);
+            ask.setApprover(apbt_interimaire);
+            ask.setReference(reference);
+            ask.setType(request.getType().getName());
+
+            ask.setSubject("Demande d'approbation - " + request.getType().getName());
+            if(task != null){
+                ask.setRole(task.getName());
+            }else{
+                ask.setRole("R.A.S");
+            }
+
+            emailService.sendAskApproval(ask);
             camundaService.assignTask(instanceId, task.getId(), reassignDto.getStaff());
             return new AppServiceResult<>(true, 0, "Succeed!", null);
     }
