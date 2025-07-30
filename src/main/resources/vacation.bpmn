@@ -93,7 +93,7 @@
     <bpmn:sequenceFlow id="Flow_10xdp2l" sourceRef="Apbt_ca_validation" targetRef="Gateway_04krg3n" />
     <bpmn:sequenceFlow id="Flow_057x7ds" sourceRef="Gateway_08dwq2z" targetRef="Activity_1w5za2e" />
     <bpmn:sequenceFlow id="Flow_01dkp41" sourceRef="Validation" targetRef="Gateway_08dwq2z" />
-    <bpmn:sequenceFlow id="Flow_0jybnww" sourceRef="Gateway_1o8exiw" targetRef="Apbt_n1" />
+    <bpmn:sequenceFlow id="Flow_0jybnww" sourceRef="Gateway_1o8exiw" targetRef="Validation" />
     <bpmn:sequenceFlow id="Flow_1ur5b1t" sourceRef="Gateway_0u83qwk" targetRef="Apbt_n1" />
     <bpmn:sequenceFlow id="Flow_157mz8o" sourceRef="startVacation" targetRef="Validation" />
     <bpmn:sequenceFlow id="Flow_0tlgodl" sourceRef="Gateway_0n1yo07" targetRef="Validation" />
@@ -292,6 +292,7 @@
       <bpmn:incoming>Flow_157mz8o</bpmn:incoming>
       <bpmn:incoming>Flow_09n19n7</bpmn:incoming>
       <bpmn:incoming>Flow_0tlgodl</bpmn:incoming>
+      <bpmn:incoming>Flow_0jybnww</bpmn:incoming>
       <bpmn:outgoing>Flow_01dkp41</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_08dwq2z" default="Flow_057x7ds">
@@ -309,7 +310,6 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wpjrvf</bpmn:incoming>
       <bpmn:incoming>Flow_1ur5b1t</bpmn:incoming>
-      <bpmn:incoming>Flow_0jybnww</bpmn:incoming>
       <bpmn:outgoing>Flow_14cikxp</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:startEvent id="startVacation" name="Nouvelle demande de congés">
@@ -320,6 +320,7 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="required" value="false" />
               <camunda:property id="type" value="date" />
+              <camunda:property id="description" value="Si vous n&#39;avez jamais pris de congés, renseignez votre date de départ souhaitée" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="startDate" label="Date de Début Souhaitée" type="date">
@@ -678,7 +679,8 @@
       <bpmndi:BPMNEdge id="Flow_0jybnww_di" bpmnElement="Flow_0jybnww">
         <di:waypoint x="1822" y="507" />
         <di:waypoint x="1320" y="690" />
-        <di:waypoint x="1007" y="870" />
+        <di:waypoint x="1320" y="1520" />
+        <di:waypoint x="480" y="1520" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ur5b1t_di" bpmnElement="Flow_1ur5b1t">
         <di:waypoint x="2090" y="675" />

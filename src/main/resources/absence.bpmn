@@ -28,8 +28,6 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_0qjg747" name="Staff">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_11r7er7</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1tv6z45</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Validation</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
@@ -134,13 +132,6 @@
       <bpmn:outgoing>Flow_0tkidp3</bpmn:outgoing>
       <bpmn:outgoing>Flow_1kesdee</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="Event_11r7er7">
-      <bpmn:incoming>Flow_02mlbin</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_1tv6z45" name="Email de Refus" camunda:delegateExpression="${sendDefaultRejectEmail}">
-      <bpmn:incoming>Flow_1g0ivuo</bpmn:incoming>
-      <bpmn:outgoing>Flow_02mlbin</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="Activity_1rqondo" name="Envoi de la demande d&#39;abscence validée" camunda:delegateExpression="${sendAbsence}">
       <bpmn:incoming>Flow_19t1g2y</bpmn:incoming>
       <bpmn:outgoing>Flow_0gsjie0</bpmn:outgoing>
@@ -230,6 +221,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_09nlzmc</bpmn:incoming>
       <bpmn:incoming>Flow_07m9fdy</bpmn:incoming>
+      <bpmn:incoming>Flow_1g0ivuo</bpmn:incoming>
       <bpmn:outgoing>Flow_0nginhu</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="Activity_0s6146r" name="Demande d&#39;approbation" camunda:delegateExpression="${sendAskEmailN1}">
@@ -281,8 +273,7 @@
     <bpmn:sequenceFlow id="Flow_1kesdee" sourceRef="Gateway_1ko8fbo" targetRef="Apbt_ca_saisie">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_02mlbin" sourceRef="Activity_1tv6z45" targetRef="Event_11r7er7" />
-    <bpmn:sequenceFlow id="Flow_1g0ivuo" sourceRef="Gateway_1rdpuf8" targetRef="Activity_1tv6z45" />
+    <bpmn:sequenceFlow id="Flow_1g0ivuo" sourceRef="Gateway_1rdpuf8" targetRef="Validation" />
     <bpmn:sequenceFlow id="Flow_19t1g2y" sourceRef="Gateway_1y6ltts" targetRef="Activity_1rqondo">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -318,16 +309,16 @@
         <dc:Bounds x="160" y="80" width="1740" height="849" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_1el7zi1_di" bpmnElement="Lane_1el7zi1" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="1710" height="260" />
+      <bpmndi:BPMNShape id="Lane_0qjg747_di" bpmnElement="Lane_0qjg747" isHorizontal="true">
+        <dc:Bounds x="190" y="600" width="1710" height="329" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0hq3oim_di" bpmnElement="Lane_0hq3oim" isHorizontal="true">
         <dc:Bounds x="190" y="340" width="1710" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_0qjg747_di" bpmnElement="Lane_0qjg747" isHorizontal="true">
-        <dc:Bounds x="190" y="600" width="1710" height="329" />
+      <bpmndi:BPMNShape id="Lane_1el7zi1_di" bpmnElement="Lane_1el7zi1" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1710" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
@@ -345,12 +336,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ko8fbo_di" bpmnElement="Gateway_1ko8fbo" isMarkerVisible="true">
         <dc:Bounds x="1795" y="425" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_11r7er7_di" bpmnElement="Event_11r7er7">
-        <dc:Bounds x="1522" y="862" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0obzmd5_di" bpmnElement="Activity_1tv6z45">
-        <dc:Bounds x="1490" y="650" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ejbdf5_di" bpmnElement="Activity_1rqondo">
         <dc:Bounds x="660" y="160" width="100" height="80" />
@@ -430,14 +415,10 @@
         <di:waypoint x="1820" y="200" />
         <di:waypoint x="1480" y="200" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02mlbin_di" bpmnElement="Flow_02mlbin">
-        <di:waypoint x="1540" y="730" />
-        <di:waypoint x="1540" y="862" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g0ivuo_di" bpmnElement="Flow_1g0ivuo">
         <di:waypoint x="1310" y="225" />
-        <di:waypoint x="1310" y="690" />
-        <di:waypoint x="1490" y="690" />
+        <di:waypoint x="1310" y="700" />
+        <di:waypoint x="920" y="700" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19t1g2y_di" bpmnElement="Flow_19t1g2y">
         <di:waypoint x="815" y="200" />
