@@ -219,6 +219,9 @@ public class RequestServiceImpl implements RequestService {
             dto.setDocumentType(request.getType().getName());
             StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
             DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+
+            List<ApprovalDto> approvalsStructures = documentStructure.getApprovals();
+
             Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
 
             List<FieldDto> updateFields = new ArrayList<>();
@@ -236,7 +239,7 @@ public class RequestServiceImpl implements RequestService {
             List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
 
             List<ApprovalDto> approvalDtos = mapService.mapTaskToApprovalDto(histories);
-            dto.setApprovals(approvalDtos);
+            dto.setApprovals(approvalsStructures);
 
             return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
@@ -275,8 +278,6 @@ public class RequestServiceImpl implements RequestService {
             return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
         }
     }
-
-
 
 
     @Override

@@ -66,9 +66,10 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
             DocumentTypeDto dto = new DocumentTypeDto();
             dto.setName(type.getStructure());
             dto.setDescription(type.getName());
-            StartFormData formData = camundaService.getStartForm(type.getStructure());
 
+            StartFormData formData = camundaService.getStartForm(type.getStructure());
             DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+
             dto.setStructure(documentStructure);
             return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
