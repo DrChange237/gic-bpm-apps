@@ -60,6 +60,16 @@ public class RequestController {
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
+    @GetMapping("/request/detailForUpdate")
+    @PreAuthorize(Authority.IS_AUTHENTICATED)
+    public ResponseEntity<?> detailForUpdate(@RequestParam(value = "id") Long id) {
+        AppServiceResult<RequestInfo> result = requestService.detailForUpdate(id);
+        return result.isSuccess()
+                ? ResponseEntity.ok(new HttpResponseSuccess<RequestInfo>(result.getData()))
+                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    }
+
+    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/request/suspend")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> suspend(@RequestParam(value = "id") Long id) {
