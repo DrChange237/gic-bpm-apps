@@ -23,6 +23,8 @@ public interface RequestService {
 
     AppServiceResult<RequestInfo> details(Long id);
 
+    AppServiceResult<RequestInfo> detailForUpdate(Long id);
+
     @Transactional
     AppServiceResult<RequestInfo> suspend(Long id, String reason);
 

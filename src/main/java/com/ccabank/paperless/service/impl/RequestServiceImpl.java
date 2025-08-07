@@ -219,9 +219,6 @@ public class RequestServiceImpl implements RequestService {
             dto.setDocumentType(request.getType().getName());
             StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
             DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
-
-            List<ApprovalDto> approvalsStructures = documentStructure.getApprovals();
-
             Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
 
             List<FieldDto> updateFields = new ArrayList<>();
@@ -239,13 +236,47 @@ public class RequestServiceImpl implements RequestService {
             List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
 
             List<ApprovalDto> approvalDtos = mapService.mapTaskToApprovalDto(histories);
-            dto.setApprovals(approvalsStructures);
+            dto.setApprovals(approvalDtos);
 
             return new AppServiceResult<>(true, 0, "Succeed!", dto);
 
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
+            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public AppServiceResult<RequestInfo> detailForUpdate(Long id) {
+        try {
+
+            Request request = requestRepository.getOne(id);
+            RequestInfo dto = requestMapper.toDto(request);
+            dto.setDocumentType(request.getType().getName());
+            StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+
+            List<ApprovalDto> approvalsStructures = documentStructure.getApprovals();
+
+            Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+
+            List<FieldDto> updateFields = new ArrayList<>();
+
+            for (FieldDto field : documentStructure.getFields()) {
+                field.setValue(String.valueOf(variables.get(field.getKey())));
+                updateFields.add(field);
+            }
+
+            dto.setFields(updateFields);
+            dto.setFiles(fileService.getAllFiles(request.getReference(), ""));
+            dto.setApprovals(approvalsStructures);
+
+            return new AppServiceResult<>(true, 0, "Succeed!", dto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(MEMO_SERVICE + " detailForUpdate : Exception {}", e.getMessage());
             return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
         }
     }
