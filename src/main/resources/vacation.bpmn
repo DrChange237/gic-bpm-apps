@@ -315,7 +315,7 @@
     <bpmn:startEvent id="startVacation" name="Nouvelle demande de congés">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="lastVacationDate" label="Dernier jour de Congés" type="date">
+          <camunda:formField id="realLastVacationDate" label="Dernier jour de Congés" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="required" value="false" />
