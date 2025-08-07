@@ -243,6 +243,9 @@
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
+        <camunda:taskListener event="create" id="preForm">
+          <camunda:script>execution.setVariable("realLastVacationDate", execution.getVariable("lastVacationDate"))</camunda:script>
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1p18hnq</bpmn:incoming>
       <bpmn:incoming>Flow_1l5vpd9</bpmn:incoming>
@@ -315,7 +318,7 @@
     <bpmn:startEvent id="startVacation" name="Nouvelle demande de congés">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="realLastVacationDate" label="Dernier jour de Congés" type="date">
+          <camunda:formField id="lastVacationDate" label="Dernier jour de Congés" type="date">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="required" value="false" />
