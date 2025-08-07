@@ -290,7 +290,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             approbation.setComments(acceptedApprovalDto.getComments());
             approbationRepository.save(approbation);
         }else {
-        Approbation approbation = new Approbation();
+             Approbation approbation = new Approbation();
             approbation.setReference(request.getReference());
             approbation.setStatus(ApprovalStatus.ACCEPTED);
             approbation.setCreatedAt(LocalDateTime.now());
@@ -332,12 +332,16 @@ public class ApprovalServiceImpl implements ApprovalService {
             Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
             if(approbationOptional.isPresent()){
                 Approbation approbation = approbationOptional.get();
+                approbation.setReference(request.getReference());
                 approbation.setStatus(ApprovalStatus.REJECTED);
+                approbation.setCreatedAt(LocalDateTime.now());
                 approbation.setComments(acceptedApprovalDto.getComments());
                 approbationRepository.save(approbation);
             }else {
                 Approbation approbation = new Approbation();
+                approbation.setReference(request.getReference());
                 approbation.setStatus(ApprovalStatus.REJECTED);
+                approbation.setCreatedAt(LocalDateTime.now());
                 approbation.setComments(acceptedApprovalDto.getComments());
                 approbation.setTaskId(task.getId());
                 approbationRepository.save(approbation);
