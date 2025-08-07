@@ -27,7 +27,7 @@ public class Approbation {
     private String comments;
 
     @Column(name = "CREATED_AT", nullable = true)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
 
     public Long getId() {
