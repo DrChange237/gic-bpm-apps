@@ -284,14 +284,14 @@ public class ApprovalServiceImpl implements ApprovalService {
         Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
         if(approbationOptional.isPresent()){
             Approbation approbation = approbationOptional.get();
-            approbation.setRequest(request);
+            approbation.setReference(request.getReference());
             approbation.setCreatedAt(LocalDateTime.now());
             approbation.setStatus(ApprovalStatus.ACCEPTED);
             approbation.setComments(acceptedApprovalDto.getComments());
             approbationRepository.save(approbation);
         }else {
         Approbation approbation = new Approbation();
-            approbation.setRequest(request);
+            approbation.setReference(request.getReference());
             approbation.setStatus(ApprovalStatus.ACCEPTED);
             approbation.setCreatedAt(LocalDateTime.now());
             approbation.setComments(acceptedApprovalDto.getComments());

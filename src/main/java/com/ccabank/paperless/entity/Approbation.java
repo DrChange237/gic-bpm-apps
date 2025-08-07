@@ -13,9 +13,8 @@ public class Approbation {
     @Column(name = "ID", columnDefinition = "serial")
     private Long id;
 
-    @JoinColumn(name = "REQUEST", referencedColumnName = "ID")
-    @ManyToOne(optional = true)
-    private Request request;
+    @Column(name = "REQUEST_REF", nullable = true)
+    private String reference;
 
     @Column(name = "TASK_ID")
     private String taskId;
@@ -59,12 +58,12 @@ public class Approbation {
         this.comments = comments;
     }
 
-    public Request getRequest() {
-        return request;
+    public String getReference() {
+        return reference;
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public LocalDateTime getCreatedAt() {
