@@ -4,6 +4,7 @@ import com.ccabank.paperless.dto.email.AttachmentDto;
 import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.dto.reporting.InterimForm;
+import com.ccabank.paperless.dto.reporting.VacationDecision;
 import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
@@ -11,6 +12,7 @@ import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.entity.user.Gender;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
+import com.ccabank.paperless.process.general.constant.ApprobationLevel;
 import com.ccabank.paperless.process.vacation.constant.CumulConstant;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.EmailService;
@@ -123,8 +125,19 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm.Signatory signatory = new InterimForm.Signatory();
             signatory.setSignature(signature);
             signatory.setDate(LocalDate.now());
+            signatory.setFunction("Le Directeur du Capital Humain");
             signatory.setName(info.getFirstName() + " " + info.getLastName());
             form.setSignatory(signatory);
+            String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            EmployeeInfo dgInfo = userRestClient.getStaffByUsername(dg);
+            signature = userRestClient.getEmployeeSignature(dg);
+            if(dg != null){
+                signatory.setSignature(signature);
+                signatory.setDate(LocalDate.now());
+                signatory.setFunction("Le Directeur Général Adjoint");
+                signatory.setName(dgInfo.getFirstName() + " " + dgInfo.getLastName());
+                form.setSignatory(signatory);
+            }
 
              String cumul = (String) delegateExecution.getVariable("cummulatif") ;
 
