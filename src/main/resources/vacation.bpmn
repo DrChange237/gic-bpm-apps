@@ -243,9 +243,6 @@
         </camunda:formData>
         <camunda:executionListener delegateExpression="${apbtVacationRHListener}" event="start" />
         <camunda:taskListener delegateExpression="${sendEmailGroupListener}" event="create" id="sendEmailGroupListener" />
-        <camunda:taskListener event="create" id="preForm">
-          <camunda:script scriptFormat="groovy">execution.setVariable("realLastVacationDate", execution.getVariable("lastVacationDate"))</camunda:script>
-        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1p18hnq</bpmn:incoming>
       <bpmn:incoming>Flow_1l5vpd9</bpmn:incoming>

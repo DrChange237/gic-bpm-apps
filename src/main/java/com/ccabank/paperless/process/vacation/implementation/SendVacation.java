@@ -98,8 +98,9 @@ public class SendVacation implements JavaDelegate {
             form.setEndDate(endDate);
 
             Date repriseDateD = (Date) delegateExecution.getVariable("reprise_date");
+            LocalDate repriseDate = null;
             if(repriseDateD != null) {
-                    LocalDate repriseDate = repriseDateD.toInstant()
+                    repriseDate = repriseDateD.toInstant()
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate();
 
@@ -189,7 +190,7 @@ public class SendVacation implements JavaDelegate {
             decision.setEmployee(staff.getFirstName() + " " + staff.getLastName());
             decision.setMatricule(staff.getMatricule());
             decision.setStartDate(startDate);
-            decision.setEndDate(endDate);
+            decision.setEndDate(repriseDate);
             decision.setPeriod(WorkDayCalculator.getDateRangeAsString(lastVacationDate, startDate));
             decision.setUnity(staff.getDepartment().getName());
 
