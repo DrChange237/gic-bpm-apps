@@ -103,7 +103,6 @@ public class SendHandOver implements JavaDelegate {
             EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
 
 
-
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
             interim.setFunction(Optional.ofNullable(interimaire.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
             signature = userRestClient.getEmployeeSignature(interimaire.getUsername());

@@ -1,6 +1,7 @@
 package com.ccabank.paperless.openfeign;
 
 import com.ccabank.paperless.config.FeignClientConfiguration;
+import com.ccabank.paperless.constant.FeignHeader;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.UserRestDto;
 import feign.Headers;
@@ -11,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientConfiguration.class)
+@Headers(FeignHeader.TARGET_SERVICE_NAME + ": USER-SERVICE")
 //@FeignClient(value = "userRestClient", url = "https://developer.ccabank-app.com", configuration = FeignClientProperties.FeignClientConfiguration.class)
 public interface UserRestClient {
 
 
     @GetMapping(path = "/api/users/employees/findByUsername/{username}")
     EmployeeInfo getStaffByUsername(@PathVariable("username") String username);
-
 
     @GetMapping(path = "/api/users/exposed/findByUsername/{username}")
     UserRestDto getAgencyByStaffUsername(@PathVariable("username") String username);

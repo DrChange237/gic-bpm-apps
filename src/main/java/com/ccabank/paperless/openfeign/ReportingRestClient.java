@@ -1,13 +1,17 @@
 package com.ccabank.paperless.openfeign;
 
 
+import com.ccabank.paperless.config.FeignClientConfiguration;
+import com.ccabank.paperless.constant.FeignHeader;
 import com.ccabank.paperless.dto.reporting.*;
+import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "REPORTING-SERVICE")
+@FeignClient(name = "REPORTING-SERVICE", configuration = FeignClientConfiguration.class)
+@Headers(FeignHeader.TARGET_SERVICE_NAME + ": REPORTING-SERVICE")
 public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/vacation/sheet")
