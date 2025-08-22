@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @FeignClient(name = "USER-SERVICE", configuration = FeignClientConfiguration.class)
-@Headers(FeignHeader.TARGET_SERVICE_NAME + ": USER-SERVICE")
 //@FeignClient(value = "userRestClient", url = "https://developer.ccabank-app.com", configuration = FeignClientProperties.FeignClientConfiguration.class)
 public interface UserRestClient {
 

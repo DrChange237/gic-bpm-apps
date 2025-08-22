@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @FeignClient(name = "ENTITY-SERVICE" , configuration = FeignClientConfiguration.class)
-@Headers(FeignHeader.TARGET_SERVICE_NAME + ": ENTITY-SERVICE")
 public interface EntityRestClient {
 
     @GetMapping(path = "api/entities/agencies/getAllAgencies")

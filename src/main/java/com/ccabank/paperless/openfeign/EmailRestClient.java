@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "EMAIL-SERVICE", configuration = FeignClientConfiguration.class)
-@Headers(FeignHeader.TARGET_SERVICE_NAME + ": EMAIL-SERVICE")
 public interface EmailRestClient {
 
     @PostMapping(path = "/api/emails/sendGenericEmail")
