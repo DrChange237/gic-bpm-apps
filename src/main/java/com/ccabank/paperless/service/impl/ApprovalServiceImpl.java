@@ -647,8 +647,8 @@ public class ApprovalServiceImpl implements ApprovalService {
         List<ApprovalListDto> approvalDtos = new ArrayList<>();
 
         for (Approbation approbation : approbations) {
-            Task task = camundaService.getTaskDetails(approbation.getTaskId());
-            ApprovalListDto approvalDto = this.mapOneHistoryTaskToApprovalDto(task, tasks.indexOf(task), status);
+            HistoricTaskInstance task = camundaService.getHistoryTaskInstance(approbation.getTaskId());
+            ApprovalListDto approvalDto = this.mapOneHistoryTaskToApprovalDto(task, approbations.indexOf(approbation), status);
             if(approvalDto == null){
                 continue;
             }
