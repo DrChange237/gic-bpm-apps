@@ -17,6 +17,8 @@ import com.ccabank.paperless.util.camunda.Mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import groovy.util.logging.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
@@ -44,46 +46,35 @@ import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 import static com.ccabank.paperless.util.DateUtil.isDatePassed;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ApprovalServiceImpl implements ApprovalService {
 
     private static final Logger logger = LoggerFactory.getLogger(ApprovalServiceImpl.class);
 
+    private final RequestMapper requestInfoMapper;
 
-    @Autowired
-    private RequestMapper requestInfoMapper;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    private RequestRepository requestRepository;
+    private final DocumentTypeRepository documentTypeRepository;
 
-    @Autowired
-    private DocumentTypeRepository documentTypeRepository;
+    private final CamundaService camundaService;
 
-    @Autowired
-    private CamundaService camundaService;
+    private final SecurityService securityService;
 
-    @Autowired
-    private SecurityService securityService;
+    private final Mapping mapping;
 
-    @Autowired
-    private Mapping mapping;
+    private final ApprobationRepository approbationRepository;
 
-    @Autowired
-    private ApprobationRepository approbationRepository;
+    private final ApprovalKeyRepository approvalKeyRepository;
 
-    @Autowired
-    private ApprovalKeyRepository approvalKeyRepository;
+    private final UserRestClient userRestClient;
 
-    @Autowired
-    private UserRestClient userRestClient;
+    private final EmailService emailService;
 
-    @Autowired
-    private EmailService emailService;
+    private final IdentityService identityService;
 
-    @Autowired
-    private IdentityService identityService;
-
-    @Autowired
-    private MapService mapService;
+    private final MapService mapService;
 
     @Value("${auth.key}")
     private String api_key;
@@ -284,12 +275,14 @@ public class ApprovalServiceImpl implements ApprovalService {
         Optional<Approbation>  approbationOptional = approbationRepository.findByTaskId(task.getId());
         if(approbationOptional.isPresent()){
             Approbation approbation = approbationOptional.get();
+            approbation.setStaff(assignee);
             approbation.setReference(request.getReference());
             approbation.setStatus(ApprovalStatus.ACCEPTED);
             approbation.setComments(acceptedApprovalDto.getComments());
             approbationRepository.save(approbation);
         }else {
              Approbation approbation = new Approbation();
+             approbation.setStaff(assignee);
             approbation.setReference(request.getReference());
             approbation.setStatus(ApprovalStatus.ACCEPTED);
             approbation.setComments(acceptedApprovalDto.getComments());
@@ -370,6 +363,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             List<Task> tasks = new ArrayList<>();
             List<HistoricTaskInstance> historicTaskInstances = new ArrayList<>();
             List<ApprovalListDto> approvalDtos = new ArrayList<>();
+            List<Approbation> approbations = new ArrayList<>();
 
 
             switch (status){
@@ -382,19 +376,15 @@ public class ApprovalServiceImpl implements ApprovalService {
                 break;
 
                 case "ACCEPTED":
-                    historicTaskInstances = camundaService.getConfirmTasksForUser(employeeInfo.getUsername(), true);
-                   // historicTaskInstances.sort(Comparator.comparing(HistoricTaskInstance::getEndTime).reversed());
-                    System.out.println("Get Accepted Tasks " + historicTaskInstances.size());
-                    approvalDtos = this.mapHistoryTaskToApprovalDto(historicTaskInstances, status);
-                    System.out.println("Mapping Complete " + historicTaskInstances.size());
+                    approbations = approbationRepository.findByStaffAndStatus(employeeInfo.getUsername(), ApprovalStatus.ACCEPTED);
+                    approvalDtos = this.mapApprobationToApprovalDto(approbations, status);
+                    System.out.println("Mapping Complete " + approbations.size());
                 break;
 
                 case "REJECTED":
-                    historicTaskInstances = camundaService.getConfirmTasksForUser(employeeInfo.getUsername(), false);
-                   // historicTaskInstances.sort(Comparator.comparing(HistoricTaskInstance::getEndTime).reversed());
-                    System.out.println("Get Rejected Tasks " + historicTaskInstances.size());
-                    approvalDtos = this.mapHistoryTaskToApprovalDto(historicTaskInstances, status);
-                    System.out.println("Mapping Complete " + historicTaskInstances.size());
+                    approbations = approbationRepository.findByStaffAndStatus(employeeInfo.getUsername(), ApprovalStatus.REJECTED);
+                    approvalDtos = this.mapApprobationToApprovalDto(approbations, status);
+                    System.out.println("Mapping Complete " + approbations.size());
                 break;
             }
 
@@ -644,6 +634,20 @@ public class ApprovalServiceImpl implements ApprovalService {
         List<ApprovalListDto> approvalDtos = new ArrayList<>();
 
         for (HistoricTaskInstance task : tasks) {
+            ApprovalListDto approvalDto = this.mapOneHistoryTaskToApprovalDto(task, tasks.indexOf(task), status);
+            if(approvalDto == null){
+                continue;
+            }
+            approvalDtos.add(approvalDto);
+        }
+        return approvalDtos;
+    }
+
+    public  List<ApprovalListDto> mapApprobationToApprovalDto(List<Approbation> approbations, String status) {
+        List<ApprovalListDto> approvalDtos = new ArrayList<>();
+
+        for (Approbation approbation : approbations) {
+            Task task = camundaService.getTaskDetails(approbation.getTaskId());
             ApprovalListDto approvalDto = this.mapOneHistoryTaskToApprovalDto(task, tasks.indexOf(task), status);
             if(approvalDto == null){
                 continue;

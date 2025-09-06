@@ -24,6 +24,9 @@ public class Approbation extends Auditable  {
     @Column(name = "TASK_ID")
     private String taskId;
 
+    @Column(name = "STAFF", nullable = true)
+    private String staff;
+
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
