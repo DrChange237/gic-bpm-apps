@@ -257,12 +257,10 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         if(!incommingFields.isEmpty()){
             List<FieldDto> oldFields = (List<FieldDto>) variables.get("otherFields");
-            System.out.println("Begin add other fields");
             if(oldFields == null){
                 oldFields =new ArrayList<>();
             }
             incommingFields.addAll(oldFields);
-            System.out.println("Add Fields : " + incommingFields);
             variables.put("otherFields", incommingFields);
         }
 
@@ -370,21 +368,17 @@ public class ApprovalServiceImpl implements ApprovalService {
                 case "WAITING":
                     tasks = camundaService.getActiveTasksForUser(employeeInfo.getUsername());
                     tasks.sort(Comparator.comparing(Task::getCreateTime).reversed());
-                    System.out.println("Get Tasks " + tasks.size());
                     approvalDtos = this.mapTaskToApprovalDto(tasks);
-                    System.out.println("Mapping Complete " + tasks.size());
                 break;
 
                 case "ACCEPTED":
                     approbations = approbationRepository.findByStaffAndStatus(employeeInfo.getUsername(), ApprovalStatus.ACCEPTED);
                     approvalDtos = this.mapApprobationToApprovalDto(approbations, status);
-                    System.out.println("Mapping Complete " + approbations.size());
                 break;
 
                 case "REJECTED":
                     approbations = approbationRepository.findByStaffAndStatus(employeeInfo.getUsername(), ApprovalStatus.REJECTED);
                     approvalDtos = this.mapApprobationToApprovalDto(approbations, status);
-                    System.out.println("Mapping Complete " + approbations.size());
                 break;
             }
 
@@ -415,9 +409,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             tasks = camundaService.getAllTasksForUser();
             tasks.sort(Comparator.comparing(Task::getCreateTime).reversed());
-            System.out.println("Get Tasks " + tasks.size());
             approvalDtos = this.mapTaskToApprovalDto(tasks);
-            System.out.println("Mapping Complete " + tasks.size());
 
             return new AppServiceResult<List<ApprovalListDto>>(true, 0, "Succeed!", approvalDtos);
 
@@ -439,10 +431,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         ProcessDefinition processDefinition = camundaService.getProcessDefinition(processDefinitionId);
         DocumentType documentType = documentTypeRepository.findOneByStructure(processDefinition.getKey());
         requestInfo.setDocumentType(documentType.getName());
-
-
-
-        System.out.println("Task " + position);
 
         ApprovalListDto approvalDto = new ApprovalListDto();
         StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
@@ -474,7 +462,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         if(task.getId() != null){
             HistoricTaskInstance taskInstance = camundaService.getHistoryTaskInstance(task.getId());
             if(taskInstance != null){
-                System.out.println("Get Task " + taskInstance.toString());
                 if(taskInstance.getEndTime() != null){
                     approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(taskInstance.getEndTime()));
                     approvalDto.setTime(DateUtil.timeAgo(DateUtil.convertDateToLocalDateTime(taskInstance.getEndTime())));
@@ -493,7 +480,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         List<FieldDto> outFields = new ArrayList<>();
 
-        System.out.println("Boucle in Fields " + position);
 
         for (FormField f : data.getFormFields() ) {
             System.out.println("Field " + f.getLabel());
@@ -585,7 +571,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         DocumentType documentType = documentTypeRepository.findOneByStructure(processDefinition.getKey());
         requestInfo.setDocumentType(documentType.getName());
 
-        System.out.println("Task " + position);
 
         ApprovalListDto approvalDto = new ApprovalListDto();
         StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
@@ -733,7 +718,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
         List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(histories);
 
-        System.out.println(candidateUsers);
+
 
         for (String user : candidateUsers) {
 
@@ -762,7 +747,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         Task delegateTask = camundaService.getTaskDetails(taskId);
 
 
-        System.out.println("relanceForDueDate Task Listener");
         List<String> candidateUsers = getCandidateUserIds(delegateTask);
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         String processDefinitionId = delegateTask.getProcessDefinitionId();
@@ -785,7 +769,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
         List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(histories);
 
-        System.out.println(candidateUsers);
 
         if(delegateTask.getDueDate() != null){
             if (isDatePassed(delegateTask.getDueDate())) {
