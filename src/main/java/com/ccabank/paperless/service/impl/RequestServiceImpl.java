@@ -31,7 +31,6 @@ import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 
 @Service
 @Transactional
-@Qualifier(MEMO_SERVICE)
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
@@ -86,7 +85,6 @@ public class RequestServiceImpl implements RequestService {
             request.setApprobationLevel(0);
             //request = requestRepository.save(request);
 
-            System.out.println("Début du mapping");
             Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
             Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
             variables.putAll(variablesApprovals);
@@ -426,7 +424,6 @@ public class RequestServiceImpl implements RequestService {
                 if(!request.getStatus().equals(RequestStatus.PENDING)){
                     variables = camundaService.retrieveCompletedProcessVariables(request.getInstanceId());
                 }
-                System.out.println("Debut du mapping");
                 DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
                 dto.setFields(Mapping.getFieldFromFormField(formData, variables));
 

@@ -41,9 +41,7 @@ public class Mapping {
 
 
         for (FormField field : fieldDatas) {
-            System.out.println(field.getId());
             if(field.getProperties().isEmpty()){
-                System.out.println("properties is empty");
                 continue;
             }
             FieldDto fieldDto = new FieldDto();
@@ -58,7 +56,6 @@ public class Mapping {
 
 
             if(fieldDto.getType().equals("choice")){
-                System.out.println("choice is choice");
                 ObjectMapper objectMapper = new ObjectMapper();
                 List<ChoiceDto> choices = new ArrayList<>();
                 try {
@@ -80,11 +77,9 @@ public class Mapping {
 
         for (FieldDto field : fields) {
 
-            System.out.println("In Field : " + field.getName());
 
 
             if(field.isRequired()){
-                System.out.println("Field is required : " + field.getName());
                 if(field.getValue() == null){
                     throw new Exception("Parameter " + field.getName() + " is required");
                 }
@@ -106,7 +101,6 @@ public class Mapping {
 
                             try {
                                 Date date = formatter.parse(field.getValue());
-                                System.out.println("Parsed Date: " + date);
                                 variables.put(field.getKey(), date);
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -155,11 +149,9 @@ public class Mapping {
 
         List<FormField> fields = formFields.stream().filter(field -> field.getProperties().get("fieldType").equals("field")).collect(Collectors.toList());
 
-        System.out.println("Size of Fields"  + fields.size());
 
         List<FormField> approvals = formFields.stream().filter(field -> field.getProperties().get("fieldType").equals("approval")).collect(Collectors.toList());
 
-        System.out.println("Size of Approvals"  + approvals.size());
 
         List<FieldDto> outFields = new ArrayList<>();
 
