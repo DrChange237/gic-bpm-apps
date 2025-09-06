@@ -106,7 +106,6 @@ public class CamundaServiceImpl implements CamundaService {
                 .createVariableInstanceQuery().processInstanceIdIn(processInstanceId)
                 .list();
 
-        System.out.println(variableInstances);
 
         // Convertir en Map pour un accès facile
         return variableInstances.stream()
@@ -779,8 +778,6 @@ public class CamundaServiceImpl implements CamundaService {
 
         // Supprimer tous les membres existants
         List<User> existingMembers = identityService.createUserQuery().memberOfGroup(groupId).list();
-
-        System.out.println("Membre exists: " + existingMembers.toString());
 
         for (User memberId : existingMembers) {
             System.out.println(memberId);

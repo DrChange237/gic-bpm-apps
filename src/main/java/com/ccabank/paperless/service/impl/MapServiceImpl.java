@@ -38,7 +38,6 @@ public class MapServiceImpl implements MapService {
 
         for (HistoricTaskInstance historic : historics) {
 
-            System.out.println(historic);
 
             String taskId = historic.getId();
 
@@ -48,11 +47,8 @@ public class MapServiceImpl implements MapService {
 
             if(taskId != null){
                 approvalDto.setType(ApprovalType.OPEN);
-                System.out.println("Task Id : " + taskId);
                 approvalDto.setId(historic.getId());
-                System.out.println("ActivitiName : " + historic.getName());
                 approvalDto.setRole(historic.getName());
-                System.out.println("Position : " + historics.indexOf(historic));
                 approvalDto.setPosition(historics.indexOf(historic));
                 String natureTask = camundaService.getTaskAssigneeNature(taskId);
 
@@ -62,7 +58,6 @@ public class MapServiceImpl implements MapService {
                 }
 
                 if(historic.getAssignee() != null){
-                    System.out.println("Assigne : " + historic.getAssignee());
                     try{
                         approvalDto.setHaveSignature(securityService.checkUserSignature(historic.getAssignee()));
                     }catch (Exception e){
@@ -72,21 +67,18 @@ public class MapServiceImpl implements MapService {
                 }
 
                 if(historic.getEndTime() != null){
-                    System.out.println("EndTime : " + historic.getAssignee());
                     approvalDto.setApprovalDate(DateUtil.convertDateToLocalDateTime(historic.getEndTime()));
                     approvalDto.setTime(DateUtil.timeAgo(DateUtil.convertDateToLocalDateTime(historic.getEndTime())));
                 }
             }
 
             if(historic.getDurationInMillis() != null){
-                System.out.println("Duration : " + historic.getDurationInMillis());
                 if(historic.getDurationInMillis() > 0){
                     approvalDto.setStatus(ApprovalStatus.WAITING);
                 }
             }
 
             if(historic.getEndTime() != null){
-                System.out.println("Is Complete : ");
                 if(historic.getId() != null){
                     Optional<Approbation> approbationOptional = approbationRepository.findByTaskId(historic.getId());
                     if(approbationOptional.isPresent()){
