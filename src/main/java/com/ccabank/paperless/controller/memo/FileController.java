@@ -45,12 +45,10 @@ public class FileController {
     public ResponseEntity<?> export(
             @RequestParam(value = "reference", required = false) String reference,
             @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "staff", required = false) String staff,
-            @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "size") Integer size)
+            @RequestParam(value = "staff", required = false) String staff
     {
 
-        byte[] excelBytes = fileService.export(reference, type, staff, page, size);
+        byte[] excelBytes = fileService.export(reference, type, staff);
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

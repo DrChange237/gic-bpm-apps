@@ -11,7 +11,7 @@ public interface FileService {
 
     Page<FileDto> search(String reference, String type, String staff, int page, int size);
 
-    byte[] export(String reference, String type, String staff, int page, int size);
+    byte[] export(String reference, String type, String staff);
 
     List<FileDto> getAllFiles(String businessKey, String staff);
 

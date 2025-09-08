@@ -69,12 +69,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] export(String reference, String type, String staff, int page, int size) {
+    public byte[] export(String reference, String type, String staff) {
         // Commencez avec une spécification "vide" ou "vraie"
         Specification<File> spec = Specification.where(null);
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "addDate"));
+        Pageable pageable = PageRequest.of(0, fileRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "addDate"));
         Page<File> files = fileRepository.findAll(pageable);
         if(spec != null){
             files = fileRepository.findAll(spec, pageable);
