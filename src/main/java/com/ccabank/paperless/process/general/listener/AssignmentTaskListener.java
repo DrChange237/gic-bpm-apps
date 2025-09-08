@@ -32,6 +32,7 @@ public class AssignmentTaskListener implements TaskListener {
 
         List<Approbation> approbations = approbationRepository.findByReferenceAndStaffAndStatus(request.getReference(), userTaskId, ApprovalStatus.ACCEPTED);
         if (approbations.size() > 0) {
+            delegateTask.setVariable("decision", true);
             delegateTask.complete();
         }
 
