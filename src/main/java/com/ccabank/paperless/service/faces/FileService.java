@@ -11,6 +11,8 @@ public interface FileService {
 
     Page<FileDto> search(String reference, String type, String staff, int page, int size);
 
+    byte[] export(String reference, String type, String staff, int page, int size);
+
     List<FileDto> getAllFiles(String businessKey, String staff);
 
     void saveFile(Request request, FileDto fileDto) throws IOException;

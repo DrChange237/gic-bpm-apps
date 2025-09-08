@@ -11,6 +11,8 @@ import com.ccabank.paperless.repository.FileRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.specification.FileSpecifications;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -65,6 +68,31 @@ public class FileServiceImpl implements FileService {
         return files.map(fileMapper::toDto);
     }
 
+    @Override
+    public byte[] export(String reference, String type, String staff, int page, int size) {
+        // Commencez avec une spécification "vide" ou "vraie"
+        Specification<File> spec = Specification.where(null);
+        DocumentType documentType = documentTypeRepository.findOneByStructure(type);
+        spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "addDate"));
+        Page<File> files = fileRepository.findAll(pageable);
+        if(spec != null){
+            files = fileRepository.findAll(spec, pageable);
+        }
+        List<FileDto> fileDtos = fileMapper.toDto(files.getContent());
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        XSSFWorkbook workbook = this.generateExport(fileDtos, "Export_Document_Paperless");
+
+        try {
+            workbook.write(outputStream);
+            byte[] excelBytes = outputStream.toByteArray();
+            return excelBytes;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public List<FileDto> getAllFiles(String businessKey, String staff) {
@@ -97,7 +125,114 @@ public class FileServiceImpl implements FileService {
             file.setUrl(serverUrl + pathFile + fileFinal.getUrl());
             file.setAddDate(LocalDateTime.now());
             fileRepository.save(file);
+    }
 
+    public XSSFWorkbook generateExport(List<FileDto> fileDtos, String sheetName){
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet(sheetName);
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        Font font =  workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 10);
+        font.setBold(false);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        cellStyle.setFont(font);
+
+        cellStyle.setBorderTop(BorderStyle.MEDIUM);
+        cellStyle.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+        cellStyle.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle cellStyle2 = workbook.createCellStyle();
+        cellStyle2.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        font =  workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 9);
+        font.setItalic(true);
+        font.setColor(IndexedColors.VIOLET.getIndex());
+        cellStyle2.setFont(font);
+
+        cellStyle2.setBorderTop(BorderStyle.MEDIUM);
+        cellStyle2.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+        cellStyle2.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle2.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle cellStyle3 = workbook.createCellStyle();
+        cellStyle3.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        cellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        font =  workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 9);
+        cellStyle3.setFont(font);
+
+        cellStyle3.setBorderTop(BorderStyle.MEDIUM);
+        cellStyle3.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+        cellStyle3.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle3.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
+
+
+
+        // Écrire l'en-tête
+        Row headerRow = sheet.createRow(0);
+
+        Cell cell = headerRow.createCell(0);
+        cell.setCellStyle(cellStyle);
+        cell.setCellValue("Type de Document");
+
+        cell = headerRow.createCell(1);
+        cell.setCellStyle(cellStyle);
+        cell.setCellValue("Réference");
+
+        cell = headerRow.createCell(2);
+        cell.setCellStyle(cellStyle);
+        cell.setCellValue("Noms du Staff");
+
+        cell = headerRow.createCell(3);
+        cell.setCellStyle(cellStyle);
+        cell.setCellValue("Date de Publication");
+
+
+        int i = 1;
+
+        for (FileDto fileDto : fileDtos) {
+
+            headerRow = sheet.createRow(i);
+            cell = headerRow.createCell(0);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(fileDto.getRequest().getDocumentType().toUpperCase());
+
+            cell = headerRow.createCell(1);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(fileDto.getRequest().getReference().toUpperCase());
+
+            cell = headerRow.createCell(2);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(fileDto.getRequest().getStaff().toUpperCase());
+
+            cell = headerRow.createCell(3);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(fileDto.getAddDate());
+
+            i = i + 1 ;
+        }
+
+        sheet.setColumnWidth(0, 75 * 256);
+
+        return  workbook;
 
     }
 }

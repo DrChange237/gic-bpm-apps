@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "T_FILE")
-public class File {
+public class File extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
