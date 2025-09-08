@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @Api(tags = "Paperless")
 @RestController
 @RequestMapping("/paperless")
@@ -45,10 +47,12 @@ public class FileController {
     public ResponseEntity<?> export(
             @RequestParam(value = "reference", required = false) String reference,
             @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "staff", required = false) String staff)
+            @RequestParam(value = "staff", required = false) String staff,
+            @RequestParam(value = "type", required = false) LocalDate startDate,
+            @RequestParam(value = "staff", required = false) LocalDate endDate)
     {
 
-        byte[] excelBytes = fileService.export(reference, type, staff);
+        byte[] excelBytes = fileService.export(reference, type, staff, startDate, endDate);
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

@@ -72,7 +72,7 @@ public class FileServiceImpl implements FileService {
             endDate = LocalDate.now();
         }
         if (startDate == null){
-            startDate = LocalDate.now().minusDays(10);
+            startDate = LocalDate.now().minusDays(100);
         }
 
         Specification<File> spec = Specification.where(FileSpecifications.dateBetween(startDate, endDate));
