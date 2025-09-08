@@ -58,7 +58,8 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     private final DocumentTypeRepository documentTypeRepository;
 
-    private final CamundaService camundaService;
+    @Autowired
+    private CamundaService camundaService;
 
     private final SecurityService securityService;
 
@@ -231,12 +232,15 @@ public class ApprovalServiceImpl implements ApprovalService {
             throw new BadRequestException("l'utilisateur " + assignee + " n'a pas de signature");
         }
 
-        logger.info(MEMO_SERVICE + "approve : methode invocation");
+        logger.info(MEMO_SERVICE + " approve : methode invocation");
         List<FieldDto> incommingFields = acceptedApprovalDto.getFields();
         if(incommingFields == null){
             incommingFields = new ArrayList<>();
         }
         Task task = camundaService.getTaskDetails(acceptedApprovalDto.getIdApproval());
+        if(task == null){
+            logger.warn("Task is null");
+        }
         camundaService.addLocalVariableToTask(task.getId(), "signature", true);
         String instanceId = task.getProcessInstanceId();
         Request request = requestRepository.findByInstanceId(instanceId);
