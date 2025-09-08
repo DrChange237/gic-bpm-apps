@@ -13,4 +13,6 @@ public interface ApprobationRepository extends JpaRepository<Approbation, Long> 
     Optional<Approbation> findByTaskId(String id);
 
     List<Approbation> findByStaffAndStatus(String username, ApprovalStatus approvalStatus);
+
+    List<Approbation> findByReferenceAndStaffAndStatus(String reference, String userTaskId, ApprovalStatus approvalStatus);
 }
