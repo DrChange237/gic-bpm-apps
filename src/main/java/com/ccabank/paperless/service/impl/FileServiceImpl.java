@@ -68,14 +68,10 @@ public class FileServiceImpl implements FileService {
     @Override
     public byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate) {
 
-        if(endDate == null){
-            endDate = LocalDate.now();
+        Specification<File> spec = Specification.where(null);
+        if(endDate != null && startDate != null){
+            spec = Specification.where(FileSpecifications.dateBetween(startDate, endDate));
         }
-        if (startDate == null){
-            startDate = LocalDate.now().minusDays(100);
-        }
-
-        Specification<File> spec = Specification.where(FileSpecifications.dateBetween(startDate, endDate));
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
         Pageable pageable = PageRequest.of(0, fileRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "addDate"));
