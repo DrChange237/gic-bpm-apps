@@ -239,7 +239,7 @@ public class SendVacation implements JavaDelegate {
             signatory.setName(respCAInfo.getFirstName() + " " + respCAInfo.getLastName());
             decision.setSignatory(signatory);
 
-            String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DG);
             EmployeeInfo dgInfo = userRestClient.getStaffByUsername(dg);
             signature = userRestClient.getEmployeeSignature(dg);
             if(dg != null){
