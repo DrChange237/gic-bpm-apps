@@ -48,8 +48,8 @@ public class FileController {
             @RequestParam(value = "reference", required = false) String reference,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "staff", required = false) String staff,
-            @RequestParam(value = "type", required = false) LocalDate startDate,
-            @RequestParam(value = "staff", required = false) LocalDate endDate)
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate)
     {
 
         byte[] excelBytes = fileService.export(reference, type, staff, startDate, endDate);
