@@ -31,6 +31,8 @@ public class Approbation extends Auditable  {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
 
+
+
     @Column(name = "COMMENTS")
     @Basic
     private String comments;

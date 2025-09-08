@@ -283,8 +283,8 @@ public class ApprovalServiceImpl implements ApprovalService {
             approbation.setComments(acceptedApprovalDto.getComments());
             approbationRepository.save(approbation);
         }else {
-             Approbation approbation = new Approbation();
-             approbation.setStaff(assignee);
+            Approbation approbation = new Approbation();
+            approbation.setStaff(assignee);
             approbation.setReference(request.getReference());
             approbation.setStatus(ApprovalStatus.ACCEPTED);
             approbation.setComments(acceptedApprovalDto.getComments());
