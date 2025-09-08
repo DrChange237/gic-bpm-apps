@@ -510,7 +510,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             FieldDto field = new FieldDto();
             field.setKey(f.getId());
-            System.out.println("Add type " + f.getLabel());
 
             field.setType(f.getProperties().get("type"));
 
@@ -538,7 +537,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 
             field.setPosition(data.getFormFields().indexOf(f) + 1);
             field.setName(f.getLabel());
-            System.out.println("Add required " + f.getLabel());
             field.setRequired(f.getProperties().get("required").equals("true"));
             if(f.getDefaultValue() != null){
                 field.setValue(String.valueOf(f.getDefaultValue()));
@@ -551,7 +549,6 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
 
             outFields.add(field);
-            System.out.println("Add complete " + f.getLabel());
         }
 
         approvalDto.setFields(outFields);
