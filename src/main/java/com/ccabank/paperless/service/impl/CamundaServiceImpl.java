@@ -5,6 +5,7 @@ import com.ccabank.paperless.entity.camunda.UserCamunda;
 import com.ccabank.paperless.repository.GroupRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.UserCamundaService;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.StartFormData;
@@ -33,32 +34,26 @@ import java.util.stream.Collectors;
 import static org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState.*;
 
 @Service
+@RequiredArgsConstructor
 public class CamundaServiceImpl implements CamundaService {
 
     private static final Logger log = LoggerFactory.getLogger(CamundaServiceImpl.class);
-    @Autowired
-    private RepositoryService repositoryService;
 
-    @Autowired
-    private FormService formService;
+    private final RepositoryService repositoryService;
 
-    @Autowired
-    private IdentityService identityService;
+    private final FormService formService;
 
-    @Autowired
-    private RuntimeService runtimeService;
+    private final IdentityService identityService;
 
-    @Autowired
-    private TaskService taskService;
+    private final RuntimeService runtimeService;
 
-    @Autowired
-    private HistoryService historyService;
+    private final TaskService taskService;
 
-    @Autowired
-    private UserCamundaService userCamundaService;
+    private final HistoryService historyService;
 
-    @Autowired
-    private GroupRepository groupRepository;
+    private final UserCamundaService userCamundaService;
+
+    private final GroupRepository groupRepository;
 
 
 
@@ -359,7 +354,9 @@ public class CamundaServiceImpl implements CamundaService {
         Object variableValue = null;
         try{
             variableValue = runtimeService.getVariable(processInstanceId, variableName);
-        }catch (Exception e){
+        } catch (ProcessEngineException e){
+            return null;
+        } catch (Exception e){
             return null;
         }
         return variableValue;
