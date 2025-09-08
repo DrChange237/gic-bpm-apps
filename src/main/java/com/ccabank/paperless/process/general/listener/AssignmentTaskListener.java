@@ -40,7 +40,10 @@ public class AssignmentTaskListener implements TaskListener {
         if (!approbations.isEmpty()) {
             log.info("complete task");
             delegateTask.setVariable("decision", true);
-            delegateTask.complete();
+            delegateTask.getProcessEngineServices()
+                    .getTaskService()
+                    .complete(delegateTask.getId());
+            System.out.println("✅ User Task [" + delegateTask.getName() + "] complétée automatiquement !");
         }
 
     }
