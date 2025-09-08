@@ -210,18 +210,25 @@ public class FileServiceImpl implements FileService {
 
         for (FileDto fileDto : fileDtos) {
 
+            if(fileDto.getRequest() == null){
+                continue;
+            }
+
             headerRow = sheet.createRow(i);
             cell = headerRow.createCell(0);
             cell.setCellStyle(cellStyle);
-            cell.setCellValue(fileDto.getRequest().getDocumentType().toUpperCase());
+
+            if (fileDto.getRequest().getDocumentType() != null) {
+                cell.setCellValue(fileDto.getRequest().getDocumentType());
+            }
 
             cell = headerRow.createCell(1);
             cell.setCellStyle(cellStyle);
-            cell.setCellValue(fileDto.getRequest().getReference().toUpperCase());
+            cell.setCellValue(fileDto.getRequest().getReference());
 
             cell = headerRow.createCell(2);
             cell.setCellStyle(cellStyle);
-            cell.setCellValue(fileDto.getRequest().getStaff().toUpperCase());
+            cell.setCellValue(fileDto.getRequest().getStaff());
 
             cell = headerRow.createCell(3);
             cell.setCellStyle(cellStyle);
