@@ -5,10 +5,15 @@ import com.ccabank.paperless.entity.File;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileSpecifications {
+
+    public static Specification<File> dateBetween(LocalDate debut, LocalDate fin) {
+        return (root, query, cb) -> cb.between(root.get("creationDate"), debut, fin);
+    }
 
     // Exemple de spécification combinant plusieurs conditions optionnelles (alternative pour le service)
     public static Specification<File> withDynamicQuery(String reference, DocumentType type, String staff) {

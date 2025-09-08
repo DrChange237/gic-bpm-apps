@@ -11,9 +11,9 @@ import com.ccabank.paperless.repository.FileRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.specification.FileSpecifications;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,27 +24,24 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-    @Autowired
-    RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    FileRepository fileRepository;
+    private final FileRepository fileRepository;
 
-    @Autowired
-    private FileRestClient fileRestClient;
+    private final FileRestClient fileRestClient;
 
-    @Autowired
-    private FileMapper fileMapper;
+    private final FileMapper fileMapper;
 
-    @Autowired
-    private DocumentTypeRepository documentTypeRepository;
+    private final DocumentTypeRepository documentTypeRepository;
 
 
     @Value("${server_url}")
@@ -69,17 +66,24 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] export(String reference, String type, String staff) {
-        // Commencez avec une spécification "vide" ou "vraie"
-        Specification<File> spec = Specification.where(null);
+    public byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate) {
+
+        if(endDate == null){
+            endDate = LocalDate.now();
+        }
+        if (startDate == null){
+            startDate = LocalDate.now().minusDays(10);
+        }
+
+        Specification<File> spec = Specification.where(FileSpecifications.dateBetween(startDate, endDate));
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
         Pageable pageable = PageRequest.of(0, fileRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "addDate"));
-        Page<File> files = fileRepository.findAll(pageable);
+        List<File> files = fileRepository.findByCreationDateBetween(startDate, endDate);
         if(spec != null){
-            files = fileRepository.findAll(spec, pageable);
+            files = fileRepository.findAll(spec);
         }
-        List<FileDto> fileDtos = fileMapper.toDto(files.getContent());
+        List<FileDto> fileDtos = fileMapper.toDto(files);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = this.generateExport(fileDtos, "Export_Document_Paperless");
 

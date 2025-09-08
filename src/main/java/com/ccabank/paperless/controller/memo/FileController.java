@@ -45,7 +45,7 @@ public class FileController {
     public ResponseEntity<?> export(
             @RequestParam(value = "reference", required = false) String reference,
             @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "staff", required = false) String staff
+            @RequestParam(value = "staff", required = false) String staff)
     {
 
         byte[] excelBytes = fileService.export(reference, type, staff);
