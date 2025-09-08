@@ -8,6 +8,8 @@ import com.ccabank.paperless.util.file.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import groovy.util.logging.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.StartFormData;
@@ -20,12 +22,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@lombok.extern.slf4j.Slf4j
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class Mapping {
 
-
-    @Autowired
-    private FileRestClient fileRestClient;
+    private final FileRestClient fileRestClient;
 
     @Value("${server_url}")
     private String serverUrl;
@@ -61,7 +64,12 @@ public class Mapping {
                 try {
                     choices = objectMapper.readValue(field.getProperties().get("choices"),  new TypeReference<List<ChoiceDto>>() {});
                 } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+                    //throw new RuntimeException(e);
+                    log.error(e.getMessage());
+                    continue;
+                } catch (Exception e){
+                    log.error(e.getMessage());
+                    continue;
                 }
                 fieldDto.setChoices(choices);
             }
