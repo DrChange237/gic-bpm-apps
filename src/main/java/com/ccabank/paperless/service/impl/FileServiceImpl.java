@@ -135,7 +135,6 @@ public class FileServiceImpl implements FileService {
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
         Font font =  workbook.createFont();
         font.setFontName("Arial");
         font.setFontHeightInPoints((short) 10);
@@ -216,22 +215,20 @@ public class FileServiceImpl implements FileService {
 
             headerRow = sheet.createRow(i);
             cell = headerRow.createCell(0);
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(cellStyle2);
+            cell.setCellValue(fileDto.getRequest().getDocumentType());
 
-            if (fileDto.getRequest().getDocumentType() != null) {
-                cell.setCellValue(fileDto.getRequest().getDocumentType());
-            }
 
             cell = headerRow.createCell(1);
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(cellStyle2);
             cell.setCellValue(fileDto.getRequest().getReference());
 
             cell = headerRow.createCell(2);
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(cellStyle2);
             cell.setCellValue(fileDto.getRequest().getStaff());
 
             cell = headerRow.createCell(3);
-            cell.setCellStyle(cellStyle);
+            cell.setCellStyle(cellStyle2);
             cell.setCellValue(fileDto.getAddDate());
 
             i = i + 1 ;
