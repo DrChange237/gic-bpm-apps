@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class FileServiceImpl implements FileService {
         List<File> files = fileRepository.findAll(spec);
         List<FileDto> fileDtos = fileMapper.toDto(files);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        XSSFWorkbook workbook = this.generateExport(fileDtos, "Export_Document_Paperless");
+        XSSFWorkbook workbook = this.generateExport(files, "Export_Document_Paperless");
 
         try {
             workbook.write(outputStream);
@@ -124,7 +125,7 @@ public class FileServiceImpl implements FileService {
             fileRepository.save(file);
     }
 
-    public XSSFWorkbook generateExport(List<FileDto> fileDtos, String sheetName){
+    public XSSFWorkbook generateExport(List<File> fileDtos, String sheetName){
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet(sheetName);
@@ -204,7 +205,7 @@ public class FileServiceImpl implements FileService {
 
         int i = 1;
 
-        for (FileDto fileDto : fileDtos) {
+        for (File fileDto : fileDtos) {
 
             if(fileDto.getRequest() == null){
                 continue;
@@ -213,7 +214,7 @@ public class FileServiceImpl implements FileService {
             headerRow = sheet.createRow(i);
             cell = headerRow.createCell(0);
             cell.setCellStyle(cellStyle2);
-            cell.setCellValue(fileDto.getRequest().getDocumentType());
+            cell.setCellValue(fileDto.getRequest().getType().getName());
 
 
             cell = headerRow.createCell(1);
@@ -226,7 +227,8 @@ public class FileServiceImpl implements FileService {
 
             cell = headerRow.createCell(3);
             cell.setCellStyle(cellStyle2);
-            cell.setCellValue(fileDto.getAddDate());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            cell.setCellValue(fileDto.getAddDate().format(formatter));
 
             i = i + 1 ;
         }
