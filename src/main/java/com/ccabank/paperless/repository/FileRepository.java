@@ -19,6 +19,5 @@ public interface FileRepository extends JpaRepository<File, Long> , JpaSpecifica
 
     List<File> findByCreationDateBetween(LocalDate startDate, LocalDate endDate);
 
-
     Page<File> findAllByOrderByAddDateDesc(Specification<File> spec, Pageable pageable);
 }

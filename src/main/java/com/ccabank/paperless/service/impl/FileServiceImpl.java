@@ -75,10 +75,7 @@ public class FileServiceImpl implements FileService {
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
         Pageable pageable = PageRequest.of(0, fileRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "addDate"));
-        List<File> files = fileRepository.findByCreationDateBetween(startDate, endDate);
-        if(spec != null){
-            files = fileRepository.findAll(spec);
-        }
+        List<File> files = fileRepository.findAll(spec);
         List<FileDto> fileDtos = fileMapper.toDto(files);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = this.generateExport(fileDtos, "Export_Document_Paperless");
