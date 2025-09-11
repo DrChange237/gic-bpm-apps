@@ -79,7 +79,17 @@ public class FileServiceImpl implements FileService {
         List<File> files = fileRepository.findAll(spec);
         List<FileDto> fileDtos = fileMapper.toDto(files);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        XSSFWorkbook workbook = this.generateExport(files, "Export_Document_Paperless");
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        switch (documentType.getName()){
+
+            case "mission":
+                workbook = this.generateExport(files, "Export_Mission_Paperless");
+            break;
+            case "vacation":
+                workbook = this.generateExport(files, "Export_Vacation_Bank");
+            break;
+        }
 
         try {
             workbook.write(outputStream);
