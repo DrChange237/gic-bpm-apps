@@ -135,6 +135,19 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public Object getHistoricProcessVariable(String processInstanceId, String variableName) {
+        // Récupérer la variable historique par nom
+        HistoricVariableInstance variableInstance = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .variableName(variableName)
+                .singleResult(); // récupère une seule variable
+
+        // Vérifier si elle existe et retourner sa valeur
+        return variableInstance != null ? variableInstance.getValue() : null;
+    }
+
+    @Override
     public List<ProcessInstance> getProcessInstancesForUser(String userId) {
         // Créer une requête pour récupérer les instances de processus en fonction de l'utilisateur
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery()

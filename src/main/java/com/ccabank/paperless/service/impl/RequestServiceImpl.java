@@ -572,7 +572,12 @@ public class RequestServiceImpl implements RequestService {
                 headerRow = sheet.createRow(row);
                 Cell cell = headerRow.createCell(row);
                 cell.setCellStyle(cellStyle2);
-                String value = String.valueOf(camundaService.getProcessVariable(request.getInstanceId(), entry.getKey()));
+                String value = "";
+                if(camundaService.isProcessInstanceActive(request.getInstanceId())){
+                    value  = String.valueOf(camundaService.getProcessVariable(request.getInstanceId(), entry.getKey()));
+                }else {
+                    value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), entry.getKey()));
+                }
                 cell.setCellValue(value);
                 row++;
             }

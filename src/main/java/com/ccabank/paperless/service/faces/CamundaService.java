@@ -39,6 +39,8 @@ public interface CamundaService {
 
     Map<String, Object> getHistoricProcessVariables(String processInstanceId);
 
+    Object getHistoricProcessVariable(String processInstanceId, String variableName);
+
     List<ProcessInstance> getProcessInstancesForUser(String userId);
 
     List<HistoricProcessInstance> getProcessInstancesForUserWithStatus(String userId, CaseExecutionState status);
