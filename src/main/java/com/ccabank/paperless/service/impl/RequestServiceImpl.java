@@ -566,11 +566,12 @@ public class RequestServiceImpl implements RequestService {
 
 
         row = 1;
+        col = 1;
 
         for (Request request : requests) {
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 headerRow = sheet.createRow(row);
-                Cell cell = headerRow.createCell(row);
+                Cell cell = headerRow.createCell(col);
                 cell.setCellStyle(cellStyle2);
                 String value = "";
                 if(camundaService.isProcessInstanceActive(request.getInstanceId())){
@@ -579,11 +580,11 @@ public class RequestServiceImpl implements RequestService {
                     value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), entry.getKey()));
                 }
                 cell.setCellValue(value);
-                row++;
+                col++;
             }
+            row++;
         }
 
-        sheet.setColumnWidth(0, 100 * 256);
         return  workbook;
     }
 
