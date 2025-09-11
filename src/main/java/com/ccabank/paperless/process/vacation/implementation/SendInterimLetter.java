@@ -66,7 +66,7 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm.Employee interim = new InterimForm.Employee();
             interim.setMatricule(interimaire.getMatricule());
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            String function = (String) delegateExecution.getVariable("function");
+            String function = interimaire.getFunction().getFunction().getName();
             interim.setFunction(function);
             interim.setSex(InterimForm.Employee.Sex.MALE);
             if(interimaire.getGender().equals(Gender.FEMALE)){
@@ -80,7 +80,7 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm.Employee employee = new InterimForm.Employee();
             employee.setMatricule(staff.getMatricule());
             employee.setName(staff.getFirstName() + " " + staff.getLastName());
-            employee.setFunction(Optional.ofNullable(staff.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+            employee.setFunction((String) delegateExecution.getVariable("function"));
             employee.setSex(InterimForm.Employee.Sex.MALE);
             if(staff.getGender().equals(Gender.FEMALE)){
                 employee.setSex(InterimForm.Employee.Sex.FEMALE);
@@ -128,7 +128,7 @@ public class SendInterimLetter implements JavaDelegate {
             signatory.setFunction("Le Directeur du Capital Humain");
             signatory.setName(info.getFirstName() + " " + info.getLastName());
             form.setSignatory(signatory);
-            String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DG);
             EmployeeInfo dgInfo = userRestClient.getStaffByUsername(dg);
             signature = userRestClient.getEmployeeSignature(dg);
             if(dg != null){
