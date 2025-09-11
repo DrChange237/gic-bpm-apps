@@ -570,8 +570,7 @@ public class RequestServiceImpl implements RequestService {
 
         for (Request request : requests) {
 
-            col = 1;
-
+            col = 0;
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 headerRow = sheet.createRow(row);
                 Cell cell = headerRow.createCell(col);
