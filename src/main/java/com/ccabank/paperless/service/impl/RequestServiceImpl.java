@@ -476,10 +476,42 @@ public class RequestServiceImpl implements RequestService {
         propertiesMission.put("nbDays", "Nombre de Nuitées");
         propertiesMission.put("transport", "Moyen de Transport");
         propertiesMission.put("immatriculation", "Immatriculation");
+        propertiesMission.put("supportCharge", "Agence");
+        propertiesMission.put("missionFees", "Frais de Mission");
+        propertiesMission.put("transportFees", "Frais de Transport");
+
+        LinkedHashMap<String, String> propertiesVacation = new LinkedHashMap<>();
+        propertiesMission.put("reference", "Reference");
+        propertiesMission.put("owner", "Staff");
+        propertiesMission.put("realStartDate", "Date de Début");
+        propertiesMission.put("reprise_date", "Date de Fin");
+        propertiesMission.put("days", "Nombre de Jours");
+        propertiesMission.put("typeInterim", "Type d'Interim");
+        propertiesMission.put("lastVacationDate ", "Date de dernier congés");
+
+        LinkedHashMap<String, String> propertiesAbsence = new LinkedHashMap<>();
+        propertiesMission.put("reference", "Reference");
+        propertiesMission.put("owner", "Staff");
+        propertiesMission.put("startDate", "Date de Début");
+        propertiesMission.put("endDate", "Date de Fin");
+        propertiesMission.put("reason", "Motif");
+        propertiesMission.put("otherReason", "Autre Motif");
+        propertiesMission.put("deduction", "Base de Déduction");
+        propertiesMission.put("absence", "Cumul annuel des absences");
+        propertiesMission.put("stock ", "Stock des congés année N");
+        propertiesMission.put("advice", "Avis d'octroi");
+        propertiesMission.put("rights ", "Droit restant dû");
+
 
         switch (documentType.getStructure()){
             case "mission":
                 workbook = this.generateExport(requests, "Export_Mission_Paperless", propertiesMission);
+                break;
+            case "vacation":
+                workbook = this.generateExport(requests, "Export_Vacation_Paperless", propertiesVacation);
+                break;
+            case "absence":
+                workbook = this.generateExport(requests, "Export_Vacation_Paperless", propertiesAbsence);
                 break;
         }
 
