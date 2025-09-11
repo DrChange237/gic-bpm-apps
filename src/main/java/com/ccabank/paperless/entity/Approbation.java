@@ -28,7 +28,9 @@ public class Approbation extends Auditable  {
     private String staff;
 
     @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
+
 
     @Column(name = "COMMENTS")
     @Basic
