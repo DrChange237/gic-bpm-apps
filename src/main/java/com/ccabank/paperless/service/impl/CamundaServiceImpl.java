@@ -24,7 +24,6 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +92,17 @@ public class CamundaServiceImpl implements CamundaService {
         runtimeService.setVariable(processInstanceId, variableName, value);
     }
 
+    @Override
+    public boolean isProcessInstanceActive(String processInstanceId) {
+        // Vérifie si l'instance existe encore dans le runtime
+        ProcessInstance instance = runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .singleResult();
+
+        return instance != null && !instance.isEnded();
+    }
+
 
     @Override
     public Map<String, Object> getProcessVariables(String processInstanceId) {
@@ -107,6 +117,21 @@ public class CamundaServiceImpl implements CamundaService {
                 .filter(variable -> variable.getName() != null)  // Filtrer les noms null
                 .filter(variable -> variable.getValue() != null)  // Filtrer les noms null
                 .collect(Collectors.toMap(VariableInstance::getName, VariableInstance::getValue));
+    }
+
+    @Override
+    public Map<String, Object> getHistoricProcessVariables(String processInstanceId) {
+        // Récupérer les variables historiques de l’instance de processus
+        List<HistoricVariableInstance> variableInstances = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .list();
+
+        // Convertir en Map
+        return variableInstances.stream()
+                .filter(variable -> variable.getName() != null)
+                .filter(variable -> variable.getValue() != null)
+                .collect(Collectors.toMap(HistoricVariableInstance::getName, HistoricVariableInstance::getValue));
     }
 
     @Override

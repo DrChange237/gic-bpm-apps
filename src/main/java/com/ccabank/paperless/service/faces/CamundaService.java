@@ -33,7 +33,11 @@ public interface CamundaService {
 
     void setProcessVariable(String processInstanceId, String variableName, Object value);
 
+    boolean isProcessInstanceActive(String processInstanceId);
+
     Map<String, Object> getProcessVariables(String instanceId);
+
+    Map<String, Object> getHistoricProcessVariables(String processInstanceId);
 
     List<ProcessInstance> getProcessInstancesForUser(String userId);
 

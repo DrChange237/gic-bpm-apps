@@ -217,7 +217,13 @@ public class RequestServiceImpl implements RequestService {
             dto.setDocumentType(request.getType().getName());
             StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
             DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
-            Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+            Map<String, Object> variables = new HashMap<>();
+
+            if(camundaService.isProcessInstanceActive(request.getInstanceId())){
+                variables = camundaService.getProcessVariables(request.getInstanceId());
+            }else {
+                variables = camundaService.getHistoricProcessVariables(request.getInstanceId());
+            }
 
             List<FieldDto> updateFields = new ArrayList<>();
 
