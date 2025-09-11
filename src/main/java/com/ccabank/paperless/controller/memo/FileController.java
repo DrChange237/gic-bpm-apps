@@ -3,9 +3,11 @@ package com.ccabank.paperless.controller.memo;
 
 import com.ccabank.paperless.security.Authority;
 import com.ccabank.paperless.service.faces.FileService;
+import com.ccabank.paperless.service.faces.RequestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,10 +24,12 @@ import java.time.LocalDate;
 @Api(tags = "Paperless")
 @RestController
 @RequestMapping("/paperless")
+@RequiredArgsConstructor
 public class FileController {
 
-    @Autowired
-    private FileService fileService;
+
+    private final FileService fileService;
+    private final RequestService requestService;
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/files/search")
@@ -52,7 +56,7 @@ public class FileController {
             @RequestParam(value = "endDate", required = false) LocalDate endDate)
     {
 
-        byte[] excelBytes = fileService.export(reference, type, staff, startDate, endDate);
+        byte[] excelBytes = requestService.export(reference, type, staff, startDate, endDate);
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

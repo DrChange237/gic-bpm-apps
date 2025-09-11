@@ -9,19 +9,28 @@ import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.mappers.RequestMapper;
 import com.ccabank.paperless.repository.*;
 import com.ccabank.paperless.service.faces.*;
+import com.ccabank.paperless.specification.FileSpecifications;
+import com.ccabank.paperless.specification.RequestSpecifications;
 import com.ccabank.paperless.util.camunda.Mapping;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -442,6 +451,135 @@ public class RequestServiceImpl implements RequestService {
             }
         }
         return new AppServiceResult<>(true, 0, "Succeed!", result);
+    }
+
+    @Override
+    public byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate) {
+
+        Specification<Request> spec = Specification.where(null);
+        if(endDate != null && startDate != null){
+            spec = Specification.where(RequestSpecifications.dateBetween(startDate, endDate));
+        }
+        DocumentType documentType = documentTypeRepository.findOneByStructure(type);
+        spec = RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED);
+        List<Request> requests = requestRepository.findAll(spec);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        HashMap<String, String> propertiesMission = new HashMap<>();
+        propertiesMission.put("reference", "Reference");
+        propertiesMission.put("owner", "Staff");
+        propertiesMission.put("object", "Objet");
+        propertiesMission.put("location", "Lieu");
+        propertiesMission.put("startDate", "Date de Début");
+        propertiesMission.put("endDate", "Date de Fin");
+        propertiesMission.put("nbDays", "Nombre de Nuitées");
+        propertiesMission.put("transport", "Moyen de Transport");
+        propertiesMission.put("immatriculation", "Immatriculation");
+
+        switch (documentType.getName()){
+            case "mission":
+                workbook = this.generateExport(requests, "Export_Mission_Paperless", propertiesMission);
+                break;
+        }
+
+        try {
+            workbook.write(outputStream);
+            byte[] excelBytes = outputStream.toByteArray();
+            return excelBytes;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public XSSFWorkbook generateExport(List<Request> requests, String sheetName, HashMap<String, String> properties) {
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet(sheetName);
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        Font font =  workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 10);
+        font.setBold(false);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        cellStyle.setFont(font);
+
+        cellStyle.setBorderTop(BorderStyle.MEDIUM);
+        cellStyle.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+        cellStyle.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle cellStyle2 = workbook.createCellStyle();
+        cellStyle2.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        font =  workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 9);
+        font.setItalic(true);
+        font.setColor(IndexedColors.VIOLET.getIndex());
+        cellStyle2.setFont(font);
+
+        cellStyle2.setBorderTop(BorderStyle.MEDIUM);
+        cellStyle2.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
+        cellStyle2.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle2.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        CellStyle cellStyle3 = workbook.createCellStyle();
+        cellStyle3.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        cellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        font =  workbook.createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 9);
+        cellStyle3.setFont(font);
+
+        cellStyle3.setBorderTop(BorderStyle.MEDIUM);
+        cellStyle3.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle3.setBorderBottom(BorderStyle.MEDIUM);
+        cellStyle3.setBorderLeft(BorderStyle.MEDIUM);
+        cellStyle3.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        Row headerRow = null;
+
+        int row = 0;
+        int col = 0;
+        headerRow = sheet.createRow(row);
+
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            System.out.println("Clé : " + entry.getKey() + ", Valeur : " + entry.getValue());
+            // Écrire l'en-tête
+            Cell cell = headerRow.createCell(col);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(entry.getValue());
+            col++;
+        }
+
+
+        row = 1;
+
+        for (Request request : requests) {
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                headerRow = sheet.createRow(row);
+                Cell cell = headerRow.createCell(row);
+                cell.setCellStyle(cellStyle2);
+                String value = String.valueOf(camundaService.getProcessVariable(request.getInstanceId(), entry.getKey()));
+                cell.setCellValue(value);
+                row++;
+            }
+        }
+
+        sheet.setColumnWidth(0, 100 * 256);
+        return  workbook;
     }
 
 }

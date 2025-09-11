@@ -9,6 +9,7 @@ import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RequestService {
@@ -37,4 +38,6 @@ public interface RequestService {
     AppServiceResult<List<RequestInfo>> getRequestAll(HttpServletRequest req);
 
     AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req);
+
+    byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate);
 }

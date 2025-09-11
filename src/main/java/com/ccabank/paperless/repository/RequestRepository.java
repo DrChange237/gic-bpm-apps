@@ -3,6 +3,7 @@ package com.ccabank.paperless.repository;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.entity.RequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @Repository
-public interface RequestRepository extends JpaRepository<Request, Long> {
+public interface RequestRepository extends JpaRepository<Request, Long> , JpaSpecificationExecutor<Request> {
 
     List<Request> findByStaffAndStatus(String staff, RequestStatus status);
 
