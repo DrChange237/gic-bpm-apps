@@ -466,7 +466,7 @@ public class RequestServiceImpl implements RequestService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = new XSSFWorkbook();
 
-        HashMap<String, String> propertiesMission = new HashMap<>();
+        LinkedHashMap<String, String> propertiesMission = new LinkedHashMap<>();
         propertiesMission.put("reference", "Reference");
         propertiesMission.put("owner", "Staff");
         propertiesMission.put("object", "Objet");
@@ -564,15 +564,11 @@ public class RequestServiceImpl implements RequestService {
             col++;
         }
 
-
         row = 1;
-
-
         for (Request request : requests) {
-
             col = 0;
+            headerRow = sheet.createRow(row);
             for (Map.Entry<String, String> entry : properties.entrySet()) {
-                headerRow = sheet.createRow(row);
                 Cell cell = headerRow.createCell(col);
                 cell.setCellStyle(cellStyle2);
                 String value = "";
