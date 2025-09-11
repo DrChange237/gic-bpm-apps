@@ -477,7 +477,7 @@ public class RequestServiceImpl implements RequestService {
         propertiesMission.put("transport", "Moyen de Transport");
         propertiesMission.put("immatriculation", "Immatriculation");
 
-        switch (documentType.getName()){
+        switch (documentType.getStructure()){
             case "mission":
                 workbook = this.generateExport(requests, "Export_Mission_Paperless", propertiesMission);
                 break;
