@@ -2,7 +2,8 @@ package com.ccabank.paperless.entity.camunda;
 
 import javax.persistence.*;
 
-
+@Entity
+@Table(name = "act_id_group")
 public class Group {
 
     @Id
