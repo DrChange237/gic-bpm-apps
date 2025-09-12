@@ -466,52 +466,47 @@ public class RequestServiceImpl implements RequestService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = new XSSFWorkbook();
 
-        LinkedHashMap<String, String> propertiesMission = new LinkedHashMap<>();
-        propertiesMission.put("reference", "Reference");
-        propertiesMission.put("owner", "Staff");
-        propertiesMission.put("object", "Objet");
-        propertiesMission.put("location", "Lieu");
-        propertiesMission.put("startDate", "Date de Début");
-        propertiesMission.put("endDate", "Date de Fin");
-        propertiesMission.put("nbDays", "Nombre de Nuitées");
-        propertiesMission.put("transport", "Moyen de Transport");
-        propertiesMission.put("immatriculation", "Immatriculation");
-        propertiesMission.put("supportCharge", "Agence");
-        propertiesMission.put("missionFees", "Frais de Mission");
-        propertiesMission.put("transportFees", "Frais de Transport");
-
-        LinkedHashMap<String, String> propertiesVacation = new LinkedHashMap<>();
-        propertiesMission.put("reference", "Reference");
-        propertiesMission.put("owner", "Staff");
-        propertiesMission.put("realStartDate", "Date de Début");
-        propertiesMission.put("reprise_date", "Date de Fin");
-        propertiesMission.put("days", "Nombre de Jours");
-        propertiesMission.put("typeInterim", "Type d'Interim");
-        propertiesMission.put("lastVacationDate ", "Date de dernier congés");
-
-        LinkedHashMap<String, String> propertiesAbsence = new LinkedHashMap<>();
-        propertiesMission.put("reference", "Reference");
-        propertiesMission.put("owner", "Staff");
-        propertiesMission.put("startDate", "Date de Début");
-        propertiesMission.put("endDate", "Date de Fin");
-        propertiesMission.put("reason", "Motif");
-        propertiesMission.put("otherReason", "Autre Motif");
-        propertiesMission.put("deduction", "Base de Déduction");
-        propertiesMission.put("absence", "Cumul annuel des absences");
-        propertiesMission.put("stock ", "Stock des congés année N");
-        propertiesMission.put("advice", "Avis d'octroi");
-        propertiesMission.put("rights ", "Droit restant dû");
-
+        LinkedHashMap<String, String> properties = new LinkedHashMap<>();
 
         switch (documentType.getStructure()){
             case "mission":
-                workbook = this.generateExport(requests, "Export_Mission_Paperless", propertiesMission);
+                properties.put("reference", "Reference");
+                properties.put("owner", "Staff");
+                properties.put("object", "Objet");
+                properties.put("location", "Lieu");
+                properties.put("startDate", "Date de Début");
+                properties.put("endDate", "Date de Fin");
+                properties.put("nbDays", "Nombre de Nuitées");
+                properties.put("transport", "Moyen de Transport");
+                properties.put("immatriculation", "Immatriculation");
+                properties.put("supportCharge", "Agence");
+                properties.put("missionFees", "Frais de Mission");
+                properties.put("transportFees", "Frais de Transport");
+                workbook = this.generateExport(requests, "Export_Mission_Paperless", properties);
                 break;
             case "vacation":
-                workbook = this.generateExport(requests, "Export_Vacation_Paperless", propertiesVacation);
+                properties.put("reference", "Reference");
+                properties.put("owner", "Staff");
+                properties.put("realStartDate", "Date de Début");
+                properties.put("reprise_date", "Date de Fin");
+                properties.put("days", "Nombre de Jours");
+                properties.put("typeInterim", "Type d'Interim");
+                properties.put("lastVacationDate ", "Date de dernier congés");
+                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
                 break;
             case "absence":
-                workbook = this.generateExport(requests, "Export_Vacation_Paperless", propertiesAbsence);
+                properties.put("reference", "Reference");
+                properties.put("owner", "Staff");
+                properties.put("startDate", "Date de Début");
+                properties.put("endDate", "Date de Fin");
+                properties.put("reason", "Motif");
+                properties.put("otherReason", "Autre Motif");
+                properties.put("deduction", "Base de Déduction");
+                properties.put("absence", "Cumul annuel des absences");
+                properties.put("stock ", "Stock des congés année N");
+                properties.put("advice", "Avis d'octroi");
+                properties.put("rights ", "Droit restant dû");
+                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
                 break;
         }
 

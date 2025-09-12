@@ -60,7 +60,7 @@ public class FileController {
         // Configurer l'en-tête HTTP pour le téléchargement
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", "Export_Request.xlsx");
+        headers.setContentDispositionFormData("attachment", "Export_Request_" + type  +".xlsx");
         headers.setContentLength(excelBytes.length);
         return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
 
