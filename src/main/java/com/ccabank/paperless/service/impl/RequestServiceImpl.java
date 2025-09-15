@@ -477,9 +477,6 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("startDate", "Date de Début");
                 properties.put("endDate", "Date de Fin");
                 properties.put("nbDays", "Nombre de Nuitées");
-                properties.put("transport", "Moyen de Transport");
-                properties.put("immatriculation", "Immatriculation");
-                properties.put("supportCharge", "Agence");
                 properties.put("missionFees", "Frais de Mission");
                 properties.put("transportFees", "Frais de Transport");
                 workbook = this.generateExport(requests, "Export_Mission_Paperless", properties);
@@ -588,6 +585,7 @@ public class RequestServiceImpl implements RequestService {
             Cell cell = headerRow.createCell(col);
             cell.setCellStyle(cellStyle);
             cell.setCellValue(entry.getValue());
+            sheet.autoSizeColumn(col);
             col++;
         }
 
