@@ -39,5 +39,5 @@ public interface RequestService {
 
     AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req);
 
-    byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate);
+    byte[] export(String reference, String type, String staff, String startDate, String endDate);
 }

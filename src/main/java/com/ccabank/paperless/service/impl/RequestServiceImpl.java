@@ -455,16 +455,20 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate) {
+    public byte[] export(String reference, String type, String staff, String startDate, String endDate) {
 
         if(type == null){
             throw new NotFoundException("Pour l'export le type de document est obligatoire");
         }
 
         Specification<Request> spec = Specification.where(null);
+
         if(endDate != null && startDate != null){
-            spec = Specification.where(RequestSpecifications.dateBetween(startDate, endDate));
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            spec = Specification.where(RequestSpecifications.dateBetween(start, end));
         }
+
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED);
         List<Request> requests = requestRepository.findAll(spec);
