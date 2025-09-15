@@ -6,6 +6,7 @@ import com.ccabank.paperless.dto.memo.*;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.entity.*;
 import com.ccabank.paperless.exception.BadRequestException;
+import com.ccabank.paperless.exception.NotFoundException;
 import com.ccabank.paperless.mappers.RequestMapper;
 import com.ccabank.paperless.repository.*;
 import com.ccabank.paperless.service.faces.*;
@@ -455,6 +456,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate) {
+
+        if(type == null){
+            throw new NotFoundException("Pour l'export le type de document est obligatoire");
+        }
 
         Specification<Request> spec = Specification.where(null);
         if(endDate != null && startDate != null){
