@@ -585,7 +585,7 @@ public class RequestServiceImpl implements RequestService {
             Cell cell = headerRow.createCell(col);
             cell.setCellStyle(cellStyle);
             cell.setCellValue(entry.getValue());
-            sheet.autoSizeColumn(col);
+            sheet.setColumnWidth(col, 75 * 100);
             col++;
         }
 
