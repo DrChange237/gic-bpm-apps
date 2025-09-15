@@ -50,7 +50,7 @@ public class FileController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> export(
             @RequestParam(value = "reference", required = false) String reference,
-            @RequestParam(value = "type") String type,
+            @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "staff", required = false) String staff,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
             @RequestParam(value = "endDate", required = false) LocalDate endDate)
