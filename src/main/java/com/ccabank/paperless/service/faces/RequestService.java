@@ -26,7 +26,7 @@ public interface RequestService {
 
     AppServiceResult<RequestInfo> detailForUpdate(Long id);
 
-    @Transactional
+
     AppServiceResult<RequestInfo> suspend(Long id, String reason);
 
     AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto);

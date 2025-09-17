@@ -296,7 +296,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    @Transactional
     public AppServiceResult<RequestInfo> suspend(Long id, String reason) {
         try {
 
