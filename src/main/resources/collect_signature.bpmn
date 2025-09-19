@@ -34,7 +34,7 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="signataires" label="Signataires" type="camunda:list">
+          <camunda:formField id="signataires" label="Signataires" type="list">
             <camunda:properties>
               <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="true" />
