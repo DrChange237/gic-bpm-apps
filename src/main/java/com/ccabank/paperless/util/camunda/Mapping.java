@@ -206,7 +206,7 @@ public class Mapping {
             approval.setRole(f.getLabel());
             approval.setType(ApprovalType.OPEN);
             approval.setKey(f.getId());
-            approval.setMultiple(Boolean.parseBoolean(f.getProperties().get("multiple")));
+            approval.setMultiple(f.getProperties().get("multiple").equals("true"));
             approval.setDescription(f.getProperties().get("description"));
             approval.setRequired(f.getProperties().get("required").equals("true"));
             outApprovals.add(approval);
