@@ -19,7 +19,7 @@ public class ApprovalDto implements Serializable {
 
     private int position;
 
-    private String staff;
+    private Object staff;
 
     private  String role;
 
