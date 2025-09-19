@@ -34,7 +34,7 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="signataires" label="Signataires" type="string" defaultValue="">
+          <camunda:formField id="signataires" label="Signataires" type="" defaultValue="">
             <camunda:properties>
               <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="true" />
@@ -61,7 +61,7 @@
       <bpmn:incoming>Flow_1r0vm4p</bpmn:incoming>
       <bpmn:outgoing>Flow_1mvl0nd</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="signataires" camunda:elementVariable="signataire">
-        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${not decision}</bpmn:completionCondition>
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${decision == false}</bpmn:completionCondition>
       </bpmn:multiInstanceLoopCharacteristics>
       <bpmn:startEvent id="Event_1x2ra1v" name="Signature">
         <bpmn:outgoing>Flow_09jorzb</bpmn:outgoing>
@@ -82,7 +82,7 @@
       <bpmn:incoming>Flow_0ruer78</bpmn:incoming>
       <bpmn:outgoing>Flow_169mugb</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics camunda:collection="signataires" camunda:elementVariable="signataire">
-        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${not decision}</bpmn:completionCondition>
+        <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">${decision == false}</bpmn:completionCondition>
       </bpmn:multiInstanceLoopCharacteristics>
       <bpmn:startEvent id="Event_1jbi4wg" name="Signature">
         <bpmn:outgoing>Flow_03g1i30</bpmn:outgoing>
