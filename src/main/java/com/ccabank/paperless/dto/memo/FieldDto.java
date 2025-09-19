@@ -21,6 +21,7 @@ public class FieldDto implements Serializable {
 
     private String description;
 
+
     private String ngIf = "true";
 
     private List<ChoiceDto> choices;

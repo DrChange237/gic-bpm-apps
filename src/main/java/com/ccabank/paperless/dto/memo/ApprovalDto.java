@@ -35,6 +35,8 @@ public class ApprovalDto implements Serializable {
 
     private List<FieldDto> fields;
 
+    private Boolean multiple;
+
     //private RequestInfo request;
 
     private String time;

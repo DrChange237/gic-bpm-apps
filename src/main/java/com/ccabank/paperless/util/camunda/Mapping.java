@@ -186,6 +186,7 @@ public class Mapping {
                 }
                 field.setChoices(choices);
             }
+
             field.setPosition(fields.indexOf(f) + 1);
             field.setName(f.getLabel());
             field.setRequired(f.getProperties().get("required").equals("true"));
@@ -205,6 +206,7 @@ public class Mapping {
             approval.setRole(f.getLabel());
             approval.setType(ApprovalType.OPEN);
             approval.setKey(f.getId());
+            approval.setMultiple(Boolean.parseBoolean(f.getProperties().get("multiple")));
             approval.setDescription(f.getProperties().get("description"));
             approval.setRequired(f.getProperties().get("required").equals("true"));
             outApprovals.add(approval);
