@@ -34,7 +34,7 @@
               <camunda:property id="required" value="true" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="signataires" label="Signataires" type="string">
+          <camunda:formField id="signataires" label="Signataires" type="String[]">
             <camunda:properties>
               <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="true" />
@@ -66,10 +66,8 @@
         <bpmn:outgoing>Flow_09jorzb</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="Flow_09jorzb" sourceRef="Event_1x2ra1v" targetRef="signataire" />
-      <bpmn:userTask id="signataire" name="Signature">
-        <bpmn:extensionElements>
-          <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Sign" />
-        </bpmn:extensionElements>
+      <bpmn:userTask id="signataire" name="Signature" camunda:assignee="${signataire}">
+        <bpmn:extensionElements />
         <bpmn:incoming>Flow_09jorzb</bpmn:incoming>
         <bpmn:outgoing>Flow_1i1mk04</bpmn:outgoing>
       </bpmn:userTask>
@@ -93,10 +91,8 @@
         <bpmn:incoming>Flow_1ayaw1h</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1ayaw1h" sourceRef="Activity_1u13mg6" targetRef="Event_16zor4q" />
-      <bpmn:userTask id="Activity_1u13mg6" name="Signature">
-        <bpmn:extensionElements>
-          <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Sign" />
-        </bpmn:extensionElements>
+      <bpmn:userTask id="Activity_1u13mg6" name="Signature" camunda:assignee="${signataire}">
+        <bpmn:extensionElements />
         <bpmn:incoming>Flow_03g1i30</bpmn:incoming>
         <bpmn:outgoing>Flow_1ayaw1h</bpmn:outgoing>
       </bpmn:userTask>
