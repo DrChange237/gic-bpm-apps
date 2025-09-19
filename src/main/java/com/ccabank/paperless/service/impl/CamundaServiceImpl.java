@@ -116,7 +116,9 @@ public class CamundaServiceImpl implements CamundaService {
         return variableInstances.stream()
                 .filter(variable -> variable.getName() != null)  // Filtrer les noms null
                 .filter(variable -> variable.getValue() != null)  // Filtrer les noms null
-                .collect(Collectors.toMap(VariableInstance::getName, VariableInstance::getValue));
+                .collect(Collectors.toMap(VariableInstance::getName, VariableInstance::getValue,
+                        (v1, v2) -> v1 // on garde la première valeur
+                ));
     }
 
     @Override
