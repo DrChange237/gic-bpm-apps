@@ -36,9 +36,8 @@
           </camunda:formField>
           <camunda:formField id="signataires" label="Signataires" type="string">
             <camunda:properties>
-              <camunda:property id="fieldType" value="field" />
+              <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="true" />
-              <camunda:property id="type" value="text" />
             </camunda:properties>
           </camunda:formField>
         </camunda:formData>
