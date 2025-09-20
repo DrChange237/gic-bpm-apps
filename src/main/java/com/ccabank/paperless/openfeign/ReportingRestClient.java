@@ -42,4 +42,7 @@ public interface ReportingRestClient {
 
     @PostMapping(path = "/api/reporting/interim/letter")
     ByteArrayResource interim(@RequestBody InterimForm form);
+
+    @PostMapping(path = "/api/reporting/collect/signature")
+    ByteArrayResource signature(@RequestBody CollectSignatureForm form);
 }

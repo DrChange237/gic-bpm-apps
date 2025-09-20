@@ -434,6 +434,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <repositories>
+
         <repository>
             <id>camunda-bpm-nexus-public</id>
             <name>camunda-bpm-nexus-public</name>
