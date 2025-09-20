@@ -42,6 +42,7 @@ public class CSGenerateDocument implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         log.info("Inside CSGenerateDocument");
+
         Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
         List<Approbation> approbations = approbationRepository.findByReferenceAndStatusOrderByCreationDateDesc(request.getReference(), ApprovalStatus.ACCEPTED);
         CollectSignatureForm form = new CollectSignatureForm();
