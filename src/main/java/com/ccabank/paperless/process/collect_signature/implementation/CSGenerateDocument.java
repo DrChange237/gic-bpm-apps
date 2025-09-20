@@ -7,13 +7,17 @@ import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.Approbation;
 import com.ccabank.paperless.entity.ApprovalStatus;
 import com.ccabank.paperless.entity.Request;
+import com.ccabank.paperless.openfeign.FileRestClient;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.process.general.service.RequestService;
 import com.ccabank.paperless.repository.ApprobationRepository;
 import com.ccabank.paperless.repository.RequestRepository;
+import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.util.CustomMultipartFile;
+import com.ccabank.paperless.util.file.Base64Utils;
+import com.ccabank.paperless.util.file.PdfUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -38,6 +42,8 @@ public class CSGenerateDocument implements JavaDelegate {
     private final ReportingRestClient reportingRestClient;
     private final RequestService requestService;
     private final FileService fileService;
+    private final CamundaService camundaService;
+    private final FileRestClient fileRestClient;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -64,7 +70,19 @@ public class CSGenerateDocument implements JavaDelegate {
         ByteArrayResource resource = reportingRestClient.signature(form);
         log.info("Signature generated");
 
-        CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
+
+        byte[] signaturePage = resource.getByteArray();
+        String fileId = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "file");
+        String base64Page = fileRestClient.getB64FileById(fileId);
+        byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
+
+        List<byte[]> documentPages = new ArrayList<>();
+        documentPages.add(documentPage);
+        documentPages.add(signaturePage);
+
+        byte[] destination = PdfUtils.mergePdfs(documentPages);
+
+        CustomMultipartFile multipartFile = new CustomMultipartFile(destination, "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
         FileDto fileDto = new FileDto();
         fileDto.setAddDate(LocalDateTime.now());
         fileDto.setName(request.getType().getName());
@@ -73,7 +91,8 @@ public class CSGenerateDocument implements JavaDelegate {
         fileDto.setType("application/pdf");
         request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
         fileService.saveFile(request, fileDto);
-
         log.info("File generated");
+
+
     }
 }
