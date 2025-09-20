@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @FeignClient(name = "FILE-SERVICE", configuration = FeignClientConfiguration.class)
 public interface FileRestClient {
+
     @PostMapping(path = "/api/files/uploadFileToFolder", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     FileDto uploadFileToFolder(@RequestParam("project") String project, @RequestParam("path") String path, @RequestPart("file") MultipartFile file);
 

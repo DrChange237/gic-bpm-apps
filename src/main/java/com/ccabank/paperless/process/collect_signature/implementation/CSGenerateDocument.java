@@ -71,5 +71,7 @@ public class CSGenerateDocument implements JavaDelegate {
         fileDto.setType("application/pdf");
         request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
         fileService.saveFile(request, fileDto);
+
+        log.info("File generated");
     }
 }
