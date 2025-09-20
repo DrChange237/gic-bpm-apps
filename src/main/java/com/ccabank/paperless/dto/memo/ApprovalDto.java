@@ -47,4 +47,13 @@ public class ApprovalDto implements Serializable {
 
     private boolean required;
 
+    public Boolean getMultiple() {
+        if(multiple == null){
+            return false;
+        }
+        return multiple;
+    }
+
+
+
 }

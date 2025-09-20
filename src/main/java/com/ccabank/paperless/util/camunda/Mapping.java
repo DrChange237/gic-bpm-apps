@@ -140,6 +140,8 @@ public class Mapping {
         Map<String, Object> variables = new HashMap<>();
 
         for (ApprovalDto approval : approvals) {
+
+
             if(approval.getMultiple()){
                 variables.put(approval.getKey(), approval.getListStaff());
             }else {
