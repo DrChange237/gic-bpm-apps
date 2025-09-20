@@ -64,7 +64,7 @@ public class CSGenerateDocument implements JavaDelegate {
         ByteArrayResource resource = reportingRestClient.signature(form);
         log.info("Signature generated");
 
-        CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), request.getType().getName(), "application/pdf");
+        CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
         FileDto fileDto = new FileDto();
         fileDto.setAddDate(LocalDateTime.now());
         fileDto.setName(request.getType().getName());
