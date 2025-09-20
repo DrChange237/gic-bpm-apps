@@ -82,14 +82,14 @@ public class SendResumptionToRH implements JavaDelegate {
         ResumptionForm form = new ResumptionForm();
 
         String owner = (String) delegateExecution.getVariable("owner");
-        UserRestDto staff =  userRestClient.getAgencyByStaffUsername(owner);
+        EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
 
 
         form.setDate(LocalDate.now());
-        form.setName(staff.getName());
-        form.setFunction(staff.getFunction());
+        form.setName(staff.getFirstName() + " " + staff.getLastName());
+        form.setFunction(staff.getFunction().getFunction().getName());
         form.setMatricule(staff.getMatricule());
-        form.setUnity(staff.getDepartment());
+        form.setUnity(staff.getDepartment().getName());
         form.setSignature(userRestClient.getEmployeeSignature(staff.getUsername()));
 
         Date startDateD = (Date) delegateExecution.getVariable("startDate");
