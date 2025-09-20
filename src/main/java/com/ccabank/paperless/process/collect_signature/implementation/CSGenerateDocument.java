@@ -59,6 +59,8 @@ public class CSGenerateDocument implements JavaDelegate {
             signatories.add(formSignatory);
         }
         form.setSignatories(signatories);
+
+        log.info(form.toString());
         ByteArrayResource resource = reportingRestClient.signature(form);
         log.info("Signature generated");
 
