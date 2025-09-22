@@ -65,7 +65,7 @@ public class PdfUtils {
             // Définir la police
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
             canvas.beginText();
-            canvas.setFontAndSize(bf, 10);
+            canvas.setFontAndSize(bf, 8);
 
             // Récupérer la taille de la page
             Rectangle pageSize = reader.getPageSize(i);
