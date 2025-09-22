@@ -133,7 +133,9 @@ public class CamundaServiceImpl implements CamundaService {
         return variableInstances.stream()
                 .filter(variable -> variable.getName() != null)
                 .filter(variable -> variable.getValue() != null)
-                .collect(Collectors.toMap(HistoricVariableInstance::getName, HistoricVariableInstance::getValue));
+                .collect(Collectors.toMap(HistoricVariableInstance::getName, HistoricVariableInstance::getValue,
+                        (v1, v2) -> v1
+                ));
     }
 
     @Override

@@ -43,6 +43,13 @@
               <camunda:property id="description" value="L&#39;ordre de selection définit la chaine de validation" />
             </camunda:properties>
           </camunda:formField>
+          <camunda:formField id="copies" label="Personnes à mètre en copie" type="string">
+            <camunda:properties>
+              <camunda:property id="fieldType" value="approval" />
+              <camunda:property id="required" value="false" />
+              <camunda:property id="multiple" value="true" />
+            </camunda:properties>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0mj27ux</bpmn:outgoing>
