@@ -177,7 +177,6 @@ public class ApprovalServiceImpl implements ApprovalService {
             return this.approve(acceptedApprovalDto, employeeInfo.getUsername());
         }else{
             return this.rejected(acceptedApprovalDto);
-
         }
     }
 
@@ -223,7 +222,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
 
-    @Transactional
+
     @Override
     public AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto, String assignee)  {
 
@@ -296,7 +295,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     }
 
-    @Transactional
+
     @Override
     public AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto) {
         try {
