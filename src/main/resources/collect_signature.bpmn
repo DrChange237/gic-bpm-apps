@@ -75,16 +75,21 @@
       <bpmn:startEvent id="Event_1x2ra1v" name="Signature">
         <bpmn:outgoing>Flow_09jorzb</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_09jorzb" sourceRef="Event_1x2ra1v" targetRef="signataire" />
+      <bpmn:sequenceFlow id="Flow_09jorzb" sourceRef="Event_1x2ra1v" targetRef="Activity_1xy0prp" />
       <bpmn:userTask id="signataire" name="Signature" camunda:assignee="${signataire}">
         <bpmn:extensionElements />
-        <bpmn:incoming>Flow_09jorzb</bpmn:incoming>
+        <bpmn:incoming>Flow_0weiu69</bpmn:incoming>
         <bpmn:outgoing>Flow_1i1mk04</bpmn:outgoing>
       </bpmn:userTask>
       <bpmn:endEvent id="Event_1hfnenx">
         <bpmn:incoming>Flow_1i1mk04</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1i1mk04" sourceRef="signataire" targetRef="Event_1hfnenx" />
+      <bpmn:sequenceFlow id="Flow_0weiu69" sourceRef="Activity_1xy0prp" targetRef="signataire" />
+      <bpmn:serviceTask id="Activity_1xy0prp" name="Email de Notification" camunda:delegateExpression="${CSSendAskEmail}">
+        <bpmn:incoming>Flow_09jorzb</bpmn:incoming>
+        <bpmn:outgoing>Flow_0weiu69</bpmn:outgoing>
+      </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_1r0vm4p" sourceRef="Gateway_1sac9kl" targetRef="Activity_1vvc7h2" />
     <bpmn:subProcess id="Activity_00qe2bv" name="Collecte Parallèle">
@@ -96,16 +101,21 @@
       <bpmn:startEvent id="Event_1jbi4wg" name="Signature">
         <bpmn:outgoing>Flow_03g1i30</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_03g1i30" sourceRef="Event_1jbi4wg" targetRef="Activity_1u13mg6" />
+      <bpmn:sequenceFlow id="Flow_03g1i30" sourceRef="Event_1jbi4wg" targetRef="Activity_0f7gqp6" />
       <bpmn:endEvent id="Event_16zor4q">
         <bpmn:incoming>Flow_1ayaw1h</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1ayaw1h" sourceRef="Activity_1u13mg6" targetRef="Event_16zor4q" />
       <bpmn:userTask id="Activity_1u13mg6" name="Signature" camunda:assignee="${signataire}">
         <bpmn:extensionElements />
-        <bpmn:incoming>Flow_03g1i30</bpmn:incoming>
+        <bpmn:incoming>Flow_1um68d4</bpmn:incoming>
         <bpmn:outgoing>Flow_1ayaw1h</bpmn:outgoing>
       </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_1um68d4" sourceRef="Activity_0f7gqp6" targetRef="Activity_1u13mg6" />
+      <bpmn:serviceTask id="Activity_0f7gqp6" name="Email de Notification" camunda:delegateExpression="${CSSendAskEmail}">
+        <bpmn:incoming>Flow_03g1i30</bpmn:incoming>
+        <bpmn:outgoing>Flow_1um68d4</bpmn:outgoing>
+      </bpmn:serviceTask>
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_0ruer78" sourceRef="Gateway_1sac9kl" targetRef="Activity_00qe2bv">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('collect_type') == 'PARALLEL'}</bpmn:conditionExpression>
@@ -267,19 +277,27 @@
           <dc:Bounds x="175" y="143" width="48" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0vn2lyb_di" bpmnElement="signataire" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="320" y="78" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1hfnenx_di" bpmnElement="Event_1hfnenx">
-        <dc:Bounds x="512" y="100" width="36" height="36" />
+        <dc:Bounds x="572" y="100" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vn2lyb_di" bpmnElement="signataire" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="410" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pi3x2r_di" bpmnElement="Activity_1xy0prp" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <dc:Bounds x="260" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_09jorzb_di" bpmnElement="Flow_09jorzb">
         <di:waypoint x="216" y="118" />
-        <di:waypoint x="320" y="118" />
+        <di:waypoint x="260" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1i1mk04_di" bpmnElement="Flow_1i1mk04">
-        <di:waypoint x="420" y="118" />
-        <di:waypoint x="512" y="118" />
+        <di:waypoint x="510" y="118" />
+        <di:waypoint x="572" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0weiu69_di" bpmnElement="Flow_0weiu69">
+        <di:waypoint x="360" y="118" />
+        <di:waypoint x="410" y="118" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
@@ -292,19 +310,27 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_16zor4q_di" bpmnElement="Event_16zor4q">
-        <dc:Bounds x="432" y="100" width="36" height="36" />
+        <dc:Bounds x="792" y="100" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1uqr795_di" bpmnElement="Activity_1u13mg6" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="270" y="78" width="100" height="80" />
+        <dc:Bounds x="560" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_113ayu3_di" bpmnElement="Activity_0f7gqp6" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <dc:Bounds x="330" y="78" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_03g1i30_di" bpmnElement="Flow_03g1i30">
         <di:waypoint x="216" y="118" />
-        <di:waypoint x="270" y="118" />
+        <di:waypoint x="330" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ayaw1h_di" bpmnElement="Flow_1ayaw1h">
-        <di:waypoint x="370" y="118" />
-        <di:waypoint x="432" y="118" />
+        <di:waypoint x="660" y="118" />
+        <di:waypoint x="792" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1um68d4_di" bpmnElement="Flow_1um68d4">
+        <di:waypoint x="430" y="118" />
+        <di:waypoint x="560" y="118" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
