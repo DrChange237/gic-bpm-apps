@@ -94,18 +94,16 @@ public class CSGenerateDocument implements JavaDelegate {
         String base64Page = fileRestClient.getB64FileById(this.extractFileId(fileId));
         byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
 
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
         Boolean ifSigned = Boolean.valueOf(PdfUtils.getParameter(documentPage, IF_SIGNED_WITH_PAPERLESS));
 
         if (ifSigned) {
             log.info(IF_SIGNED_WITH_PAPERLESS);
             String encoded = PdfUtils.getParameter(documentPage, SIGNED_WITH_PAPERLESS);
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            //mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-
-
             List<CollectSignatureForm.Signatory> signatoriesToSign =
                     mapper.readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});
 
@@ -127,7 +125,7 @@ public class CSGenerateDocument implements JavaDelegate {
         byte[] destination = PdfUtils.mergePdfs(documentPages);
         destination = PdfUtils.addWatermark(destination, "SIGNED WITH PAPERLESS");
         destination = PdfUtils.addFooterToPdf(destination, "SIGNED WITH PAPERLESS");
-        String encoded = new ObjectMapper().writeValueAsString(form.getSignatories());
+        String encoded = mapper.writeValueAsString(form.getSignatories());
         destination = PdfUtils.addParameter(destination, IF_SIGNED_WITH_PAPERLESS, "true");
         destination = PdfUtils.addParameter(destination, SIGNED_WITH_PAPERLESS, encoded);
 
