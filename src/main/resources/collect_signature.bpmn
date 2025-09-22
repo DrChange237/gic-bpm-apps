@@ -32,6 +32,7 @@
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="file" />
               <camunda:property id="required" value="true" />
+              <camunda:property id="description" value="Format PDF uniquement" />
             </camunda:properties>
           </camunda:formField>
           <camunda:formField id="signataires" label="Signataires" type="string" defaultValue="">
@@ -39,6 +40,7 @@
               <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="true" />
               <camunda:property id="multiple" value="true" />
+              <camunda:property id="description" value="L&#39;ordre de selection définit la chaine de validation" />
             </camunda:properties>
           </camunda:formField>
         </camunda:formData>
