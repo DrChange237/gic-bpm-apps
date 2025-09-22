@@ -456,8 +456,15 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public byte[] export(String reference, String type, String staff, String startDate, String endDate) {
 
-        if(type == null){
-            throw new NotFoundException("Pour l'export le type de document est obligatoire");
+        if(reference == null){
+            if(type == null){
+                throw new NotFoundException("Pour l'export le type de document est obligatoire");
+            }
+        }else{
+            Request request = requestRepository.findOneByReference(reference);
+            if(request == null){
+                throw new NotFoundException("Reference incorrecte");
+            }
         }
 
         Specification<Request> spec = Specification.where(null);
@@ -555,7 +562,7 @@ public class RequestServiceImpl implements RequestService {
         font.setFontName("Arial");
         font.setFontHeightInPoints((short) 9);
         font.setItalic(true);
-        font.setColor(IndexedColors.VIOLET.getIndex());
+        font.setColor(IndexedColors.BLACK.getIndex());
         cellStyle2.setFont(font);
 
         cellStyle2.setBorderTop(BorderStyle.MEDIUM);
@@ -611,6 +618,10 @@ public class RequestServiceImpl implements RequestService {
                     value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), entry.getKey()));
                 }
                 cell.setCellValue(value);
+                if(entry.getValue().contains("Date")){
+                    value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    cell.setCellValue(value);
+                }
                 col++;
             }
             row++;
