@@ -45,6 +45,14 @@ public class CSGenerateDocument implements JavaDelegate {
     private final CamundaService camundaService;
     private final FileRestClient fileRestClient;
 
+    public String extractFileId(String url) {
+        if (url == null || url.isEmpty()) {
+            return null;
+        }
+        // Récupère la partie après le dernier "/"
+        return url.substring(url.lastIndexOf("/") + 1);
+    }
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         log.info("Inside CSGenerateDocument");
@@ -74,7 +82,7 @@ public class CSGenerateDocument implements JavaDelegate {
         byte[] signaturePage = resource.getByteArray();
         String fileId = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "file");
         log.info("File ID: " + fileId);
-        String base64Page = fileRestClient.getB64FileById(fileId);
+        String base64Page = fileRestClient.getB64FileById(this.extractFileId(fileId));
         byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
 
         List<byte[]> documentPages = new ArrayList<>();
