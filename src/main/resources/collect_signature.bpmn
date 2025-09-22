@@ -101,7 +101,7 @@
     <bpmn:sequenceFlow id="Flow_0ruer78" sourceRef="Gateway_1sac9kl" targetRef="Activity_00qe2bv">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('collect_type') == 'PARALLEL'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0okqmm8" name="Generate Document" camunda:delegateExpression="${CSGenerateDocument}">
+    <bpmn:serviceTask id="Activity_0okqmm8" name="Generate Document" camunda:asyncBefore="true" camunda:delegateExpression="${CSGenerateDocument}">
       <bpmn:incoming>Flow_0laf0go</bpmn:incoming>
       <bpmn:outgoing>Flow_0btyeye</bpmn:outgoing>
     </bpmn:serviceTask>
