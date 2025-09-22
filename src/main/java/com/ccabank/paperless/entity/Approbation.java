@@ -28,8 +28,8 @@ public class Approbation extends Auditable  {
     private String staff;
 
     @Column(name = "STATUS")
+    @Enumerated(EnumType.ORDINAL) // ou EnumType.ORDINAL selon ton besoin
     private ApprovalStatus status;
-
 
     @Column(name = "COMMENTS")
     @Basic

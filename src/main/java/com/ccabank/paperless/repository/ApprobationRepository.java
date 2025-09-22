@@ -3,6 +3,7 @@ package com.ccabank.paperless.repository;
 import com.ccabank.paperless.entity.Approbation;
 import com.ccabank.paperless.entity.ApprovalStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface ApprobationRepository extends JpaRepository<Approbation, Long> 
     List<Approbation> findByReferenceAndStaffAndStatus(String reference, String userTaskId, ApprovalStatus approvalStatus);
 
     List<Approbation> findByReferenceAndStatusOrderByCreationDateDesc(String reference, ApprovalStatus approvalStatus);
+
 }

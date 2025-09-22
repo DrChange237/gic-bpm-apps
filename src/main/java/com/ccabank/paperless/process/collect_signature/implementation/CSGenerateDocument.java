@@ -58,7 +58,9 @@ public class CSGenerateDocument implements JavaDelegate {
         log.info("Inside CSGenerateDocument");
 
         Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
+
         List<Approbation> approbations = approbationRepository.findByReferenceAndStatusOrderByCreationDateDesc(request.getReference(), ApprovalStatus.ACCEPTED);
+
         log.info("approbations size: " + approbations.size());
         CollectSignatureForm form = new CollectSignatureForm();
         form.setReference(request.getReference());
@@ -104,7 +106,7 @@ public class CSGenerateDocument implements JavaDelegate {
         String type = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "type");
         log.info("Type : " + type);
         String object = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "object");
-        fileDto.setName("[SIGNE] " + type + " - " + object);
+        fileDto.setName("[SIGNE] " + type.toUpperCase() + " - " + object.toUpperCase());
         fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
         fileDto.setMultipartFile(multipartFile);
         fileDto.setType("application/pdf");
