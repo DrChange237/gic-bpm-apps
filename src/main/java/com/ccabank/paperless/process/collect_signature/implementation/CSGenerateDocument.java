@@ -19,6 +19,7 @@ import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.util.file.Base64Utils;
 import com.ccabank.paperless.util.file.PdfUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -101,7 +102,9 @@ public class CSGenerateDocument implements JavaDelegate {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            //mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
 
             List<CollectSignatureForm.Signatory> signatoriesToSign =
                     mapper.readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});

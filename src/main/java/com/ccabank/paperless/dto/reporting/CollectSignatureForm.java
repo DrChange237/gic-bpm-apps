@@ -1,6 +1,8 @@
 package com.ccabank.paperless.dto.reporting;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -36,11 +38,9 @@ public class CollectSignatureForm {
         private String comments;
 
         @NotNull
+        @JsonDeserialize(using = LocalDateDeserializer.class)
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate date;
-
-        public String getDate(){
-            return date.toString();
-        }
 
     }
 }
