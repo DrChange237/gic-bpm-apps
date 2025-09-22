@@ -4,9 +4,54 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PdfUtils {
+
+    /**
+     * Récupère un paramètre personnalisé depuis un PDF.
+     *
+     * @param pdfBytes  PDF sous forme de byte[]
+     * @param paramName nom du paramètre
+     * @return valeur du paramètre ou null si non trouvé
+     * @throws Exception
+     */
+    public static String getParameter(byte[] pdfBytes, String paramName) throws Exception {
+        PdfReader reader = new PdfReader(new ByteArrayInputStream(pdfBytes));
+        Map<String, String> info = reader.getInfo();
+        reader.close();
+        return info.get(paramName);
+    }
+
+    /**
+     * Ajoute un paramètre personnalisé à un PDF existant.
+     *
+     * @param pdfBytes   PDF d'entrée sous forme de byte[]
+     * @param paramName  nom du paramètre
+     * @param paramValue valeur du paramètre
+     * @return PDF modifié sous forme de byte[]
+     * @throws Exception
+     */
+    public static byte[] addParameter(byte[] pdfBytes, String paramName, String paramValue) throws Exception {
+        ByteArrayInputStream bais = new ByteArrayInputStream(pdfBytes);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        PdfReader reader = new PdfReader(bais);
+        PdfStamper stamper = new PdfStamper(reader, baos);
+
+        // Récupérer les métadonnées existantes
+        Map<String, String> info = new HashMap<>(reader.getInfo());
+        // Ajouter ou remplacer le paramètre
+        info.put(paramName, paramValue);
+
+        stamper.setMoreInfo(info);
+        stamper.close();
+        reader.close();
+
+        return baos.toByteArray();
+    }
 
     public static byte[] addFooterToPdf(byte[] inputPdf, String footerText) throws Exception {
         PdfReader reader = new PdfReader(new ByteArrayInputStream(inputPdf));
