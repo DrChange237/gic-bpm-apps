@@ -478,6 +478,11 @@ public class RequestServiceImpl implements RequestService {
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED);
         List<Request> requests = requestRepository.findAll(spec);
+
+        if(requests.isEmpty()){
+            throw new NotFoundException("Aucun enregistrement trouvé");
+        }
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = new XSSFWorkbook();
 
