@@ -1,5 +1,6 @@
 package com.ccabank.paperless.dto.reporting;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -31,6 +32,7 @@ public class CollectSignatureForm {
         private String comments;
 
         @NotNull
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
         private LocalDate date;
 
     }
