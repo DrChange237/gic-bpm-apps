@@ -30,10 +30,13 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.DateFormatter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -67,15 +70,26 @@ public class CSGenerateDocument implements JavaDelegate {
         Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
 
         List<Approbation> approbations = approbationRepository.findByReference(request.getReference());
+        List<Approbation> filtered = approbations.stream()
+                .collect(Collectors.toMap(
+                        Approbation::getStaff, // clé : le staff
+                        a -> a,                // valeur : l'approbation
+                        (a1, a2) -> a1.getCreationDate().isAfter(a2.getCreationDate()) ? a1 : a2 // si doublon, garder le plus récent
+                ))
+                .values()               // récupérer juste les Approbations
+                .stream()
+                .collect(Collectors.toList());
 
-        log.info("approbations size: " + approbations.size());
-        log.info("approbations: " + approbations);
+
+
+        log.info("approbations size: " + filtered.size());
+        log.info("approbations: " + filtered);
         CollectSignatureForm form = new CollectSignatureForm();
         form.setReference(request.getReference());
 
         List<CollectSignatureForm.Signatory> signatories = new ArrayList<>();
 
-        for (Approbation approbation : approbations) {
+        for (Approbation approbation : filtered) {
             CollectSignatureForm.Signatory formSignatory = new CollectSignatureForm.Signatory();
             EmployeeInfo employee = userRestClient.getStaffByUsername(approbation.getStaff());
             String signature = userRestClient.getEmployeeSignature(approbation.getStaff());
@@ -84,7 +98,8 @@ public class CSGenerateDocument implements JavaDelegate {
             formSignatory.setFunction(employee.getFunction().getFunction().getName());
             formSignatory.setComments(approbation.getComments());
             formSignatory.setSignature(signature);
-            formSignatory.setDate(approbation.getCreationDate().toLocalDate());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            formSignatory.setDate(approbation.getCreationDate().toLocalDate().format(formatter));
             signatories.add(formSignatory);
         }
 
@@ -104,6 +119,7 @@ public class CSGenerateDocument implements JavaDelegate {
         if (ifSigned) {
             log.info(IF_SIGNED_WITH_PAPERLESS);
             String encoded = PdfUtils.getParameter(documentPage, SIGNED_WITH_PAPERLESS);
+
             List<CollectSignatureForm.Signatory> signatoriesToSign =
                     mapper.readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});
 
