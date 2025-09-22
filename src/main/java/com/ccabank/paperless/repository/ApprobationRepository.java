@@ -17,6 +17,6 @@ public interface ApprobationRepository extends JpaRepository<Approbation, Long> 
 
     List<Approbation> findByReferenceAndStaffAndStatus(String reference, String userTaskId, ApprovalStatus approvalStatus);
 
-    List<Approbation> findByReferenceAndStatusOrderByCreationDateDesc(String reference, ApprovalStatus approvalStatus);
+    List<Approbation> findByReferenceAndStatus(String reference, ApprovalStatus approvalStatus);
 
 }

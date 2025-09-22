@@ -8,6 +8,37 @@ import java.util.List;
 
 public class PdfUtils {
 
+    public static byte[] addFooterToPdf(byte[] inputPdf, String footerText) throws Exception {
+        PdfReader reader = new PdfReader(new ByteArrayInputStream(inputPdf));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PdfStamper stamper = new PdfStamper(reader, outputStream);
+
+        int numberOfPages = reader.getNumberOfPages();
+        for (int i = 1; i <= numberOfPages; i++) {
+            PdfContentByte canvas = stamper.getOverContent(i);
+
+            // Définir la police
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            canvas.beginText();
+            canvas.setFontAndSize(bf, 10);
+
+            // Récupérer la taille de la page
+            Rectangle pageSize = reader.getPageSize(i);
+
+            // Position en bas à droite (50 unités de marge depuis le bord droit, 20 depuis le bas)
+            float x = pageSize.getRight() - 50;
+            float y = pageSize.getBottom() + 20;
+
+            canvas.showTextAligned(Element.ALIGN_RIGHT, footerText, x, y, 0);
+            canvas.endText();
+        }
+
+        stamper.close();
+        reader.close();
+
+        return outputStream.toByteArray();
+    }
+
     public static byte[] addWatermark(byte[] pdfBytes, String watermarkText) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfReader pdfReader = new PdfReader(new ByteArrayInputStream(pdfBytes));
