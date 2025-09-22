@@ -78,6 +78,7 @@ public class CSGenerateDocument implements JavaDelegate {
             CollectSignatureForm.Signatory formSignatory = new CollectSignatureForm.Signatory();
             EmployeeInfo employee = userRestClient.getStaffByUsername(approbation.getStaff());
             String signature = userRestClient.getEmployeeSignature(approbation.getStaff());
+            formSignatory.setIdentifier(employee.getUsername());
             formSignatory.setName(employee.getFirstName() + " " + employee.getLastName());
             formSignatory.setFunction(employee.getFunction().getFunction().getName());
             formSignatory.setComments(approbation.getComments());

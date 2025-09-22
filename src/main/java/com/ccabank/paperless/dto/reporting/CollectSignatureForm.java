@@ -19,6 +19,10 @@ public class CollectSignatureForm {
     @Data
     @Schema(name = "Signature")
     public static class Signatory {
+
+        @Schema(example = "kevin.simo")
+        private String identifier;
+
         @Schema(example = "SIMO PATRICK")
         private String name;
 
@@ -33,6 +37,10 @@ public class CollectSignatureForm {
 
         @NotNull
         private LocalDate date;
+
+        public String getDate(){
+            return date.toString();
+        }
 
     }
 }
