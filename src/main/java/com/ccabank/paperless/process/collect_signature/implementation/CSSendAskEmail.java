@@ -46,11 +46,20 @@ public class CSSendAskEmail implements JavaDelegate {
         String processDefinitionId = execution.getProcessDefinitionId();
         String owner = (String) execution.getVariable("owner");
         String reference = (String) execution.getVariable("reference");
-        String signataire = (String) execution.getVariable("signataire");
+        String signataire = "";
         String type = (String) execution.getVariable("type");
         String object = (String) execution.getVariable("object");
+        String collect_type = (String) execution.getVariable("collect_type");
         List<String> copies  = (List<String>) execution.getVariable("copies");
         String copiesString = String.join(",", copies);
+
+        if(collect_type.equals("SEQUENCE")){
+            signataire = (String) execution.getVariable("signataire");
+        }else{
+            List<String> signataires = (List<String>) execution.getVariable("signataires");
+            String signatairesString = String.join(",", signataires);
+            copiesString = copiesString + "," + signatairesString;
+        }
 
         ask.setSender(owner);
         ask.setApprover(signataire);

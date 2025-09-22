@@ -101,16 +101,21 @@
       <bpmn:startEvent id="Event_1jbi4wg" name="Signature">
         <bpmn:outgoing>Flow_03g1i30</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_03g1i30" sourceRef="Event_1jbi4wg" targetRef="Activity_1u13mg6" />
+      <bpmn:sequenceFlow id="Flow_03g1i30" sourceRef="Event_1jbi4wg" targetRef="Activity_08adxqp" />
       <bpmn:endEvent id="Event_16zor4q">
         <bpmn:incoming>Flow_1ayaw1h</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_1ayaw1h" sourceRef="Activity_1u13mg6" targetRef="Event_16zor4q" />
       <bpmn:userTask id="Activity_1u13mg6" name="Signature" camunda:assignee="${signataire}">
         <bpmn:extensionElements />
-        <bpmn:incoming>Flow_03g1i30</bpmn:incoming>
+        <bpmn:incoming>Flow_0q1wtz6</bpmn:incoming>
         <bpmn:outgoing>Flow_1ayaw1h</bpmn:outgoing>
       </bpmn:userTask>
+      <bpmn:serviceTask id="Activity_08adxqp" name="Email de Notification" camunda:delegateExpression="${CSSendAskEmail}">
+        <bpmn:incoming>Flow_03g1i30</bpmn:incoming>
+        <bpmn:outgoing>Flow_0q1wtz6</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0q1wtz6" sourceRef="Activity_08adxqp" targetRef="Activity_1u13mg6" />
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_0ruer78" sourceRef="Gateway_1sac9kl" targetRef="Activity_00qe2bv">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable('collect_type') == 'PARALLEL'}</bpmn:conditionExpression>
@@ -304,20 +309,28 @@
           <dc:Bounds x="175" y="143" width="48" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_16zor4q_di" bpmnElement="Event_16zor4q">
-        <dc:Bounds x="792" y="100" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_05vc7i8" bpmnElement="Activity_08adxqp" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <dc:Bounds x="310" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1uqr795_di" bpmnElement="Activity_1u13mg6" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="560" y="78" width="100" height="80" />
+        <dc:Bounds x="470" y="78" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16zor4q_di" bpmnElement="Event_16zor4q">
+        <dc:Bounds x="672" y="100" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_03g1i30_di" bpmnElement="Flow_03g1i30">
         <di:waypoint x="216" y="118" />
-        <di:waypoint x="560" y="118" />
+        <di:waypoint x="310" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ayaw1h_di" bpmnElement="Flow_1ayaw1h">
-        <di:waypoint x="660" y="118" />
-        <di:waypoint x="792" y="118" />
+        <di:waypoint x="570" y="118" />
+        <di:waypoint x="672" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q1wtz6_di" bpmnElement="Flow_0q1wtz6">
+        <di:waypoint x="410" y="118" />
+        <di:waypoint x="470" y="118" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
