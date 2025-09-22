@@ -59,9 +59,10 @@ public class CSGenerateDocument implements JavaDelegate {
 
         Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
 
-        List<Approbation> approbations = approbationRepository.findByReferenceAndStatus(request.getReference(), ApprovalStatus.ACCEPTED);
+        List<Approbation> approbations = approbationRepository.findByReference(request.getReference());
 
         log.info("approbations size: " + approbations.size());
+        log.info("approbations: " + approbations);
         CollectSignatureForm form = new CollectSignatureForm();
         form.setReference(request.getReference());
 
