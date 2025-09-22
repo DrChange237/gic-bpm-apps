@@ -59,9 +59,12 @@ public class CSGenerateDocument implements JavaDelegate {
 
         Request request = requestRepository.findByInstanceId(delegateExecution.getProcessInstanceId());
         List<Approbation> approbations = approbationRepository.findByReferenceAndStatusOrderByCreationDateDesc(request.getReference(), ApprovalStatus.ACCEPTED);
+        log.info("approbations size: " + approbations.size());
         CollectSignatureForm form = new CollectSignatureForm();
         form.setReference(request.getReference());
+
         List<CollectSignatureForm.Signatory> signatories = new ArrayList<>();
+
         for (Approbation approbation : approbations) {
             CollectSignatureForm.Signatory formSignatory = new CollectSignatureForm.Signatory();
             EmployeeInfo employee = userRestClient.getStaffByUsername(approbation.getStaff());
@@ -72,6 +75,7 @@ public class CSGenerateDocument implements JavaDelegate {
             formSignatory.setSignature(signature);
             signatories.add(formSignatory);
         }
+
         form.setSignatories(signatories);
 
         log.info("Form : " + form.toString());
@@ -92,7 +96,7 @@ public class CSGenerateDocument implements JavaDelegate {
         documentPages.add(signaturePage);
 
         byte[] destination = PdfUtils.mergePdfs(documentPages);
-        destination = PdfUtils.addWatermark(destination, "PAPERLESS");
+        destination = PdfUtils.addWatermark(destination, "SIGNED WITH PAPERLESS");
 
         CustomMultipartFile multipartFile = new CustomMultipartFile(destination, "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
         FileDto fileDto = new FileDto();
