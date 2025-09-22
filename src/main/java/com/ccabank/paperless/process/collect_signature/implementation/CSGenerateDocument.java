@@ -74,14 +74,16 @@ public class CSGenerateDocument implements JavaDelegate {
         }
         form.setSignatories(signatories);
 
-        log.info(form.toString());
+        log.info("Form : " + form.toString());
         ByteArrayResource resource = reportingRestClient.signature(form);
         log.info("Signature generated");
 
 
         byte[] signaturePage = resource.getByteArray();
+
         String fileId = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "file");
         log.info("File ID: " + fileId);
+
         String base64Page = fileRestClient.getB64FileById(this.extractFileId(fileId));
         byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
 
@@ -94,7 +96,7 @@ public class CSGenerateDocument implements JavaDelegate {
         CustomMultipartFile multipartFile = new CustomMultipartFile(destination, "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
         FileDto fileDto = new FileDto();
         fileDto.setAddDate(LocalDateTime.now());
-        fileDto.setName(request.getType().getName());
+        fileDto.setName(request.getType().getName() + " Signé");
         fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
         fileDto.setMultipartFile(multipartFile);
         fileDto.setType("application/pdf");
