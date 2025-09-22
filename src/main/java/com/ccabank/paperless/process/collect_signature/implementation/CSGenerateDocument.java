@@ -77,6 +77,7 @@ public class CSGenerateDocument implements JavaDelegate {
             formSignatory.setFunction(employee.getFunction().getFunction().getName());
             formSignatory.setComments(approbation.getComments());
             formSignatory.setSignature(signature);
+            formSignatory.setDate(approbation.getCreationDate().toLocalDate());
             signatories.add(formSignatory);
         }
 
