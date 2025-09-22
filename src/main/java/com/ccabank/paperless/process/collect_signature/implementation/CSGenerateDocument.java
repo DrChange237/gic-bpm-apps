@@ -20,6 +20,8 @@ import com.ccabank.paperless.util.file.Base64Utils;
 import com.ccabank.paperless.util.file.PdfUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -95,8 +97,13 @@ public class CSGenerateDocument implements JavaDelegate {
         if (ifSigned) {
             log.info(IF_SIGNED_WITH_PAPERLESS);
             String encoded = PdfUtils.getParameter(documentPage, SIGNED_WITH_PAPERLESS);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
             List<CollectSignatureForm.Signatory> signatoriesToSign =
-                    new ObjectMapper().readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});
+                    mapper.readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});
 
             signatoriesToSign.addAll(signatories);
             form.setSignatories(signatoriesToSign);
