@@ -63,6 +63,7 @@ public class CSGenerateDocument implements JavaDelegate {
 
         log.info("approbations size: " + approbations.size());
         log.info("approbations: " + approbations);
+
         CollectSignatureForm form = new CollectSignatureForm();
         form.setReference(request.getReference());
 
