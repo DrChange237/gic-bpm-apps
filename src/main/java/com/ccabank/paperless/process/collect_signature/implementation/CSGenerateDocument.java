@@ -101,7 +101,10 @@ public class CSGenerateDocument implements JavaDelegate {
         CustomMultipartFile multipartFile = new CustomMultipartFile(destination, "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
         FileDto fileDto = new FileDto();
         fileDto.setAddDate(LocalDateTime.now());
-        fileDto.setName(request.getType().getName() + " Signé");
+        String type = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "type");
+        log.info("Type : " + type);
+        String object = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "object");
+        fileDto.setName("[SIGNE] " + type + " - " + object);
         fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
         fileDto.setMultipartFile(multipartFile);
         fileDto.setType("application/pdf");
