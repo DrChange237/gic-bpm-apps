@@ -73,6 +73,7 @@ public class CSGenerateDocument implements JavaDelegate {
 
         byte[] signaturePage = resource.getByteArray();
         String fileId = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "file");
+        log.info("File ID: " + fileId);
         String base64Page = fileRestClient.getB64FileById(fileId);
         byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
 
