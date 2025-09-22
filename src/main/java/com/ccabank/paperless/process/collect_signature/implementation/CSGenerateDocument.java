@@ -92,6 +92,7 @@ public class CSGenerateDocument implements JavaDelegate {
         documentPages.add(signaturePage);
 
         byte[] destination = PdfUtils.mergePdfs(documentPages);
+        destination = PdfUtils.addWatermark(destination, "PAPERLESS");
 
         CustomMultipartFile multipartFile = new CustomMultipartFile(destination, "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");
         FileDto fileDto = new FileDto();
