@@ -140,7 +140,7 @@ public class CSGenerateDocument implements JavaDelegate {
 
         byte[] destination = PdfUtils.mergePdfs(documentPages);
         //destination = PdfUtils.addWatermark(destination, "SIGNED WITH PAPERLESS");
-        destination = PdfUtils.addFooterToPdf(destination, "SIGNED WITH PAPERLESS");
+        destination = PdfUtils.addFooterToPdf(destination, "SIGNED WITH PAPERLESS REF : " + request.getReference());
         String encoded = mapper.writeValueAsString(form.getSignatories());
         destination = PdfUtils.addParameter(destination, IF_SIGNED_WITH_PAPERLESS, "true");
         destination = PdfUtils.addParameter(destination, SIGNED_WITH_PAPERLESS, encoded);
