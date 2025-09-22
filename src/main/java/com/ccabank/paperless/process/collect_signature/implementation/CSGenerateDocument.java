@@ -119,6 +119,7 @@ public class CSGenerateDocument implements JavaDelegate {
         if (ifSigned) {
             log.info(IF_SIGNED_WITH_PAPERLESS);
             String encoded = PdfUtils.getParameter(documentPage, SIGNED_WITH_PAPERLESS);
+            documentPage = PdfUtils.removeLastPage(documentPage);
 
             List<CollectSignatureForm.Signatory> signatoriesToSign =
                     mapper.readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});

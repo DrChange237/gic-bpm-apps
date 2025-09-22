@@ -143,4 +143,33 @@ public class PdfUtils {
         return outputStream.toByteArray();
     }
 
+    public static byte[] removeLastPage(byte[] pdfBytes) {
+        try {
+            PdfReader reader = new PdfReader(new ByteArrayInputStream(pdfBytes));
+            int totalPages = reader.getNumberOfPages();
+
+            if (totalPages <= 1) {
+                throw new IllegalArgumentException("Le document ne contient pas assez de pages pour supprimer la dernière.");
+            }
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Document document = new Document();
+            PdfCopy copy = new PdfCopy(document, baos);
+
+            document.open();
+
+            // Copier toutes les pages sauf la dernière
+            for (int i = 1; i < totalPages; i++) {
+                copy.addPage(copy.getImportedPage(reader, i));
+            }
+
+            document.close();
+            reader.close();
+
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la suppression de la dernière page du PDF", e);
+        }
+    }
+
 }
