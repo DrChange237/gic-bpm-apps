@@ -242,7 +242,7 @@
     <bpmn:userTask id="Apbt_n2" name="Approbation N+2">
       <bpmn:extensionElements>
         <camunda:taskListener class="com.ccabank.paperless.process.general.listener.AssignmentTaskListener" event="create" id="Apbt_n2" />
-        <camunda:executionListener delegateExpression="${noDoubleValidationListener}" event="start" />
+        <camunda:taskListener delegateExpression="${noDoubleValidationListener}" event="create" id="noDoubleValidationListener" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1g6unlu</bpmn:incoming>
       <bpmn:outgoing>Flow_1rmkd2a</bpmn:outgoing>
