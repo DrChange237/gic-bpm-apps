@@ -22,7 +22,6 @@ import java.util.List;
 @Slf4j
 public class NoDoubleValidationListener implements TaskListener {
 
-
     private final RequestRepository requestRepository;
     private final ApprobationRepository approbationRepository;
     private final CamundaService camundaService;
