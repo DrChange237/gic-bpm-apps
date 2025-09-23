@@ -148,7 +148,7 @@
     <bpmn:sequenceFlow id="Flow_0rqugmh" sourceRef="Gateway_1lxd33a" targetRef="Activity_1lqhj5h" />
     <bpmn:sequenceFlow id="Flow_0q9sv29" sourceRef="Activity_1lqhj5h" targetRef="Event_1jp0xy1" />
     <bpmn:sequenceFlow id="Flow_04v6u5r" sourceRef="Activity_0rjp64c" targetRef="Gateway_0yrqzpv" />
-    <bpmn:userTask id="Activity_0rjp64c" name="Confirmation la Génération du Document Signé" camunda:assignee="${owner}">
+    <bpmn:userTask id="Activity_0rjp64c" name="Confirmation Pour Génération du Document" camunda:assignee="${owner}">
       <bpmn:incoming>Flow_0laf0go</bpmn:incoming>
       <bpmn:incoming>Flow_156gmis</bpmn:incoming>
       <bpmn:outgoing>Flow_04v6u5r</bpmn:outgoing>
