@@ -5,6 +5,7 @@ import com.ccabank.paperless.entity.ApprovalStatus;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.repository.ApprobationRepository;
 import com.ccabank.paperless.repository.RequestRepository;
+import com.ccabank.paperless.service.faces.CamundaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.ProcessEngine;
@@ -24,15 +25,20 @@ public class NoDoubleValidationListener implements TaskListener {
 
     private final RequestRepository requestRepository;
     private final ApprobationRepository approbationRepository;
+    private final CamundaService camundaService;
 
     @Override
     public void notify(DelegateTask delegateTask) {
 
-        Request request = requestRepository.findByInstanceId(delegateTask.getProcessInstanceId());
-        List<Approbation> approbations = approbationRepository.findByReferenceAndStaffAndStatus(request.getReference(), delegateTask.getAssignee() , ApprovalStatus.ACCEPTED);
-        log.info(String.valueOf(approbations.size()));
+        List<String> assignes = camundaService.getAllAssigneInTask(delegateTask.getId());
 
-        if (!approbations.isEmpty()) {
+        log.info("Task assigned: " + assignes);
+
+        Request request = requestRepository.findByInstanceId(delegateTask.getProcessInstanceId());
+        List<Approbation> approbations = approbationRepository.findByReferenceAndStatusAndStaffIn(request.getReference(),ApprovalStatus.ACCEPTED, assignes);
+        log.info(" Approbation déjà prises : " + String.valueOf(approbations.size()));
+
+        if (approbations.size() > 0) {
             ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
             processEngine.getTaskService()
                     .createTaskQuery()

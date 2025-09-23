@@ -20,4 +20,6 @@ public interface ApprobationRepository extends JpaRepository<Approbation, Long> 
     List<Approbation> findByReferenceAndStatus(String reference, ApprovalStatus approvalStatus);
 
     List<Approbation> findByReference(String reference);
+
+    List<Approbation> findByReferenceAndStatusAndStaffIn(String reference, ApprovalStatus approvalStatus, List<String> assignes);
 }
