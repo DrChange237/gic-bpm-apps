@@ -738,7 +738,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             }
 
         }
-        return new AppServiceResult<>(true, 0, "Succeed!", ask);
+        return new AppServiceResult<>(true, 0, "Succeed!", null);
     }
 
     @Override

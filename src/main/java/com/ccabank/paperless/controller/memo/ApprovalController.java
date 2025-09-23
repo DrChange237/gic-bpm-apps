@@ -68,8 +68,7 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> followUp(@RequestParam(value = "id") String id) {
         AppServiceResult<?> result = approvalService.relanceApprobation(id);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(true);
     }
 
     @GetMapping("/approval/getApprovalByStaffAndStatus")
