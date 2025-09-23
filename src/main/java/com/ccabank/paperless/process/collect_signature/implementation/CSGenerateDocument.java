@@ -118,8 +118,10 @@ public class CSGenerateDocument implements JavaDelegate {
 
         if (ifSigned) {
             log.info(IF_SIGNED_WITH_PAPERLESS);
+            delegateExecution.setVariable("ifSigned", ifSigned);
             String encoded = PdfUtils.getParameter(documentPage, SIGNED_WITH_PAPERLESS);
             documentPage = PdfUtils.removeLastPage(documentPage);
+            documentPage = PdfUtils.removeFooter(documentPage);
 
             List<CollectSignatureForm.Signatory> signatoriesToSign =
                     mapper.readValue(encoded, new TypeReference<List<CollectSignatureForm.Signatory>>() {});
@@ -145,6 +147,7 @@ public class CSGenerateDocument implements JavaDelegate {
         destination = PdfUtils.addFooterToPdf(destination, "Signed with paperless Ref : " + request.getReference());
         String encoded = mapper.writeValueAsString(form.getSignatories());
         destination = PdfUtils.addParameter(destination, IF_SIGNED_WITH_PAPERLESS, "true");
+        destination = PdfUtils.addParameter(destination, "reference", request.getReference());
         destination = PdfUtils.addParameter(destination, SIGNED_WITH_PAPERLESS, encoded);
 
         CustomMultipartFile multipartFile = new CustomMultipartFile(destination, "collecte_signature_" + delegateExecution.getBusinessKey() + ".pdf", "application/pdf");

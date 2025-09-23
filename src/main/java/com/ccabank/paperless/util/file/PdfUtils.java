@@ -10,6 +10,50 @@ import java.util.Map;
 
 public class PdfUtils {
 
+
+    /**
+     * Retire (recouvre) le pied de page sur tout le document.
+     * @param pdfBytes PDF d'entrée en byte[]
+     * @return PDF modifié en byte[]
+     */
+    public static byte[] removeFooter(byte[] pdfBytes) {
+        // Ajuste ces constantes selon la position et la taille du pied de page dans tes documents
+        final float RECT_WIDTH = 200f;   // largeur du rectangle qui recouvre le footer
+        final float RECT_HEIGHT = 30f;   // hauteur du rectangle
+        final float MARGIN_RIGHT = 10f;  // marge depuis le bord droit
+        final float MARGIN_BOTTOM = 10f; // marge depuis le bord bas
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(pdfBytes);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            PdfReader reader = new PdfReader(bais);
+            PdfStamper stamper = new PdfStamper(reader, baos);
+
+            int n = reader.getNumberOfPages();
+            for (int i = 1; i <= n; i++) {
+                Rectangle pageSize = reader.getPageSizeWithRotation(i);
+
+                // Calculer la position (coin inférieur gauche) du rectangle pour aligner en bas à droite
+                float llx = pageSize.getRight() - MARGIN_RIGHT - RECT_WIDTH;
+                float lly = pageSize.getBottom() + MARGIN_BOTTOM;
+
+                PdfContentByte over = stamper.getOverContent(i);
+                over.saveState();
+                over.setColorFill(BaseColor.WHITE); // couleur de recouvrement (blanc)
+                over.rectangle(llx, lly, RECT_WIDTH, RECT_HEIGHT);
+                over.fill();
+                over.restoreState();
+            }
+
+            stamper.close();
+            reader.close();
+
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la suppression du pied de page PDF", e);
+        }
+    }
+
     /**
      * Récupère un paramètre personnalisé depuis un PDF.
      *
