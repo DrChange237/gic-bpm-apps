@@ -33,17 +33,5 @@ public class AssignmentTaskListener implements TaskListener {
         log.info(request.getReference());
         log.info(userTaskId);
 
-        List<Approbation> approbations = approbationRepository.findByReferenceAndStaffAndStatus(request.getReference(), userTaskId, ApprovalStatus.ACCEPTED);
-        log.info(String.valueOf(approbations.size()));
-
-        if (!approbations.isEmpty()) {
-            log.info("complete task");
-            delegateTask.setVariable("decision", true);
-            delegateTask.getProcessEngineServices()
-                    .getTaskService()
-                    .complete(delegateTask.getId());
-            System.out.println("✅ User Task [" + delegateTask.getName() + "] complétée automatiquement !");
-        }
-
     }
 }
