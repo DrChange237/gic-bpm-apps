@@ -127,7 +127,7 @@
     <bpmn:endEvent id="Event_1jp0xy1">
       <bpmn:incoming>Flow_0btyeye</bpmn:incoming>
       <bpmn:incoming>Flow_0q9sv29</bpmn:incoming>
-      <bpmn:incoming>Flow_0ljv1wv</bpmn:incoming>
+      <bpmn:incoming>Flow_0eoxi2w</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0btyeye" sourceRef="Activity_0okqmm8" targetRef="Event_1jp0xy1" />
     <bpmn:exclusiveGateway id="Gateway_1lxd33a" default="Flow_0rqugmh">
@@ -150,6 +150,7 @@
     <bpmn:sequenceFlow id="Flow_04v6u5r" sourceRef="Activity_0rjp64c" targetRef="Gateway_0yrqzpv" />
     <bpmn:userTask id="Activity_0rjp64c" name="Confirmation la Génération du Document Signé" camunda:assignee="${owner}">
       <bpmn:incoming>Flow_0laf0go</bpmn:incoming>
+      <bpmn:incoming>Flow_156gmis</bpmn:incoming>
       <bpmn:outgoing>Flow_04v6u5r</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_0yrqzpv" default="Flow_0ljv1wv">
@@ -160,7 +161,31 @@
     <bpmn:sequenceFlow id="Flow_1bijtgt" sourceRef="Gateway_0yrqzpv" targetRef="Activity_0okqmm8">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0ljv1wv" sourceRef="Gateway_0yrqzpv" targetRef="Event_1jp0xy1" />
+    <bpmn:sequenceFlow id="Flow_0ljv1wv" sourceRef="Gateway_0yrqzpv" targetRef="Activity_1uyayz6" />
+    <bpmn:userTask id="Activity_1uyayz6" name="Corbeille" camunda:assignee="" camunda:candidateGroups="corbeille">
+      <bpmn:incoming>Flow_0ljv1wv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j8aj16</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="Event_0ddvqph" attachedToRef="Activity_1uyayz6">
+      <bpmn:outgoing>Flow_0eoxi2w</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0ukg7vw">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P15D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0eoxi2w" sourceRef="Event_0ddvqph" targetRef="Event_1jp0xy1" />
+    <bpmn:exclusiveGateway id="Gateway_0n34ncp" default="Flow_1yb2mrg">
+      <bpmn:incoming>Flow_1j8aj16</bpmn:incoming>
+      <bpmn:outgoing>Flow_156gmis</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1yb2mrg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1j8aj16" sourceRef="Activity_1uyayz6" targetRef="Gateway_0n34ncp" />
+    <bpmn:sequenceFlow id="Flow_156gmis" sourceRef="Gateway_0n34ncp" targetRef="Activity_0rjp64c">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1gz1pq8">
+      <bpmn:incoming>Flow_1yb2mrg</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1yb2mrg" sourceRef="Gateway_0n34ncp" targetRef="Event_1gz1pq8" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collect_signature">
@@ -198,6 +223,16 @@
       <bpmndi:BPMNShape id="Activity_1nnrlyx_di" bpmnElement="Activity_0okqmm8" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
         <dc:Bounds x="1340" y="550" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13jg8zi_di" bpmnElement="Activity_1uyayz6" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="980" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0n34ncp_di" bpmnElement="Gateway_0n34ncp" isMarkerVisible="true">
+        <dc:Bounds x="865" y="425" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gz1pq8_di" bpmnElement="Event_1gz1pq8">
+        <dc:Bounds x="762" y="432" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vvc7h2_di" bpmnElement="Activity_1vvc7h2" isExpanded="false" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
         <dc:Bounds x="530" y="560" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -205,6 +240,9 @@
       <bpmndi:BPMNShape id="BPMNShape_16rbm8t" bpmnElement="Activity_00qe2bv" isExpanded="false" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
         <dc:Bounds x="540" y="780" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ddvqph_di" bpmnElement="Event_0ddvqph" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="1062" y="472" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_02jmfbb_di" bpmnElement="Flow_02jmfbb">
         <di:waypoint x="380" y="700" />
@@ -263,9 +301,25 @@
         <di:waypoint x="1340" y="590" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ljv1wv_di" bpmnElement="Flow_0ljv1wv">
-        <di:waypoint x="1030" y="615" />
-        <di:waypoint x="1030" y="690" />
-        <di:waypoint x="1072" y="690" />
+        <di:waypoint x="1030" y="565" />
+        <di:waypoint x="1030" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eoxi2w_di" bpmnElement="Flow_0eoxi2w">
+        <di:waypoint x="1080" y="508" />
+        <di:waypoint x="1080" y="690" />
+        <di:waypoint x="1080" y="675" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j8aj16_di" bpmnElement="Flow_1j8aj16">
+        <di:waypoint x="980" y="450" />
+        <di:waypoint x="915" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_156gmis_di" bpmnElement="Flow_156gmis">
+        <di:waypoint x="890" y="475" />
+        <di:waypoint x="890" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yb2mrg_di" bpmnElement="Flow_1yb2mrg">
+        <di:waypoint x="865" y="450" />
+        <di:waypoint x="798" y="450" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
