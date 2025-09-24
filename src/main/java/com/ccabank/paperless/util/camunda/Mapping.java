@@ -106,7 +106,6 @@ public class Mapping {
                     try {
                         if(field.getValue() != null){
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
                             try {
                                 Date date = formatter.parse(field.getValue());
                                 variables.put(field.getKey(), date);

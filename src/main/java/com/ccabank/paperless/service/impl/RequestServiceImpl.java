@@ -635,7 +635,7 @@ public class RequestServiceImpl implements RequestService {
                 if(entry.getValue().contains("Date")){
                     if(value != null){
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-                                "EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+                                "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH);
 
                         // Parse vers ZonedDateTime (parce que la chaîne contient "GMT")
                         ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
