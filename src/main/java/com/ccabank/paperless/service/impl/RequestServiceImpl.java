@@ -630,16 +630,19 @@ public class RequestServiceImpl implements RequestService {
                 }
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-                            "EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+                    if(value != null){
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+                                "EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
 
-                    // Parse vers ZonedDateTime (parce que la chaîne contient "GMT")
-                    ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
+                        // Parse vers ZonedDateTime (parce que la chaîne contient "GMT")
+                        ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
 
-                    // Extraire uniquement la date
-                    LocalDate localDate = zonedDateTime.toLocalDate();
-                    //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    cell.setCellValue(localDate);
+                        // Extraire uniquement la date
+                        LocalDate localDate = zonedDateTime.toLocalDate();
+                        //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        cell.setCellValue(localDate);
+                    }
+
                 }
                 col++;
             }
