@@ -624,8 +624,8 @@ public class RequestServiceImpl implements RequestService {
                 }
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
-                    value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    cell.setCellValue(value);
+                    //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    //cell.setCellValue(value);
                 }
                 col++;
             }
