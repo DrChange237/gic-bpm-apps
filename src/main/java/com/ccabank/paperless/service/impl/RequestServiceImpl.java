@@ -634,16 +634,10 @@ public class RequestServiceImpl implements RequestService {
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
                     if(value != null){
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-                                "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH);
-
-                        // Parse vers ZonedDateTime (parce que la chaîne contient "GMT")
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
                         ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
-
-                        // Extraire uniquement la date
-                        LocalDate localDate = zonedDateTime.toLocalDate();
-                        //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                        cell.setCellValue(localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+                        cell.setCellValue(localDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     }
                 }
                 col++;
