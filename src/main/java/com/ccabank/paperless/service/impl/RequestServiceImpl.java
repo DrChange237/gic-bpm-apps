@@ -640,7 +640,7 @@ public class RequestServiceImpl implements RequestService {
                         // Extraire uniquement la date
                         LocalDate localDate = zonedDateTime.toLocalDate();
                         //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                        cell.setCellValue(localDate);
+                        cell.setCellValue(localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     }
 
                 }
