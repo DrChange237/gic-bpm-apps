@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -629,8 +630,16 @@ public class RequestServiceImpl implements RequestService {
                 }
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+                            "EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+
+                    // Parse vers ZonedDateTime (parce que la chaîne contient "GMT")
+                    ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
+
+                    // Extraire uniquement la date
+                    LocalDate localDate = zonedDateTime.toLocalDate();
                     //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    //cell.setCellValue(value);
+                    cell.setCellValue(localDate);
                 }
                 col++;
             }
