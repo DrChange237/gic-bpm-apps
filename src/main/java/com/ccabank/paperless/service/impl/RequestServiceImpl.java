@@ -14,6 +14,7 @@ import com.ccabank.paperless.specification.FileSpecifications;
 import com.ccabank.paperless.specification.RequestSpecifications;
 import com.ccabank.paperless.util.camunda.Mapping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.engine.form.StartFormData;
@@ -43,6 +44,7 @@ import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class RequestServiceImpl implements RequestService {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
@@ -628,6 +630,7 @@ public class RequestServiceImpl implements RequestService {
                 }else {
                     value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), entry.getKey()));
                 }
+                log.warn("Value "+ value);
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
                     if(value != null){
@@ -642,7 +645,6 @@ public class RequestServiceImpl implements RequestService {
                         //value = LocalDate.parse(entry.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                         cell.setCellValue(localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                     }
-
                 }
                 col++;
             }
