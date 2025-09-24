@@ -456,15 +456,21 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public byte[] export(String reference, String type, String staff, String startDate, String endDate) {
 
+
+        DocumentType documentType = null;
+
         if(reference == null){
             if(type == null){
                 throw new NotFoundException("Pour l'export le type de document est obligatoire");
             }
+            documentType = documentTypeRepository.findOneByStructure(type);
         }else{
             Request request = requestRepository.findOneByReference(reference);
             if(request == null){
                 throw new NotFoundException("Reference incorrecte");
             }
+            documentType = request.getType();
+
         }
 
         Specification<Request> spec = Specification.where(null);
@@ -475,7 +481,6 @@ public class RequestServiceImpl implements RequestService {
             spec = Specification.where(RequestSpecifications.dateBetween(start, end));
         }
 
-        DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED);
         List<Request> requests = requestRepository.findAll(spec);
 
