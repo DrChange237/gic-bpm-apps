@@ -638,6 +638,11 @@ public class RequestServiceImpl implements RequestService {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
                             ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
                             LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+                            CellStyle dateCellStyle = cellStyle2;
+                            CreationHelper createHelper = workbook.getCreationHelper();
+                            short dateFormat = createHelper.createDataFormat().getFormat("dd/MM/yyyy");
+                            dateCellStyle.setDataFormat(dateFormat);
+                            cell.setCellStyle(dateCellStyle);
                             cell.setCellValue(localDateTime);
                         }
                     }
