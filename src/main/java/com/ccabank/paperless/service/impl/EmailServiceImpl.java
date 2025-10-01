@@ -6,6 +6,7 @@ import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.email.EmailDto;
 import com.ccabank.paperless.dto.memo.ApprovalDto;
 import com.ccabank.paperless.dto.memo.FieldDto;
+import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.ApprovalKey;
 import com.ccabank.paperless.entity.Request;
@@ -56,8 +57,8 @@ public class EmailServiceImpl implements EmailService {
         try{
             System.out.println("sendForValidation-------------------------------------------------------------------------------------");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender());
-            UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover());
+            EmployeeInfo sender = userRestClient.getStaffByUsername(ask.getSender());
+            EmployeeInfo approver = userRestClient.getStaffByUsername(ask.getApprover());
 
 
             EmailDto emailDto = new EmailDto();
@@ -81,12 +82,12 @@ public class EmailServiceImpl implements EmailService {
                     .append("</style>")
                     .append("</head><body>")
                     .append("<div class='container'>")
-                    .append("<p> Bonjour M. " + approver.getName() + ", <br> <br> Ce message vous est envoyé automatiquement par <b>Paperless</b>. Nous vous prions de bien vouloir valider la demande suivante : </p>")
+                    .append("<p> Bonjour M. " + approver.getFirstName() + " " + approver.getLastName() + ", <br> <br> Ce message vous est envoyé automatiquement par <b>Paperless</b>. Nous vous prions de bien vouloir valider la demande suivante : </p>")
                     .append("<ul>");
 
             htmlContent.append("<li><strong>").append("Type").append(":</strong> ").append(ask.getType()).append("</li>");
             htmlContent.append("<li><strong>").append("Reference").append(":</strong> ").append(ask.getReference()).append("</li>");
-            htmlContent.append("<li><strong>").append("Initiateur").append(":</strong> ").append(sender.getName()).append(" - " + sender.getFunction() + " - " + sender.getDepartment()).append("</li>");
+            htmlContent.append("<li><strong>").append("Initiateur").append(":</strong> ").append(sender.getFirstName()).append(" - " + sender.getFunction() + " - " + sender.getDepartment()).append("</li>");
 
 
             for (FieldDto field : fields) {
@@ -151,7 +152,7 @@ public class EmailServiceImpl implements EmailService {
         try{
             System.out.println("sendFiles-------------------------------------------------------------------------------------");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender());
+            EmployeeInfo sender = userRestClient.getStaffByUsername(ask.getSender());
 
             EmailDto emailDto = new EmailDto();
             emailDto.setTo(sender.getEmail());
@@ -166,7 +167,7 @@ public class EmailServiceImpl implements EmailService {
                     "    </tr>\n" +
                     "    <tr>\n" +
                     "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getName() +"</span>, <br> Votre document a été généré avec succès bien vouloir prendre connaissance  </div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getFirstName() +"</span>, <br> Votre document a été généré avec succès bien vouloir prendre connaissance  </div>\n" +
                     "            \n" +
                     "            \n" +
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +
@@ -195,8 +196,8 @@ public class EmailServiceImpl implements EmailService {
         try{
             System.out.println("sendAskApproval-------------------------------------------------------------------------------------");
 
-            UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender());
-            UserRestDto approve = userRestClient.getAgencyByStaffUsername(ask.getApprover());
+            EmployeeInfo sender = userRestClient.getStaffByUsername(ask.getSender());
+            EmployeeInfo approve = userRestClient.getStaffByUsername(ask.getApprover());
 
             System.out.println("Email :" + approve.getEmail());
             EmailDto emailDto = new EmailDto();
@@ -214,7 +215,7 @@ public class EmailServiceImpl implements EmailService {
                     "    <tr>\n" +
                     "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 24px; line-height: 28px; margin-bottom: 10px; text-align: center\"><strong>Demande d'approbation - <span>" + ask.getType() + "</span> </strong></div>\n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ approve.getName() +"</span>, <br>  Une demande d'approbation de document à été initié et est en attente</div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ approve.getFirstName() +"</span>, <br>  Une demande d'approbation de document à été initié et est en attente</div>\n" +
                     "            \n" +
                     "            \n" +
                     "            <table align=\"center\"  cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: auto; word-break: break-all;\" role=\"presentation\">\n" +
@@ -243,7 +244,7 @@ public class EmailServiceImpl implements EmailService {
                     "                            <strong>Initiateur  </strong> </span>\n" +
                     "                    </td>\n" +
                     "                    <td class=\"sans-serif\" bgcolor=\"#FFFFFF\" style=\"padding: 10px; border-radius: 3px;\">\n" +
-                    "                        <span>"+ sender.getName() +"</span>\n" +
+                    "                        <span>"+ sender.getFirstName() + " " + sender.getLastName() +"</span>\n" +
                     "                    </td>\n" +
                     "                </tr>\n" +
                     "                <tr>\n" +

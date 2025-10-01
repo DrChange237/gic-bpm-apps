@@ -53,6 +53,7 @@ public class CSSendAskEmail implements JavaDelegate {
         List<String> copies  = (List<String>) execution.getVariable("copies");
         String copiesString = String.join(",", copies);
 
+
         if(collect_type.equals("SEQUENCE")){
             signataire = (String) execution.getVariable("signataire");
         }else{
