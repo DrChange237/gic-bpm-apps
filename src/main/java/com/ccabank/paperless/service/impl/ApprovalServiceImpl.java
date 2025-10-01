@@ -240,7 +240,6 @@ public class ApprovalServiceImpl implements ApprovalService {
         if(task == null){
             logger.warn("Task is null");
         }
-        camundaService.addLocalVariableToTask(task.getId(), "signature", true);
         String instanceId = task.getProcessInstanceId();
         Request request = requestRepository.findByInstanceId(instanceId);
         request.setLastModification(LocalDateTime.now());
