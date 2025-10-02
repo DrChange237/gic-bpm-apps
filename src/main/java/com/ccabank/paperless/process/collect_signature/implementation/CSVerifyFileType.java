@@ -22,7 +22,10 @@ public class CSVerifyFileType implements JavaDelegate {
 
         String file = (String) delegateExecution.getVariable("file");
         log.info("Processing file {}", file);
-        String fileBase = fileRestClient.getB64FileById(file);
+        String[] fileSplites = file.split("/");
+        String lastElement = fileSplites[fileSplites.length - 1];
+        log.info("Last element {}", lastElement);
+        String fileBase = fileRestClient.getB64FileById(lastElement);
         if(!PdfUtils.isBase64Pdf(fileBase)) {
             throw new BadRequestException("Le fichier doit ètre un pdf");
         }
