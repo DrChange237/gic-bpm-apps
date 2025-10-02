@@ -53,7 +53,6 @@ public class CSSendAskEmail implements JavaDelegate {
         List<String> copies  = (List<String>) execution.getVariable("copies");
         String copiesString = String.join(",", copies);
 
-
         if(collect_type.equals("SEQUENCE")){
             signataire = (String) execution.getVariable("signataire");
         }else{
@@ -66,7 +65,7 @@ public class CSSendAskEmail implements JavaDelegate {
         ask.setSender(owner);
         ask.setApprover(signataire);
         ask.setReference(reference);
-        ask.setcC(copiesString);
+        ask.setCC(copiesString);
         Request request = requestRepository.findOneByReference(reference);
         ask.setType(request.getType().getName());
         ask.setSubject("[Signature] " + type + "-" + object);
