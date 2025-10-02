@@ -156,7 +156,7 @@ public class EmailServiceImpl implements EmailService {
 
             EmailDto emailDto = new EmailDto();
             emailDto.setTo(sender.getEmail());
-            emailDto.setCc(ask.getbCC());
+            emailDto.setCc(ask.getBCC());
             emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject(ask.getSubject());
 
@@ -167,7 +167,7 @@ public class EmailServiceImpl implements EmailService {
                     "    </tr>\n" +
                     "    <tr>\n" +
                     "        <th class=\"column\" width=\"640\" style=\"padding-left: 30px; padding-right: 30px; font-weight: 400; text-align: left;\">\n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getFirstName() +"</span>, <br> Votre document a été généré avec succès bien vouloir prendre connaissance  </div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getFirstName() +"</span>, <br> " +  ask.getMessage() + "  </div>\n" +
                     "            \n" +
                     "            \n" +
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +

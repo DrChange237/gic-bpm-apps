@@ -284,11 +284,12 @@ public class SendMissionOrder implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("Ordre de Mission");
-        ask.setbCC(n1.getEmail() + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
+        ask.setBCC(n1.getEmail() + "," + processUnityService.getEmailUnity(EmailGroup.EMAIL_CAPITAL_HUMAIN));
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("ordre_mission-" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
         ask.setAttachments(new AttachmentDto[]{attachment});
+        ask.setMessage("Votre document a été généré avec succès bien vouloir prendre connaissance");
         emailService.sendFiles(ask);
 
         CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");

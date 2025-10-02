@@ -264,7 +264,7 @@ public class SendVacation implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(staff.getUsername());
             ask.setSubject("Demande de Congés Validées");
-            ask.setbCC(supervisorInfo.getEmail() + "," + processUnityService.getEmailUnity(EMAIL_CAPITAL_HUMAIN) + "," + processUnityService.getEmailUnity(EMAIL_HABILITATION));
+            ask.setBCC(supervisorInfo.getEmail() + "," + processUnityService.getEmailUnity(EMAIL_CAPITAL_HUMAIN) + "," + processUnityService.getEmailUnity(EMAIL_HABILITATION));
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("demande_congés" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
@@ -272,6 +272,7 @@ public class SendVacation implements JavaDelegate {
             attachmentDecision.setName("decision_congés.pdf");
             attachmentDecision.setData(Base64.getEncoder().encodeToString(decisionVacation.getByteArray()));
             ask.setAttachments(new AttachmentDto[]{attachment, attachmentDecision});
+            ask.setMessage("Votre document a été généré avec succès bien vouloir prendre connaissance");
             emailService.sendFiles(ask);
 
             CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");

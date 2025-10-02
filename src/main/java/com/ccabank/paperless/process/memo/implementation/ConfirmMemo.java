@@ -85,11 +85,12 @@ public class ConfirmMemo implements JavaDelegate {
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
         ask.setSender(staff.getUsername());
         ask.setSubject("MEMO - " + subject.toUpperCase());
-        ask.setbCC(listApbt);
+        ask.setBCC(listApbt);
         AttachmentDto attachment = new AttachmentDto();
         attachment.setName("memo" + delegateExecution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
         ask.setAttachments(new AttachmentDto[]{attachment});
+        ask.setMessage("Votre document a été généré avec succès bien vouloir prendre connaissance");
         emailService.sendFiles(ask);
 
         CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");

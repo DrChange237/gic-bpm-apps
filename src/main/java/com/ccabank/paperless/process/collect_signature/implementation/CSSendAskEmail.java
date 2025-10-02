@@ -77,10 +77,10 @@ public class CSSendAskEmail implements JavaDelegate {
         String base64Page = fileRestClient.getB64FileById(this.extractFileId(fileId));
         byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
         AttachmentDto attachment = new AttachmentDto();
-
         attachment.setName("collect_signature_" + execution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(documentPage));
         ask.setAttachments(new AttachmentDto[]{attachment});
+        ask.setMessage("Vous avez un document en attente de siganture");
         emailService.sendFiles(ask);
 
     }

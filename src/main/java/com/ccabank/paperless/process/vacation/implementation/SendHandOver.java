@@ -140,11 +140,12 @@ public class SendHandOver implements JavaDelegate {
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
             ask.setSender(interimaire.getUsername());
             ask.setSubject("Formulaire de Hand Over");
-            ask.setbCC(staff.getEmail());
+            ask.setBCC(staff.getEmail());
             AttachmentDto attachment = new AttachmentDto();
             attachment.setName("handover_" + delegateExecution.getBusinessKey() + ".pdf");
             attachment.setData(Base64.getEncoder().encodeToString(resource.getByteArray()));
             ask.setAttachments(new AttachmentDto[]{attachment});
+            ask.setMessage("Votre document a été généré avec succès bien vouloir prendre connaissance");
             emailService.sendFiles(ask);
 
             CustomMultipartFile multipartFile = new CustomMultipartFile(resource.getByteArray(), attachment.getName(), "application/pdf");
