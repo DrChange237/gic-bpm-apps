@@ -3,6 +3,7 @@ package com.ccabank.paperless.util.camunda;
 import com.ccabank.paperless.constant.FieldTypeConstant;
 import com.ccabank.paperless.dto.memo.*;
 import com.ccabank.paperless.entity.ApprovalType;
+import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.openfeign.FileRestClient;
 import com.ccabank.paperless.util.file.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -79,7 +80,7 @@ public class Mapping {
     }
 
 
-    public Map<String, Object> getVariablesFromField(List<FieldDto> fields) throws Exception {
+    public Map<String, Object> getVariablesFromField(List<FieldDto> fields)  {
 
         Map<String, Object> variables = new HashMap<>();
 
@@ -89,7 +90,7 @@ public class Mapping {
 
             if(field.isRequired()){
                 if(field.getValue() == null){
-                    throw new Exception("Parameter " + field.getName() + " is required");
+                    throw new BadRequestException("Parameter " + field.getName() + " is required");
                 }
             }
 
@@ -114,7 +115,7 @@ public class Mapping {
                             }
                         }
                     }catch (Exception e){
-                        throw new Exception("Format de la date invalid : " + field.getValue() );
+                        throw new BadRequestException("Format de la date invalid : " + field.getValue() );
                     }
                     break;
 

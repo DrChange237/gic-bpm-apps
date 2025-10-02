@@ -71,7 +71,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest req) {
-        try {
+
             logger.info(MEMO_SERVICE + "newRequest : methode invocation");
 
             EmployeeInfo employeeInfo = securityService.getCurrentUser();
@@ -113,13 +113,6 @@ public class RequestServiceImpl implements RequestService {
             request = requestRepository.save(request);
 
             return new AppServiceResult<>(true, 0, "Succeed!", request);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " newRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
     }
 
     @Override

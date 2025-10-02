@@ -10,7 +10,7 @@ import java.util.Base64;
 public class FileUtils {
 
 
-    public static MultipartFile convertBase64ToMultipartFile(String base64Content, String fileName, String contentType) throws IOException {
+    public static MultipartFile convertBase64ToMultipartFile(String base64Content, String fileName, String contentType)  {
         byte[] decodedBytes = Base64.getDecoder().decode(base64Content);
         InputStream inputStream = new ByteArrayInputStream(decodedBytes);
         return new MultipartFile() {
