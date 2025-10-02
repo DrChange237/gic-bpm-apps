@@ -34,9 +34,7 @@ public class RequestController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> newRequest(HttpServletRequest request, @RequestBody RequestDto requestDto) {
         AppBaseResult result = requestService.newRequest(requestDto, request);
-        return result.isSuccess()
-                ? ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully added"))
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(new HttpResponseSuccess<String>("Request successfully added"));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
