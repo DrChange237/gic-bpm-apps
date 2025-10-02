@@ -55,16 +55,15 @@
       <bpmn:outgoing>Flow_0al1p58</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="Validation" name="Validation" camunda:assignee="${owner}">
-      <bpmn:incoming>Flow_0al1p58</bpmn:incoming>
-      <bpmn:outgoing>Flow_02jmfbb</bpmn:outgoing>
+      <bpmn:incoming>Flow_137bo5x</bpmn:incoming>
+      <bpmn:outgoing>Flow_07ibtv2</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="Event_088vwkd" />
     <bpmn:exclusiveGateway id="Gateway_1sac9kl" default="Flow_1r0vm4p">
-      <bpmn:incoming>Flow_0vl2xt7</bpmn:incoming>
+      <bpmn:incoming>Flow_07ibtv2</bpmn:incoming>
       <bpmn:outgoing>Flow_1r0vm4p</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ruer78</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_02jmfbb" sourceRef="Validation" targetRef="Activity_0fz4mzr" />
     <bpmn:subProcess id="Activity_1vvc7h2" name="Collecte Séquentiel">
       <bpmn:incoming>Flow_1r0vm4p</bpmn:incoming>
       <bpmn:outgoing>Flow_1mvl0nd</bpmn:outgoing>
@@ -186,11 +185,12 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1yb2mrg" sourceRef="Gateway_0n34ncp" targetRef="Event_1gz1pq8" />
     <bpmn:serviceTask id="Activity_0fz4mzr" name="Vérification Fichier" camunda:delegateExpression="${CSVerifyFileType}">
-      <bpmn:incoming>Flow_02jmfbb</bpmn:incoming>
-      <bpmn:outgoing>Flow_0vl2xt7</bpmn:outgoing>
+      <bpmn:incoming>Flow_0al1p58</bpmn:incoming>
+      <bpmn:outgoing>Flow_137bo5x</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0al1p58" sourceRef="StartEvent_1" targetRef="Validation" />
-    <bpmn:sequenceFlow id="Flow_0vl2xt7" sourceRef="Activity_0fz4mzr" targetRef="Gateway_1sac9kl" />
+    <bpmn:sequenceFlow id="Flow_0al1p58" sourceRef="StartEvent_1" targetRef="Activity_0fz4mzr" />
+    <bpmn:sequenceFlow id="Flow_07ibtv2" sourceRef="Validation" targetRef="Gateway_1sac9kl" />
+    <bpmn:sequenceFlow id="Flow_137bo5x" sourceRef="Activity_0fz4mzr" targetRef="Validation" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collect_signature">
@@ -236,10 +236,10 @@
         <dc:Bounds x="912" y="432" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_11vufsg_di" bpmnElement="Validation" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
-        <dc:Bounds x="290" y="660" width="100" height="80" />
+        <dc:Bounds x="430" y="660" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_080vrrk_di" bpmnElement="Activity_0fz4mzr" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
-        <dc:Bounds x="430" y="660" width="100" height="80" />
+        <dc:Bounds x="270" y="660" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1vvc7h2_di" bpmnElement="Activity_1vvc7h2" isExpanded="false" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
@@ -253,10 +253,6 @@
       <bpmndi:BPMNShape id="Event_0ddvqph_di" bpmnElement="Event_0ddvqph" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
         <dc:Bounds x="1212" y="472" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_02jmfbb_di" bpmnElement="Flow_02jmfbb">
-        <di:waypoint x="390" y="700" />
-        <di:waypoint x="430" y="700" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1r0vm4p_di" bpmnElement="Flow_1r0vm4p">
         <di:waypoint x="610" y="675" />
         <di:waypoint x="610" y="600" />
@@ -328,11 +324,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0al1p58_di" bpmnElement="Flow_0al1p58">
         <di:waypoint x="218" y="700" />
-        <di:waypoint x="290" y="700" />
+        <di:waypoint x="270" y="700" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vl2xt7_di" bpmnElement="Flow_0vl2xt7">
+      <bpmndi:BPMNEdge id="Flow_07ibtv2_di" bpmnElement="Flow_07ibtv2">
         <di:waypoint x="530" y="700" />
         <di:waypoint x="585" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_137bo5x_di" bpmnElement="Flow_137bo5x">
+        <di:waypoint x="370" y="700" />
+        <di:waypoint x="430" y="700" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
