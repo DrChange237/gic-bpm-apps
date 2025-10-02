@@ -4,11 +4,33 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
 import java.io.*;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PdfUtils {
+
+
+    public static boolean isBase64Pdf(String base64) {
+        try {
+            // Décoder la chaîne Base64
+            byte[] decodedBytes = Base64.getDecoder().decode(base64);
+
+            // Vérifier la signature PDF : "%PDF-" en ASCII
+            String header = new String(decodedBytes, 0, Math.min(decodedBytes.length, 5));
+            if (!header.startsWith("%PDF-")) {
+                return false;
+            }
+
+            // Vérifier si ça se termine par "%%EOF" (fin de fichier PDF)
+            String content = new String(decodedBytes);
+            return content.contains("%%EOF");
+        } catch (IllegalArgumentException e) {
+            // Erreur si la chaîne n’est pas du Base64 valide
+            return false;
+        }
+    }
 
 
     /**
