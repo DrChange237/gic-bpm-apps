@@ -14,6 +14,7 @@ import com.ccabank.paperless.openfeign.EmailRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.util.DateUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +29,18 @@ import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 @Service
 @Transactional
 @Qualifier(MEMO_SERVICE)
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    private EmailRestClient emailRestClient;
+    private final EmailRestClient emailRestClient;
 
-    @Autowired
-    private UserRestClient userRestClient;
+    private final UserRestClient userRestClient;
 
     @Value("${server_url}")
     private String server_url;
+
+    @Value("${web.application.url}")
+    private String web_application;
 
 
     @Override
@@ -170,7 +173,7 @@ public class EmailServiceImpl implements EmailService {
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getFirstName() +"</span>, <br> " +  ask.getMessage() + "  </div>\n" +
                     "            \n" +
                     "            \n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande</div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande en <a href='" + this.web_application + "/paperless"  + "'> cliquant ici </a> </div>\n" +
                     "            <div style=\"color: #969AA1; font-size: 13px; margin-top: 30px;\">Merci, <br><strong>CCA BANK</strong></div>\n" +
                     "        </th>\n" +
                     "    </tr>\n" +
