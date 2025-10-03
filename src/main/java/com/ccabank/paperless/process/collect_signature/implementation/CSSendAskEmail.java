@@ -51,8 +51,8 @@ public class CSSendAskEmail implements JavaDelegate {
         String type = (String) execution.getVariable("type");
         String object = (String) execution.getVariable("object");
         String collect_type = (String) execution.getVariable("collect_type");
-        List<String> copies  = (List<String>) execution.getVariable("copies");
-        log.info("Copy people " , copies);
+        List<String> copies  = (List<String>) camundaService.getProcessVariable(execution.getProcessInstanceId(), "copies");
+        log.info("Copy people " + copies.toString() , copies);
         List<String> copieEmails = copies.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
         log.info("Copy people Emails " , copieEmails);
         String copiesString = String.join(",", copieEmails);
