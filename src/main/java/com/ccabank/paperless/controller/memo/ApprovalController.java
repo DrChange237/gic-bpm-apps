@@ -30,8 +30,7 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> decision(HttpServletRequest request, @RequestBody AcceptedApprovalDto acceptedApprovalDto) {
         AppServiceResult<?> result = approvalService.decision(request, acceptedApprovalDto);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.ok(result.getData());
     }
 
 
