@@ -62,9 +62,14 @@ public class CSSendAskEmail implements JavaDelegate {
         }else{
             signataire = owner;
             List<String> signataires = (List<String>) execution.getVariable("signataires");
+            log.info("Signataires " , signataires);
+            List<String> signatairesEmails = signataires.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
+            log.info("Signataires Emails " , signatairesEmails);
             String signatairesString = String.join(",", signataires);
             copiesString = copiesString + "," + signatairesString;
         }
+
+        log.info("Copies String " , copiesString);
 
         ask.setSender(owner);
         ask.setApprover(signataire);
@@ -83,7 +88,7 @@ public class CSSendAskEmail implements JavaDelegate {
         attachment.setName("collect_signature_" + execution.getBusinessKey() + ".pdf");
         attachment.setData(Base64.getEncoder().encodeToString(documentPage));
         ask.setAttachments(new AttachmentDto[]{attachment});
-        ask.setMessage("Vous avez un document en attente de siganture");
+        ask.setMessage("Vous avez un document en attente de signature");
         emailService.sendFiles(ask);
 
     }
