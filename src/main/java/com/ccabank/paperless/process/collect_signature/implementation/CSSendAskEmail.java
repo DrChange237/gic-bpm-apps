@@ -53,15 +53,19 @@ public class CSSendAskEmail implements JavaDelegate {
         String collect_type = (String) execution.getVariable("collect_type");
         List<String> copies  = (List<String>) camundaService.getProcessVariable(execution.getProcessInstanceId(), "copies");
         log.info("Copy people " + copies.toString() , copies);
+
         List<String> copieEmails = copies.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
-        log.info("Copy people Emails " , copieEmails);
+
+        log.info("Copy people Emails " + copieEmails.toString() , copieEmails);
+
         String copiesString = String.join(",", copieEmails);
+        log.info(copiesString);
 
         if(collect_type.equals("SEQUENCE")){
             signataire = (String) execution.getVariable("signataire");
         }else{
             signataire = owner;
-            List<String> signataires = (List<String>) execution.getVariable("signataires");
+            List<String> signataires = (List<String>) camundaService.getProcessVariable(execution.getProcessInstanceId(), "signataires");
             log.info("Signataires " , signataires);
             List<String> signatairesEmails = signataires.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
             log.info("Signataires Emails " , signatairesEmails);
