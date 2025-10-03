@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -51,7 +52,10 @@ public class CSSendAskEmail implements JavaDelegate {
         String object = (String) execution.getVariable("object");
         String collect_type = (String) execution.getVariable("collect_type");
         List<String> copies  = (List<String>) execution.getVariable("copies");
-        String copiesString = String.join(",", copies);
+        log.info("Copy people " , copies);
+        List<String> copieEmails = copies.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
+        log.info("Copy people Emails " , copieEmails);
+        String copiesString = String.join(",", copieEmails);
 
         if(collect_type.equals("SEQUENCE")){
             signataire = (String) execution.getVariable("signataire");
