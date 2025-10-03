@@ -240,9 +240,9 @@ public class SendVacation implements JavaDelegate {
             decision.setSignatory(signatory);
 
             String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DG);
-            EmployeeInfo dgInfo = userRestClient.getStaffByUsername(dg);
-            signature = userRestClient.getEmployeeSignature(dg);
             if(dg != null){
+                    EmployeeInfo dgInfo = userRestClient.getStaffByUsername(dg);
+                    signature = userRestClient.getEmployeeSignature(dg);
                     signatory = new VacationDecision.Signatory();
                     signatory.setSignature(signature);
                     signatory.setDate(LocalDate.now());
