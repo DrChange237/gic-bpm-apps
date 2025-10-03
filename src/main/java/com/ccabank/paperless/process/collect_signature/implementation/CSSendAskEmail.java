@@ -66,11 +66,12 @@ public class CSSendAskEmail implements JavaDelegate {
         }else{
             signataire = owner;
             List<String> signataires = (List<String>) camundaService.getProcessVariable(execution.getProcessInstanceId(), "signataires");
-            log.info("Signataires " , signataires);
+            log.info("Signataires " + signataires.toString() , signataires);
             List<String> signatairesEmails = signataires.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
-            log.info("Signataires Emails " , signatairesEmails);
+            log.info("Signataires Emails " + signatairesEmails.toString() , signatairesEmails);
             String signatairesString = String.join(",", signataires);
             copiesString = copiesString + "," + signatairesString;
+            log.info(copiesString);
         }
 
         log.info("Copies String " , copiesString);
