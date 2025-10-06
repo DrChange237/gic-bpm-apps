@@ -157,8 +157,8 @@ public class SendVacation implements JavaDelegate {
                     form.setSupervisorNext(supervisor);
             }
 
-            String apbt_uch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
-            signature = userRestClient.getEmployeeSignature(apbt_uch);
+            //String apbt_uch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            signature = userRestClient.getEmployeeSignature(owner);
             form.setSignature(signature);
             supervisor = new VacationForm.Signatory();
 
