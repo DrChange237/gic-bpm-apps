@@ -121,14 +121,22 @@ public class SendInterimLetter implements JavaDelegate {
 
             EmployeeInfo info = userRestClient.getStaffByUsername(interimaire.getUsername());
             String signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
-
             InterimForm.Signatory signatory = new InterimForm.Signatory();
-            signatory.setSignature(signature);
-            signatory.setDate(LocalDate.now());
-            signatory.setFunction("Le Directeur du Capital Humain");
-            signatory.setName(info.getFirstName() + " " + info.getLastName());
-            form.setSignatory(signatory);
+
+
+        String dch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            if(dch != null){
+                EmployeeInfo dchInfo = userRestClient.getStaffByUsername(dch);
+                signature = userRestClient.getEmployeeSignature(dch);
+                signatory.setSignature(signature);
+                signatory.setDate(LocalDate.now());
+                signatory.setFunction("Le Directeur du Capital Humain");
+                signatory.setName(dchInfo.getFirstName() + " " + dchInfo.getLastName());
+                form.setSignatory(signatory);
+            }
+
             String dg = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_DG);
+
             if(dg != null){
                 EmployeeInfo dgInfo = userRestClient.getStaffByUsername(dg);
                 signature = userRestClient.getEmployeeSignature(dg);

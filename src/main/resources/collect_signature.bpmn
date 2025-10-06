@@ -43,7 +43,7 @@
               <camunda:property id="description" value="L&#39;ordre de selection définit la chaine de validation" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="copies" label="Personnes en copie" type="string">
+          <camunda:formField id="copies" label="Personnes en copie" type="string" defaultValue="">
             <camunda:properties>
               <camunda:property id="fieldType" value="approval" />
               <camunda:property id="required" value="false" />
