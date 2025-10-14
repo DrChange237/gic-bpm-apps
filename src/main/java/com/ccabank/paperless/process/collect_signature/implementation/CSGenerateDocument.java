@@ -1,5 +1,7 @@
 package com.ccabank.paperless.process.collect_signature.implementation;
 
+import com.ccabank.paperless.dto.email.AttachmentDto;
+import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.dto.reporting.CollectSignatureForm;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
@@ -14,6 +16,7 @@ import com.ccabank.paperless.process.general.service.RequestService;
 import com.ccabank.paperless.repository.ApprobationRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
+import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.util.file.Base64Utils;
@@ -54,6 +57,7 @@ public class CSGenerateDocument implements JavaDelegate {
     private final FileRestClient fileRestClient;
     private String IF_SIGNED_WITH_PAPERLESS = "IfSignedWithPaperless";
     private String SIGNED_WITH_PAPERLESS = "SignedWithPaperless";
+    private final EmailService emailService;
 
     public String extractFileId(String url) {
         if (url == null || url.isEmpty()) {
@@ -164,6 +168,56 @@ public class CSGenerateDocument implements JavaDelegate {
         fileService.saveFile(request, fileDto);
         log.info("File generated");
 
+        EmailAskApprovalDto ask = new EmailAskApprovalDto();
+        String processDefinitionId = delegateExecution.getProcessDefinitionId();
+        String owner = (String) delegateExecution.getVariable("owner");
+        String reference = (String) delegateExecution.getVariable("reference");
+        String signataire = "";
+        type = (String) delegateExecution.getVariable("type");
+        object = (String) delegateExecution.getVariable("object");
+        String collect_type = (String) delegateExecution.getVariable("collect_type");
+        List<String> copies  = (List<String>) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "copies");
+        log.info("Copy people " + copies.toString() , copies);
+
+        List<String> copieEmails = copies.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
+
+        log.info("Copy people Emails " + copieEmails.toString() , copieEmails);
+
+        String copiesString = String.join(",", copieEmails);
+        log.info(copiesString);
+
+        if(collect_type.equals("SEQUENCE")){
+            signataire = (String) delegateExecution.getVariable("signataire");
+        }else{
+            signataire = owner;
+            List<String> signataires = (List<String>) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "signataires");
+            log.info("Signataires " + signataires.toString() , signataires);
+            List<String> signatairesEmails = signataires.stream().map(x -> x + "@cca-bank.com").collect(Collectors.toList());
+            log.info("Signataires Emails " + signatairesEmails.toString() , signatairesEmails);
+            String signatairesString = String.join(",", signataires);
+            copiesString = copiesString + "," + signatairesString;
+            log.info(copiesString);
+        }
+
+        log.info("Copies String " , copiesString);
+
+        ask.setSender(owner);
+        ask.setApprover(signataire);
+        ask.setReference(reference);
+        ask.setCC(copiesString);
+        request = requestRepository.findOneByReference(reference);
+        ask.setType(request.getType().getName());
+        ask.setSubject("[Signé] " + type + "-" + object);
+        ask.setRole("Signataire");
+
+        fileId = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "file");
+        log.info("File ID: " + fileId);
+        AttachmentDto attachment = new AttachmentDto();
+        attachment.setName("collect_signature_" + delegateExecution.getBusinessKey() + ".pdf");
+        attachment.setData(fileDto.getFile());
+        ask.setAttachments(new AttachmentDto[]{attachment});
+        ask.setMessage("Votre document a bien été signé");
+        emailService.sendFiles(ask);
 
     }
 }
