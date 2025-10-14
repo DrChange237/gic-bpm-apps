@@ -156,7 +156,7 @@ public class CSGenerateDocument implements JavaDelegate {
         String type = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "type");
         log.info("Type : " + type);
         String object = (String) camundaService.getProcessVariable(delegateExecution.getProcessInstanceId(), "object");
-        fileDto.setName("[SIGNE] " + type.toUpperCase() + " - " + object.toUpperCase());
+        fileDto.setName(type.toUpperCase() + " - " + object.toUpperCase());
         fileDto.setFile(Base64.getEncoder().encodeToString(resource.getByteArray()));
         fileDto.setMultipartFile(multipartFile);
         fileDto.setType("application/pdf");
