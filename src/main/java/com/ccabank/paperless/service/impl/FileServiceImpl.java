@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -55,9 +56,9 @@ public class FileServiceImpl implements FileService {
         // Commencez avec une spécification "vide" ou "vraie"
         Specification<File> spec = Specification.where(null);
         if(endDate != null && startDate != null){
-            LocalDateTime endDateD = LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDateTime startDateD = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            spec = Specification.where(FileSpecifications.dateBetween(startDateD, endDateD));
+            LocalDate endDateD = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate startDateD = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            spec = Specification.where(FileSpecifications.dateBetween(startDateD.atStartOfDay(), endDateD.atStartOfDay()));
         }
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = spec.and(FileSpecifications.withDynamicQuery(reference, documentType, staff));
@@ -76,9 +77,9 @@ public class FileServiceImpl implements FileService {
         Specification<File> spec = Specification.where(null);
 
         if(endDate != null && startDate != null){
-            LocalDateTime endDateD = LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDateTime startDateD = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            spec = Specification.where(FileSpecifications.dateBetween(startDateD, endDateD));
+            LocalDate endDateD = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate startDateD = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            spec = Specification.where(FileSpecifications.dateBetween(startDateD.atStartOfDay(), endDateD.atStartOfDay()));
         }
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = spec.and(FileSpecifications.withDynamicQuery(reference, documentType, staff));
