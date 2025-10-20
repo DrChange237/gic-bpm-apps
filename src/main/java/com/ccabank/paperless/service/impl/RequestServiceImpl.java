@@ -599,8 +599,10 @@ public class RequestServiceImpl implements RequestService {
                 case "validation":
                     String keyValidation =  key.split("\\|")[1];
                     Map<String, Object> validationMap = getValidationMap(request, keyValidation);
-                    property = key.split("\\|")[2];
-                    value = String.valueOf(validationMap.get(property));
+                    if(validationMap != null){
+                        property = key.split("\\|")[2];
+                        value = String.valueOf(validationMap.get(property));
+                    }
             }
         }
 
