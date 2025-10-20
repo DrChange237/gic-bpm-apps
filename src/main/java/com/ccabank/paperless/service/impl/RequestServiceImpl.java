@@ -538,9 +538,9 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("realStartDate", "Date de Départ");
                 properties.put("reprise_date", "Date de Reprise");
                 properties.put("typeInterim", "Type d'Interim");
-                properties.put("staff|interim|fullname", "Intérimaire");
-                properties.put("staff|interim|function", "Fonction Intérimaire");
-                properties.put("staff|interim|unity", "Unité Intérimaire");
+                properties.put("staff|Apbt_interimaire|fullname", "Intérimaire");
+                properties.put("staff|Apbt_interimaire|function", "Fonction Intérimaire");
+                properties.put("staff|Apbt_interimaire|unity", "Unité Intérimaire");
 
                 workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
                 break;
