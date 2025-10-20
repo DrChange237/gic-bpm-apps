@@ -589,7 +589,8 @@ public class RequestServiceImpl implements RequestService {
             String property = null;
             switch (type){
                 case "staff":
-                    String staff =  key.split("\\|")[1];
+                    String staffVariable =  key.split("\\|")[1];
+                    String staff = (String) camundaService.getHistoricProcessVariable(request.getInstanceId(), staffVariable);
                     EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(staff);
                     Map<String, Object> userMap = getUserMap(employeeInfo.getUsername());
                     property = key.split("\\|")[2];
