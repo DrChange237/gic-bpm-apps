@@ -495,9 +495,14 @@ public class RequestServiceImpl implements RequestService {
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         LinkedHashMap<String, String> properties = new LinkedHashMap<>();
+        HashMap<String, String> elements = new LinkedHashMap<>();
 
         switch (documentType.getStructure()){
             case "mission":
+
+                elements.put("owner", "staff");
+                elements.put("validation", "validation");
+
                 properties.put("reference", "Reference");
                 properties.put("staff|owner|matricule", "Matricule");
                 properties.put("staff|owner|fullname", "Staff Ayant Initié");
@@ -516,7 +521,7 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("nbDays", "Nombre de Nuitées Accordées");
                 properties.put("missionFees", "Montant Total des Frais de Mission");
                 properties.put("transportFees", "Montant des Frais de Transport");
-                workbook = this.generateExport(requests, "Export_Mission_Paperless", properties);
+                workbook = this.generateExport(requests, "Export_Mission_Paperless", properties, elements);
                 break;
             case "vacation":
                 properties.put("reference", "Reference");
@@ -542,7 +547,7 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|Apbt_interimaire|function", "Fonction Intérimaire");
                 properties.put("staff|Apbt_interimaire|unity", "Unité Intérimaire");
 
-                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
+                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties, elements);
                 break;
 
             case "absence":
@@ -563,7 +568,7 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|interim|fullname", "Proposition d'interim");
                 properties.put("staff|owner|unity", "Unité");
 
-                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
+                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties, elements);
                 break;
         }
 
@@ -577,8 +582,8 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    public Map<String, Object> getUserMap(String username){
-        EmployeeInfo employeeInfo =  userRestClient.getStaffByUsername(username);
+    public Map<String, Object> getUserMap(String userName){
+        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(userName);
         Map<String, Object> result = new HashMap<>();
         result.put("matricule", employeeInfo.getMatricule());
         result.put("function", Optional.ofNullable(employeeInfo.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(""));
@@ -602,7 +607,7 @@ public class RequestServiceImpl implements RequestService {
         return result;
     }
 
-    public String getValueInProcess(Request request, String key){
+    public String getValueInProcess(Request request, String key, Map<String, Object> objectMap){
 
         String value = "";
 
@@ -620,7 +625,7 @@ public class RequestServiceImpl implements RequestService {
                     String staffVariable =  key.split("\\|")[1];
                     String staff = (String) camundaService.getHistoricProcessVariable(request.getInstanceId(), staffVariable);
                     if(staff != null){
-                        Map<String, Object> userMap = getUserMap(staff);
+                        Map<String, Object> userMap = (Map<String, Object>) objectMap.get(staffVariable);
                         property = key.split("\\|")[2];
                         value = String.valueOf(userMap.get(property));
                     }
@@ -638,7 +643,7 @@ public class RequestServiceImpl implements RequestService {
         return value;
     }
 
-    public XSSFWorkbook generateExport(List<Request> requests, String sheetName, HashMap<String, String> properties) {
+    public XSSFWorkbook generateExport(List<Request> requests, String sheetName, HashMap<String, String> properties, HashMap<String, String> elements) {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet(sheetName);
@@ -712,12 +717,24 @@ public class RequestServiceImpl implements RequestService {
 
         row = 1;
         for (Request request : requests) {
+
+            Map<String, Object> objectMap = new HashMap<>();
+
+            for (Map.Entry<String, String> entry : elements.entrySet()) {
+                switch (entry.getValue()){
+                    case "staff":
+                        objectMap.put(entry.getKey(), getUserMap(request.getStaff()));
+                        break;
+                }
+            }
+
             col = 0;
             headerRow = sheet.createRow(row);
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 Cell cell = headerRow.createCell(col);
                 cell.setCellStyle(cellStyle2);
-                String value = getValueInProcess(request, entry.getKey());
+
+                String value = getValueInProcess(request, entry.getKey(), objectMap);
                 log.warn("Value "+ value);
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
