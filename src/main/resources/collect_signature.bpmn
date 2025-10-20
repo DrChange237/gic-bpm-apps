@@ -27,7 +27,7 @@
               <camunda:property id="choices" value="[     {&#34;label&#34;:&#34;Séquentiel&#34;,&#34;value&#34;:&#34;SEQUENCE&#34;},     {&#34;label&#34;:&#34;Parallèle&#34;,&#34;value&#34;:&#34;PARALLEL&#34;} ]" />
             </camunda:properties>
           </camunda:formField>
-          <camunda:formField id="file" label="Fichier (PDF)" type="string">
+          <camunda:formField id="file" label="Fichier à Signer (PDF)" type="string">
             <camunda:properties>
               <camunda:property id="fieldType" value="field" />
               <camunda:property id="type" value="file" />
