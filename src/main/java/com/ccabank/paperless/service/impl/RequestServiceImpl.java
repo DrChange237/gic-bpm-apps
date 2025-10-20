@@ -481,7 +481,7 @@ public class RequestServiceImpl implements RequestService {
         if(endDate != null && startDate != null){
             LocalDate start = LocalDate.parse(startDate);
             LocalDate end = LocalDate.parse(endDate);
-            spec = Specification.where(RequestSpecifications.dateBetween(start, end));
+            spec = Specification.where(RequestSpecifications.dateBetween(start.atStartOfDay(), end.atStartOfDay()));
         }
 
         spec = spec.and(RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED));
