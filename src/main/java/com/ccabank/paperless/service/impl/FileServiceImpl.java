@@ -55,6 +55,8 @@ public class FileServiceImpl implements FileService {
     public Page<FileDto> search(String reference, String type, String staff, String startDate, String endDate, int page, int size) {
         // Commencez avec une spécification "vide" ou "vraie"
         Specification<File> spec = Specification.where(null);
+
+
         if(endDate != null && startDate != null){
             LocalDate endDateD = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate startDateD = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
