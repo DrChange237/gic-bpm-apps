@@ -144,7 +144,7 @@ public class CSGenerateDocument implements JavaDelegate {
 
 
 
-        signaturePage = PdfUtils.addWatermark(signaturePage, "SIGNED WITH PAPERLESS");
+        //signaturePage = PdfUtils.addWatermark(signaturePage, "SIGNED WITH PAPERLESS");
 
 
         List<byte[]> documentPages = new ArrayList<>();
