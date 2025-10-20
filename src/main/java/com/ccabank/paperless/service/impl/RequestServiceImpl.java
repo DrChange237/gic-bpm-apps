@@ -524,6 +524,11 @@ public class RequestServiceImpl implements RequestService {
                 workbook = this.generateExport(requests, "Export_Mission_Paperless", properties, elements);
                 break;
             case "vacation":
+
+                elements.put("owner", "staff");
+                elements.put("validation", "validation");
+                elements.put("Apbt_interimaire", "staff");
+
                 properties.put("reference", "Reference");
                 properties.put("staff|owner|matricule", "Matricule");
                 properties.put("staff|owner|fullname", "Staff Ayant Initié");
@@ -551,6 +556,11 @@ public class RequestServiceImpl implements RequestService {
                 break;
 
             case "absence":
+
+                elements.put("owner", "staff");
+                elements.put("validation", "validation");
+                elements.put("interim", "staff");
+
                 properties.put("reference", "Reference");
                 properties.put("staff|owner|matricule", "Matricule");
                 properties.put("staff|owner|fullname", "Staff Ayant Initié");
