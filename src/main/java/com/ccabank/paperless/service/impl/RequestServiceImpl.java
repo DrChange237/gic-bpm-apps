@@ -518,12 +518,28 @@ public class RequestServiceImpl implements RequestService {
                 break;
             case "vacation":
                 properties.put("reference", "Reference");
-                properties.put("owner", "Staff");
-                properties.put("realStartDate", "Date de Début");
-                properties.put("reprise_date", "Date de Fin");
-                properties.put("days", "Nombre de Jours");
+                properties.put("staff|owner|matricule", "Matricule");
+                properties.put("staff|owner|fullname", "Staff Ayant Initié");
+                properties.put("staff|owner|function", "Fonction");
+                properties.put("validation|Validation|date", "Date de Création");
+                properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
+                properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
+                properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
+                properties.put("allocationDue", "Congé Principal");
+                properties.put("allocationDue", "Allocation de congé due");
+                properties.put("majAncienete", "Majoration pour ancienneté");
+                properties.put("majFamille", "Majoration pour charge familiale");
+                properties.put("congeAnterieur", "Congés Antérieur");
+                properties.put("permDeduction", "Permission à déduire du congés");
+                //properties.put("permDeduction", "Nombre de jours total de congés dus");
+                properties.put("days", "Nombre de Jours total accordées");
+                properties.put("realStartDate", "Date de Départ");
+                properties.put("reprise_date", "Date de Reprise");
                 properties.put("typeInterim", "Type d'Interim");
-                properties.put("lastVacationDate ", "Date de dernier congés");
+                properties.put("staff|interim|fullname", "Intérimaire");
+                properties.put("staff|interim|function", "Fonction Intérimaire");
+                properties.put("staff|interim|unity", "Unité Intérimaire");
+
                 workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
                 break;
             case "absence":
