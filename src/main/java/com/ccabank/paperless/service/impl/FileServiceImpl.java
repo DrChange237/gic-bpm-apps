@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -56,8 +55,8 @@ public class FileServiceImpl implements FileService {
         // Commencez avec une spécification "vide" ou "vraie"
         Specification<File> spec = Specification.where(null);
         if(endDate != null && startDate != null){
-            LocalDate endDateD = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDate startDateD = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDateTime endDateD = LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDateTime startDateD = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             spec = Specification.where(FileSpecifications.dateBetween(startDateD, endDateD));
         }
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
@@ -72,14 +71,17 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate) {
+    public byte[] export(String reference, String type, String staff, String startDate, String endDate) {
 
         Specification<File> spec = Specification.where(null);
+
         if(endDate != null && startDate != null){
-            spec = Specification.where(FileSpecifications.dateBetween(startDate, endDate));
+            LocalDateTime endDateD = LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDateTime startDateD = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            spec = Specification.where(FileSpecifications.dateBetween(startDateD, endDateD));
         }
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
-        spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
+        spec = spec.and(FileSpecifications.withDynamicQuery(reference, documentType, staff));
         Pageable pageable = PageRequest.of(0, fileRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "addDate"));
         List<File> files = fileRepository.findAll(spec);
         List<FileDto> fileDtos = fileMapper.toDto(files);

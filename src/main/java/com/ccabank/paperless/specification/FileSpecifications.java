@@ -6,12 +6,13 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileSpecifications {
 
-    public static Specification<File> dateBetween(LocalDate debut, LocalDate fin) {
+    public static Specification<File> dateBetween(LocalDateTime debut, LocalDateTime fin) {
         return (root, query, cb) -> cb.between(root.get("creationDate"), debut, fin);
     }
 
