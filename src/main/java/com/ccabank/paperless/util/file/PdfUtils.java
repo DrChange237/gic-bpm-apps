@@ -11,6 +11,33 @@ import java.util.Map;
 
 public class PdfUtils {
 
+    public static Rectangle printPdfDimensions(byte[] pdfBytes) {
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(pdfBytes);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            PdfReader reader = new PdfReader(bais);
+
+            int totalPages = reader.getNumberOfPages();
+            System.out.println("Nombre de pages : " + totalPages);
+
+            for (int i = 1; i <= totalPages; i++) {
+                Rectangle pageSize = reader.getPageSizeWithRotation(i);
+                float width = pageSize.getWidth();
+                float height = pageSize.getHeight();
+                System.out.printf("Page %d : largeur = %.2f pts, hauteur = %.2f pts%n", i, width, height);
+
+                return pageSize;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la recuperation des dimensions de page PDF", e);
+        }
+
+        return null;
+
+    }
+
 
     public static boolean isBase64Pdf(String base64) {
         try {

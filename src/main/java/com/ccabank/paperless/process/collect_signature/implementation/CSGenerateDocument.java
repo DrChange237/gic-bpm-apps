@@ -26,14 +26,17 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.itextpdf.text.Rectangle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.css.Rect;
 
 import javax.swing.text.DateFormatter;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -112,6 +115,7 @@ public class CSGenerateDocument implements JavaDelegate {
         log.info("File ID: " + fileId);
         String base64Page = fileRestClient.getB64FileById(this.extractFileId(fileId));
         byte[] documentPage = Base64Utils.decodeBase64ToBytes(base64Page);
+        Rectangle dimensions = PdfUtils.printPdfDimensions(documentPage);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -136,9 +140,10 @@ public class CSGenerateDocument implements JavaDelegate {
 
         ByteArrayResource resource = reportingRestClient.signature(form);
         log.info("Signature generated");
-
-
         byte[] signaturePage = resource.getByteArray();
+
+
+
         signaturePage = PdfUtils.addWatermark(signaturePage, "SIGNED WITH PAPERLESS");
 
 
