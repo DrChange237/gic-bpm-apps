@@ -3,7 +3,9 @@ package com.ccabank.paperless.service.impl;
 import com.ccabank.paperless.constant.AppError;
 import com.ccabank.paperless.domain.AppServiceResult;
 import com.ccabank.paperless.dto.memo.*;
+import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
+import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.entity.*;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.NotFoundException;
@@ -578,7 +580,7 @@ public class RequestServiceImpl implements RequestService {
         EmployeeInfo employeeInfo =  userRestClient.getStaffByUsername(username);
         Map<String, Object> result = new HashMap<>();
         result.put("matricule", employeeInfo.getMatricule());
-        result.put("function", employeeInfo.getFunction().getFunction().getName());
+        result.put("function", Optional.ofNullable(employeeInfo.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(""));
         result.put("unity", employeeInfo.getDepartment().getName());
         result.put("fullname", employeeInfo.getFirstName() + " " + employeeInfo.getLastName());
         return result;
