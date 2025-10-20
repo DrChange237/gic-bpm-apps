@@ -528,16 +528,22 @@ public class RequestServiceImpl implements RequestService {
                 break;
             case "absence":
                 properties.put("reference", "Reference");
-                properties.put("owner", "Staff");
-                properties.put("startDate", "Date de Début");
-                properties.put("endDate", "Date de Fin");
-                properties.put("reason", "Motif");
+                properties.put("staff|owner|matricule", "Matricule");
+                properties.put("staff|owner|fullname", "Staff Ayant Initié");
+                properties.put("staff|owner|function", "Fonction");
+                properties.put("validation|Validation|date", "Date de Création");
+                properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
+                properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
+                properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
+                properties.put("reason", "Motif de l'absence");
                 properties.put("otherReason", "Autre Motif");
+                properties.put("startDate", "Date de Départ");
+                properties.put("endDate", "Date de reprise de service");
+                properties.put("days", "Nombre de Jours Souhaitée");
                 properties.put("deduction", "Base de Déduction");
-                properties.put("absence", "Cumul annuel des absences");
-                properties.put("stock ", "Stock des congés année N");
-                properties.put("advice", "Avis d'octroi");
-                properties.put("rights ", "Droit restant dû");
+                properties.put("staff|interim|fullname", "Proposition d'interim");
+                properties.put("staff|owner|unity", "Unité");
+
                 workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
                 break;
         }
