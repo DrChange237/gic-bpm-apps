@@ -61,7 +61,7 @@ public class FileServiceImpl implements FileService {
             spec = Specification.where(FileSpecifications.dateBetween(startDateD, endDateD));
         }
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
-        spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
+        spec = spec.and(FileSpecifications.withDynamicQuery(reference, documentType, staff));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "addDate"));
         Page<File> files = fileRepository.findAll(pageable);
         if(spec != null){

@@ -484,7 +484,7 @@ public class RequestServiceImpl implements RequestService {
             spec = Specification.where(RequestSpecifications.dateBetween(start, end));
         }
 
-        spec = RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED);
+        spec = spec.and(RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED));
         List<Request> requests = requestRepository.findAll(spec);
 
         if(requests.isEmpty()){
