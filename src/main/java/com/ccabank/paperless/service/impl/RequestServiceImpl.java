@@ -564,6 +564,9 @@ public class RequestServiceImpl implements RequestService {
 
     public Map<String, Object> getValidationMap(Request request, String id){
         HistoricTaskInstance task = camundaService.getLastHistoricTaskByDefinitionKey(request.getInstanceId(), id);
+        if(task == null){
+            return null;
+        }
         Approbation approbation = approbationRepository.findByTaskIdAndStatus(task.getId(),ApprovalStatus.ACCEPTED);
         if(approbation == null){
             return null;
