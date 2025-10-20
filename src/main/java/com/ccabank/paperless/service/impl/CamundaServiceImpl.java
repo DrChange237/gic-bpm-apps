@@ -656,6 +656,16 @@ public class CamundaServiceImpl implements CamundaService {
     }
 
     @Override
+    public HistoricTaskInstance getLastHistoricTaskByDefinitionKey(String processInstanceId, String taskDefinitionKey) {
+        return historyService.createHistoricTaskInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .taskDefinitionKey(taskDefinitionKey)
+                .orderByHistoricTaskInstanceEndTime().desc()
+                .listPage(0, 1)
+                .stream().findFirst().orElse(null);
+    }
+
+    @Override
     public void assignTask(String processInstanceId, String taskId, String assignee) {
 
         // Vérifier que l'utilisateur et le groupe existent

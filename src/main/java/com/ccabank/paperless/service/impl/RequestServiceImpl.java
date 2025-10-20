@@ -8,6 +8,7 @@ import com.ccabank.paperless.entity.*;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.NotFoundException;
 import com.ccabank.paperless.mappers.RequestMapper;
+import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.repository.*;
 import com.ccabank.paperless.service.faces.*;
 import com.ccabank.paperless.specification.FileSpecifications;
@@ -66,6 +67,10 @@ public class RequestServiceImpl implements RequestService {
     private final MapService mapService;
 
     private final EmailService emailService;
+
+    private final UserRestClient userRestClient;
+
+    private final ApprobationRepository approbationRepository;
 
 
     @Override
@@ -492,14 +497,23 @@ public class RequestServiceImpl implements RequestService {
         switch (documentType.getStructure()){
             case "mission":
                 properties.put("reference", "Reference");
-                properties.put("owner", "Staff");
-                properties.put("object", "Objet");
-                properties.put("location", "Lieu");
-                properties.put("startDate", "Date de Début");
-                properties.put("endDate", "Date de Fin");
-                properties.put("nbDays", "Nombre de Nuitées");
-                properties.put("missionFees", "Frais de Mission");
-                properties.put("transportFees", "Frais de Transport");
+                properties.put("staff|owner|matricule", "Matricule");
+                properties.put("staff|owner|fullname", "Staff Ayant Initié");
+                properties.put("staff|owner|function", "Fonction");
+                properties.put("validation|Validation|date", "Date de Création");
+                properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
+                properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
+                properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
+                properties.put("supportCharge", "Agence Support");
+                properties.put("location", "Lieu de la Mission");
+                properties.put("object", "Objet de la Mission");
+                properties.put("transport", "Moyen de Transport");
+                properties.put("immatriculation", "Immatriculation");
+                properties.put("startDate", "Date de Départ");
+                properties.put("endDate", "Date de Retour");
+                properties.put("nbDays", "Nombre de Nuitées Accordées");
+                properties.put("missionFees", "Montant Total des Frais de Mission");
+                properties.put("transportFees", "Montant des Frais de Transport");
                 workbook = this.generateExport(requests, "Export_Mission_Paperless", properties);
                 break;
             case "vacation":
@@ -536,6 +550,60 @@ public class RequestServiceImpl implements RequestService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Map<String, Object> getUserMap(String username){
+        EmployeeInfo employeeInfo =  userRestClient.getStaffByUsername(username);
+        Map<String, Object> result = new HashMap<>();
+        result.put("matricule", employeeInfo.getMatricule());
+        result.put("function", employeeInfo.getFunction().getFunction().getName());
+        result.put("unity", employeeInfo.getDepartment().getName());
+        result.put("fullname", employeeInfo.getFirstName() + " " + employeeInfo.getLastName());
+        return result;
+    }
+
+    public Map<String, Object> getValidationMap(Request request, String id){
+        HistoricTaskInstance task = camundaService.getLastHistoricTaskByDefinitionKey(request.getInstanceId(), id);
+        Approbation approbation = approbationRepository.findByTaskIdAndStatus(task.getId(),ApprovalStatus.ACCEPTED);
+        if(approbation == null){
+            return null;
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("date", approbation.getCreationDate());
+        result.put("comments", approbation.getComments());
+        return result;
+    }
+
+    public String getValueInProcess(Request request, String key){
+
+        String value = "";
+
+        if(!key.contains("|")){
+            if(camundaService.isProcessInstanceActive(request.getInstanceId())){
+                value  = String.valueOf(camundaService.getProcessVariable(request.getInstanceId(), key));
+            }else {
+                value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), key));
+            }
+        }else{
+            String type = key.split("\\|")[0];
+            String property = null;
+            switch (type){
+                case "staff":
+                    String staff =  key.split("\\|")[1];
+                    EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(staff);
+                    Map<String, Object> userMap = getUserMap(employeeInfo.getUsername());
+                    property = key.split("\\|")[2];
+                    value = String.valueOf(userMap.get(property));
+                    break;
+                case "validation":
+                    String keyValidation =  key.split("\\|")[1];
+                    Map<String, Object> validationMap = getValidationMap(request, keyValidation);
+                    property = key.split("\\|")[2];
+                    value = String.valueOf(validationMap.get(property));
+            }
+        }
+
+        return value;
     }
 
     public XSSFWorkbook generateExport(List<Request> requests, String sheetName, HashMap<String, String> properties) {
@@ -617,12 +685,7 @@ public class RequestServiceImpl implements RequestService {
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 Cell cell = headerRow.createCell(col);
                 cell.setCellStyle(cellStyle2);
-                String value = "";
-                if(camundaService.isProcessInstanceActive(request.getInstanceId())){
-                    value  = String.valueOf(camundaService.getProcessVariable(request.getInstanceId(), entry.getKey()));
-                }else {
-                    value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), entry.getKey()));
-                }
+                String value = getValueInProcess(request, entry.getKey());
                 log.warn("Value "+ value);
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
@@ -648,7 +711,6 @@ public class RequestServiceImpl implements RequestService {
             }
             row++;
         }
-
         return  workbook;
     }
 

@@ -111,6 +111,8 @@ public interface CamundaService {
 
     Task getTaskByProcessInstanceIdAndTaskKey(String processInstanceId, String taskDefinitionKey);
 
+    HistoricTaskInstance getLastHistoricTaskByDefinitionKey(String processInstanceId, String taskDefinitionKey);
+
     void assignTask(String processInstanceId, String taskId, String assignee);
 
     StartFormData getStartForm(String processDefinitionKey);
