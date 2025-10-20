@@ -618,10 +618,12 @@ public class RequestServiceImpl implements RequestService {
                 case "staff":
                     String staffVariable =  key.split("\\|")[1];
                     String staff = (String) camundaService.getHistoricProcessVariable(request.getInstanceId(), staffVariable);
-                    EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(staff);
-                    Map<String, Object> userMap = getUserMap(employeeInfo.getUsername());
-                    property = key.split("\\|")[2];
-                    value = String.valueOf(userMap.get(property));
+                    if(staff != null){
+                        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(staff);
+                        Map<String, Object> userMap = getUserMap(employeeInfo.getUsername());
+                        property = key.split("\\|")[2];
+                        value = String.valueOf(userMap.get(property));
+                    }
                     break;
                 case "validation":
                     String keyValidation =  key.split("\\|")[1];
