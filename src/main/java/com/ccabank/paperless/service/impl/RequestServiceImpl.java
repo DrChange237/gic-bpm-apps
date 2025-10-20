@@ -544,6 +544,7 @@ public class RequestServiceImpl implements RequestService {
 
                 workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties);
                 break;
+
             case "absence":
                 properties.put("reference", "Reference");
                 properties.put("staff|owner|matricule", "Matricule");
@@ -619,8 +620,7 @@ public class RequestServiceImpl implements RequestService {
                     String staffVariable =  key.split("\\|")[1];
                     String staff = (String) camundaService.getHistoricProcessVariable(request.getInstanceId(), staffVariable);
                     if(staff != null){
-                        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(staff);
-                        Map<String, Object> userMap = getUserMap(employeeInfo.getUsername());
+                        Map<String, Object> userMap = getUserMap(staff);
                         property = key.split("\\|")[2];
                         value = String.valueOf(userMap.get(property));
                     }
