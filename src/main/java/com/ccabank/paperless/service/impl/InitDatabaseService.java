@@ -27,7 +27,7 @@ public class InitDatabaseService implements CommandLineRunner {
                 new DocumentType("Fiche de reprise de service","resumption"),
                 new DocumentType("Demande d'autorisation d'absence","absence"),
                 new DocumentType("Memo","memo"),
-                new DocumentType("Collecte de Signature","collect_signature"),
+                new DocumentType("Signature de Document","collect_signature"),
                 new DocumentType("Demande de Travail","workform"),
                 new DocumentType("Demande d'Achat","purchase")
 
