@@ -38,10 +38,12 @@ public class FileController {
             @RequestParam(value = "reference", required = false) String reference,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "staff", required = false) String staff,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size)
            {
-        return ResponseEntity.ok(fileService.search(reference, type, staff, page, size));
+        return ResponseEntity.ok(fileService.search(reference, type, staff, startDate, endDate, page, size));
 
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface FileService {
 
-    Page<FileDto> search(String reference, String type, String staff, int page, int size);
+    Page<FileDto> search(String reference, String type, String staff, String startDate, String endDate, int page, int size);
 
     byte[] export(String reference, String type, String staff, LocalDate startDate, LocalDate endDate);
 

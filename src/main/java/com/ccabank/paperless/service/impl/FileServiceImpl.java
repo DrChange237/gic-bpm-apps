@@ -52,9 +52,14 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public Page<FileDto> search(String reference, String type, String staff, int page, int size) {
+    public Page<FileDto> search(String reference, String type, String staff, String startDate, String endDate, int page, int size) {
         // Commencez avec une spécification "vide" ou "vraie"
         Specification<File> spec = Specification.where(null);
+        if(endDate != null && startDate != null){
+            LocalDate endDateD = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate startDateD = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            spec = Specification.where(FileSpecifications.dateBetween(startDateD, endDateD));
+        }
         DocumentType documentType = documentTypeRepository.findOneByStructure(type);
         spec = FileSpecifications.withDynamicQuery(reference, documentType, staff);
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "addDate"));
