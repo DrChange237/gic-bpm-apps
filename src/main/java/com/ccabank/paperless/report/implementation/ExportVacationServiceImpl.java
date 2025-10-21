@@ -96,8 +96,8 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         LocalDate now = LocalDate.now();
         String month =  now.getMonth().getDisplayName(TextStyle.FULL, localeFr);
         dto.setName("Rapport Demande de Congés "+ month + " " + now.getYear() + "");
-        //MultipartFile file = utils.convertWorkbookToMultipartFile(workbook, "report");
-        //dto.setMultipartFile(file);
+        MultipartFile file = utils.convertWorkbookToMultipartFile(workbook, "report");
+        dto.setMultipartFile(file);
         fileService.saveFile(null, dto);
     }
 

@@ -21,7 +21,7 @@ public class ScheduledRH {
 
     private final ExportVacationService exportVacationService;
 
-    @Scheduled(cron = "0 */2 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void exportVacation() throws IOException {
         log.info("Exporting vacation...");
         exportVacationService.exportVacation();
