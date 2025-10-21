@@ -41,7 +41,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 
@@ -479,25 +478,20 @@ public class RequestServiceImpl implements RequestService {
 
         }
 
-        Specification<File> spec = Specification.where(null);
+        Specification<Request> spec = Specification.where(null);
 
         if(endDate != null && startDate != null){
             LocalDate start = LocalDate.parse(startDate);
             LocalDate end = LocalDate.parse(endDate);
-            spec = Specification.where(FileSpecifications.dateBetween(start.atStartOfDay(), end.atStartOfDay()));
+            spec = Specification.where(RequestSpecifications.dateBetween(start.atStartOfDay(), end.atStartOfDay()));
         }
 
-        spec = spec.and(FileSpecifications.withDynamicQuery(reference, documentType, staff));
-        List<File> files = fileRepository.findAll(spec);
+        spec = spec.and(RequestSpecifications.withDynamicQuery(reference, documentType, staff, RequestStatus.ACCEPTED));
+        List<Request> requests = requestRepository.findAll(spec);
 
-        if(files.isEmpty()){
+        if(requests.isEmpty()){
             throw new NotFoundException("Aucun enregistrement trouvé");
         }
-
-        List<Request> requests = files.stream()
-                .map(File::getRequest)
-                .distinct()
-                .collect(Collectors.toList());
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = new XSSFWorkbook();
