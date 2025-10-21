@@ -11,31 +11,31 @@ import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.NotFoundException;
 import com.ccabank.paperless.mappers.RequestMapper;
 import com.ccabank.paperless.openfeign.UserRestClient;
+import com.ccabank.paperless.report.util.ExcelExtractUtils;
 import com.ccabank.paperless.repository.*;
 import com.ccabank.paperless.service.faces.*;
 import com.ccabank.paperless.specification.FileSpecifications;
 import com.ccabank.paperless.specification.RequestSpecifications;
+import com.ccabank.paperless.util.DateUtil;
 import com.ccabank.paperless.util.camunda.Mapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.engine.form.StartFormData;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -75,6 +75,8 @@ public class RequestServiceImpl implements RequestService {
     private final ApprobationRepository approbationRepository;
 
     private final FileRepository fileRepository;
+
+    private final ExcelExtractUtils utils;
 
 
     @Override
@@ -459,7 +461,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public byte[] export(String reference, String type, String staff, String startDate, String endDate) {
+    public byte[] export(String reference, String type, String staff, String startDate, String endDate) throws ParseException {
 
 
         DocumentType documentType = null;
@@ -478,7 +480,7 @@ public class RequestServiceImpl implements RequestService {
 
         }
 
-        Specification<Request> spec = Specification.where(null);
+        /*Specification<Request> spec = Specification.where(null);
 
         if(endDate != null && startDate != null){
             LocalDate start = LocalDate.parse(startDate);
@@ -491,16 +493,24 @@ public class RequestServiceImpl implements RequestService {
 
         if(requests.isEmpty()){
             throw new NotFoundException("Aucun enregistrement trouvé");
-        }
+        }*/
+
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = new XSSFWorkbook();
-
         LinkedHashMap<String, String> properties = new LinkedHashMap<>();
         HashMap<String, String> elements = new LinkedHashMap<>();
+        String dateProperty = "";
+        List<Request> requests = new ArrayList<>();
+
+        Date startDateD = null;
+        Date endDateD = null;
+        List<HistoricProcessInstance> instances = new ArrayList<>();
 
         switch (documentType.getStructure()){
             case "mission":
+
+                dateProperty = "startDate";
 
                 elements.put("owner", "staff");
                 elements.put("validation", "validation");
@@ -509,7 +519,7 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|owner|matricule", "Matricule");
                 properties.put("staff|owner|fullname", "Staff Ayant Initié");
                 properties.put("staff|owner|function", "Fonction");
-                properties.put("validation|Validation|date", "Date de Création");
+                properties.put("request|createdAt", "Date de Création");
                 properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
                 properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
                 properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
@@ -523,19 +533,38 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("nbDays", "Nombre de Nuitées Accordées");
                 properties.put("missionFees", "Montant Total des Frais de Mission");
                 properties.put("transportFees", "Montant des Frais de Transport");
-                workbook = this.generateExport(requests, "Export_Mission_Paperless", properties, elements);
+
+
+                startDateD = DateUtil.convertToDate(startDate);
+                endDateD = DateUtil.convertToDate(endDate);
+                instances = camundaService.findCompletedInstancesByDateRange(startDateD, endDateD, documentType.getStructure(), dateProperty);
+
+                for (HistoricProcessInstance instance : instances) {
+                    Request request = requestRepository.findByInstanceIdAndStatus(instance.getId(), RequestStatus.ACCEPTED);
+                    if (request != null) {
+                        requests.add(request);
+                    }
+                }
+
+                if(requests.isEmpty()){
+                    log.warn("No requests found");
+                    break;
+                }
+
+                workbook = utils.generateExport(requests, "Export_Mission_Paperless", properties, elements);
                 break;
             case "vacation":
+
+                dateProperty = "realStartDate";
 
                 elements.put("owner", "staff");
                 elements.put("validation", "validation");
                 elements.put("Apbt_interimaire", "staff");
-
                 properties.put("reference", "Reference");
                 properties.put("staff|owner|matricule", "Matricule");
                 properties.put("staff|owner|fullname", "Staff Ayant Initié");
                 properties.put("staff|owner|function", "Fonction");
-                properties.put("validation|Validation|date", "Date de Création");
+                properties.put("request|createdAt", "Date de Création");
                 properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
                 properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
                 properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
@@ -554,10 +583,29 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|Apbt_interimaire|function", "Fonction Intérimaire");
                 properties.put("staff|Apbt_interimaire|unity", "Unité Intérimaire");
 
-                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties, elements);
+                startDateD = DateUtil.convertToDate(startDate);
+                endDateD = DateUtil.convertToDate(endDate);
+                instances = camundaService.findCompletedInstancesByDateRange(startDateD, endDateD, documentType.getStructure(), dateProperty);
+
+                for (HistoricProcessInstance instance : instances) {
+                    Request request = requestRepository.findByInstanceIdAndStatus(instance.getId(), RequestStatus.ACCEPTED);
+                    if (request != null) {
+                        requests.add(request);
+                    }
+                }
+
+                if(requests.isEmpty()){
+                    log.warn("No requests found");
+                    break;
+                }
+
+                workbook = utils.generateExport(requests, "Export_Vacation_Paperless", properties, elements);
                 break;
 
             case "absence":
+
+                dateProperty = "startDate";
+
 
                 elements.put("owner", "staff");
                 elements.put("validation", "validation");
@@ -567,7 +615,7 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|owner|matricule", "Matricule");
                 properties.put("staff|owner|fullname", "Staff Ayant Initié");
                 properties.put("staff|owner|function", "Fonction");
-                properties.put("validation|Validation|date", "Date de Création");
+                properties.put("request|createdAt", "Date de Création");
                 properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
                 properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
                 properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
@@ -580,7 +628,23 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|interim|fullname", "Proposition d'interim");
                 properties.put("staff|owner|unity", "Unité");
 
-                workbook = this.generateExport(requests, "Export_Vacation_Paperless", properties, elements);
+                startDateD = DateUtil.convertToDate(startDate);
+                endDateD = DateUtil.convertToDate(endDate);
+                instances = camundaService.findCompletedInstancesByDateRange(startDateD, endDateD, documentType.getStructure(), dateProperty);
+
+                for (HistoricProcessInstance instance : instances) {
+                    Request request = requestRepository.findByInstanceIdAndStatus(instance.getId(), RequestStatus.ACCEPTED);
+                    if (request != null) {
+                        requests.add(request);
+                    }
+                }
+
+                if(requests.isEmpty()){
+                    log.warn("No requests found");
+                    break;
+                }
+
+                workbook = utils.generateExport(requests, "Export_Vacation_Paperless", properties, elements);
                 break;
         }
 
@@ -594,185 +658,5 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    public Map<String, Object> getUserMap(String userName){
-        EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(userName);
-        Map<String, Object> result = new HashMap<>();
-        result.put("matricule", employeeInfo.getMatricule());
-        result.put("function", Optional.ofNullable(employeeInfo.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(""));
-        result.put("unity", employeeInfo.getDepartment().getName());
-        result.put("fullname", employeeInfo.getFirstName() + " " + employeeInfo.getLastName());
-        return result;
-    }
-
-    public Map<String, Object> getValidationMap(Request request, String id){
-        HistoricTaskInstance task = camundaService.getLastHistoricTaskByDefinitionKey(request.getInstanceId(), id);
-        if(task == null){
-            return null;
-        }
-        Approbation approbation = approbationRepository.findByTaskIdAndStatus(task.getId(),ApprovalStatus.ACCEPTED);
-        if(approbation == null){
-            return null;
-        }
-        Map<String, Object> result = new HashMap<>();
-        result.put("date", approbation.getCreationDate());
-        result.put("comments", approbation.getComments());
-        return result;
-    }
-
-    public String getValueInProcess(Request request, String key, Map<String, Object> objectMap){
-
-        String value = "";
-
-        if(!key.contains("|")){
-            if(camundaService.isProcessInstanceActive(request.getInstanceId())){
-                value  = String.valueOf(camundaService.getProcessVariable(request.getInstanceId(), key));
-            }else {
-                value = String.valueOf(camundaService.getHistoricProcessVariable(request.getInstanceId(), key));
-            }
-        }else{
-            String type = key.split("\\|")[0];
-            String property = null;
-            switch (type){
-                case "staff":
-                    String staffVariable =  key.split("\\|")[1];
-                    String staff = (String) camundaService.getHistoricProcessVariable(request.getInstanceId(), staffVariable);
-                    if(staff != null){
-                        Map<String, Object> userMap = (Map<String, Object>) objectMap.get(staffVariable);
-                        property = key.split("\\|")[2];
-                        value = String.valueOf(userMap.get(property));
-                    }
-                    break;
-                case "validation":
-                    String keyValidation =  key.split("\\|")[1];
-                    Map<String, Object> validationMap = getValidationMap(request, keyValidation);
-                    if(validationMap != null){
-                        property = key.split("\\|")[2];
-                        value = String.valueOf(validationMap.get(property));
-                    }
-            }
-        }
-
-        return value;
-    }
-
-    public XSSFWorkbook generateExport(List<Request> requests, String sheetName, HashMap<String, String> properties, HashMap<String, String> elements) {
-
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet(sheetName);
-
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
-        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        Font font =  workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 10);
-        font.setBold(false);
-        font.setColor(IndexedColors.WHITE.getIndex());
-        cellStyle.setFont(font);
-
-        cellStyle.setBorderTop(BorderStyle.MEDIUM);
-        cellStyle.setBorderRight(BorderStyle.MEDIUM);
-        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
-        cellStyle.setBorderLeft(BorderStyle.MEDIUM);
-        cellStyle.setAlignment(HorizontalAlignment.LEFT);
-        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-
-        CellStyle cellStyle2 = workbook.createCellStyle();
-        cellStyle2.setFillForegroundColor(IndexedColors.WHITE.getIndex());
-        cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-        font =  workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 9);
-        font.setItalic(true);
-        font.setColor(IndexedColors.BLACK.getIndex());
-        cellStyle2.setFont(font);
-
-        cellStyle2.setBorderTop(BorderStyle.MEDIUM);
-        cellStyle2.setBorderRight(BorderStyle.MEDIUM);
-        cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
-        cellStyle2.setBorderLeft(BorderStyle.MEDIUM);
-        cellStyle2.setAlignment(HorizontalAlignment.LEFT);
-        cellStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
-
-        CellStyle cellStyle3 = workbook.createCellStyle();
-        cellStyle3.setFillForegroundColor(IndexedColors.WHITE.getIndex());
-        cellStyle3.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-        font =  workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 9);
-        cellStyle3.setFont(font);
-
-        cellStyle3.setBorderTop(BorderStyle.MEDIUM);
-        cellStyle3.setBorderRight(BorderStyle.MEDIUM);
-        cellStyle3.setBorderBottom(BorderStyle.MEDIUM);
-        cellStyle3.setBorderLeft(BorderStyle.MEDIUM);
-        cellStyle3.setAlignment(HorizontalAlignment.LEFT);
-        cellStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
-
-        Row headerRow = null;
-
-        int row = 0;
-        int col = 0;
-        headerRow = sheet.createRow(row);
-
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-            System.out.println("Clé : " + entry.getKey() + ", Valeur : " + entry.getValue());
-            // Écrire l'en-tête
-            Cell cell = headerRow.createCell(col);
-            cell.setCellStyle(cellStyle);
-            cell.setCellValue(entry.getValue());
-            sheet.setColumnWidth(col, 75 * 100);
-            col++;
-        }
-
-        row = 1;
-        for (Request request : requests) {
-
-            Map<String, Object> objectMap = new HashMap<>();
-
-            for (Map.Entry<String, String> entry : elements.entrySet()) {
-                switch (entry.getValue()){
-                    case "staff":
-                        objectMap.put(entry.getKey(), getUserMap(request.getStaff()));
-                        break;
-                }
-            }
-
-            col = 0;
-            headerRow = sheet.createRow(row);
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
-                Cell cell = headerRow.createCell(col);
-                cell.setCellStyle(cellStyle2);
-
-                String value = getValueInProcess(request, entry.getKey(), objectMap);
-                log.warn("Value "+ value);
-                cell.setCellValue(value);
-                if(entry.getValue().contains("Date")){
-                    if(value != null){
-                        if(!value.equals("null")){
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-                            try{
-                                ZonedDateTime zonedDateTime = ZonedDateTime.parse(value, formatter);
-                                LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
-                                CellStyle dateCellStyle = cellStyle2;
-                                CreationHelper createHelper = workbook.getCreationHelper();
-                                short dateFormat = createHelper.createDataFormat().getFormat("dd/MM/yyyy");
-                                dateCellStyle.setDataFormat(dateFormat);
-                                cell.setCellStyle(dateCellStyle);
-                                cell.setCellValue(localDateTime);
-                            }catch (Exception e){
-                                log.error("Erreur : "+e.getMessage());
-                            }
-                        }
-                    }
-                }
-                col++;
-            }
-            row++;
-        }
-        return  workbook;
-    }
 
 }

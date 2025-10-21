@@ -81,7 +81,6 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         elements.put("owner", "staff");
         elements.put("validation", "validation");
         elements.put("Apbt_interimaire", "staff");
-
         properties.put("reference", "Reference");
         properties.put("staff|owner|matricule", "Matricule");
         properties.put("staff|owner|fullname", "Staff Ayant Initié");
