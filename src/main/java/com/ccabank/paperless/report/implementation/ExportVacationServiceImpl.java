@@ -109,9 +109,9 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         request.setReference("DCH" + "/" + date);
         request.setStatus(RequestStatus.ACCEPTED);
         request.setCreatedAt(LocalDateTime.now());
+        request.setInstanceId(UUID.randomUUID().toString());
         request = requestRepository.save(request);
 
-        request.setInstanceId(UUID.randomUUID().toString());
         fileService.saveFile(request, dto);
     }
 
