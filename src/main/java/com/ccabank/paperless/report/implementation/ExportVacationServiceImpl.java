@@ -46,6 +46,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         LocalDate startDate = LocalDate.now().withDayOfMonth(1);
         DocumentType type = documentTypeRepository.findOneByStructure(DOCUMENT_TYPE);
 
+
         Specification<Request> spec = Specification.where(null);
         spec = Specification.where(RequestSpecifications.dateBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
 
@@ -98,7 +99,13 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         dto.setName("Rapport Demande de Congés "+ month + " " + now.getYear() + "");
         MultipartFile file = utils.convertWorkbookToMultipartFile(workbook, "report");
         dto.setMultipartFile(file);
-        fileService.saveFile(null, dto);
+        Request request = new Request();
+        request.setType(type);
+        request.setStaff("");
+        request.setReference("");
+        request.setStatus(RequestStatus.ACCEPTED);
+        request = requestRepository.save(request);
+        fileService.saveFile(request, dto);
     }
 
 
