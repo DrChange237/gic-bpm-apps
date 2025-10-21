@@ -15,10 +15,10 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
-
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +32,70 @@ public class ExcelExtractUtils {
     private final CamundaService camundaService;
     private final UserRestClient userRestClient;
     private final ApprobationRepository approbationRepository;
+
+
+    public MultipartFile convertWorkbookToMultipartFile(XSSFWorkbook workbook, String fileName) {
+
+        return new MultipartFile() {
+            private final byte[] content;
+            private final String finalName = fileName.endsWith(".xlsx") ? fileName : fileName + ".xlsx";
+            private final String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            {
+                try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                    workbook.write(out);
+                    workbook.close();
+                    content = out.toByteArray();
+                } catch (IOException e) {
+                    throw new RuntimeException("Erreur lors de la conversion du workbook en MultipartFile", e);
+                }
+            }
+
+            @Override
+            public String getName() {
+                return finalName;
+            }
+
+            @Override
+            public String getOriginalFilename() {
+                return finalName;
+            }
+
+            @Override
+            public String getContentType() {
+                return contentType;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return content.length == 0;
+            }
+
+            @Override
+            public long getSize() {
+                return content.length;
+            }
+
+            @Override
+            public byte[] getBytes() {
+                return content;
+            }
+
+            @Override
+            public InputStream getInputStream() {
+                return new ByteArrayInputStream(content);
+            }
+
+            @Override
+            public void transferTo(File dest) throws IOException {
+                try (FileOutputStream fos = new FileOutputStream(dest)) {
+                    fos.write(content);
+                }
+            }
+        };
+    }
+
+
 
     public String convertWorkbookToBase64(XSSFWorkbook workbook) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {

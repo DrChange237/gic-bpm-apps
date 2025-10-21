@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,7 +57,6 @@ public class ExportVacationServiceImpl implements ExportVacationService {
             return;
         }
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         LinkedHashMap<String, String> properties = new LinkedHashMap<>();
@@ -96,7 +96,8 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         LocalDate now = LocalDate.now();
         String month =  now.getMonth().getDisplayName(TextStyle.FULL, localeFr);
         dto.setName("Rapport Demande de Congés "+ month + " " + now.getYear() + "");
-        dto.setFile(utils.convertWorkbookToBase64(workbook));
+        MultipartFile file = utils.convertWorkbookToMultipartFile(workbook, "report");
+        dto.setMultipartFile(file);
         fileService.saveFile(null, dto);
     }
 
