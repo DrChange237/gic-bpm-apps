@@ -109,7 +109,6 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         Long count = requestRepository.countRequestsCreatedToday() + 1;
         date = date + "-" + count;
         request.setReference("DCH" + "/" + date);
-        request.setReference("");
         request.setStatus(RequestStatus.ACCEPTED);
         request = requestRepository.save(request);
         fileService.saveFile(request, dto);
