@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
