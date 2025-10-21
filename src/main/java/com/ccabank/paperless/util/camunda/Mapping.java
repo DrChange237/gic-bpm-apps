@@ -86,8 +86,6 @@ public class Mapping {
 
         for (FieldDto field : fields) {
 
-
-
             if(field.isRequired()){
                 if(field.getValue() == null){
                     throw new BadRequestException("Parameter " + field.getName() + " is required");
