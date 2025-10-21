@@ -95,23 +95,6 @@ public class ExcelExtractUtils {
         };
     }
 
-
-
-    public String convertWorkbookToBase64(XSSFWorkbook workbook) {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            // Écrire le contenu du workbook dans un flux
-            workbook.write(out);
-            workbook.close();
-
-            // Convertir les bytes en Base64
-            byte[] bytes = out.toByteArray();
-            return Base64.getEncoder().encodeToString(bytes);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Erreur lors de la conversion du workbook en Base64", e);
-        }
-    }
-
     public Map<String, Object> getUserMap(String userName){
         EmployeeInfo employeeInfo = userRestClient.getStaffByUsername(userName);
         Map<String, Object> result = new HashMap<>();
@@ -140,6 +123,7 @@ public class ExcelExtractUtils {
     public String getValueInProcess(Request request, String key, Map<String, Object> objectMap){
 
         String value = "";
+        log.warn(key);
 
         if(!key.contains("|")){
             if(camundaService.isProcessInstanceActive(request.getInstanceId())){
