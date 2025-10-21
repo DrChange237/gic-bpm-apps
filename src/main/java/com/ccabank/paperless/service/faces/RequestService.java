@@ -40,5 +40,5 @@ public interface RequestService {
 
     AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req);
 
-    byte[] export(String reference, String type, String staff, String startDate, String endDate) throws ParseException;
+    byte[] export(String reference, String type, String staff, String startDate, String endDate);
 }

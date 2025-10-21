@@ -461,7 +461,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public byte[] export(String reference, String type, String staff, String startDate, String endDate) throws ParseException {
+    public byte[] export(String reference, String type, String staff, String startDate, String endDate)  {
 
 
         DocumentType documentType = null;
@@ -535,8 +535,12 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("transportFees", "Montant des Frais de Transport");
 
 
-                startDateD = DateUtil.convertToDate(startDate);
-                endDateD = DateUtil.convertToDate(endDate);
+                try {
+                    startDateD = DateUtil.convertToDate(startDate);
+                    endDateD = DateUtil.convertToDate(endDate);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
                 instances = camundaService.findCompletedInstancesByDateRange(startDateD, endDateD, documentType.getStructure(), dateProperty);
 
                 for (HistoricProcessInstance instance : instances) {
@@ -583,8 +587,12 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|Apbt_interimaire|function", "Fonction Intérimaire");
                 properties.put("staff|Apbt_interimaire|unity", "Unité Intérimaire");
 
-                startDateD = DateUtil.convertToDate(startDate);
-                endDateD = DateUtil.convertToDate(endDate);
+                try {
+                    startDateD = DateUtil.convertToDate(startDate);
+                    endDateD = DateUtil.convertToDate(endDate);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
                 instances = camundaService.findCompletedInstancesByDateRange(startDateD, endDateD, documentType.getStructure(), dateProperty);
 
                 for (HistoricProcessInstance instance : instances) {
@@ -628,8 +636,13 @@ public class RequestServiceImpl implements RequestService {
                 properties.put("staff|interim|fullname", "Proposition d'interim");
                 properties.put("staff|owner|unity", "Unité");
 
-                startDateD = DateUtil.convertToDate(startDate);
-                endDateD = DateUtil.convertToDate(endDate);
+                try {
+                    startDateD = DateUtil.convertToDate(startDate);
+                    endDateD = DateUtil.convertToDate(endDate);
+
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
                 instances = camundaService.findCompletedInstancesByDateRange(startDateD, endDateD, documentType.getStructure(), dateProperty);
 
                 for (HistoricProcessInstance instance : instances) {
