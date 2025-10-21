@@ -28,4 +28,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> , JpaSpe
     Request findByInstanceId(String instanceId);
 
     List<Request> findByStatus(RequestStatus requestStatus);
+
+    Request findByInstanceIdAndStatus(String id, RequestStatus requestStatus);
 }

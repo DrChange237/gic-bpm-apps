@@ -9,9 +9,30 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
+
+    public static Date getFirstDayOfCurrentMonth() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 1);       // premier jour
+        cal.set(Calendar.HOUR_OF_DAY, 0);        // minuit
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    public static Date getLastDayOfCurrentMonth() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH)); // dernier jour
+        cal.set(Calendar.HOUR_OF_DAY, 23);       // fin de journée
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        return cal.getTime();
+    }
 
     public static Date convertToDate(Object object) throws ParseException {
         if (object == null) {

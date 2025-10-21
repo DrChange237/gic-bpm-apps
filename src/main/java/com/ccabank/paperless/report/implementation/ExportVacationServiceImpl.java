@@ -9,11 +9,14 @@ import com.ccabank.paperless.report.faces.ExportVacationService;
 import com.ccabank.paperless.report.util.ExcelExtractUtils;
 import com.ccabank.paperless.repository.DocumentTypeRepository;
 import com.ccabank.paperless.repository.RequestRepository;
+import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.specification.RequestSpecifications;
+import com.ccabank.paperless.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,28 +39,34 @@ public class ExportVacationServiceImpl implements ExportVacationService {
     private final RequestRepository requestRepository;
     private final ExcelExtractUtils utils;
     private final String DOCUMENT_TYPE = "vacation";
+    private final CamundaService camundaService;
 
 
     @Override
     public void exportVacation() throws IOException {
 
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
         DocumentType type = documentTypeRepository.findOneByStructure(DOCUMENT_TYPE);
-
-
+        /*LocalDate endDate = LocalDate.now();
+        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
         Specification<Request> spec = Specification.where(null);
         spec = Specification.where(RequestSpecifications.dateBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
+        spec = spec.and(RequestSpecifications.withDynamicQuery(null, type, null, RequestStatus.ACCEPTED));*/
 
-        spec = spec.and(RequestSpecifications.withDynamicQuery(null, type, null, RequestStatus.ACCEPTED));
+        Date endDate = DateUtil.getLastDayOfCurrentMonth();
+        Date startDate = DateUtil.getFirstDayOfCurrentMonth();
+        String dateProperty = "startDate";
 
+        List<HistoricProcessInstance> instances = camundaService.findCompletedInstancesByDateRange(startDate, endDate, DOCUMENT_TYPE, dateProperty);
+        List<Request> requests = new ArrayList<>();
 
+        for (HistoricProcessInstance instance : instances) {
+            Request request = requestRepository.findByInstanceIdAndStatus(instance.getId(), RequestStatus.ACCEPTED);
+            if (request != null) {
+                requests.add(request);
+            }
+        }
 
-
-
-
-
-        List<Request> requests = requestRepository.findAll(spec);
+        //List<Request> requests = requestRepository.findAll(spec);
 
         if(requests.isEmpty()){
             log.warn("No requests found");
