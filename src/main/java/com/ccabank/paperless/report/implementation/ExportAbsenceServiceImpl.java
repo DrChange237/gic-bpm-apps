@@ -98,7 +98,7 @@ public class ExportAbsenceServiceImpl implements ExportAbsenceService {
         Locale localeFr = Locale.FRENCH; // ou new Locale("fr", "FR")
         LocalDate now = LocalDate.now();
         String month =  now.getMonth().getDisplayName(TextStyle.FULL, localeFr);
-        dto.setName("Rapport Demande de Congés "+ month + " " + now.getYear() + "");
+        dto.setName("Rapport Autorisation d'absence "+ month + " " + now.getYear() + "");
         MultipartFile file = utils.convertWorkbookToMultipartFile(workbook, "report");
         dto.setMultipartFile(file);
         Request request = new Request();
@@ -109,7 +109,7 @@ public class ExportAbsenceServiceImpl implements ExportAbsenceService {
         String date = currentDate.format(formatter);
         Long count = requestRepository.countRequestsCreatedToday() + 1;
         date = date + "-" + count;
-        request.setReference("DCH/MISSION" + "/" + date);
+        request.setReference("DCH/ABSENCE" + "/" + date);
         request.setStatus(RequestStatus.ACCEPTED);
         request.setCreatedAt(LocalDateTime.now());
         request.setInstanceId(UUID.randomUUID().toString());

@@ -116,7 +116,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         String date = currentDate.format(formatter);
         Long count = requestRepository.countRequestsCreatedToday() + 1;
         date = date + "-" + count;
-        request.setReference("DCH" + "/" + date);
+        request.setReference("DCH/VACATION" + "/" + date);
         request.setStatus(RequestStatus.ACCEPTED);
         request.setCreatedAt(LocalDateTime.now());
         request.setInstanceId(UUID.randomUUID().toString());
