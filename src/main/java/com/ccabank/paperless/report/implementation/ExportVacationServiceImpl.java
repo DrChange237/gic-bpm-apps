@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.HashMap;
@@ -110,6 +111,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         date = date + "-" + count;
         request.setReference("DCH" + "/" + date);
         request.setStatus(RequestStatus.ACCEPTED);
+        request.setCreatedAt(LocalDateTime.now());
         request = requestRepository.save(request);
         fileService.saveFile(request, dto);
     }
