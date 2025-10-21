@@ -15,6 +15,7 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.Task;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -110,6 +111,13 @@ public interface CamundaService {
     List<Task> getTasksAssignedToUserWithStatus(String userId, ApprovalStatus status);
 
     Task getTaskByProcessInstanceIdAndTaskKey(String processInstanceId, String taskDefinitionKey);
+
+    List<HistoricProcessInstance> findCompletedInstancesByDateRange(
+            Date startDate,
+            Date endDate,
+            String definitionKey,
+            String dateProperty
+    );
 
     HistoricTaskInstance getLastHistoricTaskByDefinitionKey(String processInstanceId, String taskDefinitionKey);
 

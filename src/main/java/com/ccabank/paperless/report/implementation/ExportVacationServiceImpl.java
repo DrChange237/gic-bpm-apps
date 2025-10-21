@@ -50,6 +50,13 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         spec = Specification.where(RequestSpecifications.dateBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
 
         spec = spec.and(RequestSpecifications.withDynamicQuery(null, type, null, RequestStatus.ACCEPTED));
+
+
+
+
+
+
+
         List<Request> requests = requestRepository.findAll(spec);
 
         if(requests.isEmpty()){
@@ -110,6 +117,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         request.setStatus(RequestStatus.ACCEPTED);
         request.setCreatedAt(LocalDateTime.now());
         request.setInstanceId(UUID.randomUUID().toString());
+        request.setLastModification(LocalDateTime.now());
         request = requestRepository.save(request);
 
         fileService.saveFile(request, dto);

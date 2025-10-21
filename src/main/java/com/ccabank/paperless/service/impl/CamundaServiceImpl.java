@@ -655,31 +655,59 @@ public class CamundaServiceImpl implements CamundaService {
         return null; // Ou lance une exception selon vos besoins
     }
 
-    public List<HistoricProcessInstance> findCompletedInstancesByDateRange(Date startDate, Date endDate, String definitionKey, String dateProperty) {
-        // On récupère toutes les variables du nom "myDate"
+    /**
+     * Récupère les instances terminées d'un process dont la variable dateProperty
+     * est comprise entre startDate et endDate.
+     *
+     * @param startDate      Date de début (inclusive)
+     * @param endDate        Date de fin (inclusive)
+     * @param definitionKey  Clé du process BPMN
+     * @param dateProperty   Nom de la variable de type Date
+     * @return Liste d'instances terminées correspondant au filtre
+     */
+    @Override
+    public List<HistoricProcessInstance> findCompletedInstancesByDateRange(
+            Date startDate,
+            Date endDate,
+            String definitionKey,
+            String dateProperty
+    ) {
+
+        // Récupération de toutes les variables du process et nom donné
         List<HistoricVariableInstance> vars = historyService.createHistoricVariableInstanceQuery()
                 .processDefinitionKey(definitionKey)
                 .variableName(dateProperty)
                 .list();
 
-        // On filtre en mémoire (Camunda ne supporte pas directement BETWEEN sur les variables Date)
-        List<String> processInstanceIds = vars.stream()
+        if (vars.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Filtrage sécurisé des variables Date et extraction des IDs distincts
+        Set<String> processInstanceIds = vars.stream()
                 .filter(v -> {
                     Object value = v.getValue();
-                    Date dateValue = (Date) value;
-                    return !dateValue.before(startDate) && !dateValue.after(endDate);
+                    try{
+                        Date dateValue = (Date) value;
+                        return !dateValue.before(startDate) && !dateValue.after(endDate);
+                    }catch (Exception e){
+                         log.error(e.getMessage());
+                         return false;
+                    }
                 })
                 .map(HistoricVariableInstance::getProcessInstanceId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet()); // Utilisation Set pour éviter doublons
 
         if (processInstanceIds.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // On récupère uniquement les instances terminées concernées
+        // Récupération des instances terminées correspondant aux IDs filtrés
         return historyService.createHistoricProcessInstanceQuery()
-                .processInstanceIds(new HashSet<>(processInstanceIds))
-                .finished()
+                .processInstanceIds(processInstanceIds)
+                .finished() // uniquement les instances terminées
+                .orderByProcessInstanceEndTime() // tri par date de fin
+                .desc()
                 .list();
     }
 
