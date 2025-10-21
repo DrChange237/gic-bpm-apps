@@ -2,7 +2,6 @@ package com.ccabank.paperless.report.scheduled;
 
 
 import com.ccabank.paperless.report.faces.ExportVacationService;
-import com.ccabank.paperless.report.implementation.ExportVacationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,7 @@ public class ScheduledRH {
 
     private final ExportVacationService exportVacationService;
 
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 */2 * * * ?")
     public void exportVacation() throws IOException {
         log.info("Exporting vacation...");
         exportVacationService.exportVacation();
