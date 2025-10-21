@@ -7,5 +7,5 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ExportMissionService {
+public class ExportResumptionServiceImpl {
 }

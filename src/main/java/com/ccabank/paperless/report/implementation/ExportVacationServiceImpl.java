@@ -5,7 +5,7 @@ import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.entity.DocumentType;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.entity.RequestStatus;
-import com.ccabank.paperless.exception.NotFoundException;
+import com.ccabank.paperless.report.faces.ExportVacationService;
 import com.ccabank.paperless.report.util.ExcelExtractUtils;
 import com.ccabank.paperless.repository.DocumentTypeRepository;
 import com.ccabank.paperless.repository.RequestRepository;
@@ -14,8 +14,8 @@ import com.ccabank.paperless.specification.RequestSpecifications;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,12 +26,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static org.camunda.bpm.model.cmmn.PlanItemTransition.start;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ExportVacationService {
+public class ExportVacationServiceImpl implements ExportVacationService {
 
     private final FileService fileService;
     private final DocumentTypeRepository documentTypeRepository;
@@ -40,6 +38,7 @@ public class ExportVacationService {
     private final String DOCUMENT_TYPE = "vacation";
 
 
+    @Override
     public void exportVacation() throws IOException {
 
         LocalDate endDate = LocalDate.now();
