@@ -24,19 +24,19 @@ public class ScheduledRH {
     private final ExportMissionService exportMissionService;
     private final ExportAbsenceService exportAbsenceService;
 
-    @Scheduled(cron = "0 */5 * 21,30 * ?")
+    @Scheduled(cron = "0 50 23 21-31 * ?")
     public void exportVacation() throws IOException {
         log.info("Exporting vacation...");
         exportVacationService.exportVacation();
     }
 
-    @Scheduled(cron = "0 */5 * 21,30 * ?")
+    @Scheduled(cron = "0 51 23 21-31 * ?")
     public void exportMission() throws IOException {
         log.info("Exporting mission...");
         exportMissionService.exportMission();
     }
 
-    @Scheduled(cron = "0 */5 * 21,30 * ?")
+    @Scheduled(cron = "0 52 23 21-31 * ?")
     public void exportAbsence() throws IOException {
         log.info("Exporting absence...");
         exportAbsenceService.exportAbsence();
