@@ -151,6 +151,13 @@ public class ExcelExtractUtils {
                         property = key.split("\\|")[2];
                         value = String.valueOf(validationMap.get(property));
                     }
+                    break;
+                case "request":
+                    String prop =  key.split("\\|")[1];
+                    switch (prop){
+                        case "createdAt":
+                            return request.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    }
             }
         }
 

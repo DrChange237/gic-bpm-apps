@@ -54,7 +54,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
 
         Date endDate = DateUtil.getLastDayOfCurrentMonth();
         Date startDate = DateUtil.getFirstDayOfCurrentMonth();
-        String dateProperty = "startDate";
+        String dateProperty = "realStartDate";
 
         List<HistoricProcessInstance> instances = camundaService.findCompletedInstancesByDateRange(startDate, endDate, DOCUMENT_TYPE, dateProperty);
         List<Request> requests = new ArrayList<>();
@@ -86,7 +86,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         properties.put("staff|owner|matricule", "Matricule");
         properties.put("staff|owner|fullname", "Staff Ayant Initié");
         properties.put("staff|owner|function", "Fonction");
-        properties.put("validation|Validation|date", "Date de Création");
+        properties.put("request|createdAt", "Date de Création");
         properties.put("validation|Apbt_n2|date", "Date de Validation N + 2");
         properties.put("validation|Apbt_ca_supervision|date", "Date de Supervision DCH");
         properties.put("validation|Apbt_ca_validation|date", "Date de Validation DCH");
