@@ -655,6 +655,34 @@ public class CamundaServiceImpl implements CamundaService {
         return null; // Ou lance une exception selon vos besoins
     }
 
+    public List<HistoricProcessInstance> findCompletedInstancesByDateRange(Date startDate, Date endDate, String definitionKey, String dateProperty) {
+        // On récupère toutes les variables du nom "myDate"
+        List<HistoricVariableInstance> vars = historyService.createHistoricVariableInstanceQuery()
+                .processDefinitionKey(definitionKey)
+                .variableName(dateProperty)
+                .list();
+
+        // On filtre en mémoire (Camunda ne supporte pas directement BETWEEN sur les variables Date)
+        List<String> processInstanceIds = vars.stream()
+                .filter(v -> {
+                    Object value = v.getValue();
+                    Date dateValue = (Date) value;
+                    return !dateValue.before(startDate) && !dateValue.after(endDate);
+                })
+                .map(HistoricVariableInstance::getProcessInstanceId)
+                .collect(Collectors.toList());
+
+        if (processInstanceIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // On récupère uniquement les instances terminées concernées
+        return historyService.createHistoricProcessInstanceQuery()
+                .processInstanceIds(new HashSet<>(processInstanceIds))
+                .finished()
+                .list();
+    }
+
     @Override
     public HistoricTaskInstance getLastHistoricTaskByDefinitionKey(String processInstanceId, String taskDefinitionKey) {
         return historyService.createHistoricTaskInstanceQuery()

@@ -24,10 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -113,6 +110,7 @@ public class ExportVacationServiceImpl implements ExportVacationService {
         request.setStatus(RequestStatus.ACCEPTED);
         request.setCreatedAt(LocalDateTime.now());
         request = requestRepository.save(request);
+        request.setInstanceId(UUID.randomUUID().toString());
         fileService.saveFile(request, dto);
     }
 
