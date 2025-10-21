@@ -46,11 +46,6 @@ public class ExportVacationServiceImpl implements ExportVacationService {
     public void exportVacation() throws IOException {
 
         DocumentType type = documentTypeRepository.findOneByStructure(DOCUMENT_TYPE);
-        /*LocalDate endDate = LocalDate.now();
-        LocalDate startDate = LocalDate.now().withDayOfMonth(1);
-        Specification<Request> spec = Specification.where(null);
-        spec = Specification.where(RequestSpecifications.dateBetween(startDate.atStartOfDay(), endDate.atStartOfDay()));
-        spec = spec.and(RequestSpecifications.withDynamicQuery(null, type, null, RequestStatus.ACCEPTED));*/
 
         Date endDate = DateUtil.getLastDayOfCurrentMonth();
         Date startDate = DateUtil.getFirstDayOfCurrentMonth();
