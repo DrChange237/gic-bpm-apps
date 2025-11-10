@@ -142,10 +142,10 @@ public class FileServiceImpl implements FileService {
     }
 
     public double getSizeInMo(MultipartFile file) {
+        log.info("Get Size in Mo");
         long tailleOctets = file.getSize();
         double tailleKo = (double) tailleOctets / 1024;
-        double tailleMo = (double) tailleKo / 1024;
-        return tailleMo;
+        return tailleKo / 1024;
     }
 
     @Override
