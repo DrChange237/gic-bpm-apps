@@ -46,11 +46,6 @@ public class FormValidationController {
     private String api ;
 
 
-    @GetMapping("/empty")
-    public String empty() {
-        camundaService.stopAllActiveProcessInstances();
-        return "test";
-    }
 
     @GetMapping("/validationForm")
     public String showForm(Model model, @RequestParam("key") String key, @RequestParam("taskId") String taskId, @RequestParam("reference") String reference) {

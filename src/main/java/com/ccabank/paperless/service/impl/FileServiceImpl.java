@@ -11,7 +11,11 @@ import com.ccabank.paperless.repository.FileRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.specification.FileSpecifications;
+import com.ccabank.paperless.util.file.PdfUtils;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.exceptions.BadPasswordException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.BadRequestException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -32,6 +38,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileServiceImpl implements FileService {
 
     private final RequestRepository requestRepository;
@@ -134,8 +141,31 @@ public class FileServiceImpl implements FileService {
         return null;
     }
 
+    public double getSizeInMo(MultipartFile file) {
+        long tailleOctets = file.getSize();
+        double tailleKo = (double) tailleOctets / 1024;
+        double tailleMo = (double) tailleKo / 1024;
+        return tailleMo;
+    }
+
     @Override
     public void saveFile(Request request, FileDto fileDto) throws IOException {
+
+            MultipartFile multipartFile = fileDto.getMultipartFile();
+            double sizeInMo = getSizeInMo(multipartFile);
+
+            if(sizeInMo > 5242880){
+                log.warn(sizeInMo + "Mo size of file");
+                //throw new BadRequestException("la taille du fichier est excedantaire: " + fileDto.getName());
+                try {
+                    MultipartFile compressedFile = PdfUtils.compresserPdf(fileDto.getMultipartFile());
+                    sizeInMo = getSizeInMo(compressedFile);
+                    log.warn(sizeInMo + "Mo size of compressed file");
+                    fileDto.setMultipartFile(compressedFile);
+                } catch (DocumentException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
             FileDto fileFinal = fileRestClient.uploadFileToFolder("paperless", "paperless", fileDto.getMultipartFile());
             File file = new File();

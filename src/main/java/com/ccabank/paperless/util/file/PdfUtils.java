@@ -2,6 +2,9 @@ package com.ccabank.paperless.util.file;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.*;
 import java.util.Base64;
@@ -9,7 +12,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class PdfUtils {
+
+
+    public static MultipartFile compresserPdf(MultipartFile originalFile) throws IOException, DocumentException {
+        // Lire le flux du PDF original
+        InputStream inputStream = originalFile.getInputStream();
+
+        // Lire le PDF avec compression d'objets activée
+        PdfReader reader = new PdfReader(inputStream);
+        reader.removeUnusedObjects();
+
+        // Sortie compressée
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Nouveau document compressé
+        Document document = new Document();
+        PdfCopy copy = new PdfCopy(document, outputStream);
+        copy.setFullCompression(); // Compression structurelle maximale
+        document.open();
+
+        // Copier les pages une par une
+        for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+            copy.addPage(copy.getImportedPage(reader, i));
+        }
+
+        document.close();
+        reader.close();
+
+        // Retourner un MultipartFile compressé
+        return new MockMultipartFile(
+                "file",
+                originalFile.getOriginalFilename(),
+                "application/pdf",
+                outputStream.toByteArray()
+        );
+    }
+
 
     public static Rectangle printPdfDimensions(byte[] pdfBytes) {
 
