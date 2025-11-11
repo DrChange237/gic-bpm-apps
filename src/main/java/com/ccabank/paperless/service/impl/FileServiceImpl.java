@@ -162,19 +162,18 @@ public class FileServiceImpl implements FileService {
                     sizeInMo = getSizeInMo(compressedFile);
                     log.warn(sizeInMo + "Mo size of compressed file");
                     fileDto.setMultipartFile(compressedFile);
+                    FileDto fileFinal = fileRestClient.uploadFileToFolder("paperless", "paperless", fileDto.getMultipartFile());
+                    File file = new File();
+                    file.setRequest(request);
+                    file.setName(fileDto.getName());
+                    file.setType(fileDto.getType());
+                    file.setUrl(serverUrl + pathFile + fileFinal.getUrl());
+                    file.setAddDate(LocalDateTime.now());
+                    fileRepository.save(file);
                 } catch (DocumentException e) {
                     throw new RuntimeException(e);
                 }
            // }
-
-            FileDto fileFinal = fileRestClient.uploadFileToFolder("paperless", "paperless", fileDto.getMultipartFile());
-            File file = new File();
-            file.setRequest(request);
-            file.setName(fileDto.getName());
-            file.setType(fileDto.getType());
-            file.setUrl(serverUrl + pathFile + fileFinal.getUrl());
-            file.setAddDate(LocalDateTime.now());
-            fileRepository.save(file);
     }
 
     public XSSFWorkbook generateExport(List<File> fileDtos, String sheetName){
