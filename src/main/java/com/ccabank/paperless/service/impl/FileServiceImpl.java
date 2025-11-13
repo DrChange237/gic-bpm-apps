@@ -170,8 +170,9 @@ public class FileServiceImpl implements FileService {
                     file.setUrl(serverUrl + pathFile + fileFinal.getUrl());
                     file.setAddDate(LocalDateTime.now());
                     fileRepository.save(file);
-                } catch (DocumentException e) {
-                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    //throw new RuntimeException(e);
+                    log.error("Error while saving file", e);
                 }
            // }
     }
