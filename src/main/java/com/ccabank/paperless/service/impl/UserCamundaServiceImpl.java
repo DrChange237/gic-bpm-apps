@@ -5,7 +5,6 @@ import com.ccabank.paperless.entity.camunda.UserCamunda;
 import com.ccabank.paperless.repository.MemberShipRepository;
 import com.ccabank.paperless.repository.UserCamundaRepository;
 import com.ccabank.paperless.service.faces.UserCamundaService;
-import org.camunda.bpm.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +38,17 @@ public class UserCamundaServiceImpl implements UserCamundaService {
 
     @Override
     public void newMembership(String userId, String groupId) {
-        System.out.println("-----------------------------------------------------Dans le fonction: " + userId);
+        log.info("-----------------------------------------------------Dans le fonction: " + userId);
 
         UserCamunda user = this.getUser(userId);
         if (user == null) {
-            System.out.println("-----------------------------------------------------New User: " + userId);
+            log.info("-----------------------------------------------------New User: " + userId);
             this.newUser(userId);
         }
         MemberShip memberShip = new MemberShip();
         memberShip.setUserId(userId);
         memberShip.setGroupId(groupId);
-        System.out.println("-----------------------------------------------------New membership: " + memberShip);
+        log.info("-----------------------------------------------------New membership: " + memberShip);
         memberShipRepository.save(memberShip);
     }
 
@@ -68,7 +67,5 @@ public class UserCamundaServiceImpl implements UserCamundaService {
         UserCamunda user = userCamundaRepository.getOne(Id);
         return user;
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.ccabank.paperless.controller.memo;
+package com.ccabank.paperless.controller;
 
 
 import com.ccabank.paperless.constant.MessageCode;

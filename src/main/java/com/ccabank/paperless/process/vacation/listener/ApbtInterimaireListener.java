@@ -16,7 +16,7 @@ public class ApbtInterimaireListener implements TaskListener {
 
         delegateTask.setAssignee(interimaire); // Remplacez "userId" par l'ID de l'utilisateur
 
-        System.out.println("Assignation de l'intérim à " + interimaire);
+        log.info("Assignation de l'intérim à " + interimaire);
 
 
 

@@ -1,11 +1,9 @@
 package com.ccabank.paperless.service.faces;
 
-import com.ccabank.paperless.domain.AppServiceResult;
 import com.ccabank.paperless.dto.memo.AcceptedApprovalDto;
 import com.ccabank.paperless.dto.memo.ApprovalListDto;
 import com.ccabank.paperless.dto.memo.ReassignDto;
 import com.ccabank.paperless.dto.memo.TakeLeaveDto;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -13,26 +11,26 @@ import java.util.List;
 public interface ApprovalService {
 
 
-    AppServiceResult<?> reassign(ReassignDto reassignDto);
+    void reassign(ReassignDto reassignDto);
 
-    AppServiceResult<?> freeless(HttpServletRequest request, TakeLeaveDto takeLeaveDto);
+    void freeless(HttpServletRequest request, TakeLeaveDto takeLeaveDto);
 
-    AppServiceResult<?> decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto);
+    void decision(HttpServletRequest request, AcceptedApprovalDto acceptedApprovalDto);
 
-    AppServiceResult<?> decisionViaEmail(String key, String TaskId, boolean decision, String comment);
+    void decisionViaEmail(String key, String TaskId, boolean decision, String comment);
 
-    AppServiceResult<?> approve(AcceptedApprovalDto acceptedApprovalDto, String assignee) throws Exception;
+    void approve(AcceptedApprovalDto acceptedApprovalDto, String assignee) throws Exception;
 
 
-    AppServiceResult<?> rejected(AcceptedApprovalDto acceptedApprovalDto);
+    void rejected(AcceptedApprovalDto acceptedApprovalDto);
 
-    AppServiceResult<List<ApprovalListDto>> getApprovalByStaff(HttpServletRequest request, String status);
+    List<ApprovalListDto> getApprovalByStaff(HttpServletRequest request, String status);
 
-    AppServiceResult<List<ApprovalListDto>> getAllApprobations(HttpServletRequest req);
+    List<ApprovalListDto> getAllApprobations(HttpServletRequest req);
 
-    AppServiceResult<ApprovalListDto> getApprovalDetail(String id);
+    ApprovalListDto getApprovalDetail(String id);
 
-    AppServiceResult<?> relanceApprobation(String taskId);
+    void relanceApprobation(String taskId);
 
-    AppServiceResult<?> relanceForDueDate(String taskId);
+    void relanceForDueDate(String taskId);
 }

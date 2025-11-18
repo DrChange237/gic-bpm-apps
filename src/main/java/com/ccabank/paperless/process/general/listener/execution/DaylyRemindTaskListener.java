@@ -22,7 +22,7 @@ public class DaylyRemindTaskListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution execution) throws Exception {
 
-        System.out.println("DaylyRemindTaskListener Execution Listener");
+        log.info("DaylyRemindTaskListener Execution Listener");
 
         String processInstanceId = execution.getProcessInstanceId();
 
@@ -33,7 +33,7 @@ public class DaylyRemindTaskListener implements ExecutionListener {
                 approvalService.relanceApprobation(task.getId());
             }
         } else {
-            System.out.println("Aucune tâche active associée à ce processus.");
+            log.info("Aucune tâche active associée à ce processus.");
         }
     }
 }

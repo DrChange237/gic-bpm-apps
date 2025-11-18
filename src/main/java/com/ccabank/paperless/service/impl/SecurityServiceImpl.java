@@ -5,11 +5,11 @@ import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.SecurityService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -22,20 +22,13 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public boolean checkUserSignature(String username){
-        String signature = null;
+        String signature;
         try{
             signature = userRestClient.getEmployeeSignature(username);
         }catch (Exception e){
             throw new BadRequestException("l'utilisateur " + username + " n'a pas de signature !");
         }
-        if(signature == null){
-            return false;
-        }
-
-        if(signature.isEmpty()){
-            return false;
-        }
-        return true;
+        return StringUtils.isNotBlank(signature);
     }
 
     @Override

@@ -1,15 +1,13 @@
-package com.ccabank.paperless.controller.memo;
+package com.ccabank.paperless.controller;
 
 
-import com.ccabank.paperless.domain.AppServiceResult;
-import com.ccabank.paperless.dto.HttpResponseError;
 import com.ccabank.paperless.dto.memo.*;
 import com.ccabank.paperless.security.Authority;
 import com.ccabank.paperless.service.faces.ApprovalService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +18,10 @@ import java.util.List;
 @Api(tags = "Paperless")
 @RestController
 @RequestMapping("/paperless")
+@RequiredArgsConstructor
 public class ApprovalController {
 
-    @Autowired
-    private ApprovalService approvalService;
+    private final ApprovalService approvalService;
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/approval/decision")
@@ -40,8 +38,7 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> take(HttpServletRequest request, @RequestBody TakeLeaveDto takeLeaveDto) {
         AppServiceResult<?> result = approvalService.freeless(request, takeLeaveDto);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -49,8 +46,7 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> reassign(@RequestBody ReassignDto reassignDto) {
         AppServiceResult<?> result = approvalService.reassign(reassignDto);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -58,8 +54,7 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getDetails(@RequestParam(value = "id") String id) {
         AppServiceResult<ApprovalListDto> result = approvalService.getApprovalDetail(id);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
@@ -75,8 +70,7 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
         AppServiceResult<List<ApprovalListDto>> result = approvalService.getApprovalByStaff(request, status);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 
     @GetMapping("/approval/getAll")
@@ -84,7 +78,6 @@ public class ApprovalController {
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getAll(HttpServletRequest request) {
         AppServiceResult<List<ApprovalListDto>> result = approvalService.getAllApprobations(request);
-        return result.isSuccess() ? ResponseEntity.ok(result.getData())
-                : ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
     }
 }

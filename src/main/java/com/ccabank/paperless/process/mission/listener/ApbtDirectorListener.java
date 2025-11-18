@@ -14,7 +14,7 @@ public class ApbtDirectorListener implements TaskListener {
 
         delegateTask.setAssignee(n1); // Remplacez "userId" par l'ID de l'utilisateur
 
-        System.out.println("Assignation Directeur à " + n1);
+        log.info("Assignation Directeur à " + n1);
 
     }
 }

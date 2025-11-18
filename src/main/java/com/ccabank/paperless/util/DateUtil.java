@@ -93,7 +93,7 @@ public class DateUtil {
             return LocalDate.parse(dateString, formatter);
         } catch (DateTimeParseException e) {
             // Gérer l'erreur de parsing
-            System.out.println("Invalid date format: " + e.getMessage());
+            log.info("Invalid date format: " + e.getMessage());
             return null; // ou lancer une exception personnalisée
         }
     }

@@ -56,7 +56,7 @@ public class SendInterimLetter implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
 
-            System.out.println("Sending interim letter");
+            log.info("Sending interim letter");
 
             InterimForm form = new InterimForm();
 
@@ -98,7 +98,7 @@ public class SendInterimLetter implements JavaDelegate {
 
             String typeInterim = (String) delegateExecution.getVariable("typeInterim");
 
-            System.out.println(typeInterim);
+            log.info(typeInterim);
 
             form.setSubject(InterimForm.Subject.valueOf(typeInterim));
 
@@ -161,7 +161,7 @@ public class SendInterimLetter implements JavaDelegate {
              }
 
 
-            System.out.println(form);
+            log.info(form);
 
             ByteArrayResource resource = reportingRestClient.interim(form);
 

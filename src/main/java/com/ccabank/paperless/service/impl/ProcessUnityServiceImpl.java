@@ -1,16 +1,12 @@
 package com.ccabank.paperless.service.impl;
 
-import com.ccabank.paperless.constant.AppError;
-import com.ccabank.paperless.domain.AppServiceResult;
 import com.ccabank.paperless.dto.memo.ProcessUnityDto;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.ProcessUnityService;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,28 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
 
-
+@Slf4j
 @Service
 @Transactional
-@Qualifier(MEMO_SERVICE)
 public class ProcessUnityServiceImpl implements ProcessUnityService {
-
-    private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
-
 
     @Autowired
     private CamundaService camundaService;
-
-
-
+    
 
     @Override
     @Transactional
     public AppServiceResult<ProcessUnityDto> create(ProcessUnityDto processUnityDto) {
         try {
-            logger.info(MEMO_SERVICE + "create : methode invocation");
+            log.info("create : methode invocation");
 
             camundaService.createGroup(processUnityDto.getCode(), processUnityDto.getName(),"PROCESS-UNITY");
 
@@ -62,14 +51,14 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
     @Transactional
     public AppServiceResult<ProcessUnityDto> update(ProcessUnityDto processUnityDto) {
         try {
-            logger.info(MEMO_SERVICE + "update : methode invocation");
+            log.info("update : methode invocation");
 
             //ProcessUnity processUnity = processUnityRepository.findById(processUnityDto.getId()).orElse(null);
 
             Group group = camundaService.getGroup(processUnityDto.getCode());
 
             if (group == null) {
-                logger.warn("update : process unity not found -> " + processUnityDto.getId());
+                log.warn("update : process unity not found -> " + processUnityDto.getId());
                 return new AppServiceResult<ProcessUnityDto>(false, HttpStatus.NOT_FOUND.value(), "process unity not found!", null);
             }
 
@@ -81,7 +70,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(MEMO_SERVICE + " create : Exception {}", e.getMessage());
+            log.error(" create : Exception {}", e.getMessage());
             return new AppServiceResult<ProcessUnityDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
@@ -90,7 +79,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
     @Override
     public AppServiceResult<ProcessUnityDto> getDetail(Long id) {
         try {
-            logger.info(MEMO_SERVICE + "getDetail : methode invocation");
+            log.info("getDetail : methode invocation");
 
             //ProcessUnity unity = processUnityRepository.getOne(id);
 
@@ -100,7 +89,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(MEMO_SERVICE + " create : Exception {}", e.getMessage());
+            log.error(" create : Exception {}", e.getMessage());
             return new AppServiceResult<ProcessUnityDto>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
@@ -108,10 +97,10 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
     @Override
     public String getEmailUnity(String unityCode) {
-            logger.info(MEMO_SERVICE + "getEmailUnity : methode invocation");
+            log.info("getEmailUnity : methode invocation");
             Group group = camundaService.getGroup(unityCode);
             List<User> members = camundaService.getGroupDetailsWithMembers(group.getId());
-            System.out.println("Membres : " + members.size());
+            log.info("Membres : " + members.size());
             String staffList = "";
             for(User m : members){
                 if(members.indexOf(m) == 0){
@@ -128,7 +117,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
     @Override
     public AppServiceResult<List<ProcessUnityDto>> getAll() {
         try {
-            logger.info(MEMO_SERVICE + "getAll : methode invocation");
+            log.info("getAll : methode invocation");
 
             List<Group> groups =   camundaService.getAllGroup();
 
@@ -140,7 +129,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(MEMO_SERVICE + " create : Exception {}", e.getMessage());
+            log.error(" create : Exception {}", e.getMessage());
             return new AppServiceResult<List<ProcessUnityDto>>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
 
         }
@@ -148,7 +137,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
     private AppServiceResult<List<ProcessUnityDto>> getConvertedResult(List<Group> groups, String functionName) {
         if (groups == null) {
-            logger.warn(MEMO_SERVICE, functionName,
+            log.warn(MEMO_SERVICE, functionName,
                     "Feedback not exist!, Cannot further process!");
             return new AppServiceResult<List<ProcessUnityDto>>(false, AppError.Validation.errorCode(),
                     "Process Unity not exist!", null);
@@ -162,7 +151,7 @@ public class ProcessUnityServiceImpl implements ProcessUnityService {
 
                 List<User> members = camundaService.getGroupDetailsWithMembers(group.getId());
 
-                System.out.println("Membres : " + members.size()  );
+                log.info("Membres : " + members.size()  );
 
                 String staffList = "";
                 for(User m : members){

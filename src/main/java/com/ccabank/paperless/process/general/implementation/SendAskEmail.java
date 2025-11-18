@@ -53,11 +53,11 @@ public class SendAskEmail implements JavaDelegate {
         String owner = (String) execution.getVariable("owner");
         String reference = (String) execution.getVariable("reference");
 
-        System.out.println("Approver : " + apbt_interimaire);
+        log.info("Approver : " + apbt_interimaire);
 
-        System.out.println("Approbation : " + this.getApprobation());
+        log.info("Approbation : " + this.getApprobation());
 
-        System.out.println("CamundaService  : " + camundaService);
+        log.info("CamundaService  : " + camundaService);
 
         Task task = camundaService.getTaskByProcessInstanceIdAndTaskKey(processInstanceId, this.approbation);
 

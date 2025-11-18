@@ -21,7 +21,7 @@ public class ApbtMissionRHListener implements ExecutionListener {
 
         String owner = (String) delegateExecution.getVariable("owner");
         EmployeeInfo staff =  userRestClient.getStaffByUsername(owner);
-        System.out.println("set support charge to :" + Optional.ofNullable(staff.getAgency()).map(AgencyDto::getName).orElse(null));
+        log.info("set support charge to :" + Optional.ofNullable(staff.getAgency()).map(AgencyDto::getName).orElse(null));
         delegateExecution.setVariable("supportCharge", Optional.ofNullable(staff.getAgency()).map(AgencyDto::getName).orElse(null));
 
     }

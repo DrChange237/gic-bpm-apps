@@ -1,6 +1,5 @@
-package com.ccabank.paperless.controller.memo;
+package com.ccabank.paperless.controller;
 
-import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.ApprovalKey;
 import com.ccabank.paperless.entity.Request;
@@ -64,7 +63,7 @@ public class FormValidationController {
 
         model.addAttribute("user", employeeInfo.getName() );
 
-        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        log.info("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
@@ -121,7 +120,7 @@ public class FormValidationController {
         UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         model.addAttribute("user", employeeInfo.getName());
 
-        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        log.info("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
@@ -171,7 +170,7 @@ public class FormValidationController {
         UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         model.addAttribute("user", employeeInfo.getName());
 
-        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        log.info("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);

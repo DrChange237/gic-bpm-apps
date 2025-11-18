@@ -15,7 +15,7 @@ public class ApbtRHListener implements TaskListener {
         delegateTask.addCandidateGroup(groupId);
 
         // Optionnel : log pour vérifier l'assignation
-        System.out.println("Tâche assignée au groupe : " + groupId);
+        log.info("Tâche assignée au groupe : " + groupId);
 
     }
 }

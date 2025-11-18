@@ -33,7 +33,7 @@ public class SendEmailGroupListener implements TaskListener {
     public void notify(DelegateTask delegateTask) {
 
 
-        System.out.println("SendEmailGroupListener Task Listener");
+        log.info("SendEmailGroupListener Task Listener");
 
         List<String> candidateUsers = getCandidateUserIds(delegateTask);
 
@@ -51,10 +51,10 @@ public class SendEmailGroupListener implements TaskListener {
         ask.setSubject("Demande d'approbation - " + definition.getName());
         ask.setRole(delegateTask.getName());
 
-        System.out.println(candidateUsers);
+        log.info(candidateUsers);
 
         for (String user : candidateUsers) {
-            System.out.println("Envoi de mail a " + user);
+            log.info("Envoi de mail a " + user);
             ask.setApprover(user);
             emailService.sendAskApproval(ask);
         }

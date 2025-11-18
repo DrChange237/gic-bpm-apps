@@ -62,7 +62,7 @@ public class RemindTask {
                 try {
                     requestService.suspend(request.getId(), "Pas de validation depuis plus de 7 jours");
                 }catch (Exception e){
-                    System.out.println(e.getMessage());
+                    log.info(e.getMessage());
                 }
             }
         }
@@ -75,7 +75,7 @@ public class RemindTask {
                 try {
                     requestService.suspend(request.getId(), "Pas de mise à jour depuis plus de 10 jours");
                 }catch (Exception e){
-                    System.out.println(e.getMessage());
+                    log.info(e.getMessage());
                 }
             }
         }

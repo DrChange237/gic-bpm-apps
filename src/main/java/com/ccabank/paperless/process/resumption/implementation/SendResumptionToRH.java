@@ -119,7 +119,7 @@ public class SendResumptionToRH implements JavaDelegate {
         }
 
         String supervisorUser = (String) delegateExecution.getVariable("Apbt_n1");
-        System.out.println("Apbt_n1 :" + supervisorUser);
+        log.info("Apbt_n1 :" + supervisorUser);
         EmployeeInfo supervisor =  userRestClient.getStaffByUsername(supervisorUser);
 
 
