@@ -36,7 +36,6 @@ public class SendVacationDecision implements JavaDelegate {
             ByteArrayResource resource = reportingRestClient.vacationDecision(decision);
 
             EmailDto emailDto = new EmailDto();
-            emailDto.setFrom("notification@cca-bank.com");
             emailDto.setTo(staff.getEmail());
             emailDto.setSubject("Décision de Congés");
             emailDto.setCc(staff.getEmail());

@@ -2,24 +2,19 @@ package com.ccabank.paperless.controller;
 
 import com.ccabank.paperless.dto.memo.ProcessUnityDto;
 import com.ccabank.paperless.service.faces.ProcessUnityService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "Paperless")
 @RestController
 @RequestMapping("/paperless")
+@RequiredArgsConstructor
 public class ProcessUnityController {
 
-    @Autowired
-    private ProcessUnityService processUnityService;
+    private final ProcessUnityService processUnityService;
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/processUnity/getAll")
     //@PreAuthorize(Authority.ProcessUnity.VIEWALL_PROCESSUNITY)
     public ResponseEntity<List<ProcessUnityDto>> getAll() {
@@ -27,27 +22,22 @@ public class ProcessUnityController {
     }
 
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/processUnity/getDetails")
     //@PreAuthorize(Authority.ProcessUnity.VIEW_PROCESSUNITY)
     public ResponseEntity<ProcessUnityDto> getTypeDetails(@RequestParam(value = "id") Long id) {
         return ResponseEntity.ok(processUnityService.getDetail(id));
     }
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PostMapping("/processUnity/create")
     //@PreAuthorize(Authority.ProcessUnity.ADD_PROCESSUNITY)
-    public ResponseEntity<?> create(@RequestBody ProcessUnityDto processUnityDto) {
-        AppBaseResult result = processUnityService.create(processUnityDto);
-        return ResponseEntity.ok(new HttpResponseSuccess<String>("Process Unity successfully added"));
+    public void create(@RequestBody ProcessUnityDto processUnityDto) {
+        processUnityService.create(processUnityDto);
     }
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @PutMapping("/processUnity/update")
     //@PreAuthorize(Authority.ProcessUnity.UPDATE_PROCESSUNITY)
-    public ResponseEntity<?> update(@RequestBody ProcessUnityDto processUnityDto) {
-        AppBaseResult result = processUnityService.update(processUnityDto);
-        return ResponseEntity.ok(new HttpResponseSuccess<String>("Process Unity successfully updated"));
+    public void update(@RequestBody ProcessUnityDto processUnityDto) {
+        processUnityService.update(processUnityDto);
     }
 
 }

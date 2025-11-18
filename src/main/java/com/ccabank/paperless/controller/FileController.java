@@ -4,9 +4,6 @@ package com.ccabank.paperless.controller;
 import com.ccabank.paperless.security.Authority;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.service.faces.RequestService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "Paperless")
 @RestController
 @RequestMapping("/paperless")
 @RequiredArgsConstructor
@@ -28,7 +24,6 @@ public class FileController {
     private final FileService fileService;
     private final RequestService requestService;
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/files/search")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> search(
@@ -44,7 +39,6 @@ public class FileController {
 
     }
 
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header", defaultValue = "Bearer <access-token>")})
     @GetMapping("/files/export")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> export(

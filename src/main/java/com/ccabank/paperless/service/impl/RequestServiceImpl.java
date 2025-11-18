@@ -110,7 +110,7 @@ public class RequestServiceImpl implements RequestService {
         Request request = this.requestRepository.getOne(requestDto.getId());
 
         if(request.getStatus().equals(RequestStatus.ACCEPTED) || request.getStatus().equals(RequestStatus.PENDING) ){
-            throw new Exception("Cette requete est déjà acceptée ou encore en cours");
+            throw new ValidationException("Cette requête est déjà acceptée ou encore en cours");
         }
 
         request.setLastModification(LocalDateTime.now());
@@ -134,7 +134,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request validateRequest(Long id) {
+    public void validateRequest(Long id) {
         Request request = requestRepository.findById(id).orElseThrow(() -> new NotFoundException("Aucune requête retrouvée"));
         request.setLastModification(LocalDateTime.now());
         request.setValidationDate(LocalDateTime.now());
@@ -156,9 +156,6 @@ public class RequestServiceImpl implements RequestService {
         Map<String, Object> variables = new HashMap<>();
         task.setAssignee(requestDto.getStaff());
         camundaService.completeTask(task.getId(), variables);
-
-        return request;
-
     }
 
     @Override
@@ -234,7 +231,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void suspend(Long id, String reason) {
+    public RequestInfo suspend(Long id, String reason) {
         Request request = requestRepository.getOne(id);
 
         if(request.getStatus().equals(RequestStatus.ACCEPTED)){
@@ -247,8 +244,9 @@ public class RequestServiceImpl implements RequestService {
         }
 
         request.setStatus(RequestStatus.SUSPENDED);
-        requestRepository.save(request);
+        request = requestRepository.save(request);
         emailService.sendSuspendRequest(request, reason);
+        return requestMapper.toDto(request);
     }
 
 
@@ -278,68 +276,54 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<RequestInfo>> getRequestAll(HttpServletRequest req) {
-        try {
+    public List<RequestInfo> getRequestAll(HttpServletRequest req) {
+        EmployeeInfo employeeInfo = securityService.getCurrentUser();
+        log.info("UserName Employe" + employeeInfo.getUsername());
+        List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
 
-            EmployeeInfo employeeInfo = securityService.getCurrentUser();
-            log.info("UserName Employe" + employeeInfo.getUsername());
-            List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
-
-            return getConvertedResult(requests);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(" getRequestAll : Exception {}", e.getMessage());
-            return new >(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
+        return getConvertedResult(requests);
     }
 
     @Override
-    public List<RequestInfo>> getRequestHistory(HttpServletRequest req) {
+    public List<RequestInfo> getRequestHistory(HttpServletRequest req) {
         EmployeeInfo employeeInfo = securityService.getCurrentUser();
         log.info("UserName Employe" + employeeInfo.getUsername());
         List<Request> requests = requestRepository.findByOrderByLastModificationDesc();
         return getConvertedResult(requests);
     }
 
-    private List<RequestInfo>> getConvertedResult(List<Request> requests) {
-        if (requests == null) {
-
-            return new >(false, AppError.Validation.errorCode(),
-                    "Request not exist!", null);
+    private List<RequestInfo> getConvertedResult(List<Request> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return new ArrayList<>();
         }
         List<RequestInfo> result = new ArrayList<>();
-        if (!requests.isEmpty()) {
-            for (Request request : requests) {
-                RequestInfo dto = requestMapper.toDto(request);
-                dto.setDocumentType(request.getType().getName());
-                StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        for (Request request : requests) {
+            RequestInfo dto = requestMapper.toDto(request);
+            dto.setDocumentType(request.getType().getName());
+            StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
 
-                Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
-                if(!request.getStatus().equals(RequestStatus.PENDING)){
-                    variables = camundaService.retrieveCompletedProcessVariables(request.getInstanceId());
-                }
-                DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
-                dto.setFields(Mapping.getFieldFromFormField(formData, variables));
-
-                List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
-                List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(historics);
-                dto.setApprovals(approvalDtos);
-
-                dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));
-                result.add(dto);
+            Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+            if(!request.getStatus().equals(RequestStatus.PENDING)){
+                variables = camundaService.retrieveCompletedProcessVariables(request.getInstanceId());
             }
+            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+            dto.setFields(Mapping.getFieldFromFormField(formData, variables));
+
+            List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+            List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(historics);
+            dto.setApprovals(approvalDtos);
+
+            dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));
+            result.add(dto);
         }
-        return new >(true, 0, "Succeed!", result);
+        return result;
     }
 
     @Override
     public byte[] export(String reference, String type, String staff, String startDate, String endDate)  {
 
 
-        DocumentType documentType = null;
+        DocumentType documentType;
 
         if(reference == null){
             if(type == null){

@@ -4,9 +4,9 @@ import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.SecurityService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SecurityServiceImpl implements SecurityService {
 
-    @Autowired
-    UserRestClient userRestClient;
+    private final UserRestClient userRestClient;
 
     @Override
     public boolean checkUserSignature(String username){
@@ -34,7 +34,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public EmployeeInfo getCurrentUser(){
         String username = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication()).map(Principal::getName).orElse("");
-        log.warn("Current user: " + username);
+        log.warn("Current user: {}", username);
         return userRestClient.getStaffByUsername(username);
     }
 
