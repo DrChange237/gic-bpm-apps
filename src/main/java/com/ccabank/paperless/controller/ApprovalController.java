@@ -21,52 +21,43 @@ public class ApprovalController {
 
     @PostMapping("/approval/decision")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> decision(HttpServletRequest request, @RequestBody AcceptedApprovalDto acceptedApprovalDto) {
-        AppServiceResult<?> result = approvalService.decision(request, acceptedApprovalDto);
-        return ResponseEntity.ok(result.getData());
+    public void decision(HttpServletRequest request, @RequestBody AcceptedApprovalDto acceptedApprovalDto) {
+        approvalService.decision(request, acceptedApprovalDto);
     }
-
-
 
     @PostMapping("/approval/take")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> take(HttpServletRequest request, @RequestBody TakeLeaveDto takeLeaveDto) {
-        AppServiceResult<?> result = approvalService.freeless(request, takeLeaveDto);
-        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    public void take(HttpServletRequest request, @RequestBody TakeLeaveDto takeLeaveDto) {
+        approvalService.freeless(request, takeLeaveDto);
     }
 
     @PostMapping("/approval/reassign")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> reassign(@RequestBody ReassignDto reassignDto) {
-        AppServiceResult<?> result = approvalService.reassign(reassignDto);
-        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    public void reassign(@RequestBody ReassignDto reassignDto) {
+        approvalService.reassign(reassignDto);
     }
 
     @GetMapping("/approval/getDetails")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> getDetails(@RequestParam(value = "id") String id) {
-        AppServiceResult<ApprovalListDto> result = approvalService.getApprovalDetail(id);
-        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    public ResponseEntity<ApprovalListDto> getDetails(@RequestParam(value = "id") String id) {
+        return ResponseEntity.ok(approvalService.getApprovalDetail(id));
     }
 
     @GetMapping("/approval/follow-up")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> followUp(@RequestParam(value = "id") String id) {
-        AppServiceResult<?> result = approvalService.relanceApprobation(id);
-        return ResponseEntity.ok(true);
+    public void followUp(@RequestParam(value = "id") String id) {
+        approvalService.relanceApprobation(id);
     }
 
     @GetMapping("/approval/getApprovalByStaffAndStatus")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
-        AppServiceResult<List<ApprovalListDto>> result = approvalService.getApprovalByStaff(request, status);
-        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    public ResponseEntity<List<ApprovalListDto>> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
+        return ResponseEntity.ok(approvalService.getApprovalByStaff(request, status));
     }
 
     @GetMapping("/approval/getAll")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> getAll(HttpServletRequest request) {
-        AppServiceResult<List<ApprovalListDto>> result = approvalService.getAllApprobations(request);
-        return ResponseEntity.badRequest().body(new HttpResponseError(null, result.getMessage()));
+    public ResponseEntity<List<ApprovalListDto>> getAll(HttpServletRequest request) {
+        return ResponseEntity.ok(approvalService.getAllApprobations(request));
     }
 }

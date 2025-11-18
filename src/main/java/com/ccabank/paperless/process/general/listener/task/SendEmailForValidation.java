@@ -13,6 +13,7 @@ import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.MapService;
 import com.ccabank.paperless.util.camunda.Mapping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendEmailForValidation  implements TaskListener {
@@ -74,7 +76,7 @@ public class SendEmailForValidation  implements TaskListener {
         List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(histories);
 
 
-        log.info(candidateUsers);
+        log.info(candidateUsers.toString());
 
         for (String user : candidateUsers) {
 

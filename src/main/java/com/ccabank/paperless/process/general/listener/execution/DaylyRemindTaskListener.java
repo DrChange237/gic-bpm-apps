@@ -3,6 +3,7 @@ package com.ccabank.paperless.process.general.listener.execution;
 import com.ccabank.paperless.service.faces.ApprovalService;
 import com.ccabank.paperless.service.faces.CamundaService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DaylyRemindTaskListener implements ExecutionListener {

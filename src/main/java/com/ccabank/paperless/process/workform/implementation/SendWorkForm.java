@@ -16,7 +16,6 @@ import com.ccabank.paperless.util.CustomMultipartFile;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
-import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
@@ -117,7 +116,6 @@ public class SendWorkForm implements JavaDelegate {
         ByteArrayResource resource = this.reportingRestClient.workform(form);
 
         EmailDto emailDto = new EmailDto();
-        emailDto.setFrom("notification@cca-bank.com");
         emailDto.setTo(staff.getEmail());
         emailDto.setSubject("Demande de Travail");
         emailDto.setCc(staff.getEmail());

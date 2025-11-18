@@ -23,8 +23,6 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -885,7 +883,6 @@ public class CamundaServiceImpl implements CamundaService {
         List<User> existingMembers = identityService.createUserQuery().memberOfGroup(groupId).list();
 
         for (User memberId : existingMembers) {
-            log.info(memberId);
             UserCamunda user = userCamundaService.getUserById(memberId.getId());
             removeUserFromGroup(user.getId(), groupId);
         }

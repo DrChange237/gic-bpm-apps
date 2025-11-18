@@ -6,6 +6,7 @@ import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class EmailUserTaskListener implements ExecutionListener {
@@ -31,7 +33,7 @@ public class EmailUserTaskListener implements ExecutionListener {
 
         String approbation = execution.getBpmnModelElementInstance().getId();
 
-        log.info("ID: " + approbation);
+        log.info("ID: {}", approbation);
 
         Task task = camundaService.getTaskByProcessInstanceIdAndTaskKey(processInstanceId, approbation);
 
@@ -61,7 +63,7 @@ public class EmailUserTaskListener implements ExecutionListener {
         ask.setRole(task.getName());
 
         for (String user : candidateUsers) {
-            log.info("Envoi de mail a " + user);
+            log.info("Envoi de mail a {}", user);
             ask.setApprover(user);
             emailService.sendAskApproval(ask);
         }
