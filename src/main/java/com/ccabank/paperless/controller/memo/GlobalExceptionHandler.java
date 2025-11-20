@@ -5,6 +5,7 @@ import com.ccabank.paperless.constant.MessageCode;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.HttpClientException;
 import com.ccabank.paperless.exception.NotFoundException;
+import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -38,6 +39,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +54,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
     private final EmailService emailService;
+
+    private final CamundaService camundaService;
 
 
     @Value("${server.error.include-stacktrace:never}")
@@ -114,7 +119,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> buildResponse(Exception exception, Object body, HttpHeaders headers, HttpStatus status, HttpServletRequest request) {
         log.error(exception.getClass().getSimpleName() + " {}\n", request.getRequestURI(), exception);
-        emailService.sendBug(exception.getMessage(), exception.getStackTrace().toString());
+        //emailService.sendBug(exception.getMessage(), exception.getStackTrace().toString());
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("label", exception.getMessage());
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        variables.put("traces", sw.toString());
+        camundaService.createProcessInstance("bug", "Bug", variables);
         if(body == null){
             ApiError response = new ApiError(status, exception, request);
             if(exception instanceof MethodArgumentNotValidException){
