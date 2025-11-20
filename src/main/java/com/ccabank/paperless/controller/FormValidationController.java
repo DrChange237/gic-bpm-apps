@@ -1,6 +1,5 @@
-package com.ccabank.paperless.controller.memo;
+package com.ccabank.paperless.controller;
 
-import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.ApprovalKey;
 import com.ccabank.paperless.entity.Request;
@@ -10,6 +9,8 @@ import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.ApprovalService;
 import com.ccabank.paperless.service.faces.CamundaService;
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,25 +23,21 @@ import javax.ws.rs.NotFoundException;
 import org.springframework.ui.Model;
 
 
+@Slf4j
 @Controller
-@Api(tags = "Paperless")
 @RequestMapping("/paperless")
+@RequiredArgsConstructor
 public class FormValidationController {
 
-    @Autowired
-    private ApprovalKeyRepository approvalKeyRepository;
+    private final ApprovalKeyRepository approvalKeyRepository;
 
-    @Autowired
-    private UserRestClient userRestClient;
+    private final UserRestClient userRestClient;
 
-    @Autowired
-    private CamundaService camundaService;
+    private final CamundaService camundaService;
 
-    @Autowired
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    private ApprovalService approvalService;
+    private final ApprovalService approvalService;
 
     @Value("${base_url}")
     private String api ;
@@ -64,7 +61,7 @@ public class FormValidationController {
 
         model.addAttribute("user", employeeInfo.getName() );
 
-        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        log.info("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
@@ -121,7 +118,7 @@ public class FormValidationController {
         UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         model.addAttribute("user", employeeInfo.getName());
 
-        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        log.info("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);
@@ -171,7 +168,7 @@ public class FormValidationController {
         UserRestDto employeeInfo = userRestClient.getAgencyByStaffUsername(approvalKey.getUsername());
         model.addAttribute("user", employeeInfo.getName());
 
-        System.out.println("UserName Employe " + employeeInfo.getUsername());
+        log.info("UserName Employe " + employeeInfo.getUsername());
         Task task = camundaService.getTaskDetails(approvalKey.getTaskId());
 
         Request request = requestRepository.findOneByReference(reference);

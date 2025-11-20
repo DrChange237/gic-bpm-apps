@@ -15,8 +15,7 @@ import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
-
+@Slf4j
 @Service
 @Transactional
-@Qualifier(MEMO_SERVICE)
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
@@ -37,16 +34,15 @@ public class EmailServiceImpl implements EmailService {
     private final UserRestClient userRestClient;
 
     @Value("${server_url}")
-    private String server_url;
+    private String serverUrl;
 
     @Value("${web.application.url}")
-    private String web_application;
+    private String webApplication;
 
 
     @Override
     public boolean sendBug(String title, String trace){
         EmailDto emailDto = new EmailDto();
-        emailDto.setFrom("notification@cca-bank.com");
         emailDto.setSubject("[BUG] " + title);
         emailDto.setTo("kevin.simo@cca-bank.com");
         emailDto.setBody(trace);
@@ -58,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean sendForValidation(ApprovalKey approvalKey, EmailAskApprovalDto ask, List<FieldDto> fields, List<ApprovalDto> approvalDtos){
         try{
-            System.out.println("sendForValidation-------------------------------------------------------------------------------------");
+            log.info("sendForValidation-------------------------------------------------------------------------------------");
 
             EmployeeInfo sender = userRestClient.getStaffByUsername(ask.getSender());
             EmployeeInfo approver = userRestClient.getStaffByUsername(ask.getApprover());
@@ -67,7 +63,6 @@ public class EmailServiceImpl implements EmailService {
             EmailDto emailDto = new EmailDto();
 
             //emailDto.setCc(sender.getEmail());
-            emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject(ask.getSubject());
             emailDto.setTo(approver.getEmail());
 
@@ -136,7 +131,7 @@ public class EmailServiceImpl implements EmailService {
             htmlContent.append("</ul><br>");
 
 
-            htmlContent.append("<a href='" + server_url + "/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
+            htmlContent.append("<a href='" + serverUrl + "/api/paperless/validationForm?key="+ approvalKey.getId() +"&taskId="+ approvalKey.getTaskId() +"&reference="+ approvalKey.getReference() +"' class='button'>Valider / Rejeter</a>")
                     .append("</div>")
                     .append("</body></html>");
 
@@ -144,7 +139,7 @@ public class EmailServiceImpl implements EmailService {
 
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
         return true;
@@ -153,14 +148,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean sendFiles(EmailAskApprovalDto ask){
         try{
-            System.out.println("sendFiles-------------------------------------------------------------------------------------");
+            log.info("sendFiles-------------------------------------------------------------------------------------");
 
             EmployeeInfo sender = userRestClient.getStaffByUsername(ask.getSender());
 
             EmailDto emailDto = new EmailDto();
             emailDto.setTo(sender.getEmail());
             emailDto.setCc(ask.getBCC());
-            emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject(ask.getSubject());
 
 
@@ -173,7 +167,7 @@ public class EmailServiceImpl implements EmailService {
                     "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-bottom: 40px; text-align: center\">Bonjour M. <span>"+ sender.getFirstName() +"</span>, <br> " +  ask.getMessage() + "  </div>\n" +
                     "            \n" +
                     "            \n" +
-                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande en <a href='" + this.web_application + "/paperless"  + "'> cliquant ici </a> </div>\n" +
+                    "            <div class=\"sans-serif\" style=\"color: #969AA1; font-size: 18px; line-height: 28px; margin-top: 20px; \">Bien vouloir vous connecter pour consulter cette demande en <a href='" + this.webApplication + "/paperless"  + "'> cliquant ici </a> </div>\n" +
                     "            <div style=\"color: #969AA1; font-size: 13px; margin-top: 30px;\">Merci, <br><strong>CCA BANK</strong></div>\n" +
                     "        </th>\n" +
                     "    </tr>\n" +
@@ -186,7 +180,7 @@ public class EmailServiceImpl implements EmailService {
             emailDto.setAttachments(ask.getAttachments());
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
 
@@ -197,17 +191,16 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean sendAskApproval(EmailAskApprovalDto ask){
         try{
-            System.out.println("sendAskApproval-------------------------------------------------------------------------------------");
+            log.info("sendAskApproval-------------------------------------------------------------------------------------");
 
             EmployeeInfo sender = userRestClient.getStaffByUsername(ask.getSender());
             EmployeeInfo approve = userRestClient.getStaffByUsername(ask.getApprover());
 
-            System.out.println("Email :" + approve.getEmail());
+            log.info("Email :" + approve.getEmail());
             EmailDto emailDto = new EmailDto();
 
             emailDto.setTo(approve.getEmail());
             emailDto.setCc(sender.getEmail());
-            emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject(ask.getSubject());
 
 
@@ -272,7 +265,7 @@ public class EmailServiceImpl implements EmailService {
 
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
 
@@ -283,23 +276,19 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendConfirmApproval(EmailAskApprovalDto ask){
 
         try {
-            System.out.println("sendConfirmApproval");
+            log.info("sendConfirmApproval");
             UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender());
 
-            String emailApprover = "";
-            String nameApprover = "";
-
             UserRestDto approver = userRestClient.getAgencyByStaffUsername(ask.getApprover());
-            System.out.println("Email :" + approver.getEmail());
-            emailApprover = approver.getEmail();
-            nameApprover = approver.getName();
+            log.info("Email : {}", approver.getEmail());
+            String emailApprover = approver.getEmail();
+            String nameApprover = approver.getName();
 
 
             EmailDto emailDto = new EmailDto();
 
             emailDto.setTo(sender.getEmail());
             emailDto.setCc(emailApprover);
-            emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject("Confirmation d'approbation");
 
             emailDto.setBody("<table class=\"row\" align=\"center\" bgcolor=\"#F8F8F8\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">\n" +
@@ -358,7 +347,7 @@ public class EmailServiceImpl implements EmailService {
 
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
         return true;
@@ -368,7 +357,7 @@ public class EmailServiceImpl implements EmailService {
     public boolean sendRejectedApproval(EmailAskApprovalDto ask){
         try {
 
-            System.out.println("sendRejectedApproval");
+            log.info("sendRejectedApproval");
 
             UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender());
 
@@ -379,7 +368,6 @@ public class EmailServiceImpl implements EmailService {
 
             emailDto.setTo(sender.getEmail());
             emailDto.setCc(approver.getEmail());
-            emailDto.setFrom("notification@cca-bank.com");
             emailDto.setSubject("Refus d'approbation");
 
             emailDto.setBody("<table class=\"row\" align=\"center\" bgcolor=\"#F8F8F8\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">\n" +
@@ -438,7 +426,7 @@ public class EmailServiceImpl implements EmailService {
 
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
         return true;
@@ -451,14 +439,13 @@ public class EmailServiceImpl implements EmailService {
         EmailDto emailDto = new EmailDto();
 
         emailDto.setTo(sender.getEmail());
-        emailDto.setFrom("notification@cca-bank.com");
         emailDto.setSubject("Votre " + request.getType().getName() + " a été suspendu(e)");
         emailDto.setBody("Vous avez initié une " + request.getType().getName() + ", elle a été suspendu(e) : " + reason);
 
         try {
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
         return true;
@@ -472,14 +459,11 @@ public class EmailServiceImpl implements EmailService {
 
         UserRestDto sender = userRestClient.getAgencyByStaffUsername(ask.getSender());
 
-        String from = sender.getEmail();
-
-        System.out.println("Email :" + sender.getEmail());
+        log.info("Email : {}", sender.getEmail());
 
         EmailDto emailDto = new EmailDto();
 
         emailDto.setTo(sender.getEmail());
-        emailDto.setFrom("notification@cca-bank.com");
         emailDto.setSubject(ask.getType() + " validé(e)");
 
         emailDto.setBody("<table class=\"row\" align=\"center\" bgcolor=\"#F8F8F8\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\">\n" +
@@ -527,7 +511,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             emailRestClient.send(emailDto);
         }catch (Exception e){
-            System.out.println("Email Error" + e.getMessage());
+            log.error("Email Error", e);
         }
 
         return true;

@@ -16,6 +16,7 @@ import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import com.ccabank.paperless.util.WorkDayCalculator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendHandOver implements JavaDelegate {
@@ -55,7 +56,7 @@ public class SendHandOver implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
 
-        System.out.println("Send Hand Over");
+        log.info("Send Hand Over");
 
             //Générer le HandOver
             HandOverForm handOverForm = new HandOverForm();
@@ -75,22 +76,22 @@ public class SendHandOver implements JavaDelegate {
             handOverForm.setEmployee(employee);
 
 
-            System.out.println("Je suis au niveau des dates");
+            log.info("Je suis au niveau des dates");
             Date startDateD = (Date) delegateExecution.getVariable("realStartDate");
             LocalDate startDate = startDateD.toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
             handOverForm.setStartDate(startDate);
-            System.out.println(startDate);
+            log.info(String.valueOf(startDate));
 
 
             Long daysLong =  (Long) delegateExecution.getVariable("days") ;
             Integer days = daysLong.intValue();
-            System.out.println(days);
+            log.info(String.valueOf(days));
 
 
             LocalDate endDate = WorkDayCalculator.addBusinessDays(startDate, days);
-            System.out.println(endDate);
+            log.info(String.valueOf(endDate));
 
             delegateExecution.setVariable("endDate", endDate);
 
@@ -131,7 +132,7 @@ public class SendHandOver implements JavaDelegate {
             String mainWork = (String) delegateExecution.getVariable("mainWork");
             handOverForm.setResponsibilities(mainWork);
 
-            System.out.println(handOverForm.toString());
+            log.info(handOverForm.toString());
 
 
             //Envoyer le HandOver Par Email à l'intérimaire

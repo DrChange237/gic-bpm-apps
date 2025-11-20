@@ -4,7 +4,6 @@ import com.ccabank.paperless.dto.memo.ApprovalDto;
 import com.ccabank.paperless.entity.Approbation;
 import com.ccabank.paperless.entity.ApprovalStatus;
 import com.ccabank.paperless.entity.ApprovalType;
-import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.repository.ApprobationRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.MapService;
@@ -14,7 +13,6 @@ import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

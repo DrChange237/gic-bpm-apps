@@ -19,7 +19,7 @@ public class InitDatabaseService implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         List<DocumentType> documentTypes = Stream.of(
                 new DocumentType("Demande de congé annuel","vacation"),

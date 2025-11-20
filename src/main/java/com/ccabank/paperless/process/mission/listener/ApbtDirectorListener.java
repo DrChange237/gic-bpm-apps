@@ -1,9 +1,11 @@
 package com.ccabank.paperless.process.mission.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class ApbtDirectorListener implements TaskListener {
 
@@ -14,7 +16,7 @@ public class ApbtDirectorListener implements TaskListener {
 
         delegateTask.setAssignee(n1); // Remplacez "userId" par l'ID de l'utilisateur
 
-        System.out.println("Assignation Directeur à " + n1);
+        log.info("Assignation Directeur à {}", n1);
 
     }
 }

@@ -6,6 +6,7 @@ import com.ccabank.paperless.repository.GroupRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.UserCamundaService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.form.StartFormData;
@@ -22,8 +23,6 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +31,10 @@ import java.util.stream.Collectors;
 
 import static org.camunda.bpm.engine.impl.cmmn.execution.CaseExecutionState.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CamundaServiceImpl implements CamundaService {
-
-    private static final Logger log = LoggerFactory.getLogger(CamundaServiceImpl.class);
 
     private final RepositoryService repositoryService;
 
@@ -238,7 +236,7 @@ public class CamundaServiceImpl implements CamundaService {
 
         // Vérifier si la tâche existe
         if (task == null) {
-            System.out.println("TASK IS NULL");
+            log.info("TASK IS NULL");
             return assignes;
             //throw new IllegalArgumentException("Task not found with ID: " + taskId);
         }
@@ -311,7 +309,7 @@ public class CamundaServiceImpl implements CamundaService {
         TaskQuery taskQuery = taskService.createTaskQuery().executionId(executionId).active();
         // Obtenir la liste des tâches
         Task task = taskQuery.singleResult();
-        System.out.println("la tache associé a cette executio ID est :" + task.getName());
+        log.info("la tache associé a cette executio ID est :" + task.getName());
         // Extraire et retourner les IDs des tâches
         return task.getId();
     }
@@ -335,7 +333,7 @@ public class CamundaServiceImpl implements CamundaService {
     public void cancelOthersToken(String processInstanceId, String executionId) {
         List<Execution> executions = this.getActiveTokens(processInstanceId);
         for (Execution execution : executions) {
-            System.out.println("Executing: " + execution.getId());
+            log.info("Executing: " + execution.getId());
             if (!execution.getId().equals(executionId)) {
                 String taskId = this.getTaskIdsByExecutionId(execution.getId());
                 this.suspendTask(taskId);
@@ -409,7 +407,7 @@ public class CamundaServiceImpl implements CamundaService {
         // Créer un incident
         Incident incident = runtimeService.
                 createIncident(incidentType, processInstanceId, incidentMessage);
-        System.out.println("Incident created: " + incident.getId());
+        log.info("Incident created: " + incident.getId());
     }
 
     @Override
@@ -588,7 +586,7 @@ public class CamundaServiceImpl implements CamundaService {
             runtimeService.deleteProcessInstance(processInstance.getId(), "Stopped by admin"); // Motif d'arrêt
         }
 
-        System.out.println(activeInstances.size() + " instances de processus arrêtées.");
+        log.info(activeInstances.size() + " instances de processus arrêtées.");
     }
 
     @Override
@@ -598,7 +596,7 @@ public class CamundaServiceImpl implements CamundaService {
         }catch (Exception e){
             log.error(e.getMessage());
         }
-        System.out.println(" instances de processus arrêtées.");
+        log.info(" instances de processus arrêtées.");
     }
 
 
@@ -744,7 +742,7 @@ public class CamundaServiceImpl implements CamundaService {
                 .list()
                 .forEach(task -> {
                     if(task.getId() != null){
-                        System.out.println(task.getName());
+                        log.info(task.getName());
                         taskService.setAssignee(task.getId(), user.getId());
                     }
                 });*/
@@ -812,7 +810,7 @@ public class CamundaServiceImpl implements CamundaService {
         Map<String, Object> variablesMap = new HashMap<>();
 
         for (HistoricVariableInstance variable : variables) {
-            System.out.println("Variable Name: " + variable.getName() + ", Value: " + variable.getValue());
+            log.info("Variable Name: " + variable.getName() + ", Value: " + variable.getValue());
             variablesMap.put(variable.getName(), variable.getValue());
         }
 
@@ -885,7 +883,6 @@ public class CamundaServiceImpl implements CamundaService {
         List<User> existingMembers = identityService.createUserQuery().memberOfGroup(groupId).list();
 
         for (User memberId : existingMembers) {
-            System.out.println(memberId);
             UserCamunda user = userCamundaService.getUserById(memberId.getId());
             removeUserFromGroup(user.getId(), groupId);
         }

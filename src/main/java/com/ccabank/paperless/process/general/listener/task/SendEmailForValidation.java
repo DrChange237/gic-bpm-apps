@@ -13,6 +13,7 @@ import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.MapService;
 import com.ccabank.paperless.util.camunda.Mapping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendEmailForValidation  implements TaskListener {
@@ -47,7 +49,7 @@ public class SendEmailForValidation  implements TaskListener {
     @Override
     public void notify(DelegateTask delegateTask) {
 
-        System.out.println("SendEmailForValidation Task Listener");
+        log.info("SendEmailForValidation Task Listener");
         List<String> candidateUsers = getCandidateUserIds(delegateTask);
         EmailAskApprovalDto ask = new EmailAskApprovalDto();
 
@@ -66,15 +68,15 @@ public class SendEmailForValidation  implements TaskListener {
         StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
         Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
 
-        System.out.println("Recupération des Champs");
+        log.info("Recupération des Champs");
         List<FieldDto> fields = Mapping.getFieldFromFormField(formData, variables);
 
-        System.out.println("Recupération des Approbations");
+        log.info("Recupération des Approbations");
         List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
         List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(histories);
 
 
-        System.out.println(candidateUsers);
+        log.info(candidateUsers.toString());
 
         for (String user : candidateUsers) {
 
@@ -85,7 +87,7 @@ public class SendEmailForValidation  implements TaskListener {
             ask.setApprover(user);
 
             approvalKeyRepository.save(approvalKey);
-            System.out.println("Envoi de mail a " + user);
+            log.info("Envoi de mail a " + user);
             emailService.sendForValidation(approvalKey, ask, fields, approvalDtos);
         }
 

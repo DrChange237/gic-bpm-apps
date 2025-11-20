@@ -6,6 +6,7 @@ import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendEmailGroupListener implements TaskListener {
@@ -33,7 +35,7 @@ public class SendEmailGroupListener implements TaskListener {
     public void notify(DelegateTask delegateTask) {
 
 
-        System.out.println("SendEmailGroupListener Task Listener");
+        log.info("SendEmailGroupListener Task Listener");
 
         List<String> candidateUsers = getCandidateUserIds(delegateTask);
 
@@ -51,10 +53,10 @@ public class SendEmailGroupListener implements TaskListener {
         ask.setSubject("Demande d'approbation - " + definition.getName());
         ask.setRole(delegateTask.getName());
 
-        System.out.println(candidateUsers);
+        log.info(candidateUsers.toString());
 
         for (String user : candidateUsers) {
-            System.out.println("Envoi de mail a " + user);
+            log.info("Envoi de mail a " + user);
             ask.setApprover(user);
             emailService.sendAskApproval(ask);
         }

@@ -4,7 +4,6 @@ import com.ccabank.paperless.dto.email.AttachmentDto;
 import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.dto.reporting.InterimForm;
-import com.ccabank.paperless.dto.reporting.VacationDecision;
 import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
@@ -19,6 +18,7 @@ import com.ccabank.paperless.service.faces.EmailService;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SendInterimLetter implements JavaDelegate {
@@ -56,7 +57,7 @@ public class SendInterimLetter implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
 
-            System.out.println("Sending interim letter");
+            log.info("Sending interim letter");
 
             InterimForm form = new InterimForm();
 
@@ -67,9 +68,9 @@ public class SendInterimLetter implements JavaDelegate {
             interim.setMatricule(interimaire.getMatricule());
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
             String function = Optional.ofNullable(interimaire)
-                    .map(i -> i.getFunction())
-                    .map(f -> f.getFunction())
-                    .map(ff -> ff.getName())
+                    .map(EmployeeInfo::getFunction)
+                    .map(EmployeeFunctionInfo::getFunction)
+                    .map(FunctionInfo::getName)
                     .orElse("");
             interim.setFunction(function);
             interim.setSex(InterimForm.Employee.Sex.MALE);
@@ -98,7 +99,7 @@ public class SendInterimLetter implements JavaDelegate {
 
             String typeInterim = (String) delegateExecution.getVariable("typeInterim");
 
-            System.out.println(typeInterim);
+            log.info(typeInterim);
 
             form.setSubject(InterimForm.Subject.valueOf(typeInterim));
 
@@ -123,12 +124,11 @@ public class SendInterimLetter implements JavaDelegate {
             form.setEndDate(endDate);
 
 
-            EmployeeInfo info = userRestClient.getStaffByUsername(interimaire.getUsername());
             String signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
             InterimForm.Signatory signatory = new InterimForm.Signatory();
 
 
-        String dch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
+            String dch = (String) delegateExecution.getVariable(ApprobationLevel.APPROBATION_CA_VALIDATION);
             if(dch != null){
                 EmployeeInfo dchInfo = userRestClient.getStaffByUsername(dch);
                 signature = userRestClient.getEmployeeSignature(dch);
@@ -161,7 +161,7 @@ public class SendInterimLetter implements JavaDelegate {
              }
 
 
-            System.out.println(form);
+            log.info(form.toString());
 
             ByteArrayResource resource = reportingRestClient.interim(form);
 

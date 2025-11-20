@@ -19,6 +19,7 @@ import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.service.faces.ProcessUnityService;
 import com.ccabank.paperless.service.impl.ApprovalServiceImpl;
 import com.ccabank.paperless.util.CustomMultipartFile;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
@@ -38,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class SendResumptionToRH implements JavaDelegate {
 
@@ -119,7 +121,7 @@ public class SendResumptionToRH implements JavaDelegate {
         }
 
         String supervisorUser = (String) delegateExecution.getVariable("Apbt_n1");
-        System.out.println("Apbt_n1 :" + supervisorUser);
+        log.info("Apbt_n1 :" + supervisorUser);
         EmployeeInfo supervisor =  userRestClient.getStaffByUsername(supervisorUser);
 
 

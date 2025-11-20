@@ -24,8 +24,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class ExcelExtractUtils {
 
@@ -133,7 +133,7 @@ public class ExcelExtractUtils {
             }
         }else{
             String type = key.split("\\|")[0];
-            String property = null;
+            String property;
             switch (type){
                 case "staff":
                     String staffVariable =  key.split("\\|")[1];
@@ -227,7 +227,7 @@ public class ExcelExtractUtils {
         headerRow = sheet.createRow(row);
 
         for (Map.Entry<String, String> entry : properties.entrySet()) {
-            System.out.println("Clé : " + entry.getKey() + ", Valeur : " + entry.getValue());
+            log.info("Clé : " + entry.getKey() + ", Valeur : " + entry.getValue());
             // Écrire l'en-tête
             Cell cell = headerRow.createCell(col);
             cell.setCellStyle(cellStyle);
@@ -242,10 +242,8 @@ public class ExcelExtractUtils {
             Map<String, Object> objectMap = new HashMap<>();
 
             for (Map.Entry<String, String> entry : elements.entrySet()) {
-                switch (entry.getValue()){
-                    case "staff":
-                        objectMap.put(entry.getKey(), getUserMap(request.getStaff()));
-                        break;
+                if("staff".equalsIgnoreCase(entry.getValue())) {
+                    objectMap.put(entry.getKey(), getUserMap(request.getStaff()));
                 }
             }
 
@@ -256,7 +254,7 @@ public class ExcelExtractUtils {
                 cell.setCellStyle(cellStyle2);
 
                 String value = getValueInProcess(request, entry.getKey(), objectMap);
-                log.warn("Value "+ value);
+                log.warn("Value {}", value);
                 cell.setCellValue(value);
                 if(entry.getValue().contains("Date")){
                     if(value != null){
@@ -272,7 +270,7 @@ public class ExcelExtractUtils {
                                 cell.setCellStyle(dateCellStyle);
                                 cell.setCellValue(localDateTime);
                             }catch (Exception e){
-                                log.error("Erreur : "+e.getMessage());
+                                log.error("Erreur : ", e);
                             }
                         }
                     }

@@ -67,7 +67,7 @@ public class SendVacation implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
 
-            System.out.println("Send Valided Vacation");
+            log.info("Send Valided Vacation");
 
             Request request = requestService.confirmRequest(delegateExecution.getProcessInstanceId());
 

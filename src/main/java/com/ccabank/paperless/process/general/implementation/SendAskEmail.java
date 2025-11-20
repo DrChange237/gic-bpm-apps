@@ -5,6 +5,7 @@ import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -12,6 +13,7 @@ import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class SendAskEmail implements JavaDelegate {
 
@@ -53,11 +55,11 @@ public class SendAskEmail implements JavaDelegate {
         String owner = (String) execution.getVariable("owner");
         String reference = (String) execution.getVariable("reference");
 
-        System.out.println("Approver : " + apbt_interimaire);
+        log.info("Approver : " + apbt_interimaire);
 
-        System.out.println("Approbation : " + this.getApprobation());
+        log.info("Approbation : " + this.getApprobation());
 
-        System.out.println("CamundaService  : " + camundaService);
+        log.info("CamundaService  : " + camundaService);
 
         Task task = camundaService.getTaskByProcessInstanceIdAndTaskKey(processInstanceId, this.approbation);
 

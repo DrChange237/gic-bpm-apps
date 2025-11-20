@@ -12,8 +12,6 @@ import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.specification.FileSpecifications;
 import com.ccabank.paperless.util.file.PdfUtils;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.exceptions.BadPasswordException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -27,7 +25,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.ws.rs.BadRequestException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;

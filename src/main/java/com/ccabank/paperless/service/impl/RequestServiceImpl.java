@@ -1,56 +1,42 @@
 package com.ccabank.paperless.service.impl;
 
-import com.ccabank.paperless.constant.AppError;
-import com.ccabank.paperless.domain.AppServiceResult;
 import com.ccabank.paperless.dto.memo.*;
-import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
-import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.entity.*;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.NotFoundException;
 import com.ccabank.paperless.mappers.RequestMapper;
-import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.report.util.ExcelExtractUtils;
 import com.ccabank.paperless.repository.*;
 import com.ccabank.paperless.service.faces.*;
-import com.ccabank.paperless.specification.FileSpecifications;
-import com.ccabank.paperless.specification.RequestSpecifications;
 import com.ccabank.paperless.util.DateUtil;
 import com.ccabank.paperless.util.camunda.Mapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.camunda.bpm.engine.form.StartFormData;
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.ccabank.paperless.constant.BeanIdConstant.MEMO_SERVICE;
-
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class RequestServiceImpl implements RequestService {
-
-    private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     private final RequestRepository requestRepository;
 
@@ -70,28 +56,22 @@ public class RequestServiceImpl implements RequestService {
 
     private final EmailService emailService;
 
-    private final UserRestClient userRestClient;
-
-    private final ApprobationRepository approbationRepository;
-
-    private final FileRepository fileRepository;
-
     private final ExcelExtractUtils utils;
 
 
     @Override
     @Transactional
-    public AppServiceResult<Request> newRequest(RequestDto requestDto, HttpServletRequest req) {
+    public Request newRequest(RequestDto requestDto, HttpServletRequest req) {
 
-            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+            log.info("newRequest : methode invocation");
 
             EmployeeInfo employeeInfo = securityService.getCurrentUser();
 
             if(employeeInfo == null){
-                System.out.println("Erreur : employeeInfo is null");
+                log.info("Erreur : employeeInfo is null");
             }
 
-            System.out.println("UserName Employe" + employeeInfo.getUsername());
+            log.info("UserName Employe" + employeeInfo.getUsername());
 
             Request request = new Request();
             request.setCreatedAt(LocalDateTime.now());
@@ -121,57 +101,41 @@ public class RequestServiceImpl implements RequestService {
 
             request.setInstanceId(instance.getId());
 
-            request = requestRepository.save(request);
-
-            return new AppServiceResult<>(true, 0, "Succeed!", request);
+            return requestRepository.save(request);
     }
 
     @Override
     @Transactional
-    public AppServiceResult<Request> update(RequestDto requestDto) {
-        try {
-            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
+    public Request update(RequestDto requestDto) {
+        Request request = this.requestRepository.getOne(requestDto.getId());
 
-            Request request = this.requestRepository.getOne(requestDto.getId());
-
-            if(request.getStatus().equals(RequestStatus.ACCEPTED) || request.getStatus().equals(RequestStatus.PENDING) ){
-                throw new Exception("Cette requete est déjà acceptée ou encore en cours");
-            }
-
-            request.setLastModification(LocalDateTime.now());
-            request.setStatus(RequestStatus.DRAFT);
-            request = requestRepository.save(request);
-
-            Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
-            //Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
-            //variables.putAll(variablesApprovals);
-            variables.put("owner", request.getStaff());
-            variables.put("reference", request.getReference());
-
-            ProcessInstance instance = camundaService.getProcessInstance(request.getInstanceId());
-            camundaService.setProcessVariables(instance.getId(), variables);
-
-            //request.setInstanceId(instance.getId());
-
-            request = requestRepository.save(request);
-
-            return new AppServiceResult<>(true, 0, "Succeed!", request);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " newRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
+        if(request.getStatus().equals(RequestStatus.ACCEPTED) || request.getStatus().equals(RequestStatus.PENDING) ){
+            throw new ValidationException("Cette requête est déjà acceptée ou encore en cours");
         }
+
+        request.setLastModification(LocalDateTime.now());
+        request.setStatus(RequestStatus.DRAFT);
+        request = requestRepository.save(request);
+
+        Map<String, Object> variables = mapping.getVariablesFromField(requestDto.getFields());
+        //Map<String, Object> variablesApprovals = Mapping.getVariablesFromApproval(requestDto.getApprovals());
+        //variables.putAll(variablesApprovals);
+        variables.put("owner", request.getStaff());
+        variables.put("reference", request.getReference());
+
+        ProcessInstance instance = camundaService.getProcessInstance(request.getInstanceId());
+        camundaService.setProcessVariables(instance.getId(), variables);
+
+        //request.setInstanceId(instance.getId());
+
+        return requestRepository.save(request);
     }
 
 
     @Override
     @Transactional
-    public AppServiceResult<?> validateRequest(Long id) {
-
-
-        Request request = requestRepository.getOne(id);
+    public void validateRequest(Long id) {
+        Request request = requestRepository.findById(id).orElseThrow(() -> new NotFoundException("Aucune requête retrouvée"));
         request.setLastModification(LocalDateTime.now());
         request.setValidationDate(LocalDateTime.now());
 
@@ -181,12 +145,8 @@ public class RequestServiceImpl implements RequestService {
             throw new BadRequestException("l'utilisateur " + request.getStaff() + " n'a pas de signature, bien vouloir charger votre signature");
         }
 
-        if(request == null){
-            throw new BadRequestException("Aucune requete retrouvée");
-        }
-
         if(!request.getStatus().equals(RequestStatus.DRAFT)){
-            throw new BadRequestException("Cette requete à déjà été validée");
+            throw new BadRequestException("Cette requête à déjà été validée");
         }
 
         request.setStatus(RequestStatus.PENDING);
@@ -196,275 +156,174 @@ public class RequestServiceImpl implements RequestService {
         Map<String, Object> variables = new HashMap<>();
         task.setAssignee(requestDto.getStaff());
         camundaService.completeTask(task.getId(), variables);
-
-        return new AppServiceResult<>(true, 0, "Succeed!", request );
-
     }
 
     @Override
-    public AppServiceResult<?> download(Long id) {
-        try {
-            Request request = requestRepository.getOne(id);
-            request.setLastModification(LocalDateTime.now());
+    public Request download(Long id) {
+        Request request = requestRepository.findById(id).orElseThrow(() -> new NotFoundException("Aucune requête retrouvée"));
+        request.setLastModification(LocalDateTime.now());
 
-            if (request == null) {
-                throw new Exception("Aucune requete retrouvée");
-            }
-
-            if (!request.getStatus().equals(RequestStatus.ACCEPTED)) {
-                throw new Exception("Cette requete n'est pas encore acceptée");
-            }
-
-            camundaService.triggerProcessRestart("Download", request.getInstanceId());
-            return new AppServiceResult<>(true, 0, "Succeed!", request);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " downloadRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        if (!request.getStatus().equals(RequestStatus.ACCEPTED)) {
+            throw new ValidationException("Cette requête n'est pas encore acceptée");
         }
+
+        camundaService.triggerProcessRestart("Download", request.getInstanceId());
+        return request;
     }
 
     @Override
-    public AppServiceResult<RequestInfo> details(Long id) {
-        try {
+    public RequestInfo details(Long id) {
+        Request request = requestRepository.getOne(id);
+        RequestInfo dto = requestMapper.toDto(request);
+        dto.setDocumentType(request.getType().getName());
+        StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+        Map<String, Object> variables;
 
-            Request request = requestRepository.getOne(id);
-            RequestInfo dto = requestMapper.toDto(request);
-            dto.setDocumentType(request.getType().getName());
-            StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
-            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
-            Map<String, Object> variables = new HashMap<>();
-
-            if(camundaService.isProcessInstanceActive(request.getInstanceId())){
-                variables = camundaService.getProcessVariables(request.getInstanceId());
-            }else {
-                variables = camundaService.getHistoricProcessVariables(request.getInstanceId());
-            }
-
-            List<FieldDto> updateFields = new ArrayList<>();
-
-            for (FieldDto field : documentStructure.getFields()) {
-                field.setValue(String.valueOf(variables.get(field.getKey())));
-                updateFields.add(field);
-            }
-
-            dto.setFields(updateFields);
-            dto.setFiles(fileService.getAllFiles(request.getReference(), ""));
-
-            //List<HistoricActivityInstance> historics = camundaService.getHistoricActivityInstances(request.getInstanceId());
-
-            List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
-
-            List<ApprovalDto> approvalDtos = mapService.mapTaskToApprovalDto(histories);
-            dto.setApprovals(approvalDtos);
-
-            return new AppServiceResult<>(true, 0, "Succeed!", dto);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        if(camundaService.isProcessInstanceActive(request.getInstanceId())){
+            variables = camundaService.getProcessVariables(request.getInstanceId());
+        }else {
+            variables = camundaService.getHistoricProcessVariables(request.getInstanceId());
         }
+
+        List<FieldDto> updateFields = new ArrayList<>();
+
+        for (FieldDto field : documentStructure.getFields()) {
+            field.setValue(String.valueOf(variables.get(field.getKey())));
+            updateFields.add(field);
+        }
+
+        dto.setFields(updateFields);
+        dto.setFiles(fileService.getAllFiles(request.getReference(), ""));
+
+        List<HistoricTaskInstance> histories = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+
+        List<ApprovalDto> approvalDtos = mapService.mapTaskToApprovalDto(histories);
+        dto.setApprovals(approvalDtos);
+
+        return dto;
     }
 
     @Override
-    public AppServiceResult<RequestInfo> detailForUpdate(Long id) {
-        try {
+    public RequestInfo detailForUpdate(Long id) {
+        Request request = requestRepository.getOne(id);
+        RequestInfo dto = requestMapper.toDto(request);
+        dto.setDocumentType(request.getType().getName());
+        StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
+        DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
 
-            Request request = requestRepository.getOne(id);
-            RequestInfo dto = requestMapper.toDto(request);
-            dto.setDocumentType(request.getType().getName());
-            StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
-            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+        List<ApprovalDto> approvalsStructures = documentStructure.getApprovals();
 
-            List<ApprovalDto> approvalsStructures = documentStructure.getApprovals();
+        Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
 
-            Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+        List<FieldDto> updateFields = new ArrayList<>();
 
-            List<FieldDto> updateFields = new ArrayList<>();
-
-            for (FieldDto field : documentStructure.getFields()) {
-                field.setValue(String.valueOf(variables.get(field.getKey())));
-                updateFields.add(field);
-            }
-
-            dto.setFields(updateFields);
-            dto.setFiles(fileService.getAllFiles(request.getReference(), ""));
-            dto.setApprovals(approvalsStructures);
-
-            return new AppServiceResult<>(true, 0, "Succeed!", dto);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " detailForUpdate : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        for (FieldDto field : documentStructure.getFields()) {
+            field.setValue(String.valueOf(variables.get(field.getKey())));
+            updateFields.add(field);
         }
+
+        dto.setFields(updateFields);
+        dto.setFiles(fileService.getAllFiles(request.getReference(), ""));
+        dto.setApprovals(approvalsStructures);
+
+        return dto;
     }
 
     @Override
-    public AppServiceResult<RequestInfo> suspend(Long id, String reason) {
-        try {
+    public RequestInfo suspend(Long id, String reason) {
+        Request request = requestRepository.getOne(id);
 
-            Request request = requestRepository.getOne(id);
-
-            if(request.getStatus().equals(RequestStatus.ACCEPTED)){
-                throw new BadRequestException("Cette requete a déjà été validé");
-            }
-
-
-            if(request.getInstanceId() != null){
-                camundaService.deleteProcessInstance(request.getInstanceId());
-            }
-
-            request.setStatus(RequestStatus.SUSPENDED);
-            requestRepository.save(request);
-            emailService.sendSuspendRequest(request, reason);
-
-            return new AppServiceResult<>(true, 0, "Succeed!", null);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " suspend : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
+        if(request.getStatus().equals(RequestStatus.ACCEPTED)){
+            throw new BadRequestException("Cette requête a déjà été validé");
         }
+
+
+        if(request.getInstanceId() != null){
+            camundaService.deleteProcessInstance(request.getInstanceId());
+        }
+
+        request.setStatus(RequestStatus.SUSPENDED);
+        request = requestRepository.save(request);
+        emailService.sendSuspendRequest(request, reason);
+        return requestMapper.toDto(request);
     }
 
 
     @Override
     @Transactional
-    public AppServiceResult<RequestInfo> achivage(ArchivageDto archivageDto) {
-        try {
-            logger.info(MEMO_SERVICE + "achivage : methode invocation");
+    public RequestInfo achivage(ArchivageDto archivageDto) {
+        Request request = requestRepository.getOne(archivageDto.getId());
 
-            Request request = requestRepository.getOne(archivageDto.getId());
+        request.setArchived(archivageDto.getDecision());
 
-            request.setArchived(archivageDto.getDecision());
+        request = this.requestRepository.save(request);
 
-            request = this.requestRepository.save(request);
+        return requestMapper.toDto(request);
+    }
 
+    @Override
+    public RequestInfo getRequestByReference(String reference) {
+        Request request = requestRepository.findOneByReference(reference);
 
+        return requestMapper.toDto(request);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestByStaff(String staff, String status) {
+        List<Request> requests = requestRepository.findByStaffAndStatus(staff, RequestStatus.valueOf(status));
+        return getConvertedResult(requests);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestAll(HttpServletRequest req) {
+        EmployeeInfo employeeInfo = securityService.getCurrentUser();
+        log.info("UserName Employe" + employeeInfo.getUsername());
+        List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
+
+        return getConvertedResult(requests);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestHistory(HttpServletRequest req) {
+        EmployeeInfo employeeInfo = securityService.getCurrentUser();
+        log.info("UserName Employe" + employeeInfo.getUsername());
+        List<Request> requests = requestRepository.findByOrderByLastModificationDesc();
+        return getConvertedResult(requests);
+    }
+
+    private List<RequestInfo> getConvertedResult(List<Request> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<RequestInfo> result = new ArrayList<>();
+        for (Request request : requests) {
             RequestInfo dto = requestMapper.toDto(request);
+            dto.setDocumentType(request.getType().getName());
+            StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
 
-            //DocumentStructure stucture = FieldUtils.getStructure(type.getStructure());
-
-            return new AppServiceResult<>(true, 0, "Succeed!", dto);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " validateRequest : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
-    }
-
-    @Override
-    public AppServiceResult<RequestInfo> getRequestByReference(String reference) {
-        try {
-            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
-
-            Request request = requestRepository.findOneByReference(reference);
-
-            RequestInfo requestDto = requestMapper.toDto(request);
-
-            return new AppServiceResult<>(true, 0, "Succeed!", requestDto);
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
-    }
-
-    @Override
-    public AppServiceResult<List<RequestInfo>> getRequestByStaff(String staff, String status) {
-        try {
-            logger.info(MEMO_SERVICE + "newRequest : methode invocation");
-            List<Request> requests = requestRepository.findByStaffAndStatus(staff, RequestStatus.valueOf(status));
-            return getConvertedResult(requests);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " addFeedback : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
-    }
-
-    @Override
-    public AppServiceResult<List<RequestInfo>> getRequestAll(HttpServletRequest req) {
-        try {
-
-            EmployeeInfo employeeInfo = securityService.getCurrentUser();
-            System.out.println("UserName Employe" + employeeInfo.getUsername());
-            List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
-
-            return getConvertedResult(requests);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " getRequestAll : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
-    }
-
-    @Override
-    public AppServiceResult<List<RequestInfo>> getRequestHistory(HttpServletRequest req) {
-        try {
-
-            EmployeeInfo employeeInfo = securityService.getCurrentUser();
-            System.out.println("UserName Employe" + employeeInfo.getUsername());
-            List<Request> requests = requestRepository.findByOrderByLastModificationDesc();
-            return getConvertedResult(requests);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(MEMO_SERVICE + " getRequestHistory : Exception {}", e.getMessage());
-            return new AppServiceResult<>(false, AppError.Unknown.errorCode(), e.getMessage(), null);
-
-        }
-    }
-
-    private AppServiceResult<List<RequestInfo>> getConvertedResult(List<Request> requests) {
-        if (requests == null) {
-
-            return new AppServiceResult<>(false, AppError.Validation.errorCode(),
-                    "Request not exist!", null);
-        }
-        List<RequestInfo> result =  new ArrayList<RequestInfo>();
-        if (!requests.isEmpty()) {
-            for (Request request : requests) {
-                RequestInfo dto = requestMapper.toDto(request);
-                dto.setDocumentType(request.getType().getName());
-                StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
-
-                Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
-                if(!request.getStatus().equals(RequestStatus.PENDING)){
-                    variables = camundaService.retrieveCompletedProcessVariables(request.getInstanceId());
-                }
-                DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
-                dto.setFields(Mapping.getFieldFromFormField(formData, variables));
-
-                List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
-                List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(historics);
-                dto.setApprovals(approvalDtos);
-
-                dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));
-                result.add(dto);
+            Map<String, Object> variables = camundaService.getProcessVariables(request.getInstanceId());
+            if(!request.getStatus().equals(RequestStatus.PENDING)){
+                variables = camundaService.retrieveCompletedProcessVariables(request.getInstanceId());
             }
+            DocumentStructure documentStructure = Mapping.getStructureFromFormData(formData);
+            dto.setFields(Mapping.getFieldFromFormField(formData, variables));
+
+            List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
+            List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(historics);
+            dto.setApprovals(approvalDtos);
+
+            dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));
+            result.add(dto);
         }
-        return new AppServiceResult<>(true, 0, "Succeed!", result);
+        return result;
     }
 
     @Override
     public byte[] export(String reference, String type, String staff, String startDate, String endDate)  {
 
 
-        DocumentType documentType = null;
+        DocumentType documentType;
 
         if(reference == null){
             if(type == null){

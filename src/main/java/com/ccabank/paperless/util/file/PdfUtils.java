@@ -2,6 +2,7 @@ package com.ccabank.paperless.util.file;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 
+@Slf4j
 public class PdfUtils {
 
 
@@ -53,13 +55,12 @@ public class PdfUtils {
 
     public static Rectangle printPdfDimensions(byte[] pdfBytes) {
 
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(pdfBytes);
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(pdfBytes)) {
 
             PdfReader reader = new PdfReader(bais);
 
             int totalPages = reader.getNumberOfPages();
-            System.out.println("Nombre de pages : " + totalPages);
+            log.info("Nombre de pages : " + totalPages);
 
             for (int i = 1; i <= totalPages; i++) {
                 Rectangle pageSize = reader.getPageSizeWithRotation(i);
