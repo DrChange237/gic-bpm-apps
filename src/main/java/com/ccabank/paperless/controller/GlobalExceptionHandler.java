@@ -2,9 +2,11 @@ package com.ccabank.paperless.controller;
 
 
 import com.ccabank.paperless.constant.MessageCode;
+import com.ccabank.paperless.entity.bug.Bug;
 import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.exception.HttpClientException;
 import com.ccabank.paperless.exception.NotFoundException;
+import com.ccabank.paperless.repository.BugRepository;
 import com.ccabank.paperless.service.faces.CamundaService;
 import com.ccabank.paperless.service.faces.EmailService;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -55,7 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final EmailService emailService;
 
-    private final CamundaService camundaService;
+    private final BugRepository bugRepository;
 
 
     @Value("${server.error.include-stacktrace:never}")
@@ -119,14 +121,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> buildResponse(Exception exception, Object body, HttpHeaders headers, HttpStatus status, HttpServletRequest request) {
         log.error(exception.getClass().getSimpleName() + " {}\n", request.getRequestURI(), exception);
-        //emailService.sendBug(exception.getMessage(), exception.getStackTrace().toString());
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("label", exception.getMessage());
+        Bug bug = new Bug();
+        bug.setLabel(exception.getMessage());
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
-        variables.put("traces", sw.toString());
-        camundaService.createProcessInstance("bug", "Bug", variables);
+        bug.setTraces(sw.toString());
+        bugRepository.save(bug);
+        emailService.sendBug(exception.getMessage(), sw.toString());
         if(body == null){
             ApiError response = new ApiError(status, exception, request);
             if(exception instanceof MethodArgumentNotValidException){
