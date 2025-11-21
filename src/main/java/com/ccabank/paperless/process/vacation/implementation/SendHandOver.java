@@ -101,16 +101,15 @@ public class SendHandOver implements JavaDelegate {
             interim.setDate(LocalDate.now());
 
             String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
-            EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
-
-
-            interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
-            interim.setFunction(Optional.ofNullable(interimaire.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
-            signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
-            interim.setSignature(signature);
-
-            handOverForm.setInterim(interim);
-
+            EmployeeInfo interimaire = null;
+            if(interimId != null) {
+                interimaire =  userRestClient.getStaffByUsername(interimId);
+                interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
+                interim.setFunction(Optional.ofNullable(interimaire.getFunction()).map(EmployeeFunctionInfo::getFunction).map(FunctionInfo::getName).orElse(null));
+                signature = userRestClient.getEmployeeSignature(interimaire.getUsername());
+                interim.setSignature(signature);
+                handOverForm.setInterim(interim);
+            }
 
             HandOverForm.Employee supervisorModel = new HandOverForm.Employee();
             supervisorModel.setDate(LocalDate.now());
@@ -139,7 +138,9 @@ public class SendHandOver implements JavaDelegate {
             ByteArrayResource resource = this.reportingRestClient.handover(handOverForm);
 
             EmailAskApprovalDto ask = new EmailAskApprovalDto();
-            ask.setSender(interimaire.getUsername());
+            if(interimaire != null) {
+                ask.setSender(interimaire.getUsername());
+            }
             ask.setSubject("Formulaire de Hand Over");
             ask.setBCC(staff.getEmail());
             AttachmentDto attachment = new AttachmentDto();
