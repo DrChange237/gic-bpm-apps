@@ -41,8 +41,6 @@ public class AgencyInfo {
 
     private Boolean enabled;
 
-    @NotNull(message = "Organization cannot be null")
-    @NotNull(message = "City cannot be null")
     private Date creationDate;
 
     private Date lastModifiedDate;

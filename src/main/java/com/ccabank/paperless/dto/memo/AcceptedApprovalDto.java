@@ -1,11 +1,12 @@
 package com.ccabank.paperless.dto.memo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class AcceptedApprovalDto {
-
     @Schema(example = "1")
     private String idApproval;
 
@@ -20,44 +21,4 @@ public class AcceptedApprovalDto {
 
     @Schema(example = "true")
     private boolean decision;
-
-    public String getIdApproval() {
-        return idApproval;
-    }
-
-    public void setIdApproval(String idApproval) {
-        this.idApproval = idApproval;
-    }
-
-    public List<FieldDto> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<FieldDto> fields) {
-        this.fields = fields;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public boolean isDecision() {
-        return decision;
-    }
-
-    public void setDecision(boolean decision) {
-        this.decision = decision;
-    }
-
-    public int getPositionRejected() {
-        return positionRejected;
-    }
-
-    public void setPositionRejected(int positionRejected) {
-        this.positionRejected = positionRejected;
-    }
 }

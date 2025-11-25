@@ -1,35 +1,17 @@
 package com.ccabank.paperless.dto.memo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class ChoiceDto  implements Serializable {
 
-    public ChoiceDto(){
-
-    }
+    private String label;
+    private Object value;
 
     public ChoiceDto(String label, Object value){
         this.label = label;
-        this.value = value;
-    }
-
-    private String label;
-
-    private Object value;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
         this.value = value;
     }
 }
