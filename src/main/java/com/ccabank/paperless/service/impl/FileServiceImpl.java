@@ -155,10 +155,10 @@ public class FileServiceImpl implements FileService {
             //if(sizeInMo > 5242880){
                 //throw new BadRequestException("la taille du fichier est excedantaire: " + fileDto.getName());
                 try {
-                    MultipartFile compressedFile = PdfUtils.compresserPdf(fileDto.getMultipartFile());
-                    sizeInMo = getSizeInMo(compressedFile);
+                    //MultipartFile compressedFile = PdfUtils.compresserPdf(fileDto.getMultipartFile());
+                    //sizeInMo = getSizeInMo(compressedFile);
                     log.warn(sizeInMo + "Mo size of compressed file");
-                    fileDto.setMultipartFile(compressedFile);
+                    //fileDto.setMultipartFile(compressedFile);
                     FileDto fileFinal = fileRestClient.uploadFileToFolder("paperless", "paperless", fileDto.getMultipartFile());
                     File file = new File();
                     file.setRequest(request);
