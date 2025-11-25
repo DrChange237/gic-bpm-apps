@@ -19,6 +19,7 @@ import java.io.IOException;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
+//@Profile("prod")
 public class ScheduledRH {
 
     private final ExportVacationService exportVacationService;
@@ -26,25 +27,25 @@ public class ScheduledRH {
     private final ExportAbsenceService exportAbsenceService;
     private final ExportResumptionService exportResumptionService;
 
-    @Scheduled(cron = "0 /2 * 21-31 * ?")
+    @Scheduled(cron = "0 */2 * 21-31 * ?")
     public void exportVacation() throws IOException {
         log.info("Exporting vacation...");
         exportVacationService.exportVacation();
     }
 
-    @Scheduled(cron = "0 /5 23 21-31 * ?")
+    @Scheduled(cron = "0 51 23 21-31 * ?")
     public void exportMission() throws IOException {
         log.info("Exporting mission...");
         exportMissionService.exportMission();
     }
 
-    @Scheduled(cron = "0 /5 23 21-31 * ?")
+    @Scheduled(cron = "0 52 23 21-31 * ?")
     public void exportAbsence() throws IOException {
         log.info("Exporting absence...");
         exportAbsenceService.exportAbsence();
     }
 
-    @Scheduled(cron = "0 /5 23 21-31 * ?")
+    @Scheduled(cron = "0 53 23 21-31 * ?")
     public void exportResumption() throws IOException {
         log.info("Exporting resumption...");
         exportResumptionService.exportResumption();
