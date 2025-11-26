@@ -53,9 +53,7 @@ public class ApprovalController {
     @GetMapping("/approval/getApprovalByStaffAndStatus")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
-        HashMap<String, Object> details = new HashMap<>();
-        details.put("data", approvalService.getApprovalByStaff(request, status));
-        return ResponseEntity.ok(details);
+        return ResponseEntity.ok(approvalService.getApprovalByStaff(request, status));
     }
 
     @GetMapping("/approval/getAll")

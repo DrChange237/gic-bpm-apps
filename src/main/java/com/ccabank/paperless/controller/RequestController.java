@@ -86,10 +86,8 @@ public class RequestController {
 
     @GetMapping("/request/getAll")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> getAll(HttpServletRequest request) {
-        HashMap<String, Object> details = new HashMap<>();
-        details.put("data", requestService.getRequestAll(request));
-        return ResponseEntity.ok(details);
+    public ResponseEntity<List<RequestInfo>> getAll(HttpServletRequest request) {
+        return ResponseEntity.ok(requestService.getRequestAll(request));
     }
 
     @GetMapping("/request/getHistory")
