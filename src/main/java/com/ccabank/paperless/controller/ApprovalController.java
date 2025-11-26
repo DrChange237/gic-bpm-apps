@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -51,8 +52,10 @@ public class ApprovalController {
 
     @GetMapping("/approval/getApprovalByStaffAndStatus")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<List<ApprovalListDto>> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
-        return ResponseEntity.ok(approvalService.getApprovalByStaff(request, status));
+    public ResponseEntity<?> getApprovalByStaffAndStatus(HttpServletRequest request, @RequestParam(value = "status") String status) {
+        HashMap<String, Object> details = new HashMap<>();
+        details.put("data", approvalService.getApprovalByStaff(request, status));
+        return ResponseEntity.ok(details);
     }
 
     @GetMapping("/approval/getAll")
