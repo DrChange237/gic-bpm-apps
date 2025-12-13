@@ -4,7 +4,9 @@ import com.ccabank.paperless.dto.email.AttachmentDto;
 import com.ccabank.paperless.dto.email.EmailAskApprovalDto;
 import com.ccabank.paperless.dto.memo.FileDto;
 import com.ccabank.paperless.dto.reporting.CollectSignatureForm;
+import com.ccabank.paperless.dto.user.EmployeeFunctionInfo;
 import com.ccabank.paperless.dto.user.EmployeeInfo;
+import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.dto.user.UserRestDto;
 import com.ccabank.paperless.entity.Approbation;
 import com.ccabank.paperless.entity.ApprovalStatus;
@@ -42,6 +44,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -102,7 +105,12 @@ public class CSGenerateDocument implements JavaDelegate {
             String signature = userRestClient.getEmployeeSignature(approbation.getStaff());
             formSignatory.setIdentifier(employee.getUsername());
             formSignatory.setName(employee.getFirstName() + " " + employee.getLastName());
-            formSignatory.setFunction(employee.getFunction().getFunction().getName());
+            String function = Optional.ofNullable(employee)
+                    .map(EmployeeInfo::getFunction)
+                    .map(EmployeeFunctionInfo::getFunction)
+                    .map(FunctionInfo::getName)
+                    .orElse("");
+            formSignatory.setFunction(function);
             formSignatory.setComments(approbation.getComments());
             formSignatory.setSignature(signature);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

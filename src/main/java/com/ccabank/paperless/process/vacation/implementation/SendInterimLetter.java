@@ -9,6 +9,7 @@ import com.ccabank.paperless.dto.user.EmployeeInfo;
 import com.ccabank.paperless.dto.user.FunctionInfo;
 import com.ccabank.paperless.entity.Request;
 import com.ccabank.paperless.entity.user.Gender;
+import com.ccabank.paperless.exception.BadRequestException;
 import com.ccabank.paperless.openfeign.ReportingRestClient;
 import com.ccabank.paperless.openfeign.UserRestClient;
 import com.ccabank.paperless.process.general.constant.ApprobationLevel;
@@ -19,6 +20,7 @@ import com.ccabank.paperless.service.faces.FileService;
 import com.ccabank.paperless.util.CustomMultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +64,14 @@ public class SendInterimLetter implements JavaDelegate {
             InterimForm form = new InterimForm();
 
             String interimId = (String) delegateExecution.getVariable("Apbt_interimaire");
-            EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
 
+            if(interimId == null) {
+                log.error("Interim id is null");
+                throw new BadRequestException("Veuillez renseigner un intérimaire à cette demande");
+            }
+
+
+            EmployeeInfo interimaire =  userRestClient.getStaffByUsername(interimId);
             InterimForm.Employee interim = new InterimForm.Employee();
             interim.setMatricule(interimaire.getMatricule());
             interim.setName(interimaire.getFirstName() + " " + interimaire.getLastName());
@@ -77,6 +85,7 @@ public class SendInterimLetter implements JavaDelegate {
             if(interimaire.getGender().equals(Gender.FEMALE)){
                 interim.setSex(InterimForm.Employee.Sex.FEMALE);
             }
+
             form.setInterim(interim);
 
             String owner = (String) delegateExecution.getVariable("owner");

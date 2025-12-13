@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -35,8 +36,10 @@ public class RequestController {
 
     @GetMapping("/request/details")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<RequestInfo> details(@RequestParam(value = "id") Long id) {
-        return ResponseEntity.ok(requestService.details(id));
+    public ResponseEntity<?> details(@RequestParam(value = "id") Long id) {
+        HashMap<String, Object> details = new HashMap<>();
+        details.put("data", requestService.details(id));
+        return ResponseEntity.ok(details);
     }
 
     @GetMapping("/request/detailForUpdate")
