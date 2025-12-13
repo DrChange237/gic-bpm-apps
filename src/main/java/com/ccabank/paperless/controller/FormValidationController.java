@@ -8,12 +8,10 @@ import com.ccabank.paperless.repository.ApprovalKeyRepository;
 import com.ccabank.paperless.repository.RequestRepository;
 import com.ccabank.paperless.service.faces.ApprovalService;
 import com.ccabank.paperless.service.faces.CamundaService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +43,7 @@ public class FormValidationController {
 
 
     @GetMapping("/validationForm")
-    public String showForm(Model model, @RequestParam("key") String key, @RequestParam("taskId") String taskId, @RequestParam("reference") String reference) {
+    public String showForm(Model model, @RequestParam String key, @RequestParam String taskId, @RequestParam String reference) {
 
         ApprovalKey approvalKey = approvalKeyRepository.getOne(key);
 
@@ -101,7 +99,7 @@ public class FormValidationController {
     }
 
     @GetMapping("/validate")
-    public String decisionAccept(Model model,@RequestParam("key") String key, @RequestParam("taskId") String taskId,  @RequestParam("reference") String reference) {
+    public String decisionAccept(Model model,@RequestParam String key, @RequestParam String taskId,  @RequestParam String reference) {
 
         ApprovalKey approvalKey = approvalKeyRepository.getOne(key);
 
@@ -158,7 +156,7 @@ public class FormValidationController {
 
 
     @GetMapping("/reject")
-    public String decisionReject(Model model, @RequestParam("key") String key, @RequestParam("taskId") String taskId, @RequestParam("reference") String reference, @RequestParam("comment") String comment) {
+    public String decisionReject(Model model, @RequestParam String key, @RequestParam String taskId, @RequestParam String reference, @RequestParam String comment) {
         ApprovalKey approvalKey = approvalKeyRepository.getOne(key);
 
         if(!approvalKey.getTaskId().equals(taskId)){
