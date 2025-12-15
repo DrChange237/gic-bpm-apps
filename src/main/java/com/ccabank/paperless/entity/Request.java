@@ -64,5 +64,107 @@ public class Request  {
     @Size(max = 100)
     private String comments;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public RequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RequestStatus status) {
+        this.status = status;
+    }
+
+    public int getApprobationLevel() {
+        return approbationLevel;
+    }
+
+    public void setApprobationLevel(int approbationLevel) {
+        this.approbationLevel = approbationLevel;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getValidationDate() {
+        return validationDate;
+    }
+
+    public void setValidationDate(LocalDateTime validationDate) {
+        this.validationDate = validationDate;
+    }
+
+    public LocalDateTime getLastModification() {
+        return lastModification;
+    }
+
+    public void setLastModification(LocalDateTime lastModification) {
+        this.lastModification = lastModification;
+    }
+
+    public String getStaff() {
+        return staff;
+    }
+
+    public void setStaff(String staff) {
+        this.staff = staff;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public DocumentType getType() {
+        return type;
+    }
+
+    public void setType(DocumentType type) {
+        this.type = type;
+    }
+
+    public Long getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(Long documentId) {
+        this.documentId = documentId;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 }

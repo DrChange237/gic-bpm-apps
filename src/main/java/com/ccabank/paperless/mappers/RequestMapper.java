@@ -7,9 +7,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface RequestMapper extends EntityMapper<RequestInfo, Request> {
-    @Override
-    RequestInfo toDto(Request entity);
 
-    @Override
-    Request toEntity(RequestInfo dto);
 }
