@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class RequestInfo implements Serializable {
+
     private Long id;
 
     private  String reference;

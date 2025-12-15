@@ -280,7 +280,6 @@ public class RequestServiceImpl implements RequestService {
         EmployeeInfo employeeInfo = securityService.getCurrentUser();
         log.info("UserName Employe" + employeeInfo.getUsername());
         List<Request> requests = requestRepository.findByStaffAndArchivedOrderByLastModificationDesc(employeeInfo.getUsername(), false);
-
         return getConvertedResult(requests);
     }
 
@@ -312,7 +311,6 @@ public class RequestServiceImpl implements RequestService {
             List<HistoricTaskInstance> historics = camundaService.getHistoricTasksForProcessInstance(request.getInstanceId());
             List<ApprovalDto> approvalDtos = this.mapService.mapTaskToApprovalDto(historics);
             dto.setApprovals(approvalDtos);
-
             dto.setFiles(fileService.getAllFiles(request.getReference(), request.getStaff()));
             result.add(dto);
         }

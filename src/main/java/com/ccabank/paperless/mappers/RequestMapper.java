@@ -8,5 +8,4 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface RequestMapper extends EntityMapper<RequestInfo, Request> {
 
-
 }
