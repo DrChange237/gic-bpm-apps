@@ -186,10 +186,10 @@ public class Mapping {
                 List<ChoiceDto> choices = new ArrayList<>();
                 try {
                     choices = objectMapper.readValue(f.getProperties().get("choices"),  new TypeReference<List<ChoiceDto>>() {});
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+                    field.setChoices(choices);
+                } catch (Exception e) {
+                    //throw new RuntimeException(e);
                 }
-                field.setChoices(choices);
             }
 
             field.setPosition(fields.indexOf(f) + 1);
