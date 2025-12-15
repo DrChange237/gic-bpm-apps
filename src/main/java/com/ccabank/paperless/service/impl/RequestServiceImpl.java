@@ -298,8 +298,7 @@ public class RequestServiceImpl implements RequestService {
         List<RequestInfo> result = new ArrayList<>();
         for (Request request : requests) {
             RequestInfo dto = requestMapper.toDto(request);
-            log.warn("DTO STRING", dto.toString());
-
+            log.warn(dto.toString());
             dto.setDocumentType(request.getType().getName());
             StartFormData formData = camundaService.getStartForm(request.getType().getStructure());
 
