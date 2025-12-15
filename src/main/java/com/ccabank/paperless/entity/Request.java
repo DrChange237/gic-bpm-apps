@@ -47,7 +47,6 @@ public class Request  {
     @ManyToOne(optional = false)
     private DocumentType type;
 
-
     @Basic(optional = true)
     @Column(name = "DOCUMENT_ID")
     private Long documentId;
