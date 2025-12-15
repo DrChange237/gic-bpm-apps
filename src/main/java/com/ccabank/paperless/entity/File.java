@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "T_FILE")
-@Getter
-@Setter
 public class File extends Auditable {
 
     @Id
