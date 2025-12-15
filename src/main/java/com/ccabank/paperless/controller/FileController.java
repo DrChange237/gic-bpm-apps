@@ -27,13 +27,13 @@ public class FileController {
     @GetMapping("/files/search")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> search(
-            @RequestParam(value = "reference", required = false) String reference,
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "staff", required = false) String staff,
-            @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate,
-            @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "size") Integer size)
+            @RequestParam(required = false) String reference,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String staff,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam Integer page,
+            @RequestParam Integer size)
            {
         return ResponseEntity.ok(fileService.search(reference, type, staff, startDate, endDate, page, size));
 
@@ -42,11 +42,11 @@ public class FileController {
     @GetMapping("/files/export")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
     public ResponseEntity<?> export(
-            @RequestParam(value = "reference", required = false) String reference,
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "staff", required = false) String staff,
-            @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate)
+            @RequestParam(required = false) String reference,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String staff,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate)
     {
 
         byte[] excelBytes = requestService.export(reference, type, staff, startDate, endDate);

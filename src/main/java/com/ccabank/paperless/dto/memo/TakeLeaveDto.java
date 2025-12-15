@@ -1,7 +1,9 @@
 package com.ccabank.paperless.dto.memo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
+@Data
 public class TakeLeaveDto {
 
     @Schema(example = "1")
@@ -9,20 +11,4 @@ public class TakeLeaveDto {
 
     @Schema(example = "true")
     private boolean decision;
-
-    public String getIdApproval() {
-        return idApproval;
-    }
-
-    public void setIdApproval(String idApproval) {
-        this.idApproval = idApproval;
-    }
-
-    public boolean isDecision() {
-        return decision;
-    }
-
-    public void setDecision(boolean decision) {
-        this.decision = decision;
-    }
 }

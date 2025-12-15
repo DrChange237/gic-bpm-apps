@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -36,21 +35,19 @@ public class RequestController {
 
     @GetMapping("/request/details")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<?> details(@RequestParam(value = "id") Long id) {
-        HashMap<String, Object> details = new HashMap<>();
-        details.put("data", requestService.details(id));
-        return ResponseEntity.ok(details);
+    public ResponseEntity<?> details(@RequestParam Long id) {
+        return ResponseEntity.ok(requestService.details(id));
     }
 
     @GetMapping("/request/detailForUpdate")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<RequestInfo> detailForUpdate(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<RequestInfo> detailForUpdate(@RequestParam Long id) {
         return ResponseEntity.ok(requestService.detailForUpdate(id));
     }
 
     @GetMapping("/request/suspend")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<RequestInfo> suspend(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<RequestInfo> suspend(@RequestParam Long id) {
         return ResponseEntity.ok(requestService.suspend(id, "Auto-Suspension"));
     }
 
@@ -68,19 +65,19 @@ public class RequestController {
 
     @GetMapping("/request/download")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<Request> download(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<Request> download(@RequestParam Long id) {
         return ResponseEntity.ok(requestService.download(id));
     }
 
     @GetMapping("/request/getRequestByStaffAndStatus")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<List<RequestInfo>> getRequestByStaffAndStatus(@RequestParam(value = "staff") String staff, @RequestParam(value = "status") String status) {
+    public ResponseEntity<List<RequestInfo>> getRequestByStaffAndStatus(@RequestParam String staff, @RequestParam String status) {
         return ResponseEntity.ok(requestService.getRequestByStaff(staff, status));
     }
 
     @GetMapping("/request/getByReference")
     @PreAuthorize(Authority.IS_AUTHENTICATED)
-    public ResponseEntity<RequestInfo> getByReference(@RequestParam(value = "reference") String reference) {
+    public ResponseEntity<RequestInfo> getByReference(@RequestParam String reference) {
         return ResponseEntity.ok(requestService.getRequestByReference(reference));
     }
 

@@ -29,7 +29,7 @@ public class DocumentTypeController {
 
     @GetMapping("/documentType/getTypeDetails")
     //@PreAuthorize(Authority.DocumentType.VIEW_DOCUMENT_TYPE)
-    public ResponseEntity<DocumentTypeDto> getTypeDetails(@RequestParam(value = "name") String name) {
+    public ResponseEntity<DocumentTypeDto> getTypeDetails(@RequestParam String name) {
         return ResponseEntity.ok(documentTypeService.getDocumentType(name));
     }
 

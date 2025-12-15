@@ -53,7 +53,4 @@ public class ApprovalDto implements Serializable {
         }
         return multiple;
     }
-
-
-
 }
