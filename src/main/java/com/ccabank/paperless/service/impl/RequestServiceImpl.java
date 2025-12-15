@@ -265,7 +265,6 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public RequestInfo getRequestByReference(String reference) {
         Request request = requestRepository.findOneByReference(reference);
-
         return requestMapper.toDto(request);
     }
 
