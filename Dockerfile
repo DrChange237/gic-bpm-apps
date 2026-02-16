@@ -1,5 +1,5 @@
 # build stage
-FROM maven:3.9.2-openjdk-11-slim AS build
+FROM maven:3.9.2-jdk-11-slim AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
