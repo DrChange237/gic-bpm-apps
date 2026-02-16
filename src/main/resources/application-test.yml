@@ -1,0 +1,59 @@
+server:
+  port: ${PORT:2026}
+  servlet:
+    context-path: /api
+  error:
+    include-stacktrace: never
+
+endpoints:
+  base:
+    url: ${BASE_URL:/gic}
+
+security:
+  mode: ${SECURITY_MODE:latest}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/gic_test
+    username: ${DB_USERNAME:gic_test}
+    password: ${DB_PASSWORD:gic_test}
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /rest-docs
+  swagger-ui:
+    path: /swagger-ui
+
+feign:
+  httpclient:
+    max-connections: 10
+    max-connections-per-route: 8
+  client:
+    config:
+      default:
+        connect-timeout: 1800000
+        read-timeout: 1800000
+
+camunda:
+  bpm:
+    authorization:
+      enabled: false
+
+base-folder: /files
