@@ -1,7 +1,13 @@
-FROM eclipse-temurin:8-jdk-alpine
-
+# build stage
+FROM maven:3.9.2-openjdk-11-slim AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-COPY target/gic-service-0.0.1-SNAPSHOT.jar app.jar
-
+# package stage
+FROM openjdk:11-jre-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
