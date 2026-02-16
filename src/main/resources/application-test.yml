@@ -33,6 +33,10 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    config:
+      discovery:
+        enabled: false
 
 springdoc:
   api-docs:
@@ -40,6 +44,7 @@ springdoc:
     path: /rest-docs
   swagger-ui:
     path: /swagger-ui
+
 
 feign:
   httpclient:
