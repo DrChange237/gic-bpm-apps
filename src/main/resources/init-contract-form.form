@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "label": "Numéro Dossier",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_16u7yh3",
+        "columns": 12
+      },
+      "id": "Field_037z8xz",
+      "key": "contract_customerRef",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "init-contract-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

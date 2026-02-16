@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "label": "Référence",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0p51amp",
+        "columns": 12
+      },
+      "id": "Field_0dy0mxq",
+      "key": "reference"
+    }
+  ],
+  "type": "default",
+  "id": "reference-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

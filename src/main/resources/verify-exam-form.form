@@ -1,0 +1,167 @@
+{
+  "components": [
+    {
+      "label": "Note Expresion Ecrite",
+      "values": [
+        {
+          "label": "A1",
+          "value": "A1"
+        },
+        {
+          "label": "A2",
+          "value": "A2"
+        },
+        {
+          "label": "B1",
+          "value": "B1"
+        },
+        {
+          "label": "B2",
+          "value": "B2"
+        },
+        {
+          "label": "C1",
+          "value": "C1"
+        },
+        {
+          "label": "C2",
+          "value": "C2"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_1vo4mbk",
+        "columns": 6
+      },
+      "id": "Field_1vvw1bl",
+      "key": "note_ee"
+    },
+    {
+      "label": "Note Expréssion Orale",
+      "values": [
+        {
+          "label": "A1",
+          "value": "A1"
+        },
+        {
+          "label": "A2",
+          "value": "A2"
+        },
+        {
+          "label": "B1",
+          "value": "B1"
+        },
+        {
+          "label": "B2",
+          "value": "B2"
+        },
+        {
+          "label": "C1",
+          "value": "C1"
+        },
+        {
+          "label": "C2",
+          "value": "C2"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_1vo4mbk",
+        "columns": 6
+      },
+      "id": "Field_0374ng5",
+      "key": "note_eo"
+    },
+    {
+      "label": "Note Compréhension Ecrite",
+      "values": [
+        {
+          "label": "A1",
+          "value": "A1"
+        },
+        {
+          "label": "A2",
+          "value": "A2"
+        },
+        {
+          "label": "B1",
+          "value": "B1"
+        },
+        {
+          "label": "B2",
+          "value": "B2"
+        },
+        {
+          "label": "C1",
+          "value": "C1"
+        },
+        {
+          "label": "C2",
+          "value": "C2"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0ulo2e4",
+        "columns": 6
+      },
+      "id": "Field_14zgjy7",
+      "key": "note_ce"
+    },
+    {
+      "label": "Note Compréhension Orale",
+      "values": [
+        {
+          "label": "A1",
+          "value": "A1"
+        },
+        {
+          "label": "A2",
+          "value": "A2"
+        },
+        {
+          "label": "B1",
+          "value": "B1"
+        },
+        {
+          "label": "B2",
+          "value": "B2"
+        },
+        {
+          "label": "C1",
+          "value": "C1"
+        },
+        {
+          "label": "C2",
+          "value": "C2"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0ulo2e4",
+        "columns": 6
+      },
+      "id": "Field_1u765st",
+      "key": "note_co"
+    },
+    {
+      "label": "Satisfaisant",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1mxupk4",
+        "columns": 12
+      },
+      "id": "Field_10rar2h",
+      "key": "test_exam_ok"
+    }
+  ],
+  "type": "default",
+  "id": "verify-exam-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_09dseqj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="program_arrima" name="ARRIMA" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Creation du Profil">
+      <bpmn:outgoing>Flow_0baf9ef</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0baf9ef" sourceRef="StartEvent_1" targetRef="create_arrima_profil" />
+    <bpmn:userTask id="create_arrima_profil" name="Création Profil ARRIMA" camunda:candidateGroups="profil,consultant">
+      <bpmn:incoming>Flow_0baf9ef</bpmn:incoming>
+      <bpmn:outgoing>Flow_0igv5uv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0igv5uv" sourceRef="create_arrima_profil" targetRef="Event_0o8k3p7" />
+    <bpmn:intermediateCatchEvent id="Event_0o8k3p7" name="Invitation à postuler au CSQ">
+      <bpmn:incoming>Flow_0igv5uv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gxengc</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0hcyl8r" messageRef="Message_0kb5md9" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1gxengc" sourceRef="Event_0o8k3p7" targetRef="accept_invite_csq" />
+    <bpmn:userTask id="accept_invite_csq" name="Acceptation de l&#39;Invitation au CSQ" camunda:candidateGroups="consultant">
+      <bpmn:incoming>Flow_1gxengc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eltxeb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0eltxeb" sourceRef="accept_invite_csq" targetRef="submit_csq" />
+    <bpmn:userTask id="submit_csq" name="Soumettre la demande de selection" camunda:candidateGroups="consultant">
+      <bpmn:incoming>Flow_0eltxeb</bpmn:incoming>
+      <bpmn:outgoing>Flow_12kk968</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_12kk968" sourceRef="submit_csq" targetRef="Event_0bqzpex" />
+    <bpmn:intermediateCatchEvent id="Event_0bqzpex" name="Reception du CSQ">
+      <bpmn:incoming>Flow_12kk968</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pzis26</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0ig1wkk" messageRef="Message_0hklu0g" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1pzis26" sourceRef="Event_0bqzpex" targetRef="Event_0f3gy7m" />
+    <bpmn:endEvent id="Event_0f3gy7m">
+      <bpmn:incoming>Flow_1pzis26</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_0kb5md9" name="Message_Invite_CSQ" />
+  <bpmn:message id="Message_0hklu0g" name="Message_Received_CSQ" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="program_arrima">
+      <bpmndi:BPMNShape id="Event_04wj76q_di" bpmnElement="Event_0bqzpex">
+        <dc:Bounds x="952" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="938" y="285" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f3gy7m_di" bpmnElement="Event_0f3gy7m">
+        <dc:Bounds x="952" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="285" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zcsacv_di" bpmnElement="create_arrima_profil">
+        <dc:Bounds x="280" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fxt93x_di" bpmnElement="Event_0o8k3p7">
+        <dc:Bounds x="432" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="410" y="285" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n2slgd_di" bpmnElement="submit_csq">
+        <dc:Bounds x="720" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i2k336_di" bpmnElement="accept_invite_csq">
+        <dc:Bounds x="540" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0eltxeb_di" bpmnElement="Flow_0eltxeb">
+        <di:waypoint x="640" y="260" />
+        <di:waypoint x="720" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12kk968_di" bpmnElement="Flow_12kk968">
+        <di:waypoint x="820" y="260" />
+        <di:waypoint x="952" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pzis26_di" bpmnElement="Flow_1pzis26">
+        <di:waypoint x="970" y="242" />
+        <di:waypoint x="970" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0baf9ef_di" bpmnElement="Flow_0baf9ef">
+        <di:waypoint x="218" y="260" />
+        <di:waypoint x="280" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0igv5uv_di" bpmnElement="Flow_0igv5uv">
+        <di:waypoint x="380" y="260" />
+        <di:waypoint x="432" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gxengc_di" bpmnElement="Flow_1gxengc">
+        <di:waypoint x="468" y="260" />
+        <di:waypoint x="540" y="260" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_13uo88y" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="evaluate_level" name="Evaluer Niveau Test" isExecutable="true">
+    <bpmn:startEvent id="evaluate_level_test" name="Evaluer Niveau Test" camunda:formRef="reference-form" camunda:formRefBinding="latest">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${getBusinessKeyListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1vs9mqf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1vs9mqf" sourceRef="evaluate_level_test" targetRef="Activity_1be0xdf" />
+    <bpmn:endEvent id="Event_1bl5u2s" name="">
+      <bpmn:incoming>Flow_1tqrfnr</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_089ex67" messageRef="Message_14jiv18" camunda:delegateExpression="${evaluateLevelTestMessage}" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_171adgs" sourceRef="Activity_1be0xdf" targetRef="Gateway_0637awi" />
+    <bpmn:userTask id="Activity_1be0xdf" name="Confirmation Evaluation" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang,admin">
+      <bpmn:incoming>Flow_1vs9mqf</bpmn:incoming>
+      <bpmn:outgoing>Flow_171adgs</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0637awi" default="Flow_19z4piv">
+      <bpmn:incoming>Flow_171adgs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tqrfnr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_19z4piv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1tqrfnr" sourceRef="Gateway_0637awi" targetRef="Event_1bl5u2s">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0168o3d">
+      <bpmn:incoming>Flow_19z4piv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_19z4piv" sourceRef="Gateway_0637awi" targetRef="Event_0168o3d" />
+  </bpmn:process>
+  <bpmn:message id="Message_14jiv18" name="Message_Evaluate_Level_Test" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="evaluate_level">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="evaluate_level_test">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="133" y="145" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15s8qd3_di" bpmnElement="Activity_1be0xdf">
+        <dc:Bounds x="260" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tl1e0d_di" bpmnElement="Event_1bl5u2s">
+        <dc:Bounds x="612" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="323" y="145" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0637awi_di" bpmnElement="Gateway_0637awi" isMarkerVisible="true">
+        <dc:Bounds x="445" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0168o3d_di" bpmnElement="Event_0168o3d">
+        <dc:Bounds x="452" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1vs9mqf_di" bpmnElement="Flow_1vs9mqf">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="260" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_171adgs_di" bpmnElement="Flow_171adgs">
+        <di:waypoint x="360" y="120" />
+        <di:waypoint x="445" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tqrfnr_di" bpmnElement="Flow_1tqrfnr">
+        <di:waypoint x="495" y="120" />
+        <di:waypoint x="612" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19z4piv_di" bpmnElement="Flow_19z4piv">
+        <di:waypoint x="470" y="145" />
+        <di:waypoint x="470" y="222" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

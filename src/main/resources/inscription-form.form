@@ -1,0 +1,416 @@
+{
+  "components": [
+    {
+      "label": "Nom(s)",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_126mktx",
+        "columns": 3
+      },
+      "id": "Field_0h1gj6a",
+      "key": "firstName",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Prénoms",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_126mktx",
+        "columns": 3
+      },
+      "id": "Field_0z70pi1",
+      "key": "lastName"
+    },
+    {
+      "label": "Date de Naissance",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_126mktx",
+        "columns": 3
+      },
+      "id": "Field_0ne90k2",
+      "key": "birthday",
+      "validate": {
+        "required": true,
+        "minLength": "",
+        "patternErrorMessage": "",
+        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$"
+      }
+    },
+    {
+      "label": "Lieu de Naissance",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_126mktx",
+        "columns": 3
+      },
+      "id": "Field_13h39bq",
+      "key": "birthplace"
+    },
+    {
+      "label": "Sexe",
+      "values": [
+        {
+          "label": "Masculin",
+          "value": "M"
+        },
+        {
+          "label": "Féminin",
+          "value": "F"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0e016pn",
+        "columns": 4
+      },
+      "id": "Field_026jqb0",
+      "key": "sexe"
+    },
+    {
+      "label": "Nationalité",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0e016pn",
+        "columns": 4
+      },
+      "id": "Field_0v6pfn2",
+      "key": "nationality"
+    },
+    {
+      "label": "Statut Matrimonial",
+      "values": [
+        {
+          "label": "Célibataire ",
+          "value": "SINGLE"
+        },
+        {
+          "label": "Marié",
+          "value": "MARIED"
+        },
+        {
+          "label": "Conjoint de fait",
+          "value": "COMMON"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0e016pn",
+        "columns": 4
+      },
+      "id": "Field_03dbd0l",
+      "key": "matrimonial"
+    },
+    {
+      "label": "Tel.",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_05w2u6k",
+        "columns": 4
+      },
+      "id": "Field_1gwpfpm",
+      "key": "mobile",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_05w2u6k",
+        "columns": 4
+      },
+      "id": "Field_1txvbm6",
+      "key": "email",
+      "validate": {
+        "validationType": "email",
+        "required": true
+      }
+    },
+    {
+      "label": "Adresse",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_05w2u6k",
+        "columns": 4
+      },
+      "id": "Field_0swzp9w",
+      "key": "address"
+    },
+    {
+      "label": "N° CNI",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_19wf13z",
+        "columns": 6
+      },
+      "id": "Field_1h8cd5f",
+      "key": "cniNumber"
+    },
+    {
+      "label": "Fait le",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_19wf13z",
+        "columns": 3
+      },
+      "id": "Field_1tj7y6h",
+      "key": "cniDelivery",
+      "validate": {
+        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$",
+        "required": true
+      }
+    },
+    {
+      "label": "à",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_19wf13z",
+        "columns": 3
+      },
+      "id": "Field_07gwupy",
+      "key": "cniPlace"
+    },
+    {
+      "label": "Diplôme le plus élevé",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1jdh0et",
+        "columns": 4
+      },
+      "id": "Field_1olgflp",
+      "key": "diploma"
+    },
+    {
+      "label": "Année d'obtention",
+      "type": "number",
+      "layout": {
+        "row": "Row_1jdh0et",
+        "columns": 4
+      },
+      "id": "Field_1xv7spk",
+      "key": "yearGraduation"
+    },
+    {
+      "label": "Ecole",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1jdh0et",
+        "columns": 4
+      },
+      "id": "Field_1dru3rh",
+      "key": "school"
+    },
+    {
+      "label": "Domaine de Formation",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rrwrp5",
+        "columns": 3
+      },
+      "id": "Field_0ef4rkg",
+      "key": "formation"
+    },
+    {
+      "label": "Nombre d'enfants",
+      "type": "number",
+      "layout": {
+        "row": "Row_1rrwrp5",
+        "columns": 3
+      },
+      "id": "Field_0qkkjg7",
+      "key": "children"
+    },
+    {
+      "label": "Age Respectif",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1rrwrp5",
+        "columns": 3
+      },
+      "id": "Field_15ib7v4",
+      "key": "childrenAge"
+    },
+    {
+      "label": "Année d'expérience",
+      "type": "number",
+      "layout": {
+        "row": "Row_1rrwrp5",
+        "columns": 3
+      },
+      "id": "Field_1g7s46y",
+      "key": "experience",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "text": "<h2>PROFIL CONJOINT</h2>",
+      "type": "text",
+      "layout": {
+        "row": "Row_0mghove",
+        "columns": 12
+      },
+      "id": "Field_0k87iv7"
+    },
+    {
+      "label": "Nom(s) Conjoint",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pq44oa",
+        "columns": 3
+      },
+      "id": "Field_02qrfzm",
+      "key": "firstNameConjoint"
+    },
+    {
+      "label": "Prénom(s) Conjoint",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pq44oa",
+        "columns": 3
+      },
+      "id": "Field_1kh8kug",
+      "key": "lastNameConjoint"
+    },
+    {
+      "label": "Date de Naissance",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pq44oa",
+        "columns": 3
+      },
+      "id": "Field_04slw62",
+      "key": "birthdayConjoint",
+      "validate": {
+        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$"
+      }
+    },
+    {
+      "label": "Lieu de Naissance",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pq44oa",
+        "columns": 3
+      },
+      "id": "Field_0xhcjne",
+      "key": "birthplaceConjoint"
+    },
+    {
+      "label": "Nationalité",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1jk9m0h",
+        "columns": 6
+      },
+      "id": "Field_1rbkhmv",
+      "key": "nationalityConjoint"
+    },
+    {
+      "label": "Tel.",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1jk9m0h",
+        "columns": 3
+      },
+      "id": "Field_1stlik2",
+      "key": "mobileConjoint"
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1jk9m0h",
+        "columns": 3
+      },
+      "id": "Field_0oexw7g",
+      "key": "emailConjoint"
+    },
+    {
+      "label": "N° CNI",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11389t3",
+        "columns": 6
+      },
+      "id": "Field_04gil9x",
+      "key": "cniNumberConjoint"
+    },
+    {
+      "label": "Fait le",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11389t3",
+        "columns": 3
+      },
+      "id": "Field_1mndhiq",
+      "key": "cniDeliveryConjoint",
+      "validate": {
+        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$",
+        "required": false
+      }
+    },
+    {
+      "label": "à",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11389t3",
+        "columns": 3
+      },
+      "id": "Field_01up8pw",
+      "key": "cniPlaceConjoint"
+    },
+    {
+      "label": "Diplôme Conjoint",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0gia80n",
+        "columns": 4
+      },
+      "id": "Field_1efhjea",
+      "key": "diplomaConjoint"
+    },
+    {
+      "label": "Année d'Obtention",
+      "type": "number",
+      "layout": {
+        "row": "Row_0gia80n",
+        "columns": 4
+      },
+      "id": "Field_0en0hrz",
+      "key": "yearGraduationConjoint"
+    },
+    {
+      "label": "Ecole",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0gia80n",
+        "columns": 4
+      },
+      "id": "Field_09shk8g",
+      "key": "schoolConjoint"
+    },
+    {
+      "label": "Domaine de Formation / Speciality",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0plg03u",
+        "columns": 12
+      },
+      "id": "Field_0nwxpe0",
+      "key": "formationConjoint"
+    }
+  ],
+  "type": "default",
+  "id": "inscription-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 19
+}

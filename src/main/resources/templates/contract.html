@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Contrat de Service Professionnel</title>
+
+    <style>
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            margin: 40px;
+            line-height: 1.4;
+
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a4f8b;
+            margin: 0 0 8px 0;
+            font-size: 15px;
+        }
+
+        h2 {
+            color: #1a4f8b;
+            border-bottom: 2px solid #ccc;
+            margin: 8px 0 4px 0;
+            font-size: 14px;
+        }
+
+        h3 {
+            color: #1a4f8b;
+            margin: 6px 0 4px 0;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 3px 5px;
+            vertical-align: top;
+        }
+
+        .label {
+            font-weight: bold;
+            background-color: #f3f3f3;
+            width: 50%;
+        }
+
+        .value {
+            width: 50%;
+        }
+
+        .paragraph {
+            text-align: justify;
+            margin: 4px 0;
+        }
+
+        .amount-table td {
+            border: 1px solid #ccc;
+            text-align: right;
+        }
+
+        .amount-table .label {
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 10px;
+            font-size: 9px;
+            text-align: center;
+            color: #777;
+        }
+
+        .signature {
+            margin-top: 20px;
+        }
+
+        .signature td {
+            height: 40px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>CONTRAT DE SERVICE PROFESSIONNEL</h1>
+
+<!-- ===================== -->
+<!-- IDENTIFICATION -->
+<!-- ===================== -->
+<table>
+    <tr>
+        <td class="label">Numéro de contrat</td>
+        <td class="value" th:text="${contrat.reference}">122559</td>
+    </tr>
+    <tr>
+        <td class="label">Date</td>
+        <td class="value" th:text="${#temporals.format(contrat.creationDate, 'dd/MM/yyyy')}" >18/12/2025</td>
+    </tr>
+</table>
+
+<h2>Parties contractantes</h2>
+<table>
+    <tr>
+        <td class="label">Prestataire</td>
+        <td class="value">
+            GLOBAL IMMIGRATION CANADA SARL
+        </td>
+    </tr>
+    <tr>
+        <td class="label">Client</td>
+        <td class="value" th:text="${contrat.consultation.inscription.fullName}">
+            KENGUE KAZE JUSTE TRESOR
+        </td>
+    </tr>
+</table>
+
+<h2></h2>
+<p class="paragraph" >
+    ATTENDU QUE GLOBAL IMMIGRATION CANADA SARL et le client souhaitent conclure une entente
+    par écrit qui contient les conditions convenues selon lesquelles GLOBAL IMMIGRATION CANADA
+    SARL fournira ses services au client;
+    ET ATTENDU QUE GLOBAL IMMIGRATION CANADA SARL a une expertise dans le traitement des
+    dossiers avec Immigration, Réfugiés et Citoyenneté Canada (IRCC), le ministère responsable des
+    programmes et des services d’immigration, d’établissement, de réinstallation et de citoyenneté.
+    EN CONTREPARTIE des engagements réciproques de ce contrat, les parties conviennent de ce qui suit :
+</p>
+
+<h2>1. Définitions des Termes</h2>
+<p class="paragraph">
+    « Client », « Conseil », et « débours » doivent avoir le sens donné aux termes contenus dans le
+    Règlement régissant le contrat de service professionnel.
+</p>
+
+<h2>2.  Responsabilités et obligations de GLOBAL IMMIGRATION CANADA SARL</h2>
+<p class="paragraph" >
+    Le client demande à GLOBAL IMMIGRATION CANADA SARL, et celui-ci accepte, de le représenter au
+    sujet de sa Demande de visa résident permanant au programme travailleur qualifié en conjoint de fait.</p>
+
+<p class="paragraph"> En contrepartie des frais payés et en raison de l’affaire mentionnée ci-dessus, le conseil s’engage à :</p>
+
+
+
+<div th:each="group, stat : ${contratTermGroups}">
+    <h3 > 2.<span th:text="${stat.index + 1}"></span> - <span th:text="${group.label}"></span></h3>
+    <ul>
+        <li th:if="${term.group.id == group.id}" th:each="term : ${contratTerms}">
+             <span th:text="${term.label}"></span>
+        </li>
+    </ul>
+</div>
+
+<h2>3.  Responsabilités et obligations du client </h2>
+
+<h3>3.1 </h3>
+<p class="paragraph">Le client doit fournir à la demande de GLOBAL IMMIGRATION CANADA SARL: Toute la
+    documentation nécessaire en anglais ou en français ou traduite en anglais ou en français.</p>
+
+<h3>3.2 </h3>
+<p class="paragraph">Le client convient qu’il doit fournir de l’information exacte et honnête et que toute
+    information inexacte peut annuler ce contrat ou avoir une incidence défavorable sur la
+    réponse à la demande ou le maintien de tout statut obtenu. Les obligations de GLOBAL
+    IMMIGRATION CANADA SARL en vertu du contrat de service professionnel sont nulles si le
+    client fournit en toute connaissance de cause des renseignements importants inexacts,
+    trompeurs ou faux. Les obligations financières du client demeurent.</p>
+
+<h3>3.3 </h3>
+<p class="paragraph">Si Immigration, Réfugiés et Citoyenneté Canada (IRCC), Emploi et Développement social
+    Canada (EDSC) communique directement avec le client, le client doit immédiatement en
+    aviser GLOBAL IMMIGRATION CANADA SARL.</p>
+
+<h3>3.4 </h3>
+<p class="paragraph"> Le client doit immédiatement informer GLOBAL IMMIGRATION CANADA SARL de tout
+    changement de situation matrimoniale, de famille ou d’état civil ou de coordonnées de toute
+    personne incluse dans la demande.</p>
+
+<h2>4. Méthode de facturation </h2>
+<p class="paragraph">
+<ul>
+    <li>Le client sera facturé selon des honoraires fixes avec paiement en début de chaque étape ;</li>
+    <li>Le Paiement sera effectué en quatre versements ;</li>
+    <li>Voici en détail la méthode de facturation utilisée (3): </li>
+</ul>
+</p>
+
+
+<h2>5. Modalités et Paiements Honoraires</h2>
+
+<h3>5.1 Montant Total :  <span th:text="${#numbers.formatCurrency(contrat.totalAmount)}" ></span> </h3>
+
+<h3>5.2 Débours </h3>
+
+<h4 th:each="debour, stat : ${allDebours}"> <b>5.2.<span th:text="${stat.index + 1}"></span></b>  <span th:text="${debour.label}"></span>  <span th:if="${#lists.contains(debours, debour)}"> (Inclut)</span> <span th:unless="${#lists.contains(debours, debour)}">(Non inclut)</span>  </h4>
+
+<p class="paragraph">
+    Le montant indiqué ci-dessus doit être payé par le client et est sujet à changement par accord mutuel
+    entre les deux parties, correspondant aux frais de procédure d’une personne (le client ci-dessous nommé).
+</p>
+
+<h2>Echéancier et détail des paiements</h2>
+<p class="paragraph">
+    Le montant indiqué ci-dessus doit être payé par le client, en trois dépôts au début de chaque
+    phase tel que détaillé ici-bas :
+</p>
+
+<table class="amount-table">
+
+    <tr>
+        <td class="label">Première Phase (couvre les obligations 2.1 et 2.2)</td>
+        <td><span  th:text="${#numbers.formatCurrency(contrat.firstAmount)}" ></span> </td>
+    </tr>
+    <tr>
+        <td class="label">Deuxième Phase (couvre les obligations 2.3 et 2.4) </td>
+        <td><span th:text="${#numbers.formatCurrency(contrat.secondAmount)}"></span> </td>
+    </tr>
+    <tr>
+        <td class="label">Dernier versement (couvre les obligations 2.5 et 2.6)</td>
+        <td><span th:text="${#numbers.formatCurrency(contrat.lastAmount)}"></span> </td>
+    </tr>
+</table>
+
+<h2>7. Politique de remboursement</h2>
+<p class="paragraph">
+    Les honoraires ne sont pas remboursables en cas de refus
+    de la demande par les autorités compétentes.
+</p>
+<h3>7.1</h3>
+<p class="paragraph">
+    Le client reconnaît que l’obtention d’un visa ou d’un statut ainsi que le temps de traitement
+    de cette demande est à l’entière discrétion du gouvernement et non de GLOBAL IMMIGRATION
+    CANADA SARL. En outre, le client reconnaît que les honoraires ne sont pas remboursables s’il
+    advenait que la demande soit refusée.
+</p>
+<h3>7.2</h3>
+<p class="paragraph">
+    Cependant, si GLOBAL IMMIGRATION CANADA SARL ou son personnel ne remplissent pas les
+    tâches mentionnées à la section 2 du présent contrat, GLOBAL IMMIGRATION CANADA SARL
+    remboursera les honoraires perçus, en partie ou en totalité.
+</p>
+<h3>7.3</h3>
+<p class="paragraph">
+    Le client consent à ce que les honoraires soient payés pour les services mentionnés cidessus et que tout remboursement s’applique uniquement au montant des honoraires payés.
+</p>
+<h3>7.4</h3>
+<p class="paragraph">
+    Les frais non utilisés seront remboursés par virement bancaire, dans un délai de 30 jours.
+</p>
+<h3>7.5</h3>
+<p class="paragraph">
+    Si le client abandonne la procédure, il ne se fera pas rembourser.
+</p>
+<h3>7.6</h3>
+<p class="paragraph">
+    Si il y’a rupture du contrat le client se fera rembourser aux prorata des activités menés.
+</p>
+
+
+<h2>8. Coordonnées du Conseil </h2>
+<p class="paragraph">
+    Conseil de réglementation des consultants en immigration du Canada (CRCIC)
+    5500 North Service Rd., bureau 1002
+    Burlington (Ontario) L7L 6W6
+    Sans frais : 1-877-836-7543
+    Banque : GLOBAL IMMIGRATION CANADA SARL, CCA BANK IBAN : CM2110039100390026928060151
+</p>
+
+<h2>9. Coordonnées clients/ représentant désigné</h2>
+<table class="amount-table">
+
+    <tr>
+        <td class="label">Nom(s)</td>
+        <td th:text="${contrat.consultation.inscription.firstName}"></td>
+    </tr>
+    <tr>
+        <td class="label">Prénom(s)</td>
+        <td th:text="${contrat.consultation.inscription.lastName}"></td>
+    </tr>
+    <tr>
+        <td class="label">Né le</td>
+        <td th:text="${contrat.consultation.inscription.birthday}"></td>
+    </tr>
+    <tr>
+        <td class="label">Carte National d'identité N°:</td>
+        <td th:text="${contrat.consultation.inscription.cniNumber}"></td>
+    </tr>
+    <tr>
+        <td class="label">Diplômé de :</td>
+        <td th:text="${contrat.consultation.inscription.diploma}"></td>
+    </tr>
+    <tr>
+        <td class="label">Numéro de cellulaire</td>
+        <td th:text="${contrat.consultation.inscription.mobile}"></td>
+    </tr>
+    <tr>
+        <td class="label">Adresse courriel :</td>
+        <td th:text="${contrat.consultation.inscription.email}"></td>
+    </tr>
+    <tr>
+        <td class="label">Adresse / Quartier</td>
+        <td th:text="${contrat.consultation.inscription.address}"></td>
+    </tr>
+</table>
+
+<h2>10. Résolution de conflits relatifs au Code d’éthique professionnelle</h2>
+<h3>10.1</h3>
+<p class="paragraph">
+    Dans le cas d’un conflit relatif à la non-exécution ou à l’exécution tardive des obligations
+    de l’une ou l’autre des parties au dit contrat, le client et GLOBAL IMMIGRATION CANADA SARL
+    doivent s’efforcer autant que possible de résoudre à l’amiable le problème entre les deux parties.
+</p>
+<h3>10.2</h3>
+<p class="paragraph">
+    Si le conflit ne peut pas être réglé dans un délai de 30 jours, le client doit présenter une
+    réclamation par écrit à GLOBAL IMMIGRATION CANADA SARL et lui donner 08 jours pour résoudre le litige
+</p>
+<h3>10.3</h3>
+<p class="paragraph">
+    Si le conflit n’est toujours pas réglé, le client est en droit de saisir les juridictions
+    compétentes.
+</p>
+
+<h2>11. Confidentialité</h2>
+<h3>11.1</h3>
+<p class="paragraph">
+    Tous les renseignements et les documents examinés par GLOBAL IMMIGRATION
+    CANADA SARL, requis par IRCC et tous les autres corps dirigeants, et utilisés pour préparer la
+    demande ne seront pas divulgués à un tiers, autre qu’à des agents et des employés, sans
+    consentement préalable, sauf si requis par la loi.
+</p>
+<h3>11.2</h3>
+<p class="paragraph">
+    GLOBAL IMMIGRATION CANADA SARL, et tous ses agents et employés, sont aussi liés
+    par les exigences de confidentialité de l’article 8 du Code d’éthique professionnelle. Le client
+    consent à ce que les communications aient lieu par voie électronique et au stockage de
+    l’information confidentielle.
+</p>
+<h3>11.3</h3>
+<p class="paragraph">
+    GLOBAL IMMIGRATION CANADA SARL S’efforcera autant que possible d’assurer un niveau de
+    sécurité élevé en matière de communication électronique et de stockage de l’information.
+</p>
+
+<h2>12 . Force Majeure</h2>
+<p class="paragraph">
+    En cas d’incapacité GLOBAL IMMIGRATION CANADA SARL à respecter toute clause de ce contrat de
+    service professionnel, en raison de conditions hors de son contrôle telles que, sans en exclure
+    d’autres, des restrictions gouvernementales ou des lois postérieures, une guerre, des grèves ou des
+    catastrophes naturelles, on ne considérera pas qu’il y a rupture de ce contrat.
+</p>
+
+<h2>13. Politique de Changement</h2>
+<p class="paragraph">
+    Le client convient qu’en raison d’une demande faite au CRIC de le représenter
+    dans une affaire autre que celle mentionnée ci-dessus dans ce contrat, d’un changement de sa situation
+    matérielle, de faits matériels non divulgués au début de la demande ou d’un changement dans la loi du
+    gouvernement concernant le traitement des demandes en matière d’immigration et de citoyenneté, le
+    contrat peut être modifié en conséquence.
+</p>
+
+<h2>14. Fin de Contrat</h2>
+<h3>14.1</h3>
+<p class="paragraph">
+    Ce contrat prend fin lorsque les tâches précisées à la section 2 de ce contrat ont été exécutées
+</p>
+<h3>14.2</h3>
+<p class="paragraph">
+    Ce contrat prend fin si des changements d’ordre matériel se produisent dans la demande
+    ou l’admissibilité du client, et qui empêchent d’exécuter les tâches décrites à la section 2
+    de ce contrat.
+</p>
+
+<h2>15. Libération des obligations ou retrait d’une affaire</h2>
+<h3>15.1</h3>
+<p class="paragraph">
+    Le client peut libérer GLOBAL IMMIGRATION CANADA SARL de ses obligations et
+    mettre fin au contrat par écrit. Les honoraires ou débours impayés seront payés par GLOBAL
+    IMMIGRATION CANADA SARL au client / les honoraires ou débours impayés seront payés par le
+    client à GLOBAL IMMIGRATION CANADA SARL
+</p>
+<h3>15.2</h3>
+<p class="paragraph">
+    GLOBAL IMMIGRATION CANADA SARL peut se retirer d’une affaire et mettre fin au
+    contrat par écrit pourvu que cela ne cause pas de préjudice au client. Les honoraires ou débours
+    impayés seront payés par GLOBAL IMMIGRATION CANADA SARL au client / les honoraires ou
+    débours impayés seront payés par le client à GLOBAL IMMIGRATION CANADA SARL.
+</p>
+
+<h2>16. Loi du COntrat</h2>
+<p class="paragraph">
+    t Ce contrat est régi par les lois en vigueur de la Province/du Territoire Cameroun,
+    et les lois fédérales canadiennes qui s’y appliquent et, sauf pour des conflits prévus à la section 8
+    aux présentes, tout conflit concernant les clauses de ce contrat sera réglé par un tribunal
+    compétent de la Province/du Territoire Cameroun.
+</p>
+
+<h2>17. Divers</h2>
+<h3>17.1</h3>
+<p class="paragraph">
+    Le client autorise explicitement GLOBAL IMMIGRATION CANADA SARL à agir en son
+    nom dans les limites des fonctions précises pour lesquelles les services de GLOBAL
+    IMMIGRATION CANADA SARL ont été retenus au paragraphe 2 des présentes.
+</p>
+<h3>17.2</h3>
+<p class="paragraph">
+    Ce contrat constitue la totalité du contrat entre les parties pour ce qui est de l’objet cicontre et remplace tous les contrats, tous les accords, toutes les garanties, représentations,
+    négociations et discussions précédents, verbaux ou écrits, des parties sauf pour ce qui est
+    indiqué précisément aux présentes.
+</p>
+<h3>17.3</h3>
+<p class="paragraph">
+    Ce contrat lie les parties aux présentes et leurs héritiers, administrateurs, successeurs
+    et ayants droit autorisés respectifs.
+</p>
+<h3>17.4</h3>
+<p class="paragraph">
+    Ce contrat peut uniquement être modifié si les changements sont effectués par écrit
+    et signés par les parties aux présentes.
+</p>
+
+<h3>17.5</h3>
+<p class="paragraph">
+    Les dispositions de ce contrat sont jugées dissociables. Si une disposition de ce contrat
+    est considérée comme inexécutable par un tribunal compétent, la disposition sera supprimée de
+    ce contrat, et les autres dispositions demeureront en vigueur.
+</p>
+<h3>17.6</h3>
+<p class="paragraph">
+    Les titres utilisés dans ce contrat visent seulement à faciliter la lecture et ne doivent
+    en aucun cas être interprétés comme des ajouts ou des limitations des engagements et ententes
+    contenus dans les présentes.
+</p>
+<h3>17.7</h3>
+<p class="paragraph">
+    Chaque partie aux présentes fait, établit, donne, signe ou fait faire, établir, donner ou
+    signer toutes les autres choses, les assurances et tous les actes, actes de transfert et documents
+    jugés nécessaires ou raisonnablement requis pour que l’intention et l’objet de ce contrat soient
+    pleinement et effectivement appliqués.
+</p>
+<h3>17.8</h3>
+<p class="paragraph">
+    Le client convient qu’il a eu suffisamment de temps pour examiner ce contrat et qu’on
+    lui a donné la possibilité d’obtenir un avis juridique indépendant et une traduction avant la
+    signature et la remise de ce contrat. Si le client n’a pas demandé un avis juridique indépendant
+    avant la signature et la remise de ce contrat, il l’a fait de son propre chef sans subir de pression
+    indue et convient que le fait de ne pas avoir obtenu d’avis juridique indépendant ne pourra pas
+    être utilisé comme moyen de défense pour faire respecter les obligations créées dans ce contrat.
+</p>
+
+<h3>17.9</h3>
+<p class="paragraph">
+    En outre, le client reconnaît avoir reçu une copie de ce contrat et convient être lié par ses
+    conditions.
+</p>
+<h3>17.10</h3>
+<p class="paragraph">
+    Le client qui souhaite remplir ce contrat en anglais doit en faire la demande.
+</p>
+
+
+
+
+<!-- ===================== -->
+<!-- SIGNATURES -->
+<!-- ===================== -->
+<table class="signature">
+    <tr>
+        <td>
+            Signature Client<br/>
+            <strong th:text="${contrat.consultation.inscription.fullName}"></strong>
+        </td>
+        <td>
+            Signature Directeur Général<br/>
+            <strong>GLOBAL IMMIGRATION CANADA SARL</strong>
+        </td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
+<div class="footer">
+    Fait à <span th:text="${contrat.consultation.inscription.agency.name}">Douala</span>,
+    le <span th:text="${#temporals.format(contrat.creationDate, 'dd/MM/yyyy')}">18/12/2025</span>
+</div>
+
+</body>
+</html>

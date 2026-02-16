@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0v96avn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="cashin" name="Versement" isExecutable="true" camunda:historyTimeToLive="7">
+    <bpmn:startEvent id="StartEvent_1" name="Nouveau Versement" camunda:formRef="reference-form" camunda:formRefBinding="latest">
+      <bpmn:outgoing>Flow_11fnouz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_11fnouz" sourceRef="StartEvent_1" targetRef="type_cashin" />
+    <bpmn:userTask id="type_cashin" name="Saisie du versement" camunda:formRef="versement-form" camunda:formRefBinding="latest" camunda:candidateGroups="agent,admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${beforeTypeCashinListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11fnouz</bpmn:incoming>
+      <bpmn:incoming>Flow_0jzxeev</bpmn:incoming>
+      <bpmn:outgoing>Flow_097jo9n</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_097jo9n" sourceRef="type_cashin" targetRef="validation_cashin" />
+    <bpmn:userTask id="validation_cashin" name="Versement -  Validation du Comptable" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="accountant,admin">
+      <bpmn:incoming>Flow_097jo9n</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x0pkzj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_19qgmem" default="Flow_0jzxeev">
+      <bpmn:incoming>Flow_1x0pkzj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jzxeev</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1d4fhvp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1x0pkzj" sourceRef="validation_cashin" targetRef="Gateway_19qgmem" />
+    <bpmn:sequenceFlow id="Flow_0jzxeev" sourceRef="Gateway_19qgmem" targetRef="type_cashin" />
+    <bpmn:endEvent id="Event_0pnnwjc">
+      <bpmn:incoming>Flow_163l3mg</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1d4fhvp" sourceRef="Gateway_19qgmem" targetRef="Activity_06wxwe5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_163l3mg" sourceRef="Activity_0e1gm32" targetRef="Event_0pnnwjc" />
+    <bpmn:serviceTask id="Activity_0e1gm32" name="Générer Bordereau de Versement" camunda:delegateExpression="${notifCustomer}">
+      <bpmn:incoming>Flow_00sbsyh</bpmn:incoming>
+      <bpmn:outgoing>Flow_163l3mg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_00sbsyh" sourceRef="Activity_06wxwe5" targetRef="Activity_0e1gm32" />
+    <bpmn:serviceTask id="Activity_06wxwe5" name="Enregistrement du Versement" camunda:delegateExpression="${saveVersement}">
+      <bpmn:incoming>Flow_1d4fhvp</bpmn:incoming>
+      <bpmn:outgoing>Flow_00sbsyh</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="cashin">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="145" width="53" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1icrkwv_di" bpmnElement="type_cashin">
+        <dc:Bounds x="260" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uu8dkc_di" bpmnElement="validation_cashin">
+        <dc:Bounds x="420" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pnnwjc_di" bpmnElement="Event_0pnnwjc">
+        <dc:Bounds x="992" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oowcgc_di" bpmnElement="Activity_0e1gm32">
+        <dc:Bounds x="830" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19qgmem_di" bpmnElement="Gateway_19qgmem" isMarkerVisible="true">
+        <dc:Bounds x="585" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tdcvsk_di" bpmnElement="Activity_06wxwe5">
+        <dc:Bounds x="670" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_11fnouz_di" bpmnElement="Flow_11fnouz">
+        <di:waypoint x="198" y="120" />
+        <di:waypoint x="260" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_097jo9n_di" bpmnElement="Flow_097jo9n">
+        <di:waypoint x="360" y="120" />
+        <di:waypoint x="420" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x0pkzj_di" bpmnElement="Flow_1x0pkzj">
+        <di:waypoint x="520" y="120" />
+        <di:waypoint x="585" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jzxeev_di" bpmnElement="Flow_0jzxeev">
+        <di:waypoint x="610" y="145" />
+        <di:waypoint x="610" y="230" />
+        <di:waypoint x="310" y="230" />
+        <di:waypoint x="310" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d4fhvp_di" bpmnElement="Flow_1d4fhvp">
+        <di:waypoint x="635" y="120" />
+        <di:waypoint x="670" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_163l3mg_di" bpmnElement="Flow_163l3mg">
+        <di:waypoint x="930" y="120" />
+        <di:waypoint x="992" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00sbsyh_di" bpmnElement="Flow_00sbsyh">
+        <di:waypoint x="770" y="120" />
+        <di:waypoint x="830" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

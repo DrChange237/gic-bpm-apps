@@ -1,0 +1,43 @@
+{
+  "components": [
+    {
+      "label": "Numéro de Dossier",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1himsjb",
+        "columns": 12
+      },
+      "id": "Field_16pca3t",
+      "key": "textfield_zwqwmm"
+    },
+    {
+      "label": "Favorable",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0w8jaka",
+        "columns": 12
+      },
+      "id": "Field_1v8sbo9",
+      "key": "validate"
+    },
+    {
+      "label": "Observation",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1wxl2k9",
+        "columns": 12
+      },
+      "id": "Field_0apt37y",
+      "key": "observation"
+    }
+  ],
+  "type": "default",
+  "id": "validation-folder-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

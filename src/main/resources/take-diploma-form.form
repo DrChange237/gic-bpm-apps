@@ -1,0 +1,56 @@
+{
+  "components": [
+    {
+      "label": "Diplôme 1",
+      "type": "filepicker",
+      "layout": {
+        "row": "Row_11633pv",
+        "columns": 12
+      },
+      "id": "Field_04mxfr7",
+      "key": "diploma_1",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Diplôme 2",
+      "type": "filepicker",
+      "layout": {
+        "row": "Row_1vouc6p",
+        "columns": 12
+      },
+      "id": "Field_00ejpgu",
+      "key": "diploma_2"
+    },
+    {
+      "label": "Diplôme 3",
+      "type": "filepicker",
+      "layout": {
+        "row": "Row_0tshf7p",
+        "columns": 12
+      },
+      "id": "Field_09t7d0t",
+      "key": "diploma_3"
+    },
+    {
+      "label": "Diplôme 4",
+      "type": "filepicker",
+      "layout": {
+        "row": "Row_1fpozoo",
+        "columns": 12
+      },
+      "id": "Field_0dd3ig2",
+      "key": "diploma_4"
+    }
+  ],
+  "type": "default",
+  "id": "take-diploma-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

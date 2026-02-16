@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Rapport de consultation - Immigration</title>
+
+    <style>
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            margin: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a4f8b;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #1a4f8b;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table td {
+            padding: 8px;
+            vertical-align: top;
+        }
+
+        .label {
+            font-weight: bold;
+            width: 35%;
+            background-color: #f5f5f5;
+        }
+
+        .value {
+            width: 65%;
+        }
+
+        .eligibility-yes {
+            color: green;
+            font-weight: bold;
+        }
+
+        .eligibility-no {
+            color: red;
+            font-weight: bold;
+        }
+
+        .amount-table th,
+        .amount-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: right;
+        }
+
+        .amount-table th {
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .observations {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 120px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 10px;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Rapport de consultation</h1>
+
+<!-- ===================== -->
+<!-- INFORMATIONS DOSSIER -->
+<!-- ===================== -->
+<h2>Informations du dossier</h2>
+
+<table>
+    <tr>
+        <td class="label">Numéro de dossier</td>
+        <td class="value" th:text="${consultation.inscription.reference}">DOS-000123</td>
+    </tr>
+
+    <tr>
+        <td class="label">Nom complet du client</td>
+        <td class="value" th:text="${consultation.inscription.firstName}">Jean Dupont</td>
+    </tr>
+
+    <tr>
+        <td class="label">Programme(s) d’immigration concerné(s)</td>
+        <td class="value">
+            <ul>
+                <li th:each="program : ${consultation.programs}"
+                    th:text="${program.description}">
+                    Nom du client
+                </li>
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<!-- ===================== -->
+<!-- ELIGIBILITÉ -->
+<!-- ===================== -->
+<h2>Évaluation de l’éligibilité</h2>
+
+<table>
+    <tr>
+        <td class="label">Statut d’éligibilité</td>
+        <td class="value">
+            <span th:if="${consultation.eligible}"
+                  class="eligibility-yes">
+                Éligible
+            </span>
+            <span th:if="${!consultation.eligible}"
+                  class="eligibility-no">
+                Non éligible
+            </span>
+        </td>
+    </tr>
+</table>
+
+<!-- ===================== -->
+<!-- MONTANTS -->
+<!-- ===================== -->
+<h2>Frais et versements</h2>
+
+<table class="amount-table">
+    <thead>
+    <tr>
+        <th>Type de versement</th>
+        <th>Montant</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td style="text-align:left;">Premier versement</td>
+        <td th:text="${consultation.firstAmount}">0</td>
+    </tr>
+    <tr>
+        <td style="text-align:left;">Second versement</td>
+        <td th:text="${consultation.secondAmount}">0</td>
+    </tr>
+    <tr>
+        <td style="text-align:left;">Dernier versement</td>
+        <td th:text="${consultation.lastAmount}">0</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- ===================== -->
+<!-- OBSERVATIONS -->
+<!-- ===================== -->
+<h2>Observations du consultant</h2>
+
+<div class="observations"
+     th:text="${consultation.observation}">
+    Le profil du client présente de bonnes chances sous réserve
+    d’amélioration du score linguistique et de la validation
+    des documents financiers.
+</div>
+
+<!-- ===================== -->
+<!-- FOOTER -->
+<!-- ===================== -->
+<div class="footer">
+
+</div>
+
+</body>
+</html>

@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Artifact ID -->
-    <artifactId>paperless-service</artifactId>
+    <artifactId>gic-service</artifactId>
 
     <!-- Project description -->
-    <description>Project for Sign</description>
+    <description>Project for GIC</description>
 
     <!-- gestion de build -->
     <build>
@@ -62,6 +62,27 @@
             <groupId>org.springframework.boot</groupId>
         </dependency>
 
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.2</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.2</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Config client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -111,6 +132,13 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <!-- Flying Saucer PDF (OpenPDF) - pour la conversion HTML vers PDF -->
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf-openpdf</artifactId>
+            <version>9.1.22</version>
         </dependency>
 
         <dependency>
@@ -201,6 +229,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -216,7 +245,7 @@
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter</artifactId>
-            <version>7.14.0</version>
+            <version>7.19.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.netflix</groupId>
@@ -234,7 +263,7 @@
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
             <!-- <artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
-            <version>7.14.0</version>
+            <version>7.19.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.netflix</groupId>
@@ -253,12 +282,10 @@
             <version>1.0.4</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
-            <version>7.14.0</version>
+            <version>7.19.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.netflix</groupId>
@@ -291,7 +318,7 @@
                 <!-- Import dependency management from camunda -->
                 <groupId>org.camunda.bpm</groupId>
                 <artifactId>camunda-bom</artifactId>
-                <version>7.14.0</version>
+                <version>7.19.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -315,13 +342,13 @@
     </developers>
 
     <!-- Group ID -->
-    <groupId>com.ccabank</groupId>
+    <groupId>com.change</groupId>
 
     <!-- Pom model version -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project name -->
-    <name>paperless-service</name>
+    <name>gic-service</name>
 
     <!-- Project Packaging -->
     <packaging>jar</packaging>

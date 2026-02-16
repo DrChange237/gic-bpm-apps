@@ -1,0 +1,34 @@
+{
+  "components": [
+    {
+      "label": "Valider ?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1itriji",
+        "columns": null
+      },
+      "id": "Field_1oswt83",
+      "key": "validate",
+      "defaultValue": true
+    },
+    {
+      "label": "Observation",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0m6xt8s",
+        "columns": null
+      },
+      "id": "Field_04wrzya",
+      "key": "validate_observation"
+    }
+  ],
+  "type": "default",
+  "id": "validate-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

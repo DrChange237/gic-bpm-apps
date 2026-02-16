@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0khnz3s" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="equivalence" name="Equivalence de Diplômes" isExecutable="true">
+    <bpmn:startEvent id="start_equivalence" name="Initiation des Equivalences">
+      <bpmn:outgoing>Flow_1msxvmh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1msxvmh" sourceRef="start_equivalence" targetRef="Activity_1oeg2vr" />
+    <bpmn:userTask id="upload_diploma" name="Upload des Diplômes / Prendre" camunda:formRef="take-diploma-form" camunda:formRefBinding="latest" camunda:candidateGroups="equivalence,admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${takeDiplomaListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wwx3ak</bpmn:incoming>
+      <bpmn:outgoing>Flow_1n55a1p</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="create_equivalence_profil" name="Creation de Profil auprès de l&#39;organisme d&#39;Equivalence" camunda:candidateGroups="equivalence,admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${equivalenceProfilListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1n55a1p</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sff46j</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0u1grab" name="Fin des Equivalences">
+      <bpmn:incoming>Flow_1ly476m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1sff46j" sourceRef="create_equivalence_profil" targetRef="certify_diploma" />
+    <bpmn:sequenceFlow id="Flow_0llypan" sourceRef="certify_diploma" targetRef="Event_1fdaocg" />
+    <bpmn:userTask id="certify_diploma" name="Certification/Authentification du Diplôme" camunda:candidateGroups="equivalence,admin">
+      <bpmn:incoming>Flow_1sff46j</bpmn:incoming>
+      <bpmn:incoming>Flow_04mdqe3</bpmn:incoming>
+      <bpmn:incoming>Flow_0xrenks</bpmn:incoming>
+      <bpmn:outgoing>Flow_0llypan</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1q3s5d5" sourceRef="Gateway_1fewf2y" targetRef="authentification_diploma">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reason=="authentification"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="authentification_diploma" name="Authentification du Diplôme" camunda:candidateGroups="equivalence,admin">
+      <bpmn:incoming>Flow_1q3s5d5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xrenks</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0xrenks" sourceRef="authentification_diploma" targetRef="certify_diploma" />
+    <bpmn:sequenceFlow id="Flow_0ft1pvi" sourceRef="Gateway_1fewf2y" targetRef="missing_element_equivalence">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reason=="missing"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="missing_element_equivalence" name="Manquement sur Dossier Equivalence" camunda:candidateGroups="equivalence,admin">
+      <bpmn:incoming>Flow_0ft1pvi</bpmn:incoming>
+      <bpmn:outgoing>Flow_04mdqe3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_04mdqe3" sourceRef="missing_element_equivalence" targetRef="certify_diploma" />
+    <bpmn:exclusiveGateway id="Gateway_02hm1we" default="Flow_1icn8q6">
+      <bpmn:incoming>Flow_0ow5fgc</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uuc3x0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1icn8q6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0ow5fgc" sourceRef="Event_1fdaocg" targetRef="Gateway_02hm1we" />
+    <bpmn:sequenceFlow id="Flow_1uuc3x0" sourceRef="Gateway_02hm1we" targetRef="Activity_0y0n3qn">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reason=="complete"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1icn8q6" sourceRef="Gateway_02hm1we" targetRef="Gateway_1fewf2y" />
+    <bpmn:sequenceFlow id="Flow_0wwx3ak" sourceRef="Activity_1oeg2vr" targetRef="upload_diploma" />
+    <bpmn:sequenceFlow id="Flow_1n55a1p" sourceRef="upload_diploma" targetRef="create_equivalence_profil" />
+    <bpmn:intermediateCatchEvent id="Event_1fdaocg" name="Notification Organisme Equivalence">
+      <bpmn:incoming>Flow_0llypan</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ow5fgc</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0g8oij3" messageRef="Message_23a111c" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1ly476m" sourceRef="Activity_0y0n3qn" targetRef="Event_0u1grab" />
+    <bpmn:sendTask id="Activity_1oeg2vr" name="Notification d&#39;apport des relevés de notes et Attestations" camunda:delegateExpression="${notifCustomer}">
+      <bpmn:incoming>Flow_1msxvmh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wwx3ak</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:exclusiveGateway id="Gateway_1fewf2y">
+      <bpmn:incoming>Flow_1icn8q6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q3s5d5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ft1pvi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Activity_0y0n3qn" name="Notifier le Client" camunda:delegateExpression="${notifCustomer}">
+      <bpmn:incoming>Flow_1uuc3x0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ly476m</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1kfqilo" name="Message_Equivalence_Available" />
+  <bpmn:message id="Message_23a111c" name="Message_Equivalence_Notif" />
+  <bpmn:message id="Message_30bsg9h" name="Message_Back_Diploma" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="equivalence">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="start_equivalence">
+        <dc:Bounds x="172" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="285" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nz93sy_di" bpmnElement="upload_diploma">
+        <dc:Bounds x="480" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0htpjgd_di" bpmnElement="create_equivalence_profil">
+        <dc:Bounds x="740" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_034drsy_di" bpmnElement="certify_diploma">
+        <dc:Bounds x="900" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ybarij_di" bpmnElement="authentification_diploma">
+        <dc:Bounds x="1050" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bof8gp_di" bpmnElement="missing_element_equivalence">
+        <dc:Bounds x="900" y="350" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_02hm1we_di" bpmnElement="Gateway_02hm1we" isMarkerVisible="true">
+        <dc:Bounds x="1295" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f4zckd_di" bpmnElement="Event_1fdaocg">
+        <dc:Bounds x="1152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1141" y="145" width="61" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k995mp_di" bpmnElement="Activity_1oeg2vr">
+        <dc:Bounds x="280" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0hw0gr0_di" bpmnElement="Gateway_1fewf2y" isMarkerVisible="true">
+        <dc:Bounds x="1215" y="395" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0u1grab_di" bpmnElement="Event_0u1grab">
+        <dc:Bounds x="1682" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1668" y="145" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18gl1oi_di" bpmnElement="Activity_0y0n3qn">
+        <dc:Bounds x="1440" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1msxvmh_di" bpmnElement="Flow_1msxvmh">
+        <di:waypoint x="208" y="260" />
+        <di:waypoint x="280" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sff46j_di" bpmnElement="Flow_1sff46j">
+        <di:waypoint x="840" y="120" />
+        <di:waypoint x="900" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0llypan_di" bpmnElement="Flow_0llypan">
+        <di:waypoint x="1000" y="120" />
+        <di:waypoint x="1152" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q3s5d5_di" bpmnElement="Flow_1q3s5d5">
+        <di:waypoint x="1240" y="395" />
+        <di:waypoint x="1240" y="260" />
+        <di:waypoint x="1150" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xrenks_di" bpmnElement="Flow_0xrenks">
+        <di:waypoint x="1050" y="260" />
+        <di:waypoint x="980" y="260" />
+        <di:waypoint x="980" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ft1pvi_di" bpmnElement="Flow_0ft1pvi">
+        <di:waypoint x="1215" y="420" />
+        <di:waypoint x="1000" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04mdqe3_di" bpmnElement="Flow_04mdqe3">
+        <di:waypoint x="950" y="350" />
+        <di:waypoint x="950" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ow5fgc_di" bpmnElement="Flow_0ow5fgc">
+        <di:waypoint x="1188" y="120" />
+        <di:waypoint x="1295" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uuc3x0_di" bpmnElement="Flow_1uuc3x0">
+        <di:waypoint x="1345" y="120" />
+        <di:waypoint x="1440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1icn8q6_di" bpmnElement="Flow_1icn8q6">
+        <di:waypoint x="1320" y="145" />
+        <di:waypoint x="1320" y="420" />
+        <di:waypoint x="1265" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wwx3ak_di" bpmnElement="Flow_0wwx3ak">
+        <di:waypoint x="380" y="260" />
+        <di:waypoint x="480" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n55a1p_di" bpmnElement="Flow_1n55a1p">
+        <di:waypoint x="580" y="260" />
+        <di:waypoint x="790" y="260" />
+        <di:waypoint x="790" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ly476m_di" bpmnElement="Flow_1ly476m">
+        <di:waypoint x="1540" y="120" />
+        <di:waypoint x="1682" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,56 @@
+{
+  "components": [
+    {
+      "label": "Numero de Dossier",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0wxodcd",
+        "columns": 6
+      },
+      "id": "Field_1rug4sw",
+      "key": "reference",
+      "disabled": true
+    },
+    {
+      "label": "Noms du Client",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0wxodcd",
+        "columns": 6
+      },
+      "id": "Field_0784owp",
+      "key": "fullName",
+      "disabled": true
+    },
+    {
+      "label": "Montant Attendu",
+      "type": "number",
+      "layout": {
+        "row": "Row_0ow9ww0",
+        "columns": 12
+      },
+      "id": "Field_1hg36vq",
+      "key": "amount",
+      "disabled": false
+    },
+    {
+      "label": "Preuve de Versement",
+      "type": "filepicker",
+      "layout": {
+        "row": "Row_1vnjoin",
+        "columns": 12
+      },
+      "id": "Field_0dqfnsv",
+      "key": "bill"
+    }
+  ],
+  "type": "default",
+  "id": "versement-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

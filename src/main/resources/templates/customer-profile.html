@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fiche Profil Client</title>
+
+    <style>
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 10px;
+            color: #333;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a4f8b;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+
+        h2 {
+            color: #1a4f8b;
+            border-bottom: 1px solid #ccc;
+            margin: 10px 0 5px 0;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 3px 5px;
+            vertical-align: top;
+        }
+
+        .label {
+            font-weight: bold;
+            background-color: #f3f3f3;
+            width: 15%;
+        }
+
+        .value {
+            width: 35%;
+        }
+
+        .footer {
+            margin-top: 10px;
+            font-size: 9px;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>FICHE PROFIL CLIENT</h1>
+
+<!-- ===================== -->
+<!-- DOSSIER -->
+<!-- ===================== -->
+<table>
+    <tr>
+        <td class="label">Référence</td>
+        <td class="value" th:text="${inscription.reference}">REF-001</td>
+        <td class="label">Statut</td>
+        <td class="value" th:text="${inscription.status}">EN_COURS</td>
+    </tr>
+    <tr>
+        <td class="label">Agence</td>
+        <td class="value" colspan="3"
+            th:text="${inscription.agency.name}">
+            Agence Centrale
+        </td>
+    </tr>
+</table>
+
+<h2>Identité</h2>
+<table>
+    <tr>
+        <td class="label">Nom</td>
+        <td class="value"
+            th:text="${inscription.firstName + ' ' + inscription.lastName}">
+        </td>
+        <td class="label">Sexe</td>
+        <td class="value" th:text="${inscription.sexe}"></td>
+    </tr>
+    <tr>
+        <td class="label">Naissance</td>
+        <td class="value"
+            th:text="${inscription.birthday + ' à ' + inscription.birthplace}">
+        </td>
+        <td class="label">Nationalité</td>
+        <td class="value" th:text="${inscription.nationality}"></td>
+    </tr>
+</table>
+
+<h2>Coordonnées</h2>
+<table>
+    <tr>
+        <td class="label">Adresse</td>
+        <td class="value" colspan="3" th:text="${inscription.address}"></td>
+    </tr>
+    <tr>
+        <td class="label">Téléphone</td>
+        <td class="value" th:text="${inscription.mobile}"></td>
+        <td class="label">Email</td>
+        <td class="value" th:text="${inscription.email}"></td>
+    </tr>
+</table>
+
+<h2>Identité nationale</h2>
+<table>
+    <tr>
+        <td class="label">CNI</td>
+        <td class="value" th:text="${inscription.cniNumber}"></td>
+        <td class="label">Délivrée</td>
+        <td class="value"
+            th:text="${inscription.cniDelivery + ' à ' + inscription.cniPlace}">
+        </td>
+    </tr>
+</table>
+
+<h2>Formation &amp; Expérience</h2>
+<table>
+    <tr>
+        <td class="label">Diplôme</td>
+        <td class="value" th:text="${inscription.diploma}"></td>
+        <td class="label">Année</td>
+        <td class="value" th:text="${inscription.yearGraduation}"></td>
+    </tr>
+    <tr>
+        <td class="label">École</td>
+        <td class="value" th:text="${inscription.school}"></td>
+        <td class="label">Exp. (ans)</td>
+        <td class="value" th:text="${inscription.experience}"></td>
+    </tr>
+</table>
+
+<h2>Situation familiale</h2>
+<table>
+    <tr>
+        <td class="label">Matrimonial</td>
+        <td class="value" th:text="${inscription.matrimonial}"></td>
+        <td class="label">Enfants</td>
+        <td class="value"
+            th:text="${inscription.children + ' (' + inscription.childrenAge + ')'}">
+        </td>
+    </tr>
+</table>
+
+<h2 th:if="${inscription.firstNameConjoint != null}">
+    Conjoint
+</h2>
+<table th:if="${inscription.firstNameConjoint != null}">
+    <tr>
+        <td class="label">Nom</td>
+        <td class="value"
+            th:text="${inscription.firstNameConjoint + ' ' + inscription.lastNameConjoint}">
+        </td>
+        <td class="label">Contact</td>
+        <td class="value"
+            th:text="${inscription.mobileConjoint}">
+        </td>
+    </tr>
+    <tr>
+        <td class="label">Diplôme</td>
+        <td class="value" th:text="${inscription.diplomaConjoint}"></td>
+        <td class="label">Exp.</td>
+        <td class="value" th:text="${inscription.experienceConjoint}"></td>
+    </tr>
+</table>
+
+
+
+</body>
+</html>

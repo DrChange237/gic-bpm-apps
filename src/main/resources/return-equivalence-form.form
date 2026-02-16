@@ -1,0 +1,47 @@
+{
+  "components": [
+    {
+      "label": "Numéro de Dossier",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ez9uuw",
+        "columns": 12
+      },
+      "id": "Field_1ohkfcg",
+      "key": "reference"
+    },
+    {
+      "label": "Motif de la Notification",
+      "values": [
+        {
+          "label": "Demande d'Authentification",
+          "value": "authentification"
+        },
+        {
+          "label": "Manquement d'éléments",
+          "value": "missing"
+        },
+        {
+          "label": "Equivalence Disponible",
+          "value": "complete"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_15n09lb",
+        "columns": 12
+      },
+      "id": "Field_0ztl8cv",
+      "key": "reason"
+    }
+  ],
+  "type": "default",
+  "id": "return-equivalence-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

@@ -1,0 +1,54 @@
+{
+  "components": [
+    {
+      "label": "Date d'examen",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0o9ab02",
+        "columns": null
+      },
+      "id": "Field_0li82cm",
+      "key": "exam_date",
+      "validate": {
+        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$"
+      }
+    },
+    {
+      "label": "Centre D'examen",
+      "values": [
+        {
+          "label": "Douala",
+          "value": "Douala"
+        },
+        {
+          "label": "Yaoundé",
+          "value": "Yaoundé"
+        },
+        {
+          "label": "Buea",
+          "value": "Buea"
+        },
+        {
+          "label": "Ngaoundéré",
+          "value": "Ngaoundéré"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_1os6aaj",
+        "columns": null
+      },
+      "id": "Field_0d7kqv9",
+      "key": "exam_center"
+    }
+  ],
+  "type": "default",
+  "id": "register-exam-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

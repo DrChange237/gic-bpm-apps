@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_08ukrxl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="biometry" name="Biométrie" isExecutable="true">
+    <bpmn:startEvent id="biometrie" name="Biométrie" camunda:formRef="reference-form" camunda:formRefBinding="latest">
+      <bpmn:outgoing>Flow_0td5pf8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0td5pf8" sourceRef="biometrie" targetRef="Activity_1qydany" />
+    <bpmn:endEvent id="Event_17bo31z">
+      <bpmn:incoming>Flow_12f3ztu</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1gftmmf" camunda:delegateExpression="${biometryMessage}" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_05tbodj" sourceRef="Activity_1qydany" targetRef="Gateway_0s9d298" />
+    <bpmn:userTask id="Activity_1qydany" name="Biométrie" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="biometry">
+      <bpmn:incoming>Flow_0td5pf8</bpmn:incoming>
+      <bpmn:outgoing>Flow_05tbodj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0s9d298" default="Flow_099988m">
+      <bpmn:incoming>Flow_05tbodj</bpmn:incoming>
+      <bpmn:outgoing>Flow_12f3ztu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_099988m</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_12f3ztu" sourceRef="Gateway_0s9d298" targetRef="Event_17bo31z">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0gyvx4d">
+      <bpmn:incoming>Flow_099988m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_099988m" sourceRef="Gateway_0s9d298" targetRef="Event_0gyvx4d" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="biometry">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="biometrie">
+        <dc:Bounds x="182" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="125" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tpj465_di" bpmnElement="Activity_1qydany">
+        <dc:Bounds x="300" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0s9d298_di" bpmnElement="Gateway_0s9d298" isMarkerVisible="true">
+        <dc:Bounds x="465" y="75" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0gyvx4d_di" bpmnElement="Event_0gyvx4d">
+        <dc:Bounds x="472" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0j9dvpd_di" bpmnElement="Event_17bo31z">
+        <dc:Bounds x="632" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0td5pf8_di" bpmnElement="Flow_0td5pf8">
+        <di:waypoint x="218" y="100" />
+        <di:waypoint x="300" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05tbodj_di" bpmnElement="Flow_05tbodj">
+        <di:waypoint x="400" y="100" />
+        <di:waypoint x="465" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12f3ztu_di" bpmnElement="Flow_12f3ztu">
+        <di:waypoint x="515" y="100" />
+        <di:waypoint x="632" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_099988m_di" bpmnElement="Flow_099988m">
+        <di:waypoint x="490" y="125" />
+        <di:waypoint x="490" y="202" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

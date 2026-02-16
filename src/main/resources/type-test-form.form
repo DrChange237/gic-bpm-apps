@@ -1,0 +1,53 @@
+{
+  "components": [
+    {
+      "label": "Référence du Dossier",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0ttet5w",
+        "columns": 12
+      },
+      "id": "Field_0xwa3tg",
+      "key": "reference",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Type de test de Langue",
+      "values": [
+        {
+          "label": "TCF",
+          "value": "TCF"
+        },
+        {
+          "label": "TEF",
+          "value": "TEF"
+        },
+        {
+          "label": "IELTS",
+          "value": "IELTS"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_1ilc2mz",
+        "columns": 12
+      },
+      "id": "Field_1vgq0p2",
+      "key": "type_test",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "type-test-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

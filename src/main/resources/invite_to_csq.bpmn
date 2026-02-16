@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0dgtbs4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="invite_to_csq" name="Invitation à Postuler au CSQ" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Invite to CSQ" camunda:formRef="reference-form" camunda:formRefBinding="latest">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${inviteCSQListener}" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_12ptdvu</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_12ptdvu" sourceRef="StartEvent_1" targetRef="Activity_08kxbtd" />
+    <bpmn:serviceTask id="Activity_1tvdosf" name="Notifier Client" camunda:delegateExpression="${notifCustomer}">
+      <bpmn:incoming>Flow_1caul1y</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y6c4vq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1y6c4vq" sourceRef="Activity_1tvdosf" targetRef="Event_0mc9a6v" />
+    <bpmn:endEvent id="Event_0mc9a6v">
+      <bpmn:incoming>Flow_1y6c4vq</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_01wgibz" messageRef="Message_1m7rr9c" camunda:delegateExpression="${inviteToCSQMessage}" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_180ny8i" sourceRef="Activity_08kxbtd" targetRef="Gateway_0pecc9m" />
+    <bpmn:userTask id="Activity_08kxbtd" name="Confirmation Invitation au CSQ" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,admin">
+      <bpmn:incoming>Flow_12ptdvu</bpmn:incoming>
+      <bpmn:outgoing>Flow_180ny8i</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0pecc9m" default="Flow_14fyaam">
+      <bpmn:incoming>Flow_180ny8i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1caul1y</bpmn:outgoing>
+      <bpmn:outgoing>Flow_14fyaam</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1caul1y" sourceRef="Gateway_0pecc9m" targetRef="Activity_1tvdosf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1fbonkg">
+      <bpmn:incoming>Flow_14fyaam</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_14fyaam" sourceRef="Gateway_0pecc9m" targetRef="Event_1fbonkg" />
+  </bpmn:process>
+  <bpmn:message id="Message_1m7rr9c" name="Message_Invite_CSQ" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="invite_to_csq">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="125" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1d9gi3j_di" bpmnElement="Activity_1tvdosf">
+        <dc:Bounds x="580" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0fscf7d_di" bpmnElement="Event_0mc9a6v">
+        <dc:Bounds x="752" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uic0an_di" bpmnElement="Activity_08kxbtd">
+        <dc:Bounds x="290" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0pecc9m_di" bpmnElement="Gateway_0pecc9m" isMarkerVisible="true">
+        <dc:Bounds x="455" y="75" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fbonkg_di" bpmnElement="Event_1fbonkg">
+        <dc:Bounds x="462" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_12ptdvu_di" bpmnElement="Flow_12ptdvu">
+        <di:waypoint x="218" y="100" />
+        <di:waypoint x="290" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y6c4vq_di" bpmnElement="Flow_1y6c4vq">
+        <di:waypoint x="680" y="100" />
+        <di:waypoint x="752" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_180ny8i_di" bpmnElement="Flow_180ny8i">
+        <di:waypoint x="390" y="100" />
+        <di:waypoint x="455" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1caul1y_di" bpmnElement="Flow_1caul1y">
+        <di:waypoint x="505" y="100" />
+        <di:waypoint x="580" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14fyaam_di" bpmnElement="Flow_14fyaam">
+        <di:waypoint x="480" y="125" />
+        <di:waypoint x="480" y="192" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,129 @@
+{
+  "components": [
+    {
+      "text": "<h2> Engagement(s) </h2>",
+      "type": "text",
+      "layout": {
+        "row": "Row_0xvvuco",
+        "columns": 12
+      },
+      "id": "Field_1nhuslf"
+    },
+    {
+      "label": "2.1 - Préparation de Documents",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1xh0b6x",
+        "columns": 6
+      },
+      "id": "Field_05ondcm",
+      "key": "term_prep_doc"
+    },
+    {
+      "label": "2.2 - Soumission du dossier dans le système d’Entrée Express et ARRIMA",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1xh0b6x",
+        "columns": 6
+      },
+      "id": "Field_1ak60vr",
+      "key": "term_submit_folder"
+    },
+    {
+      "label": "2.3 - Application pour la résidence permanente",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_18u6x9b",
+        "columns": 6
+      },
+      "id": "Field_0bkx54r",
+      "key": "term_submit_rp"
+    },
+    {
+      "label": "2.4 Obtention de l’approbation de prise de données biométrique",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_18u6x9b",
+        "columns": 6
+      },
+      "id": "Field_1o3ca5v",
+      "key": "term_biometry"
+    },
+    {
+      "label": "2.5 - Obtention de l’approbation de prêt pour visa",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1wse6r8",
+        "columns": 6
+      },
+      "id": "Field_1yqwd5c",
+      "key": "term_visa"
+    },
+    {
+      "label": "2.6 - Accompagnement à l’intégration",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1wse6r8",
+        "columns": 6
+      },
+      "id": "Field_02x5bfv",
+      "key": "term_integration"
+    },
+    {
+      "label": "5.2 Débours",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_08juo2k",
+        "columns": 12
+      },
+      "id": "Field_1tybzp7",
+      "key": "term_fees"
+    },
+    {
+      "label": "Première phase (couvre les obligations 2.1 & 2.2)",
+      "type": "number",
+      "layout": {
+        "row": "Row_0m5s3uu",
+        "columns": 4
+      },
+      "id": "Field_17zs1b0",
+      "key": "contract_amount_phase_1"
+    },
+    {
+      "label": "Deuxième phase (couvre l’obligation 2.3 & 2.4) ",
+      "type": "number",
+      "layout": {
+        "row": "Row_0m5s3uu",
+        "columns": 4
+      },
+      "id": "Field_1a7zmfu",
+      "key": "contract_amount_phase_2"
+    },
+    {
+      "label": "Troisième phase (couvre l’obligation 2.5 & 2.6) ",
+      "type": "number",
+      "layout": {
+        "row": "Row_0m5s3uu",
+        "columns": 4
+      },
+      "id": "Field_1v68hqj",
+      "key": "contract_amount_phase_3"
+    }
+  ],
+  "type": "default",
+  "id": "contract-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

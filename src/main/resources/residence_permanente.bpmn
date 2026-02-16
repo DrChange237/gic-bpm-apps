@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0puv94i" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="residence_permanente" name="Résidence Permanente" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Demande Résidence Permanente">
+      <bpmn:outgoing>Flow_1ao0bbs</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1ao0bbs" sourceRef="StartEvent_1" targetRef="medical_visit" />
+    <bpmn:userTask id="submit_rp" name="Soumettre la demande de résidence permanente" camunda:candidateGroups="consultant,admin">
+      <bpmn:incoming>Flow_1oapevt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xhjvjr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0dqyqqj" sourceRef="upload_doc_rp" targetRef="payment_fees_rp" />
+    <bpmn:userTask id="upload_doc_rp" name="Upload Documents Justificatifs pour la Résidence Permanente" camunda:candidateGroups="consultant,admin">
+      <bpmn:incoming>Flow_10u2svp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dqyqqj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0gc5i35" sourceRef="payment_fees_rp" targetRef="biometry_rdv" />
+    <bpmn:userTask id="payment_fees_rp" name="Paiement des Frais de Résidence Permanente" camunda:candidateGroups="consultant,admin">
+      <bpmn:incoming>Flow_0dqyqqj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gc5i35</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_09n6hif" sourceRef="biometry_rdv" targetRef="Event_1mkx5sz" />
+    <bpmn:userTask id="biometry_rdv" name="Prise RDV Biométrie" camunda:candidateGroups="biometry,admin">
+      <bpmn:incoming>Flow_0gc5i35</bpmn:incoming>
+      <bpmn:incoming>Flow_0x6bz3k</bpmn:incoming>
+      <bpmn:outgoing>Flow_09n6hif</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="medical_visit" name="Prise de RDV Visite Médical" camunda:candidateGroups="medical,admin">
+      <bpmn:incoming>Flow_1ao0bbs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gfntbn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0irudlj">
+      <bpmn:incoming>Flow_0ssd9ge</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0xhjvjr" sourceRef="submit_rp" targetRef="Event_1x4xi62" />
+    <bpmn:sequenceFlow id="Flow_04no14s" sourceRef="Event_1x4xi62" targetRef="Gateway_0j9q4ua" />
+    <bpmn:intermediateCatchEvent id="Event_1x4xi62" name="Notification Résidence Permanente">
+      <bpmn:incoming>Flow_0xhjvjr</bpmn:incoming>
+      <bpmn:incoming>Flow_0h5ujuy</bpmn:incoming>
+      <bpmn:outgoing>Flow_04no14s</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0klklw7" messageRef="Message_16llgqh" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1gfntbn" sourceRef="medical_visit" targetRef="Event_1g7jl0f" />
+    <bpmn:sequenceFlow id="Flow_1tior2v" sourceRef="Event_1g7jl0f" targetRef="Gateway_081x1od" />
+    <bpmn:intermediateCatchEvent id="Event_1g7jl0f" name="Visite Médical Disponible">
+      <bpmn:incoming>Flow_1gfntbn</bpmn:incoming>
+      <bpmn:incoming>Flow_1ik9hq9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tior2v</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0qz6hhw" messageRef="Message_3qc7g3p" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1khf4ym" sourceRef="Event_1mkx5sz" targetRef="Gateway_0e0lacf" />
+    <bpmn:intermediateCatchEvent id="Event_1mkx5sz" name="Biométrie Disponible">
+      <bpmn:incoming>Flow_09n6hif</bpmn:incoming>
+      <bpmn:outgoing>Flow_1khf4ym</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_14yiuxw" messageRef="Message_0qalski" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_081x1od" default="Flow_1ik9hq9">
+      <bpmn:incoming>Flow_1tior2v</bpmn:incoming>
+      <bpmn:outgoing>Flow_10u2svp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ik9hq9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_10u2svp" sourceRef="Gateway_081x1od" targetRef="upload_doc_rp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ik9hq9" sourceRef="Gateway_081x1od" targetRef="Event_1g7jl0f" />
+    <bpmn:exclusiveGateway id="Gateway_0e0lacf" default="Flow_0x6bz3k">
+      <bpmn:incoming>Flow_1khf4ym</bpmn:incoming>
+      <bpmn:outgoing>Flow_0x6bz3k</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1oapevt</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0x6bz3k" sourceRef="Gateway_0e0lacf" targetRef="biometry_rdv" />
+    <bpmn:exclusiveGateway id="Gateway_0j9q4ua" default="Flow_0h5ujuy">
+      <bpmn:incoming>Flow_04no14s</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ssd9ge</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0h5ujuy</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0ssd9ge" sourceRef="Gateway_0j9q4ua" targetRef="Event_0irudlj">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0h5ujuy" sourceRef="Gateway_0j9q4ua" targetRef="Event_1x4xi62" />
+    <bpmn:sequenceFlow id="Flow_1oapevt" sourceRef="Gateway_0e0lacf" targetRef="submit_rp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:message id="Message_16llgqh" name="Message_RP_Confirmed" />
+  <bpmn:message id="Message_3qc7g3p" name="Message_Medical_Visit" />
+  <bpmn:message id="Message_0qalski" name="Message_Biometry" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="residence_permanente">
+      <bpmndi:BPMNShape id="Activity_0gkacof_di" bpmnElement="payment_fees_rp">
+        <dc:Bounds x="690" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gdy82m_di" bpmnElement="biometry_rdv">
+        <dc:Bounds x="860" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rap7n5_di" bpmnElement="Event_1x4xi62">
+        <dc:Bounds x="1402" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1391" y="235" width="61" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="132" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="120" y="235" width="61" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07zyrjy_di" bpmnElement="medical_visit">
+        <dc:Bounds x="220" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wktzaw_di" bpmnElement="Event_1g7jl0f">
+        <dc:Bounds x="392" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="377" y="235" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00o4ioq_di" bpmnElement="upload_doc_rp">
+        <dc:Bounds x="560" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_081x1od_di" bpmnElement="Gateway_081x1od" isMarkerVisible="true">
+        <dc:Bounds x="465" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0my6lbe_di" bpmnElement="Event_1mkx5sz">
+        <dc:Bounds x="1002" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="995" y="235" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0e0lacf_di" bpmnElement="Gateway_0e0lacf" isMarkerVisible="true">
+        <dc:Bounds x="1065" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0irudlj_di" bpmnElement="Event_0irudlj">
+        <dc:Bounds x="1562" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0j9q4ua_di" bpmnElement="Gateway_0j9q4ua" isMarkerVisible="true">
+        <dc:Bounds x="1475" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vr3tqe_di" bpmnElement="submit_rp">
+        <dc:Bounds x="1210" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0xhjvjr_di" bpmnElement="Flow_0xhjvjr">
+        <di:waypoint x="1310" y="210" />
+        <di:waypoint x="1402" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dqyqqj_di" bpmnElement="Flow_0dqyqqj">
+        <di:waypoint x="660" y="210" />
+        <di:waypoint x="690" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gc5i35_di" bpmnElement="Flow_0gc5i35">
+        <di:waypoint x="790" y="210" />
+        <di:waypoint x="860" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09n6hif_di" bpmnElement="Flow_09n6hif">
+        <di:waypoint x="960" y="210" />
+        <di:waypoint x="1002" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04no14s_di" bpmnElement="Flow_04no14s">
+        <di:waypoint x="1438" y="210" />
+        <di:waypoint x="1475" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1khf4ym_di" bpmnElement="Flow_1khf4ym">
+        <di:waypoint x="1038" y="210" />
+        <di:waypoint x="1065" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ao0bbs_di" bpmnElement="Flow_1ao0bbs">
+        <di:waypoint x="168" y="210" />
+        <di:waypoint x="220" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gfntbn_di" bpmnElement="Flow_1gfntbn">
+        <di:waypoint x="320" y="210" />
+        <di:waypoint x="392" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ik9hq9_di" bpmnElement="Flow_1ik9hq9">
+        <di:waypoint x="490" y="185" />
+        <di:waypoint x="490" y="80" />
+        <di:waypoint x="410" y="80" />
+        <di:waypoint x="410" y="192" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tior2v_di" bpmnElement="Flow_1tior2v">
+        <di:waypoint x="428" y="210" />
+        <di:waypoint x="465" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10u2svp_di" bpmnElement="Flow_10u2svp">
+        <di:waypoint x="515" y="210" />
+        <di:waypoint x="560" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x6bz3k_di" bpmnElement="Flow_0x6bz3k">
+        <di:waypoint x="1090" y="185" />
+        <di:waypoint x="1090" y="60" />
+        <di:waypoint x="910" y="60" />
+        <di:waypoint x="910" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ssd9ge_di" bpmnElement="Flow_0ssd9ge">
+        <di:waypoint x="1525" y="210" />
+        <di:waypoint x="1562" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h5ujuy_di" bpmnElement="Flow_0h5ujuy">
+        <di:waypoint x="1500" y="185" />
+        <di:waypoint x="1500" y="50" />
+        <di:waypoint x="1420" y="50" />
+        <di:waypoint x="1420" y="192" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oapevt_di" bpmnElement="Flow_1oapevt">
+        <di:waypoint x="1115" y="210" />
+        <di:waypoint x="1210" y="210" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

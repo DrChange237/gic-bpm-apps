@@ -1,0 +1,118 @@
+{
+  "components": [
+    {
+      "label": "Préparation de Documents",
+      "values": [
+        {
+          "label": "Equivalence de Diplômes",
+          "value": "charge_equivalence"
+        },
+        {
+          "label": "Test de Langue",
+          "value": "charge_test_lang"
+        }
+      ],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1sdofyn",
+        "columns": 6
+      },
+      "id": "Field_0vj4q6l",
+      "key": "consultation_charges",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Eligible",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1sdofyn",
+        "columns": 6
+      },
+      "id": "Field_0ctih3r",
+      "key": "consultation_eligible",
+      "defaultValue": true,
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Test de Langue",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1uf1cnb",
+        "columns": 6
+      },
+      "id": "Field_1s3t6bn",
+      "key": "consultation_test_langs",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Programme",
+      "values": [],
+      "type": "checklist",
+      "layout": {
+        "row": "Row_1uf1cnb",
+        "columns": 6
+      },
+      "id": "Field_17tlcbs",
+      "key": "consultation_programs",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Montant 1er Versement",
+      "type": "number",
+      "layout": {
+        "row": "Row_0yi8atp",
+        "columns": 4
+      },
+      "id": "Field_12c3fvv",
+      "key": "consultation_amountFirst"
+    },
+    {
+      "label": "Montant 2e Versement",
+      "type": "number",
+      "layout": {
+        "row": "Row_0yi8atp",
+        "columns": 4
+      },
+      "id": "Field_1uy7wzh",
+      "key": "consultation_amountSecond"
+    },
+    {
+      "label": "Montant Dernier Versement",
+      "type": "number",
+      "layout": {
+        "row": "Row_0yi8atp",
+        "columns": 4
+      },
+      "id": "Field_0fv5avv",
+      "key": "consultation_amountLast"
+    },
+    {
+      "label": "Observations",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1dmwely",
+        "columns": 12
+      },
+      "id": "Field_11luntr",
+      "key": "consultation_observations"
+    }
+  ],
+  "type": "default",
+  "id": "consultation-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 19
+}
