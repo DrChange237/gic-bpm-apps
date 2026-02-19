@@ -29,7 +29,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         Specification<Inscription> spec = Specification.where(null);
         spec = spec.and(InscriptionSpecifications.withDynamicQuery(search));
         Pageable pageable = PageRequest.of(0, inscriptionRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "creationDate"));
-        List<Inscription> inscriptions = inscriptionRepository.findAll(spec);
+        List<Inscription> inscriptions = inscriptionRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "creationDate"));
         return inscriptionMapper.toDto(inscriptions);
     }
 

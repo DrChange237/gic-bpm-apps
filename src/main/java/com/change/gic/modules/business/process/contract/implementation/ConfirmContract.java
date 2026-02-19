@@ -3,6 +3,7 @@ package com.change.gic.modules.business.process.contract.implementation;
 import com.change.gic.modules.business.entity.Contrat;
 import com.change.gic.modules.business.entity.ContratTerm;
 import com.change.gic.modules.business.entity.ContratTermGroup;
+import com.change.gic.modules.business.enumeration.ContratStatus;
 import com.change.gic.modules.business.repository.ContratRepository;
 import com.change.gic.modules.business.service.faces.PDFGenerationService;
 import com.change.gic.modules.core.entity.Document;
@@ -67,6 +68,9 @@ public class ConfirmContract implements JavaDelegate {
         }catch (Exception e){
             log.error(e.getMessage());
         }
+
+        contrat.setStatus(ContratStatus.SIGNED);
+        contratRepository.save(contrat);
 
     }
 

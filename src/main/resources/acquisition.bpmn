@@ -25,6 +25,9 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="start_inscription" name="Nouvel Inscription" camunda:formRef="inscription-form" camunda:formRefBinding="latest">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${defineIDListener}" event="start" />
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1uxrrbl</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="Activity_0xzpm3d" name="Enregistrement Inscription" camunda:delegateExpression="${saveInscription}">
