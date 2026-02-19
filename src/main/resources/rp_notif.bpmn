@@ -10,7 +10,7 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_14vd50w" camunda:delegateExpression="${rpNotifMessage}" />
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1408j6r" sourceRef="Activity_0tszg5r" targetRef="Gateway_083fiuf" />
-    <bpmn:userTask id="Activity_0tszg5r" name="Confirmation Résidence Permanente" camunda:formRef="validate-form" camunda:formRefBinding="latest">
+    <bpmn:userTask id="Activity_0tszg5r" name="Confirmation Résidence Permanente" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil">
       <bpmn:incoming>Flow_0g4h14w</bpmn:incoming>
       <bpmn:outgoing>Flow_1408j6r</bpmn:outgoing>
     </bpmn:userTask>

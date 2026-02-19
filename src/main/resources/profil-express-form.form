@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "label": "Numero",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1x5c4zm",
+        "columns": 12
+      },
+      "id": "Field_13at9dh",
+      "key": "id_express"
+    }
+  ],
+  "type": "default",
+  "id": "profil-express-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "label": "Date de RDV",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1mxh1l1",
+        "columns": 12
+      },
+      "id": "Field_05ruodk",
+      "key": "rdv_date"
+    }
+  ],
+  "type": "default",
+  "id": "prise-rdv-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

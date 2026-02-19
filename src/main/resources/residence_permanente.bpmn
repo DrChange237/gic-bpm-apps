@@ -20,12 +20,12 @@
       <bpmn:outgoing>Flow_0gc5i35</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_09n6hif" sourceRef="biometry_rdv" targetRef="Event_1mkx5sz" />
-    <bpmn:userTask id="biometry_rdv" name="Prise RDV Biométrie" camunda:candidateGroups="biometry,admin">
+    <bpmn:userTask id="biometry_rdv" name="Prise RDV Biométrie" camunda:formRef="prise-rdv-form" camunda:formRefBinding="latest" camunda:candidateGroups="biometry,admin">
       <bpmn:incoming>Flow_0gc5i35</bpmn:incoming>
       <bpmn:incoming>Flow_0x6bz3k</bpmn:incoming>
       <bpmn:outgoing>Flow_09n6hif</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="medical_visit" name="Prise de RDV Visite Médical" camunda:candidateGroups="medical,admin">
+    <bpmn:userTask id="medical_visit" name="Prise de RDV Visite Médical" camunda:formRef="prise-rdv-form" camunda:formRefBinding="latest" camunda:candidateGroups="medical,admin">
       <bpmn:incoming>Flow_1kejnhb</bpmn:incoming>
       <bpmn:outgoing>Flow_1gfntbn</bpmn:outgoing>
     </bpmn:userTask>

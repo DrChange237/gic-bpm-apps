@@ -1,6 +1,27 @@
 {
   "components": [
     {
+      "label": "Organisme Equivalence",
+      "values": [
+        {
+          "label": "WES",
+          "value": "WES"
+        },
+        {
+          "label": "IQASS",
+          "value": "IQASS"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0s6zgtq",
+        "columns": 12
+      },
+      "id": "Field_0oyutty",
+      "key": "organisme",
+      "searchable": false
+    },
+    {
       "label": "Numéro Organisme d'Equivalence",
       "type": "textfield",
       "layout": {

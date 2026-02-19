@@ -24,5 +24,6 @@ public class BeginRP implements JavaDelegate {
         Contrat contrat = contratRepository.findByReference(reference);
         contrat.setStatus(ContratStatus.RESIDENCE_PERMANENT);
         contratRepository.save(contrat);
+        delegateExecution.setVariable("if_permanent", true);
     }
 }

@@ -16,7 +16,7 @@
       <bpmn:outgoing>Flow_1df4jl1</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0wc6y5r" sourceRef="create_profil_express" targetRef="Activity_0j43imy" />
-    <bpmn:userTask id="create_profil_express" name="Création de Profil Entrée Express" camunda:candidateGroups="consultant">
+    <bpmn:userTask id="create_profil_express" name="Création de Profil Entrée Express" camunda:formRef="profil-express-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant">
       <bpmn:incoming>Flow_0myjf73</bpmn:incoming>
       <bpmn:outgoing>Flow_0wc6y5r</bpmn:outgoing>
     </bpmn:userTask>
