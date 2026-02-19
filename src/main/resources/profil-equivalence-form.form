@@ -1,0 +1,24 @@
+{
+  "components": [
+    {
+      "label": "Numéro Organisme d'Equivalence",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0wc5ht7",
+        "columns": 12
+      },
+      "id": "Field_1rlflz1",
+      "key": "num_org_equivalence",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "profil-equivalence-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}
