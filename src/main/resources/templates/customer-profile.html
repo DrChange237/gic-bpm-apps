@@ -5,11 +5,98 @@
     <title>Fiche Profil Client</title>
 
     <style>
+        /* ===== CONFIGURATION PAGE ===== */
+        @page {
+            size: A4;
+            margin: 3.5cm 1.5cm 3cm 1.5cm;
+
+            @top-center {
+                content: element(header);
+            }
+
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+
+        /* ===== EN-TÊTE ===== */
+        #header {
+            position: running(header);
+            width: 100%;
+            border-bottom: 2px solid #1a4f8b;
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 9px;
+            color: #333;
+        }
+
+        #header table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #header .header-logo {
+            width: 20%;
+            vertical-align: middle;
+        }
+
+        #header .header-title {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 13px;
+            font-weight: bold;
+            color: #1a4f8b;
+        }
+
+        #header .header-info {
+            text-align: right;
+            vertical-align: middle;
+            font-size: 8px;
+            color: #555;
+        }
+
+        /* ===== PIED DE PAGE ===== */
+        #footer {
+            position: running(footer);
+            width: 100%;
+            border-top: 1px solid #1a4f8b;
+            padding-top: 5px;
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 8px;
+            color: #777;
+        }
+
+        #footer table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #footer .footer-left {
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        #footer .footer-center {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #footer .footer-right {
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        /* Numéros de page automatiques */
+        .page-number::before { content: counter(page); }
+        .page-total::before  { content: counter(pages); }
+
+        /* ===== CONTENU ===== */
         body {
             font-family: "DejaVu Sans", Arial, sans-serif;
             font-size: 10px;
             color: #333;
-            margin: 20px;
+            margin: 0;
         }
 
         h1 {
@@ -45,23 +132,60 @@
         .value {
             width: 35%;
         }
-
-        .footer {
-            margin-top: 10px;
-            font-size: 9px;
-            text-align: center;
-            color: #777;
-        }
     </style>
 </head>
 
 <body>
 
+<!-- ===== EN-TÊTE (répété sur chaque page) ===== -->
+<div id="header">
+    <table>
+        <tr>
+            <!-- Logo ou nom de l'organisation à gauche -->
+            <td class="header-logo">
+                <!-- <img th:src="@{/images/logo.png}" style="height:40px;" alt="Logo"/> -->
+                <strong style="font-size:12px; color:#1a4f8b;">MON ORGANISME</strong>
+            </td>
+
+            <!-- Titre du document au centre -->
+            <td class="header-title">
+                FICHE PROFIL CLIENT
+            </td>
+
+            <!-- Infos dossier à droite -->
+            <td class="header-info">
+                <span>Réf. : </span>
+                <span th:text="${inscription.reference}">REF-001</span><br/>
+                <span>Statut : </span>
+                <span th:text="${inscription.status}">EN_COURS</span><br/>
+                <span>Agence : </span>
+                <span th:text="${inscription.agency.name}">Agence Centrale</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- ===== PIED DE PAGE (répété sur chaque page) ===== -->
+<div id="footer">
+    <table>
+        <tr>
+            <td class="footer-left">
+                © 2025 Mon Organisme — Document confidentiel
+            </td>
+            <td class="footer-center">
+                Page <span class="page-number"></span> / <span class="page-total"></span>
+            </td>
+            <td class="footer-right">
+                Généré le : <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}">19/02/2025</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- ===== CONTENU PRINCIPAL ===== -->
 <h1>FICHE PROFIL CLIENT</h1>
 
-<!-- ===================== -->
 <!-- DOSSIER -->
-<!-- ===================== -->
 <table>
     <tr>
         <td class="label">Référence</td>
@@ -71,10 +195,7 @@
     </tr>
     <tr>
         <td class="label">Agence</td>
-        <td class="value" colspan="3"
-            th:text="${inscription.agency.name}">
-            Agence Centrale
-        </td>
+        <td class="value" colspan="3" th:text="${inscription.agency.name}">Agence Centrale</td>
     </tr>
 </table>
 
@@ -82,17 +203,13 @@
 <table>
     <tr>
         <td class="label">Nom</td>
-        <td class="value"
-            th:text="${inscription.firstName + ' ' + inscription.lastName}">
-        </td>
+        <td class="value" th:text="${inscription.firstName + ' ' + inscription.lastName}"></td>
         <td class="label">Sexe</td>
         <td class="value" th:text="${inscription.sexe}"></td>
     </tr>
     <tr>
         <td class="label">Naissance</td>
-        <td class="value"
-            th:text="${inscription.birthday + ' à ' + inscription.birthplace}">
-        </td>
+        <td class="value" th:text="${inscription.birthday + ' à ' + inscription.birthplace}"></td>
         <td class="label">Nationalité</td>
         <td class="value" th:text="${inscription.nationality}"></td>
     </tr>
@@ -118,9 +235,7 @@
         <td class="label">CNI</td>
         <td class="value" th:text="${inscription.cniNumber}"></td>
         <td class="label">Délivrée</td>
-        <td class="value"
-            th:text="${inscription.cniDelivery + ' à ' + inscription.cniPlace}">
-        </td>
+        <td class="value" th:text="${inscription.cniDelivery + ' à ' + inscription.cniPlace}"></td>
     </tr>
 </table>
 
@@ -146,25 +261,17 @@
         <td class="label">Matrimonial</td>
         <td class="value" th:text="${inscription.matrimonial}"></td>
         <td class="label">Enfants</td>
-        <td class="value"
-            th:text="${inscription.children + ' (' + inscription.childrenAge + ')'}">
-        </td>
+        <td class="value" th:text="${inscription.children + ' (' + inscription.childrenAge + ')'}"></td>
     </tr>
 </table>
 
-<h2 th:if="${inscription.firstNameConjoint != null}">
-    Conjoint
-</h2>
+<h2 th:if="${inscription.firstNameConjoint != null}">Conjoint</h2>
 <table th:if="${inscription.firstNameConjoint != null}">
     <tr>
         <td class="label">Nom</td>
-        <td class="value"
-            th:text="${inscription.firstNameConjoint + ' ' + inscription.lastNameConjoint}">
-        </td>
+        <td class="value" th:text="${inscription.firstNameConjoint + ' ' + inscription.lastNameConjoint}"></td>
         <td class="label">Contact</td>
-        <td class="value"
-            th:text="${inscription.mobileConjoint}">
-        </td>
+        <td class="value" th:text="${inscription.mobileConjoint}"></td>
     </tr>
     <tr>
         <td class="label">Diplôme</td>
@@ -173,8 +280,6 @@
         <td class="value" th:text="${inscription.experienceConjoint}"></td>
     </tr>
 </table>
-
-
 
 </body>
 </html>
