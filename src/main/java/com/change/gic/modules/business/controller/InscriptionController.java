@@ -5,6 +5,7 @@ import com.change.gic.modules.business.enumeration.InscriptionStatus;
 import com.change.gic.modules.business.info.InscriptionInfo;
 import com.change.gic.modules.business.service.faces.InscriptionService;
 import com.change.gic.modules.core.info.DocumentInfo;
+import com.change.gic.modules.file.dto.FileDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class InscriptionController {
 
     @Operation(summary = "Rechercher une Inscription")
     @GetMapping("/download")
-    public ResponseEntity<DocumentInfo> downloadDocument(
+    public ResponseEntity<FileDto> downloadDocument(
             @RequestParam(required = true) String reference,
             @RequestParam(required = true) String tag
     ){

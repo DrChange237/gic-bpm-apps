@@ -10,6 +10,7 @@ import com.change.gic.modules.core.entity.Document;
 import com.change.gic.modules.core.info.DocumentInfo;
 import com.change.gic.modules.core.mappers.DocumentMapper;
 import com.change.gic.modules.core.repository.DocumentRepository;
+import com.change.gic.modules.file.dto.FileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -40,9 +41,10 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public DocumentInfo downloadDocument(String reference, String tag) {
+    public FileDto downloadDocument(String reference, String tag) {
         Document document = documentRepository.findByBusinessKeyAndTag(reference, tag);
-        return documentMapper.toDto(document);
+        DocumentInfo documentInfo =  documentMapper.toDto(document);
+        return documentInfo.getFile();
     }
 
 }
