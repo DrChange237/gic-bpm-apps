@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 
 import com.lowagie.text.DocumentException;
@@ -15,6 +17,7 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -32,6 +35,10 @@ public class PDFGenerationServiceImpl implements PDFGenerationService {
         Context context = new Context();
         context.setVariable("inscription", inscription);
         context.setVariable("dateFormatter", DATE_FORMATTER);
+        String logoPath = "src/main/resources/static/images/logo.png";
+        byte[] fileContent = Files.readAllBytes(Paths.get(logoPath));
+        String encodedLogo = Base64.getEncoder().encodeToString(fileContent);
+        context.setVariable("logoBase64", encodedLogo);
         // Générer le HTML à partir du template
         String htmlContent = templateEngine.process("customer-profile", context);
 
