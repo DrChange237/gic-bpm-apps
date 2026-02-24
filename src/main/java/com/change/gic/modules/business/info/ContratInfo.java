@@ -1,7 +1,9 @@
 package com.change.gic.modules.business.info;
 
 
+import com.change.gic.modules.business.entity.TestExamStatus;
 import com.change.gic.modules.business.enumeration.ContratStatus;
+import com.change.gic.modules.business.enumeration.EquivalenceStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,6 +17,12 @@ public class ContratInfo {
     private ConsultationInfo consultation;
 
     private String reference;
+
+    private EquivalenceStatus equivalenceStatus;
+
+    private TestExamStatus testExamStatus;
+
+    private BigDecimal restToPay;
 
     private ContratStatus status;
 

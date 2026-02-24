@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MoneyMovementRepository extends JpaRepository<MoneyMovement, String> {
     List<MoneyMovement> findByReference(String reference);
+
+    List<MoneyMovement> findByReferenceAndFees(String reference, boolean b);
 }
