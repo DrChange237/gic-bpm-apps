@@ -2,7 +2,6 @@ package com.change.gic.modules.business.process.testlang.listener;
 
 import com.change.gic.exception.BadRequestException;
 import com.change.gic.modules.business.entity.Contrat;
-import com.change.gic.modules.business.entity.Equivalence;
 import com.change.gic.modules.business.entity.TestExam;
 import com.change.gic.modules.business.entity.TestExamStatus;
 import com.change.gic.modules.business.repository.ContratRepository;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ContactStudentListenerCompleted implements ExecutionListener {
+public class RegisterTestCompletedListener implements ExecutionListener {
 
     private final ContratRepository contratRepository;
     private final TestExamRepository testExamRepository;
@@ -30,17 +29,12 @@ public class ContactStudentListenerCompleted implements ExecutionListener {
         if (contrat == null) {
             throw  new BadRequestException("Contrat non trouv<UNK>");
         }
-        String exam = (String) delegateExecution.getVariable("exam");
-        TestExam testExam = new TestExam();
-        testExam.setExam(exam);
-        testExam.setContract(contrat);
-        testExam.setStatus(TestExamStatus.CONTACT);
-        testExamRepository.save(testExam);
-        Boolean levelUp = (Boolean) delegateExecution.getVariable("level_up_exam");
-        if (levelUp) {
-            testExam.setStatus(TestExamStatus.LEVELUP);
-            testExamRepository.save(testExam);
+        Optional<TestExam> testExamOptional = testExamRepository.findByContract(contrat);
+        if (testExamOptional.isEmpty()) {
+            throw  new BadRequestException("Test Exam non trouv<UNK>");
         }
-
+        TestExam testExam = testExamOptional.get();
+        testExam.setStatus(TestExamStatus.REGISTERED);
+        testExamRepository.save(testExam);
     }
 }
