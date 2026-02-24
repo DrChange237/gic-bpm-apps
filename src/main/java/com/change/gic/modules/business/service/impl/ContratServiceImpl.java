@@ -48,12 +48,12 @@ public class ContratServiceImpl implements ContratService {
 
         Optional<Equivalence> equivalence = equivalenceRepository.findByContract(contrat);
         if (equivalence.isPresent()) {
-            contratInfo.setEquivalenceStatus(equivalence.get().getStatus());
+            contratInfo.setEquivalenceStatus(equivalence.get().getLabel());
         }
 
         Optional<TestExam> testExam = testExamRepository.findByContract(contrat);
         if (testExam.isPresent()) {
-            contratInfo.setTestExamStatus(testExam.get().getStatus());
+            contratInfo.setTestExamStatus(testExam.get().getLabel());
         }
 
         List<MoneyMovement> moneyMovements = moneyMovementRepository.findByReferenceAndFees(contrat.getReference(), true);

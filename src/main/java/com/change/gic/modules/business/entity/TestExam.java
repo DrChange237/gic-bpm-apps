@@ -47,5 +47,9 @@ public class TestExam extends Auditable {
     @Enumerated(EnumType.STRING)
     private TestExamStatus status;
 
+    public String getLabel() {
+        return exam + " ( " + status + " )" ;
+    }
+
 
 }

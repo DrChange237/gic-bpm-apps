@@ -18,9 +18,9 @@ public class ContratInfo {
 
     private String reference;
 
-    private EquivalenceStatus equivalenceStatus;
+    private String equivalenceStatus;
 
-    private TestExamStatus testExamStatus;
+    private String testExamStatus;
 
     private BigDecimal restToPay;
 

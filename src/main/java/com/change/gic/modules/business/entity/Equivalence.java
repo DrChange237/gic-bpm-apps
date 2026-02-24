@@ -39,5 +39,9 @@ public class Equivalence extends Auditable {
     @Enumerated(EnumType.STRING)
     private EquivalenceStatus status;
 
+    public String getLabel() {
+        return  this.organisme + " - " + this.ref + " ( " + this.status + " ) - " + this.diplomaStatus;
+    }
+
 
 }
