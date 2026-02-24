@@ -20,9 +20,8 @@ public class TestExam extends Auditable {
     @Column(length = 36, nullable = false, updatable = false, name = "ID")
     private String id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(foreignKey = @ForeignKey(name = "EXAM"), nullable = false)
-    private TestLang exam;
+    @Column(name = "EXAM", nullable = true)
+    private String exam;
 
     @ManyToOne(optional = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "CONTRACT"), nullable = false)

@@ -8,6 +8,7 @@
     <bpmn:userTask id="register_test_exam" name="Inscrire le Client à une Session de Tests" camunda:formRef="register-exam-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang,admin">
       <bpmn:incoming>Flow_09ecocl</bpmn:incoming>
       <bpmn:incoming>Flow_08dzglo</bpmn:incoming>
+      <bpmn:incoming>Flow_0hv1ut4</bpmn:incoming>
       <bpmn:outgoing>Flow_03tde8j</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_03tde8j" sourceRef="register_test_exam" targetRef="Event_1xtnzjg" />
@@ -39,7 +40,7 @@
     <bpmn:intermediateCatchEvent id="Event_1bcafvc" name="Evaluation Niveau">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1kpbcnw</bpmn:incoming>
-      <bpmn:incoming>Flow_08yptvw</bpmn:incoming>
+      <bpmn:incoming>Flow_1uul1v0</bpmn:incoming>
       <bpmn:outgoing>Flow_1x3sirb</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0gdolmi" messageRef="Message_3kt4vid" />
     </bpmn:intermediateCatchEvent>
@@ -56,14 +57,23 @@
       <bpmn:incoming>Flow_0d48mma</bpmn:incoming>
       <bpmn:outgoing>Flow_0yyauzn</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_08yptvw" sourceRef="contact-test-student" targetRef="Event_1bcafvc" />
-    <bpmn:userTask id="contact-test-student" name="Prendre Contact avec l&#39;Apprenant" camunda:candidateGroups="testlang">
+    <bpmn:sequenceFlow id="Flow_08yptvw" sourceRef="contact-test-student" targetRef="Gateway_0toczy5" />
+    <bpmn:userTask id="contact-test-student" name="Prendre Contact avec l&#39;Apprenant" camunda:formRef="contact-test-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${contactStudentListener}" event="start" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ognlvf</bpmn:incoming>
       <bpmn:outgoing>Flow_08yptvw</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0toczy5" default="Flow_1uul1v0">
+      <bpmn:incoming>Flow_08yptvw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uul1v0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0hv1ut4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1uul1v0" sourceRef="Gateway_0toczy5" targetRef="Event_1bcafvc" />
+    <bpmn:sequenceFlow id="Flow_0hv1ut4" sourceRef="Gateway_0toczy5" targetRef="register_test_exam">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${level_up_exam}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_1wj11c1">
       <bpmn:text>Résultats Non satisfaisant</bpmn:text>
     </bpmn:textAnnotation>
@@ -110,7 +120,10 @@
         <dc:Bounds x="1290" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1a657jj_di" bpmnElement="contact-test-student">
-        <dc:Bounds x="290" y="190" width="100" height="80" />
+        <dc:Bounds x="300" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0toczy5_di" bpmnElement="Gateway_0toczy5" isMarkerVisible="true">
+        <dc:Bounds x="455" y="205" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1wj11c1_di" bpmnElement="TextAnnotation_1wj11c1">
         <dc:Bounds x="1240" y="300" width="100" height="41" />
@@ -118,7 +131,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ognlvf_di" bpmnElement="Flow_1ognlvf">
         <di:waypoint x="218" y="230" />
-        <di:waypoint x="290" y="230" />
+        <di:waypoint x="300" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03tde8j_di" bpmnElement="Flow_03tde8j">
         <di:waypoint x="890" y="230" />
@@ -161,12 +174,22 @@
         <di:waypoint x="580" y="212" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08yptvw_di" bpmnElement="Flow_08yptvw">
-        <di:waypoint x="390" y="230" />
-        <di:waypoint x="562" y="230" />
+        <di:waypoint x="400" y="230" />
+        <di:waypoint x="455" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_082rdo2_di" bpmnElement="Association_082rdo2">
         <di:waypoint x="1157" y="370" />
         <di:waypoint x="1240" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uul1v0_di" bpmnElement="Flow_1uul1v0">
+        <di:waypoint x="505" y="230" />
+        <di:waypoint x="562" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hv1ut4_di" bpmnElement="Flow_0hv1ut4">
+        <di:waypoint x="480" y="205" />
+        <di:waypoint x="480" y="40" />
+        <di:waypoint x="800" y="40" />
+        <di:waypoint x="800" y="190" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

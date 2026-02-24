@@ -1,0 +1,47 @@
+{
+  "components": [
+    {
+      "label": "Examen à Faire",
+      "values": [
+        {
+          "label": "TCF",
+          "value": "TCF"
+        },
+        {
+          "label": "TEF",
+          "value": "TEF"
+        },
+        {
+          "label": "IELTS",
+          "value": "IELTS"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_09c6vsg",
+        "columns": 6
+      },
+      "id": "Field_1yriosw",
+      "key": "exam"
+    },
+    {
+      "label": "Niveau Satisfaisant ?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_09c6vsg",
+        "columns": 6
+      },
+      "id": "Field_1sns8mv",
+      "key": "level_up_exam"
+    }
+  ],
+  "type": "default",
+  "id": "contact-test-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}
