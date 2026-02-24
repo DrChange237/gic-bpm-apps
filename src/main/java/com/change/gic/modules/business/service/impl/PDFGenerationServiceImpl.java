@@ -35,10 +35,6 @@ public class PDFGenerationServiceImpl implements PDFGenerationService {
         Context context = new Context();
         context.setVariable("inscription", inscription);
         context.setVariable("dateFormatter", DATE_FORMATTER);
-        String logoPath = "src/main/resources/static/images/logo.png";
-        byte[] fileContent = Files.readAllBytes(Paths.get(logoPath));
-        String encodedLogo = Base64.getEncoder().encodeToString(fileContent);
-        context.setVariable("logoBase64", encodedLogo);
         // Générer le HTML à partir du template
         String htmlContent = templateEngine.process("customer-profile", context);
 
