@@ -170,11 +170,13 @@
     <table>
         <tr>
             <td class="header-logo">
-                <img src="images/logo.png" style="height:40px;" alt="Logo"/>
+                <img th:src="'data:image/png;base64,' + ${logo}"
+                     style="height:40px;"
+                     alt="Logo"/>
                 <!--strong style="font-size:12px; color:#1a4f8b;">MON ORGANISME</strong-->
             </td>
             <td class="header-title">
-                RAPPORT DE CONSULTATION — IMMIGRATION
+
             </td>
             <td class="header-info">
                 Dossier : <span th:text="${consultation.inscription.reference}">DOS-000123</span><br/>

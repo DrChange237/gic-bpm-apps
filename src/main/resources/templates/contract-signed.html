@@ -182,11 +182,12 @@
     <table>
         <tr>
             <td class="header-logo">
-                <img src="images/logo.png" style="height:40px;" alt="Logo"/>
+                <img th:src="'data:image/png;base64,' + ${logo}"
+                     style="height:40px;"
+                     alt="Logo"/>
                 <!--strong style="font-size:11px; color:#1a4f8b;">GLOBAL IMMIGRATION<br/>CANADA SARL</strong-->
             </td>
             <td class="header-title">
-                CONTRAT DE SERVICE PROFESSIONNEL
             </td>
             <td class="header-info">
                 Contrat N° : <span th:text="${contrat.reference}">122559</span><br/>
