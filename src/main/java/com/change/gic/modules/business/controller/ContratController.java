@@ -43,8 +43,7 @@ public class ContratController {
     @Operation(summary = "Rechercher les versements sur un dossier")
     @GetMapping("/money")
     public ResponseEntity<List<MoneyMovementInfo>> searchMovement(
-            @RequestParam(required = true) String reference,
-            HttpServletRequest request
+            @RequestParam(required = true) String reference
     ){
         return ResponseEntity.ok(moneyMovementService.findMovementByReference(reference));
     }

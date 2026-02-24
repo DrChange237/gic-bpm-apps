@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class MoneyMovementInfo {
+public class MoneyMovementInfo extends  AuditableInfo{
 
     private String id;
 
