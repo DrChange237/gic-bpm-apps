@@ -70,7 +70,7 @@ public class SelectTypeTestListener implements ExecutionListener {
 
         options = new ArrayList<>();
         List<TestNotation> testNotationsCO = testNotationRepository.findByExamAndMatiereOrderByLevelDesc(testLang, Matiere.CO);
-        for (TestNotation testNotation : testNotationsCE) {
+        for (TestNotation testNotation : testNotationsCO) {
             SelectOptionDto selectOptionDto = new SelectOptionDto();
             selectOptionDto.setLabel(testNotation.getLabel());
             selectOptionDto.setValue(testNotation.getLabel());

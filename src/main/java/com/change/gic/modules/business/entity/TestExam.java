@@ -27,19 +27,19 @@ public class TestExam extends Auditable {
     @JoinColumn(foreignKey = @ForeignKey(name = "CONTRACT"), nullable = false)
     private Contrat contract;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(foreignKey = @ForeignKey(name = "LISTENING"), nullable = true)
     private TestNotation listening;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(foreignKey = @ForeignKey(name = "READING"), nullable = true)
     private TestNotation reading;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(foreignKey = @ForeignKey(name = "WRITING"), nullable = true)
     private TestNotation writing;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(foreignKey = @ForeignKey(name = "SPEAKING"), nullable = true)
     private TestNotation speaking;
 
