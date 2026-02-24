@@ -25,9 +25,11 @@ public class Equivalence extends Auditable {
     @JoinColumn(foreignKey = @ForeignKey(name = "CONTRACT"), nullable = false)
     private Contrat contract;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(foreignKey = @ForeignKey(name = "ORGANISME"), nullable = false)
-    private OrgEquivalence organisme;
+    @Column(name = "ORGANISM", nullable = true)
+    private String organisme;
+
+    @Column(name = "REF", nullable = true)
+    private String ref;
 
     @Column(name = "DIPLOMA_STATUS", nullable = true)
     @Enumerated(EnumType.STRING)
