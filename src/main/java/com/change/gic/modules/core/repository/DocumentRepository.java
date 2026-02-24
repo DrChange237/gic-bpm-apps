@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, String> {
     List<Document> findByBusinessKey(String businessKey);
+
+    Document findByBusinessKeyAndTag(String reference, String tag);
 }
