@@ -4,7 +4,9 @@ import com.change.gic.modules.business.enumeration.ContratStatus;
 import com.change.gic.modules.business.enumeration.InscriptionStatus;
 import com.change.gic.modules.business.info.ContratInfo;
 import com.change.gic.modules.business.info.InscriptionInfo;
+import com.change.gic.modules.business.info.MoneyMovementInfo;
 import com.change.gic.modules.business.service.faces.ContratService;
+import com.change.gic.modules.business.service.faces.MoneyMovementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import java.util.List;
 public class ContratController {
 
     private final ContratService contratService;
+    private final MoneyMovementService moneyMovementService;
 
     @Operation(summary = "Rechercher une Contrat")
     @GetMapping("")
@@ -35,5 +38,14 @@ public class ContratController {
             HttpServletRequest request
     ){
         return ResponseEntity.ok(contratService.search(search));
+    }
+
+    @Operation(summary = "Rechercher les versements sur un dossier")
+    @GetMapping("/money")
+    public ResponseEntity<List<MoneyMovementInfo>> searchMovement(
+            @RequestParam(required = true) String reference,
+            HttpServletRequest request
+    ){
+        return ResponseEntity.ok(moneyMovementService.findMovementByReference(reference));
     }
 }
