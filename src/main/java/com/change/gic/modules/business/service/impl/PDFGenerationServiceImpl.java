@@ -89,7 +89,7 @@ public class PDFGenerationServiceImpl implements PDFGenerationService {
 
         context.setVariable("dateFormatter", DATE_FORMATTER);
         // Générer le HTML à partir du template
-        String htmlContent = templateEngine.process("contract", context);
+        String htmlContent = templateEngine.process("contract-signed", context);
 
         // Convertir HTML en PDF
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
