@@ -1,7 +1,6 @@
 package com.change.gic.modules.business.entity;
 
 import com.change.gic.modules.core.entity.Auditable;
-import com.change.gic.modules.core.entity.Document;
 import com.change.gic.modules.business.enumeration.ContratStatus;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,16 +1,14 @@
 package com.change.gic.modules.business.info;
 
 
-import com.change.gic.modules.business.entity.TestExamStatus;
 import com.change.gic.modules.business.enumeration.ContratStatus;
-import com.change.gic.modules.business.enumeration.EquivalenceStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 
 @Data
-public class ContratInfo {
+public class ContratInfo extends  AuditableInfo{
 
     private String id;
 
