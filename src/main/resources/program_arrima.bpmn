@@ -5,28 +5,43 @@
       <bpmn:outgoing>Flow_0baf9ef</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0baf9ef" sourceRef="StartEvent_1" targetRef="create_arrima_profil" />
-    <bpmn:userTask id="create_arrima_profil" name="Création Profil ARRIMA" camunda:formRef="profil-express-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil,consultant">
+    <bpmn:userTask id="create_arrima_profil" name="Déclaration d&#39;Intéret ARRIMA" camunda:formRef="profil-express-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil,consultant">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${createInteretArrimaListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0baf9ef</bpmn:incoming>
       <bpmn:outgoing>Flow_0igv5uv</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0igv5uv" sourceRef="create_arrima_profil" targetRef="Event_0o8k3p7" />
     <bpmn:intermediateCatchEvent id="Event_0o8k3p7" name="Invitation à postuler au CSQ">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${inviteToCSQCompletedListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0igv5uv</bpmn:incoming>
       <bpmn:outgoing>Flow_1gxengc</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0hcyl8r" messageRef="Message_0kb5md9" />
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1gxengc" sourceRef="Event_0o8k3p7" targetRef="accept_invite_csq" />
     <bpmn:userTask id="accept_invite_csq" name="Acceptation de l&#39;Invitation au CSQ" camunda:candidateGroups="consultant">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${acceptCSQCompletedListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1gxengc</bpmn:incoming>
       <bpmn:outgoing>Flow_0eltxeb</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0eltxeb" sourceRef="accept_invite_csq" targetRef="submit_csq" />
     <bpmn:userTask id="submit_csq" name="Soumettre la demande de selection" camunda:candidateGroups="consultant">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${submitedCSQListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0eltxeb</bpmn:incoming>
       <bpmn:outgoing>Flow_12kk968</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_12kk968" sourceRef="submit_csq" targetRef="Event_0bqzpex" />
     <bpmn:intermediateCatchEvent id="Event_0bqzpex" name="Reception du CSQ">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${receivedCSQListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_12kk968</bpmn:incoming>
       <bpmn:outgoing>Flow_1pzis26</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0ig1wkk" messageRef="Message_0hklu0g" />
@@ -48,6 +63,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zcsacv_di" bpmnElement="create_arrima_profil">
         <dc:Bounds x="280" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fxt93x_di" bpmnElement="Event_0o8k3p7">
         <dc:Bounds x="432" y="242" width="36" height="36" />

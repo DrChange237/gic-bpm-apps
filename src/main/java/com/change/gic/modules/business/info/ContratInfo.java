@@ -22,6 +22,10 @@ public class ContratInfo {
 
     private String testExamStatus;
 
+    private String selectionStatus;
+
+    private String permanentStatus;
+
     private BigDecimal restToPay;
 
     private ContratStatus status;

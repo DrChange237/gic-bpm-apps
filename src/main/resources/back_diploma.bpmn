@@ -10,6 +10,9 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_15yc4be" sourceRef="StartEvent_1" targetRef="Activity_1wn1gmp" />
     <bpmn:userTask id="Activity_1wn1gmp" name="Confirmation de Retrait de Diplome" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="equivalence,agent,admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${backDiplomaConfirmedListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_15yc4be</bpmn:incoming>
       <bpmn:outgoing>Flow_0wipn07</bpmn:outgoing>
     </bpmn:userTask>
@@ -33,11 +36,11 @@
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="182" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1gaiix0_di" bpmnElement="Activity_1wn1gmp">
-        <dc:Bounds x="310" y="60" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1nahryx_di" bpmnElement="Event_0t116ng">
         <dc:Bounds x="632" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gaiix0_di" bpmnElement="Activity_1wn1gmp">
+        <dc:Bounds x="310" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_167l6o0_di" bpmnElement="Gateway_167l6o0" isMarkerVisible="true">
         <dc:Bounds x="495" y="75" width="50" height="50" />
