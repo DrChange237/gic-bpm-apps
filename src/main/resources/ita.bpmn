@@ -29,8 +29,16 @@
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_0wdxtl0">
       <bpmn:incoming>Flow_01gewjm</bpmn:incoming>
+      <bpmn:incoming>Flow_0qy5akz</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_01gewjm" sourceRef="Gateway_0d7j9el" targetRef="Event_0wdxtl0" />
+    <bpmn:boundaryEvent id="Event_1qle1sp" attachedToRef="Activity_0iszuoi">
+      <bpmn:outgoing>Flow_0qy5akz</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_08hhmri">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0qy5akz" sourceRef="Event_1qle1sp" targetRef="Event_0wdxtl0" />
   </bpmn:process>
   <bpmn:message id="Message_2i04pdh" name="Message_ITA" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -57,6 +65,9 @@
       <bpmndi:BPMNShape id="Event_0wdxtl0_di" bpmnElement="Event_0wdxtl0">
         <dc:Bounds x="482" y="202" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qle1sp_di" bpmnElement="Event_1qle1sp">
+        <dc:Bounds x="382" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_06rpu02_di" bpmnElement="Flow_06rpu02">
         <di:waypoint x="218" y="100" />
         <di:waypoint x="300" y="100" />
@@ -76,6 +87,11 @@
       <bpmndi:BPMNEdge id="Flow_01gewjm_di" bpmnElement="Flow_01gewjm">
         <di:waypoint x="500" y="125" />
         <di:waypoint x="500" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qy5akz_di" bpmnElement="Flow_0qy5akz">
+        <di:waypoint x="400" y="158" />
+        <di:waypoint x="400" y="220" />
+        <di:waypoint x="482" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -19,6 +19,16 @@
       <bpmn:outgoing>Flow_0r8lgw3</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0r8lgw3" sourceRef="Gateway_1geszly" targetRef="Event_013p7yn" />
+    <bpmn:boundaryEvent id="Event_1vqx349" attachedToRef="Activity_1bemufh">
+      <bpmn:outgoing>Flow_0h5z4vt</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0ftlghb">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_0xtur51">
+      <bpmn:incoming>Flow_0h5z4vt</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0h5z4vt" sourceRef="Event_1vqx349" targetRef="Event_0xtur51" />
   </bpmn:process>
   <bpmn:message id="Message_2s65nl0" name="Message_Medical_Visit" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -38,6 +48,12 @@
       <bpmndi:BPMNShape id="Gateway_1geszly_di" bpmnElement="Gateway_1geszly" isMarkerVisible="true">
         <dc:Bounds x="395" y="75" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xtur51_di" bpmnElement="Event_0xtur51">
+        <dc:Bounds x="402" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vqx349_di" bpmnElement="Event_1vqx349">
+        <dc:Bounds x="322" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0pc6bb1_di" bpmnElement="Flow_0pc6bb1">
         <di:waypoint x="188" y="100" />
         <di:waypoint x="240" y="100" />
@@ -49,6 +65,11 @@
       <bpmndi:BPMNEdge id="Flow_0r8lgw3_di" bpmnElement="Flow_0r8lgw3">
         <di:waypoint x="445" y="100" />
         <di:waypoint x="552" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h5z4vt_di" bpmnElement="Flow_0h5z4vt">
+        <di:waypoint x="340" y="158" />
+        <di:waypoint x="340" y="230" />
+        <di:waypoint x="402" y="230" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
