@@ -40,7 +40,7 @@ public class Equivalence extends Auditable {
     private EquivalenceStatus status;
 
     public String getLabel() {
-        return  organisme + " - " + ref + " ( " + status + " ) - " + diplomaStatus;
+        return " ( " + status + " ) - " + diplomaStatus;
     }
 
 
