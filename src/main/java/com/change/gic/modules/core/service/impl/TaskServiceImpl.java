@@ -14,7 +14,9 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -82,6 +84,28 @@ public class TaskServiceImpl implements TaskService {
         String username = authService.getCurrentUsername();
         log.info("getMyTasks username={}", username);
         camundaService.completeTask(completeTask.getTaskId(), completeTask.getFormData());
+    }
+
+    @Override
+    public void taskComplete(String taskId, MultipartHttpServletRequest request) {
+
+        Map<String, Object> formData = new HashMap<>();
+
+        // Récupérer les champs texte
+        request.getParameterMap().forEach((key, value) ->
+                formData.put(key, value[0])
+        );
+
+        // Récupérer les fichiers
+        request.getFileMap().forEach((key, file) ->
+                formData.put(key, file)
+        );
+
+        log.info(formData.toString());
+
+        String username = authService.getCurrentUsername();
+        log.info("getMyTasks username={}", username);
+        camundaService.completeTask(taskId, formData);
     }
 
     /**

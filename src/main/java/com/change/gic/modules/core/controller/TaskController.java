@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -74,9 +75,10 @@ public class TaskController {
     @PostMapping("/complete")
     @Operation(summary = "Compléter une tâche")
     public ResponseEntity<?> complete(
-            @RequestBody CompleteTask completeTask
+            @RequestParam String taskId,
+            MultipartHttpServletRequest request
             ) {
-        taskService.completeTask(completeTask);
+        taskService.taskComplete(taskId, request);
         return ResponseEntity.ok(true);
     }
 
