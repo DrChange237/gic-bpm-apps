@@ -32,9 +32,7 @@ public class ActivityInit implements CommandLineRunner {
 
         List<ActivityUserTask> activityUserTasks = Stream.of(
 
-                new ActivityUserTask("consultation", consultation),
-                new ActivityUserTask("EXPRESS", null)
-
+                new ActivityUserTask("consultation", consultation)
         ).filter(activityUserTask -> !activityUserTaskRepository.existsByTaskDefinitionKey(activityUserTask.getTaskDefinitionKey())).collect(Collectors.toList());
         activityUserTaskRepository.saveAll(activityUserTasks);
 
