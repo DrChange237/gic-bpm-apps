@@ -136,6 +136,9 @@
       <bpmn:outgoing>Flow_0eeymwd</bpmn:outgoing>
     </bpmn:inclusiveGateway>
     <bpmn:inclusiveGateway id="Gateway_0zi5fmi">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${ifPermanentListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1y0gngb</bpmn:incoming>
       <bpmn:incoming>Flow_0crq16g</bpmn:incoming>
       <bpmn:outgoing>Flow_1r8vgh5</bpmn:outgoing>
