@@ -21,7 +21,7 @@ public class ActivityUserTask extends Auditable{
     @Column(length = 36, nullable = false, updatable = false, name = "ID")
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String taskDefinitionKey;
 
     @Column(nullable = true, columnDefinition = "text")
@@ -31,4 +31,12 @@ public class ActivityUserTask extends Auditable{
     @Convert(converter = MapConverter.class)
     private HashMap<String, String> mapVariable;
 
+    public ActivityUserTask(String taskDefinitionKey, HashMap<String, String> mapVariable) {
+        this.taskDefinitionKey = taskDefinitionKey;
+        this.mapVariable = mapVariable;
+    }
+
+    public ActivityUserTask() {
+
+    }
 }

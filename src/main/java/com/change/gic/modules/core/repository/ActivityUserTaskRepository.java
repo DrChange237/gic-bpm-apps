@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ActivityUserTaskRepository extends JpaRepository<ActivityUserTask, String> {
 
     ActivityUserTask findByTaskDefinitionKey(String taskDefinitionKey);
+
+    boolean existsByTaskDefinitionKey(String taskDefinitionKey);
 }
