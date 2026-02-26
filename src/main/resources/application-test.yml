@@ -13,6 +13,20 @@ security:
   mode: ${SECURITY_MODE:latest}
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: votreadresse@gmail.com
+    password: votre_mot_de_passe_application
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/gic_test
     username: ${DB_USERNAME:gic_test}
