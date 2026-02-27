@@ -31,4 +31,13 @@ public class Module extends  Auditable{
     @Column(columnDefinition = "text", nullable = true)
     private String description;
 
+    public Module(String name, String key, int position) {
+        this.name = name;
+        this.key = key;
+        this.position = position;
+    }
+
+    public Module() {
+
+    }
 }
