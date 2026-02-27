@@ -100,6 +100,7 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessStartResponse startProcessWithInitiator(String processDefinitionKey,
                                                           Map<String, Object> formData,
                                                           String businessKey) {
+
         return camundaService.startProcessWithInitiator(processDefinitionKey, formData, businessKey, authService.getCurrentUsername());
     }
 
