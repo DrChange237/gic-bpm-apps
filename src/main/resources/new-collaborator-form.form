@@ -1,0 +1,77 @@
+{
+  "components": [
+    {
+      "label": "Role",
+      "values": [
+        {
+          "label": "Value",
+          "value": "value"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0zyoi7u",
+        "columns": 6
+      },
+      "id": "Field_1oblqmc",
+      "key": "role",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Agence",
+      "values": [
+        {
+          "label": "Value",
+          "value": "value"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_0zyoi7u",
+        "columns": 6
+      },
+      "id": "Field_0tasj1t",
+      "key": "agency",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Username",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0i256sd",
+        "columns": 6
+      },
+      "id": "Field_1mxo2g3",
+      "key": "username",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0i256sd",
+        "columns": 6
+      },
+      "id": "Field_1lryy20",
+      "key": "textfield_3tjjtj",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "new-collaborator-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.38.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "schemaVersion": 19
+}

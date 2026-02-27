@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_155svtf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="new_collaborator" name="Nouveau Collaborateur" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Nouveau Collaborateur">
+      <bpmn:outgoing>Flow_0peakrf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0peakrf" sourceRef="StartEvent_1" targetRef="Activity_14x83ny" />
+    <bpmn:userTask id="Activity_14x83ny" name="Information du Collaborateur" camunda:formRef="new-collaborator-form" camunda:formRefBinding="latest" camunda:assignee="agent">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${beforeCreateCollaboratorListener}" event="start" />
+        <camunda:executionListener delegateExpression="${createCollaboratorListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0peakrf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pfqldb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0pfqldb" sourceRef="Activity_14x83ny" targetRef="activate_collaborator" />
+    <bpmn:userTask id="activate_collaborator" name="Activation du Collaborateur" camunda:assignee="consultant">
+      <bpmn:incoming>Flow_0pfqldb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b5bpf2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1gdqrql">
+      <bpmn:incoming>Flow_0b5bpf2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0b5bpf2" sourceRef="activate_collaborator" targetRef="Event_1gdqrql" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="new_collaborator">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="125" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_137s893_di" bpmnElement="Activity_14x83ny">
+        <dc:Bounds x="300" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11sd19i_di" bpmnElement="activate_collaborator">
+        <dc:Bounds x="480" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gdqrql_di" bpmnElement="Event_1gdqrql">
+        <dc:Bounds x="662" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0peakrf_di" bpmnElement="Flow_0peakrf">
+        <di:waypoint x="208" y="100" />
+        <di:waypoint x="300" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pfqldb_di" bpmnElement="Flow_0pfqldb">
+        <di:waypoint x="400" y="100" />
+        <di:waypoint x="480" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b5bpf2_di" bpmnElement="Flow_0b5bpf2">
+        <di:waypoint x="580" y="100" />
+        <di:waypoint x="662" y="100" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
