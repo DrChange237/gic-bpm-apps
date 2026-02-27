@@ -10,6 +10,7 @@ import com.change.gic.modules.core.mappers.UserMapper;
 import com.change.gic.modules.core.repository.AppUserRepository;
 import com.change.gic.modules.core.repository.RoleRepository;
 import com.change.gic.modules.core.service.faces.UserService;
+import com.change.gic.modules.core.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
@@ -68,7 +69,12 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        String password = PasswordGenerator.generatePassword(10);
+
+
+
+        user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(false);
         userRepository.save(user);
 

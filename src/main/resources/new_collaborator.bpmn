@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_155svtf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
-  <bpmn:process id="new_collaborator" name="Nouveau Collaborateur" isExecutable="true">
+  <bpmn:process id="new_collaborator" name="Nouveau Collaborateur" isExecutable="true" camunda:candidateStarterGroups="agent">
     <bpmn:startEvent id="StartEvent_1" name="Nouveau Collaborateur">
       <bpmn:outgoing>Flow_0peakrf</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0peakrf" sourceRef="StartEvent_1" targetRef="Activity_14x83ny" />
-    <bpmn:userTask id="Activity_14x83ny" name="Information du Collaborateur" camunda:formRef="new-collaborator-form" camunda:formRefBinding="latest" camunda:assignee="agent">
+    <bpmn:userTask id="Activity_14x83ny" name="Information du Collaborateur" camunda:formRef="new-collaborator-form" camunda:formRefBinding="latest" camunda:assignee="" camunda:candidateGroups="agent,consultant">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${beforeCreateCollaboratorListener}" event="start" />
         <camunda:executionListener delegateExpression="${createCollaboratorListener}" event="end" />
@@ -14,7 +14,7 @@
       <bpmn:outgoing>Flow_0pfqldb</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0pfqldb" sourceRef="Activity_14x83ny" targetRef="activate_collaborator" />
-    <bpmn:userTask id="activate_collaborator" name="Activation du Collaborateur" camunda:assignee="consultant">
+    <bpmn:userTask id="activate_collaborator" name="Activation du Collaborateur" camunda:assignee="" camunda:candidateGroups="consultant">
       <bpmn:incoming>Flow_0pfqldb</bpmn:incoming>
       <bpmn:outgoing>Flow_0b5bpf2</bpmn:outgoing>
     </bpmn:userTask>

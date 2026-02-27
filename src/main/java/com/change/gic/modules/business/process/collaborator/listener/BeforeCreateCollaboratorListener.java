@@ -28,11 +28,11 @@ public class BeforeCreateCollaboratorListener implements ExecutionListener {
 
         List<SelectOptionDto> selectOptionDtos = new ArrayList<>();
         List<Agency> agencies = agencyRepository.findAll();
-        selectOptionDtos = agencies.stream().map(agency -> new SelectOptionDto(agency.getId(), agency.getName())).collect(Collectors.toList());
+        selectOptionDtos = agencies.stream().map(agency -> new SelectOptionDto(agency.getName(), agency.getId())).collect(Collectors.toList());
         delegateExecution.setVariable("agency_values", selectOptionDtos);
 
         List<Role> roles = roleRepository.findAll();
-        selectOptionDtos = roles.stream().map(role -> new SelectOptionDto(role.getSlug(), role.getName())).collect(Collectors.toList());
+        selectOptionDtos = roles.stream().map(role -> new SelectOptionDto(role.getName(), role.getSlug())).collect(Collectors.toList());
         delegateExecution.setVariable("role_values", selectOptionDtos);
 
     }

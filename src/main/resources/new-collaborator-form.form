@@ -59,7 +59,7 @@
         "columns": 6
       },
       "id": "Field_1lryy20",
-      "key": "textfield_3tjjtj",
+      "key": "email",
       "validate": {
         "required": true
       }
