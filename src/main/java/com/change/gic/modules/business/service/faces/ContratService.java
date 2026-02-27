@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface ContratService {
 
-    List<ContratInfo> search(String search);
+    void archived(String reference);
+
+    List<ContratInfo> search(String search, Boolean archived);
 }

@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -36,6 +37,7 @@ public class CompleteEquivalenceListener implements ExecutionListener {
         }
         Equivalence equivalence = equivalenceOptional.get();
         equivalence.setStatus(EquivalenceStatus.COMPLETED);
+        equivalence.setEndDate(LocalDate.now());
         equivalenceRepository.save(equivalence);
 
     }

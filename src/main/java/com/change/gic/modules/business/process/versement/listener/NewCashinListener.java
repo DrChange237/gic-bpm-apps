@@ -21,6 +21,9 @@ public class NewCashinListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
         String reference = (String) delegateExecution.getVariable("contract_customerRef");
+        if(reference == null){
+            reference = (String) delegateExecution.getVariable("reference");
+        }
         Contrat contrat = contratRepository.findByReference(reference);
         if(contrat == null) {
             throw new BadRequestException("contrat reference does not exist");

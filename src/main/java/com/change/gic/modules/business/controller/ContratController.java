@@ -31,13 +31,22 @@ public class ContratController {
     private final ContratService contratService;
     private final MoneyMovementService moneyMovementService;
 
-    @Operation(summary = "Rechercher une Contrat")
+    @Operation(summary = "Rechercher un Contrat")
     @GetMapping("")
     public ResponseEntity<List<ContratInfo>> searchContrat(
             @RequestParam(required = false) String search,
-            HttpServletRequest request
+            @RequestParam(required = false) Boolean archived
     ){
-        return ResponseEntity.ok(contratService.search(search));
+        return ResponseEntity.ok(contratService.search(search, archived));
+    }
+
+    @Operation(summary = "Archiver un Contrat")
+    @GetMapping("/archived")
+    public ResponseEntity<?> archiverContrat(
+            @RequestParam(required = true) String reference
+    ){
+        contratService.archived(reference);
+        return ResponseEntity.ok(true);
     }
 
     @Operation(summary = "Rechercher les versements sur un dossier")

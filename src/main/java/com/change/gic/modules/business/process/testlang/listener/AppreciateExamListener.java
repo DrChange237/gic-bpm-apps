@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -38,6 +39,7 @@ public class AppreciateExamListener implements ExecutionListener {
         testExam.setStatus(TestExamStatus.FAILED);
         if (validate) {
             testExam.setStatus(TestExamStatus.SUCCESS);
+            testExam.setEndDate(LocalDate.now());
         }
         testExamRepository.save(testExam);
     }

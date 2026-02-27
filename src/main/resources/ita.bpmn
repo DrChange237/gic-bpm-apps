@@ -7,7 +7,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_06rpu02</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_06rpu02" sourceRef="StartEvent_1" targetRef="Activity_0iszuoi" />
+    <bpmn:sequenceFlow id="Flow_06rpu02" sourceRef="StartEvent_1" targetRef="confirm_ita" />
     <bpmn:serviceTask id="Activity_1aughb1" name="Notification Client" camunda:delegateExpression="${notifCustomer}">
       <bpmn:incoming>Flow_1jfumbv</bpmn:incoming>
       <bpmn:outgoing>Flow_0n4q5iv</bpmn:outgoing>
@@ -17,8 +17,8 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_13s90sx" messageRef="Message_2i04pdh" camunda:delegateExpression="${ITAMessage}" />
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0n4q5iv" sourceRef="Activity_1aughb1" targetRef="Event_17o9otm" />
-    <bpmn:sequenceFlow id="Flow_1w952os" sourceRef="Activity_0iszuoi" targetRef="Gateway_0d7j9el" />
-    <bpmn:userTask id="Activity_0iszuoi" name="Confirmation Reception ITA" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil">
+    <bpmn:sequenceFlow id="Flow_1w952os" sourceRef="confirm_ita" targetRef="Gateway_0d7j9el" />
+    <bpmn:userTask id="confirm_ita" name="Confirmation Reception ITA" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil">
       <bpmn:incoming>Flow_06rpu02</bpmn:incoming>
       <bpmn:outgoing>Flow_1w952os</bpmn:outgoing>
     </bpmn:userTask>
@@ -35,7 +35,7 @@
       <bpmn:incoming>Flow_0qy5akz</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_01gewjm" sourceRef="Gateway_0d7j9el" targetRef="Event_0wdxtl0" />
-    <bpmn:boundaryEvent id="Event_1qle1sp" attachedToRef="Activity_0iszuoi">
+    <bpmn:boundaryEvent id="Event_1qle1sp" attachedToRef="confirm_ita">
       <bpmn:outgoing>Flow_0qy5akz</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_08hhmri">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
@@ -59,7 +59,7 @@
       <bpmndi:BPMNShape id="Event_07f00jp_di" bpmnElement="Event_17o9otm">
         <dc:Bounds x="822" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1tzhfr9_di" bpmnElement="Activity_0iszuoi">
+      <bpmndi:BPMNShape id="Activity_1tzhfr9_di" bpmnElement="confirm_ita">
         <dc:Bounds x="300" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0d7j9el_di" bpmnElement="Gateway_0d7j9el" isMarkerVisible="true">

@@ -27,8 +27,6 @@ public class AppreciateResultListener implements ExecutionListener {
         delegateExecution.setVariable("diploma", inscription.getDiploma());
         delegateExecution.setVariable("experience", inscription.getExperience());
         delegateExecution.setVariable("year_graduation", inscription.getYearGraduation());
-        LocalDate birthday = inscription.getBirthday();
-        int age = Period.between(birthday, LocalDate.now()).getYears();
-        delegateExecution.setVariable("age", age);
+
     }
 }

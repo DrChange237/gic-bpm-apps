@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,9 @@ public class Contrat extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
     @Column(length = 36, nullable = false, updatable = false, name = "ID")
     private String id;
+
+    @Column(name = "END_DATE", nullable = true)
+    private LocalDate endDate;
 
     @ManyToOne(optional = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "CONSULTATION"), nullable = false)
@@ -58,6 +62,9 @@ public class Contrat extends Auditable {
 
     @Column(name = "LAST_AMOUNT", nullable = false)
     private BigDecimal lastAmount;
+
+    @Column(name = "ARCHIVED", nullable = true)
+    private Boolean archived;
 
     public BigDecimal getTotalAmount() {
         return this.firstAmount.add(this.secondAmount).add(this.lastAmount);

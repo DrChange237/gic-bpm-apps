@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -33,6 +34,7 @@ public class ReceivedCSQListener implements ExecutionListener {
         SelectionArrima selectionArrima = selectionArrimaOptional.get();
         selectionArrima.setContract(contrat);
         selectionArrima.setStatus(SelectionArrimaStatus.SUCCESS);
+        selectionArrima.setEndDate(LocalDate.now());
         selectionArrimaRepository.save(selectionArrima);
     }
 }

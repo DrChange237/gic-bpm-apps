@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Test de Langues">
       <bpmn:outgoing>Flow_1ognlvf</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1ognlvf" sourceRef="StartEvent_1" targetRef="contact-test-student" />
+    <bpmn:sequenceFlow id="Flow_1ognlvf" sourceRef="StartEvent_1" targetRef="contact_test_student" />
     <bpmn:userTask id="register_test_exam" name="Inscrire le Client à une Session de Tests" camunda:formRef="register-exam-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang,admin">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${registerTestCompletedListener}" event="end" />
@@ -68,8 +68,8 @@
       <bpmn:incoming>Flow_0d48mma</bpmn:incoming>
       <bpmn:outgoing>Flow_0yyauzn</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_08yptvw" sourceRef="contact-test-student" targetRef="Gateway_0toczy5" />
-    <bpmn:userTask id="contact-test-student" name="Prendre Contact avec l&#39;Apprenant" camunda:formRef="contact-test-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang">
+    <bpmn:sequenceFlow id="Flow_08yptvw" sourceRef="contact_test_student" targetRef="Gateway_0toczy5" />
+    <bpmn:userTask id="contact_test_student" name="Prendre Contact avec l&#39;Apprenant" camunda:formRef="contact-test-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${contactStudentListener}" event="start" />
         <camunda:executionListener delegateExpression="${contactStudentCompletedListener}" event="end" />
@@ -116,6 +116,9 @@
       <bpmndi:BPMNShape id="Event_0kqitil_di" bpmnElement="Event_0kqitil">
         <dc:Bounds x="1552" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xhh5bv_di" bpmnElement="verify_result_test">
+        <dc:Bounds x="1120" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1m2k9tp_di" bpmnElement="Event_1bcafvc">
         <dc:Bounds x="562" y="212" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -128,14 +131,11 @@
       <bpmndi:BPMNShape id="Activity_0o6tumn_di" bpmnElement="Activity_0n8supl">
         <dc:Bounds x="1290" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1a657jj_di" bpmnElement="contact-test-student">
+      <bpmndi:BPMNShape id="Activity_1a657jj_di" bpmnElement="contact_test_student">
         <dc:Bounds x="300" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0toczy5_di" bpmnElement="Gateway_0toczy5" isMarkerVisible="true">
         <dc:Bounds x="455" y="205" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0xhh5bv_di" bpmnElement="verify_result_test">
-        <dc:Bounds x="1120" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1wj11c1_di" bpmnElement="TextAnnotation_1wj11c1">
         <dc:Bounds x="1240" y="300" width="100" height="41" />
@@ -189,10 +189,6 @@
         <di:waypoint x="400" y="230" />
         <di:waypoint x="455" y="230" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_082rdo2_di" bpmnElement="Association_082rdo2">
-        <di:waypoint x="1157" y="370" />
-        <di:waypoint x="1240" y="317" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1uul1v0_di" bpmnElement="Flow_1uul1v0">
         <di:waypoint x="505" y="230" />
         <di:waypoint x="562" y="230" />
@@ -202,6 +198,10 @@
         <di:waypoint x="480" y="40" />
         <di:waypoint x="800" y="40" />
         <di:waypoint x="800" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_082rdo2_di" bpmnElement="Association_082rdo2">
+        <di:waypoint x="1157" y="370" />
+        <di:waypoint x="1240" y="317" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -13,6 +13,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -34,6 +35,7 @@ public class InviteToApplyListener implements ExecutionListener {
         SelectionExpress selectionExpress = selectionExpressOptional.get();
         selectionExpress.setContract(contrat);
         selectionExpress.setStatus(SelectionExpressStatus.SUCCESS);
+        selectionExpress.setEndDate(LocalDate.now());
         selectionExpressRepository.save(selectionExpress);
     }
 }

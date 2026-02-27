@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Component
@@ -34,6 +35,7 @@ public class SaveConsultation implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         Consultation consultation = new Consultation();
+        consultation.setEndDate(LocalDate.now());
         Boolean eligible = (Boolean) delegateExecution.getVariable("consultation_eligible");
         consultation.setEligible(eligible);
 

@@ -1,6 +1,7 @@
 package com.change.gic.modules.business.service.impl;
 
 import com.change.gic.modules.business.entity.*;
+import com.change.gic.modules.business.enumeration.SelectionArrimaStatus;
 import com.change.gic.modules.business.info.ContratInfo;
 import com.change.gic.modules.business.mappers.ContratMapper;
 import com.change.gic.modules.business.repository.*;
@@ -32,10 +33,21 @@ public class ContratServiceImpl implements ContratService {
     private final SelectionExpressRepository selectionExpressRepository;
     private final PermanentResidentRepository permanentResidentRepository;
 
+
+
     @Override
-    public List<ContratInfo> search(String search) {
-        Specification<Contrat> spec = Specification.where(null);
-        spec = spec.and(ContratSpecifications.withDynamicQuery(search));
+    public void archived(String reference){
+        Contrat contrat = contratRepository.findByReference(reference);
+        contrat.setArchived(true);
+        contratRepository.save(contrat);
+    }
+
+    @Override
+    public List<ContratInfo> search(String search, Boolean archived) {
+        Specification<Contrat> spec = Specification.where(ContratSpecifications.archived(archived));
+        if (search != null && !search.isEmpty()) {
+            spec = spec.and(ContratSpecifications.withDynamicQuery(search));
+        }
         List<Contrat> contrats = contratRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "creationDate"));
         List<ContratInfo> contratInfos = contratMapper.toDto(contrats);
         return contratInfos.stream().map(x -> mapInfo(x, contratMapper.toEntity(x))).collect(Collectors.toList());
@@ -45,23 +57,30 @@ public class ContratServiceImpl implements ContratService {
 
         Optional<Equivalence> equivalence = equivalenceRepository.findByContract(contrat);
         if (equivalence.isPresent()) {
-            contratInfo.setEquivalenceStatus(equivalence.get().getLabel());
+            contratInfo.setEquivalenceStatus(equivalence.get().getStatus().name());
+            contratInfo.setDiplomaStatus(equivalence.get().getDiplomaStatus().name());
         }
 
         Optional<TestExam> testExam = testExamRepository.findByContract(contrat);
         if (testExam.isPresent()) {
-            contratInfo.setTestExamStatus(testExam.get().getLabel());
+            contratInfo.setTestExamStatus(testExam.get().getStatus().name());
         }
 
         Optional<SelectionExpress> selectionExpressOptional = selectionExpressRepository.findByContract(contrat);
         if (selectionExpressOptional.isPresent()) {
-            contratInfo.setSelectionStatus(selectionExpressOptional.get().getLabel());
+            contratInfo.setSelectionStatus(selectionExpressOptional.get().getStatus().name());
         }
 
-        Optional<SelectionArrima> selectionArrimaOptional = selectionArrimaRepository.findByContract(contrat);
-        if (selectionArrimaOptional.isPresent()) {
-            contratInfo.setSelectionStatus(contratInfo.getSelectionStatus() + " - " + selectionArrimaOptional.get().getLabel());
+        if(contratInfo.getSelectionStatus() != "SUCCESS"){
+            Optional<SelectionArrima> selectionArrimaOptional = selectionArrimaRepository.findByContract(contrat);
+            if (selectionArrimaOptional.isPresent()) {
+                contratInfo.setSelectionStatus(contratInfo.getSelectionStatus() + " - " + selectionArrimaOptional.get().getStatus().name());
+                if(selectionArrimaOptional.get().getStatus().equals(SelectionArrimaStatus.SUCCESS)){
+                    contratInfo.setSelectionStatus(selectionArrimaOptional.get().getStatus().name());
+                }
+            }
         }
+
 
         Optional<PermanentResident> permanentResidentOptional = permanentResidentRepository.findByContract(contrat);
         if (permanentResidentOptional.isPresent()) {
@@ -74,8 +93,6 @@ public class ContratServiceImpl implements ContratService {
             allMoney = allMoney.add(moneyMovement.getAmount());
         }
         contratInfo.setRestToPay(contratInfo.getTotalAmount().subtract(allMoney));
-
-
 
         return contratInfo;
 

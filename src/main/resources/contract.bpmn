@@ -105,7 +105,7 @@
       <bpmn:incoming>Flow_0xm8t12</bpmn:incoming>
       <bpmn:outgoing>Flow_0toe6p2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0toe6p2" sourceRef="Activity_1p4bp26" targetRef="Activity_17hxdrp" />
+    <bpmn:sequenceFlow id="Flow_0toe6p2" sourceRef="Activity_1p4bp26" targetRef="contract_customer_confirm" />
     <bpmn:sequenceFlow id="Flow_0xm8t12" sourceRef="setup_contract" targetRef="Activity_1p4bp26" />
     <bpmn:sequenceFlow id="Flow_0nkq34p" sourceRef="Gateway_14pis0f" targetRef="first_cash_in">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
@@ -116,8 +116,8 @@
       <bpmn:outgoing>Flow_055txuy</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0xvg4nf" sourceRef="Gateway_1myvbhc" targetRef="setup_contract" />
-    <bpmn:sequenceFlow id="Flow_137804m" sourceRef="Activity_17hxdrp" targetRef="Gateway_1myvbhc" />
-    <bpmn:userTask id="Activity_17hxdrp" name="Confirmation du Client" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,agent,admin">
+    <bpmn:sequenceFlow id="Flow_137804m" sourceRef="contract_customer_confirm" targetRef="Gateway_1myvbhc" />
+    <bpmn:userTask id="contract_customer_confirm" name="Confirmation du Client" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,agent,admin">
       <bpmn:incoming>Flow_0toe6p2</bpmn:incoming>
       <bpmn:outgoing>Flow_137804m</bpmn:outgoing>
     </bpmn:userTask>
@@ -236,7 +236,7 @@
       <bpmndi:BPMNShape id="Gateway_1myvbhc_di" bpmnElement="Gateway_1myvbhc" isMarkerVisible="true">
         <dc:Bounds x="705" y="265" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05uhhy3_di" bpmnElement="Activity_17hxdrp">
+      <bpmndi:BPMNShape id="Activity_05uhhy3_di" bpmnElement="contract_customer_confirm">
         <dc:Bounds x="570" y="250" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1h5tqqm_di" bpmnElement="Activity_1r7s7ei">

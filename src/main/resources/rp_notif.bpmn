@@ -3,17 +3,17 @@
   <bpmn:process id="rp_notif" name="Notif Résidence Permanente" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Notification Résidence Permanente" camunda:formRef="reference-form" camunda:formRefBinding="latest">
       <bpmn:extensionElements>
-        <camunda:executionListener delegateExpression="${getBusinessKeyListener}" event="start" />
+        <camunda:executionListener delegateExpression="${getBusinessKeyListener}" event="end" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0g4h14w</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0g4h14w" sourceRef="StartEvent_1" targetRef="Activity_0tszg5r" />
+    <bpmn:sequenceFlow id="Flow_0g4h14w" sourceRef="StartEvent_1" targetRef="confirm_rp" />
     <bpmn:endEvent id="Event_1we2aky" name="">
       <bpmn:incoming>Flow_1imr0lb</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_14vd50w" camunda:delegateExpression="${rpNotifMessage}" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1408j6r" sourceRef="Activity_0tszg5r" targetRef="Gateway_083fiuf" />
-    <bpmn:userTask id="Activity_0tszg5r" name="Confirmation Résidence Permanente" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil">
+    <bpmn:sequenceFlow id="Flow_1408j6r" sourceRef="confirm_rp" targetRef="Gateway_083fiuf" />
+    <bpmn:userTask id="confirm_rp" name="Confirmation Résidence Permanente" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="profil">
       <bpmn:incoming>Flow_0g4h14w</bpmn:incoming>
       <bpmn:outgoing>Flow_1408j6r</bpmn:outgoing>
     </bpmn:userTask>
@@ -30,7 +30,7 @@
       <bpmn:incoming>Flow_18d709a</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0rpi6qn" sourceRef="Gateway_083fiuf" targetRef="Event_11rxeiv" />
-    <bpmn:boundaryEvent id="Event_04jts86" attachedToRef="Activity_0tszg5r">
+    <bpmn:boundaryEvent id="Event_04jts86" attachedToRef="confirm_rp">
       <bpmn:outgoing>Flow_18d709a</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1518qp5">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
@@ -49,7 +49,7 @@
       <bpmndi:BPMNShape id="Event_0myrhd0_di" bpmnElement="Event_1we2aky">
         <dc:Bounds x="582" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_12swof4_di" bpmnElement="Activity_0tszg5r">
+      <bpmndi:BPMNShape id="Activity_12swof4_di" bpmnElement="confirm_rp">
         <dc:Bounds x="300" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_083fiuf_di" bpmnElement="Gateway_083fiuf" isMarkerVisible="true">

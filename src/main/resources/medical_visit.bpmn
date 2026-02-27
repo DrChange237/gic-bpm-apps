@@ -11,9 +11,9 @@
       <bpmn:incoming>Flow_0r8lgw3</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0ufovfk" messageRef="Message_2s65nl0" camunda:delegateExpression="${medicalVisitMessage}" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0pc6bb1" sourceRef="StartEvent_1" targetRef="Activity_1bemufh" />
-    <bpmn:sequenceFlow id="Flow_1t7znsy" sourceRef="Activity_1bemufh" targetRef="Gateway_1geszly" />
-    <bpmn:userTask id="Activity_1bemufh" name="Confirmation Visite Médical" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="medical,consultant">
+    <bpmn:sequenceFlow id="Flow_0pc6bb1" sourceRef="StartEvent_1" targetRef="confirm_medical_visit" />
+    <bpmn:sequenceFlow id="Flow_1t7znsy" sourceRef="confirm_medical_visit" targetRef="Gateway_1geszly" />
+    <bpmn:userTask id="confirm_medical_visit" name="Confirmation Visite Médical" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="medical,consultant">
       <bpmn:incoming>Flow_0pc6bb1</bpmn:incoming>
       <bpmn:outgoing>Flow_1t7znsy</bpmn:outgoing>
     </bpmn:userTask>
@@ -22,7 +22,7 @@
       <bpmn:outgoing>Flow_0r8lgw3</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0r8lgw3" sourceRef="Gateway_1geszly" targetRef="Event_013p7yn" />
-    <bpmn:boundaryEvent id="Event_1vqx349" attachedToRef="Activity_1bemufh">
+    <bpmn:boundaryEvent id="Event_1vqx349" attachedToRef="confirm_medical_visit">
       <bpmn:outgoing>Flow_0h5z4vt</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0ftlghb">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
@@ -45,7 +45,7 @@
       <bpmndi:BPMNShape id="Event_085vob7_di" bpmnElement="Event_013p7yn">
         <dc:Bounds x="552" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1dutfaf_di" bpmnElement="Activity_1bemufh">
+      <bpmndi:BPMNShape id="Activity_1dutfaf_di" bpmnElement="confirm_medical_visit">
         <dc:Bounds x="240" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1geszly_di" bpmnElement="Gateway_1geszly" isMarkerVisible="true">

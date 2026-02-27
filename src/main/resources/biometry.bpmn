@@ -7,13 +7,13 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0td5pf8</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0td5pf8" sourceRef="biometrie" targetRef="Activity_1qydany" />
+    <bpmn:sequenceFlow id="Flow_0td5pf8" sourceRef="biometrie" targetRef="confirm_biometry" />
     <bpmn:endEvent id="Event_17bo31z">
       <bpmn:incoming>Flow_12f3ztu</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1gftmmf" camunda:delegateExpression="${biometryMessage}" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_05tbodj" sourceRef="Activity_1qydany" targetRef="Gateway_0s9d298" />
-    <bpmn:userTask id="Activity_1qydany" name="Biométrie" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="biometry">
+    <bpmn:sequenceFlow id="Flow_05tbodj" sourceRef="confirm_biometry" targetRef="Gateway_0s9d298" />
+    <bpmn:userTask id="confirm_biometry" name="Biométrie" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="biometry">
       <bpmn:incoming>Flow_0td5pf8</bpmn:incoming>
       <bpmn:outgoing>Flow_05tbodj</bpmn:outgoing>
     </bpmn:userTask>
@@ -30,7 +30,7 @@
       <bpmn:incoming>Flow_134jqyo</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_099988m" sourceRef="Gateway_0s9d298" targetRef="Event_0gyvx4d" />
-    <bpmn:boundaryEvent id="Event_0m75c3e" attachedToRef="Activity_1qydany">
+    <bpmn:boundaryEvent id="Event_0m75c3e" attachedToRef="confirm_biometry">
       <bpmn:outgoing>Flow_134jqyo</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0ul2efa">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
@@ -49,7 +49,7 @@
       <bpmndi:BPMNShape id="Event_0j9dvpd_di" bpmnElement="Event_17bo31z">
         <dc:Bounds x="632" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1tpj465_di" bpmnElement="Activity_1qydany">
+      <bpmndi:BPMNShape id="Activity_1tpj465_di" bpmnElement="confirm_biometry">
         <dc:Bounds x="300" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0s9d298_di" bpmnElement="Gateway_0s9d298" isMarkerVisible="true">

@@ -13,6 +13,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -36,6 +37,7 @@ public class EndRP implements JavaDelegate {
         permanentResident.setStatus(PermanentResidentStatus.SUCCESS);
         permanentResidentRepository.save(permanentResident);
         contrat.setStatus(ContratStatus.FINISHED);
+        contrat.setEndDate(LocalDate.now());
         contratRepository.save(contrat);
     }
 }

@@ -18,6 +18,8 @@ public class ContratInfo extends  AuditableInfo{
 
     private String equivalenceStatus;
 
+    private String diplomaStatus;
+
     private String testExamStatus;
 
     private String selectionStatus;
