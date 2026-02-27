@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,9 @@ public class Consultation {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
     @Column(length = 36, nullable = false, updatable = false, name = "ID")
     private String id;
+
+    @Column(name = "END_DATE", nullable = true)
+    private LocalDate endDate;
 
     @ManyToOne(optional = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "INSCRIPTION"), nullable = false)

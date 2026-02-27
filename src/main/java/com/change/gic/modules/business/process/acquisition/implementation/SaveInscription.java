@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 @Component
@@ -60,6 +61,16 @@ public class SaveInscription implements JavaDelegate {
         inscription.setStatus(InscriptionStatus.DRAFT);
         inscription.setReference(execution.getBusinessKey());
         inscription = inscriptionRepository.save(inscription);
+
+        int age = Period.between(inscription.getBirthday(), LocalDate.now()).getYears();
+        execution.setVariable("age", age);
+
+        if(inscription.getBirthdayConjoint() != null){
+            int ageConjoint = Period.between(inscription.getBirthdayConjoint(), LocalDate.now()).getYears();
+            execution.setVariable("ageConjoint", ageConjoint);
+        }
+
+
 
 
 

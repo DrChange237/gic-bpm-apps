@@ -21,7 +21,7 @@ public class SaveVersement implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        String reference = (String) delegateExecution.getVariable("reference");
+        String reference = delegateExecution.getBusinessKey();
         Integer amount = (Integer) delegateExecution.getVariable("amount");
         MoneyMovement moneyMovement = new MoneyMovement();
         moneyMovement.setReference(reference);

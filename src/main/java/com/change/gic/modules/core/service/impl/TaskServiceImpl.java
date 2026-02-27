@@ -14,7 +14,12 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -82,6 +87,68 @@ public class TaskServiceImpl implements TaskService {
         String username = authService.getCurrentUsername();
         log.info("getMyTasks username={}", username);
         camundaService.completeTask(completeTask.getTaskId(), completeTask.getFormData());
+    }
+
+    @Override
+    public void taskComplete(String taskId, MultipartHttpServletRequest request) {
+
+        Map<String, Object> formData = new HashMap<>();
+
+        // 1️⃣ Paramètres texte avec conversion automatique
+        request.getParameterMap().forEach((key, values) -> {
+            String value = values[0];
+
+            if (value == null || value.isBlank()) {
+                formData.put(key, null);
+                return;
+            }
+
+            formData.put(key, convertValue(value));
+        });
+
+        // 2️⃣ Fichiers
+        request.getFileMap().forEach((key, file) -> {
+            if (!file.isEmpty()) {
+                formData.put(key, file);
+            }
+        });
+
+        log.info(formData.toString());
+        log.info(taskId);
+
+        String username = authService.getCurrentUsername();
+        log.info("getMyTasks username={}", username);
+        camundaService.completeTask(taskId, formData);
+    }
+
+    private Object convertValue(String value) {
+
+        // Boolean
+        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+            return Boolean.parseBoolean(value);
+        }
+
+        // Integer
+        if (value.matches("^-?\\d+$")) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                return Long.parseLong(value);
+            }
+        }
+
+        // Decimal
+        if (value.matches("^-?\\d+\\.\\d+$")) {
+            return new BigDecimal(value);
+        }
+
+        // Date ISO (yyyy-MM-dd)
+        try {
+            return LocalDate.parse(value, DateTimeFormatter.ISO_DATE);
+        } catch (Exception ignored) {}
+
+        // Sinon String
+        return value;
     }
 
     /**

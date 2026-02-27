@@ -10,12 +10,15 @@ import com.change.gic.modules.core.mappers.UserMapper;
 import com.change.gic.modules.core.repository.AppUserRepository;
 import com.change.gic.modules.core.repository.RoleRepository;
 import com.change.gic.modules.core.service.faces.UserService;
+import com.change.gic.modules.core.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,6 +31,20 @@ public class UserServiceImpl implements UserService {
     private final AgencyRepository agencyRepository;
     private final RoleRepository roleRepository;
     private final IdentityService identityService;
+
+    @Override
+    public List<UserInfo> getUsers(){
+        List<AppUser> users = userRepository.findAll();
+        return  userMapper.toDto(users);
+    }
+
+    @Override
+    public void activateUser(String username){
+        AppUser user = userRepository.findByUsername(username).orElse(null);
+        if(user != null){
+            user.setEnabled(true);
+        }
+    }
 
     @Override
     @Transactional
@@ -52,8 +69,10 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
+
+
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEnabled(true);
+        user.setEnabled(false);
         userRepository.save(user);
 
         // ---- 2️⃣ Création utilisateur Camunda ----

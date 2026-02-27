@@ -16,4 +16,6 @@ public class UserInfo {
     private AgencyInfo agency;
 
     private RoleInfo role;
+
+    private boolean enabled;
 }

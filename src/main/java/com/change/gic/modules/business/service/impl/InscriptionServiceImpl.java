@@ -6,6 +6,11 @@ import com.change.gic.modules.business.mappers.InscriptionMapper;
 import com.change.gic.modules.business.repository.InscriptionRepository;
 import com.change.gic.modules.business.service.faces.InscriptionService;
 import com.change.gic.modules.business.specification.InscriptionSpecifications;
+import com.change.gic.modules.core.entity.Document;
+import com.change.gic.modules.core.info.DocumentInfo;
+import com.change.gic.modules.core.mappers.DocumentMapper;
+import com.change.gic.modules.core.repository.DocumentRepository;
+import com.change.gic.modules.file.dto.FileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +27,8 @@ import java.util.List;
 public class InscriptionServiceImpl implements InscriptionService {
 
     private final InscriptionRepository inscriptionRepository;
+    private final DocumentRepository documentRepository;
+    private final DocumentMapper documentMapper;
     private final InscriptionMapper inscriptionMapper;
 
     @Override
@@ -31,6 +38,13 @@ public class InscriptionServiceImpl implements InscriptionService {
         Pageable pageable = PageRequest.of(0, inscriptionRepository.findAll().size(), Sort.by(Sort.Direction.DESC, "creationDate"));
         List<Inscription> inscriptions = inscriptionRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "creationDate"));
         return inscriptionMapper.toDto(inscriptions);
+    }
+
+    @Override
+    public FileDto downloadDocument(String reference, String tag) {
+        Document document = documentRepository.findByBusinessKeyAndTag(reference, tag);
+        DocumentInfo documentInfo =  documentMapper.toDto(document);
+        return documentInfo.getFile();
     }
 
 }

@@ -2,9 +2,12 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1xa2ert" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
   <bpmn:process id="received_csq" name="Reception du CSQ" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Reception CSQ" camunda:formRef="reference-form" camunda:formRefBinding="latest">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${getBusinessKeyListener}" event="start" />
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0xay4gq</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0xay4gq" sourceRef="StartEvent_1" targetRef="Activity_0uf71ds" />
+    <bpmn:sequenceFlow id="Flow_0xay4gq" sourceRef="StartEvent_1" targetRef="confirm_recept_csq" />
     <bpmn:serviceTask id="Activity_186ew5v" name="Notifier Client" camunda:delegateExpression="${notifCustomer}">
       <bpmn:incoming>Flow_06m32hh</bpmn:incoming>
       <bpmn:outgoing>Flow_0lptfnv</bpmn:outgoing>
@@ -14,8 +17,8 @@
       <bpmn:incoming>Flow_0lptfnv</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_05zeyag" messageRef="Message_3p8c6iu" camunda:delegateExpression="${receivedCSQMessage}" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0q2597n" sourceRef="Activity_0uf71ds" targetRef="Gateway_0ayrof3" />
-    <bpmn:userTask id="Activity_0uf71ds" name="Confirmation Reception CSQ" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant">
+    <bpmn:sequenceFlow id="Flow_0q2597n" sourceRef="confirm_recept_csq" targetRef="Gateway_0ayrof3" />
+    <bpmn:userTask id="confirm_recept_csq" name="Confirmation Reception CSQ" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant">
       <bpmn:incoming>Flow_0xay4gq</bpmn:incoming>
       <bpmn:outgoing>Flow_0q2597n</bpmn:outgoing>
     </bpmn:userTask>
@@ -29,8 +32,16 @@
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_0t653d4">
       <bpmn:incoming>Flow_1rec1b1</bpmn:incoming>
+      <bpmn:incoming>Flow_1tksewq</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1rec1b1" sourceRef="Gateway_0ayrof3" targetRef="Event_0t653d4" />
+    <bpmn:boundaryEvent id="Event_195x3tj" attachedToRef="confirm_recept_csq">
+      <bpmn:outgoing>Flow_1tksewq</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1xao368">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1tksewq" sourceRef="Event_195x3tj" targetRef="Event_0t653d4" />
   </bpmn:process>
   <bpmn:message id="Message_3p8c6iu" name="Message_Received_CSQ" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -41,14 +52,14 @@
           <dc:Bounds x="132" y="135" width="77" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1wlty6x_di" bpmnElement="Event_1hu9ijk">
-        <dc:Bounds x="772" y="92" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0sh4lxg_di" bpmnElement="Activity_186ew5v">
         <dc:Bounds x="610" y="70" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1bywijc_di" bpmnElement="Activity_0uf71ds">
+      <bpmndi:BPMNShape id="Event_1wlty6x_di" bpmnElement="Event_1hu9ijk">
+        <dc:Bounds x="772" y="92" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bywijc_di" bpmnElement="confirm_recept_csq">
         <dc:Bounds x="240" y="70" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ayrof3_di" bpmnElement="Gateway_0ayrof3" isMarkerVisible="true">
@@ -56,6 +67,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0t653d4_di" bpmnElement="Event_0t653d4">
         <dc:Bounds x="412" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_195x3tj_di" bpmnElement="Event_195x3tj">
+        <dc:Bounds x="322" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0xay4gq_di" bpmnElement="Flow_0xay4gq">
         <di:waypoint x="188" y="110" />
@@ -76,6 +90,11 @@
       <bpmndi:BPMNEdge id="Flow_1rec1b1_di" bpmnElement="Flow_1rec1b1">
         <di:waypoint x="430" y="135" />
         <di:waypoint x="430" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tksewq_di" bpmnElement="Flow_1tksewq">
+        <di:waypoint x="340" y="168" />
+        <di:waypoint x="340" y="220" />
+        <di:waypoint x="412" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -17,6 +17,10 @@ public class ContratSpecifications {
         return (root, query, cb) -> cb.between(root.get("creationDate"), start, end);
     }
 
+    public static Specification<Contrat> archived(Boolean archived) {
+        return (root, query, cb) -> cb.equal(root.get("archived"), archived);
+    }
+
     // Exemple de spécification combinant plusieurs conditions optionnelles (alternative pour le service)
     public static Specification<Contrat> withDynamicQuery(String nameSearch) {
         return (root, query, cb) -> {
@@ -42,7 +46,7 @@ public class ContratSpecifications {
                 predicates.add(cb.equal(root.get("consultation").get("inscription").get("lastNameConjoint"), nameSearch));
             }
 
-            if (nameSearch != null) {
+            if (nameSearch != null && !nameSearch.isEmpty()) {
                 predicates.add(cb.like(root.get("status"), nameSearch));
             }
 

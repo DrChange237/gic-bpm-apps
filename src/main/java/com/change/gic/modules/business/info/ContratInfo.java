@@ -8,13 +8,25 @@ import java.math.BigDecimal;
 
 
 @Data
-public class ContratInfo {
+public class ContratInfo extends  AuditableInfo{
 
     private String id;
 
     private ConsultationInfo consultation;
 
     private String reference;
+
+    private String equivalenceStatus;
+
+    private String diplomaStatus;
+
+    private String testExamStatus;
+
+    private String selectionStatus;
+
+    private String permanentStatus;
+
+    private BigDecimal restToPay;
 
     private ContratStatus status;
 

@@ -4,10 +4,13 @@ import com.change.gic.modules.business.entity.*;
 import com.change.gic.modules.business.service.faces.PDFGenerationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 
 import com.lowagie.text.DocumentException;
@@ -15,6 +18,7 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -32,6 +36,10 @@ public class PDFGenerationServiceImpl implements PDFGenerationService {
         Context context = new Context();
         context.setVariable("inscription", inscription);
         context.setVariable("dateFormatter", DATE_FORMATTER);
+        ClassPathResource imgFile = new ClassPathResource("static/images/logo.png");
+        byte[] bytes = imgFile.getInputStream().readAllBytes();
+        String base64Logo = Base64.getEncoder().encodeToString(bytes);
+        context.setVariable("logo", base64Logo);
         // Générer le HTML à partir du template
         String htmlContent = templateEngine.process("customer-profile", context);
 
@@ -51,6 +59,10 @@ public class PDFGenerationServiceImpl implements PDFGenerationService {
         Context context = new Context();
         context.setVariable("consultation", consultation);
         context.setVariable("dateFormatter", DATE_FORMATTER);
+        ClassPathResource imgFile = new ClassPathResource("static/images/logo.png");
+        byte[] bytes = imgFile.getInputStream().readAllBytes();
+        String base64Logo = Base64.getEncoder().encodeToString(bytes);
+        context.setVariable("logo", base64Logo);
         // Générer le HTML à partir du template
         String htmlContent = templateEngine.process("consultation-report", context);
 
@@ -81,8 +93,12 @@ public class PDFGenerationServiceImpl implements PDFGenerationService {
 
 
         context.setVariable("dateFormatter", DATE_FORMATTER);
+        ClassPathResource imgFile = new ClassPathResource("static/images/logo.png");
+        byte[] bytes = imgFile.getInputStream().readAllBytes();
+        String base64Logo = Base64.getEncoder().encodeToString(bytes);
+        context.setVariable("logo", base64Logo);
         // Générer le HTML à partir du template
-        String htmlContent = templateEngine.process("contract", context);
+        String htmlContent = templateEngine.process("contract-signed", context);
 
         // Convertir HTML en PDF
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

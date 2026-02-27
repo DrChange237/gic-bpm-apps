@@ -7,7 +7,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_12ptdvu</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_12ptdvu" sourceRef="StartEvent_1" targetRef="Activity_08kxbtd" />
+    <bpmn:sequenceFlow id="Flow_12ptdvu" sourceRef="StartEvent_1" targetRef="confirm_invite_csq" />
     <bpmn:serviceTask id="Activity_1tvdosf" name="Notifier Client" camunda:delegateExpression="${notifCustomer}">
       <bpmn:incoming>Flow_1caul1y</bpmn:incoming>
       <bpmn:outgoing>Flow_1y6c4vq</bpmn:outgoing>
@@ -17,8 +17,8 @@
       <bpmn:incoming>Flow_1y6c4vq</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_01wgibz" messageRef="Message_1m7rr9c" camunda:delegateExpression="${inviteToCSQMessage}" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_180ny8i" sourceRef="Activity_08kxbtd" targetRef="Gateway_0pecc9m" />
-    <bpmn:userTask id="Activity_08kxbtd" name="Confirmation Invitation au CSQ" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,admin">
+    <bpmn:sequenceFlow id="Flow_180ny8i" sourceRef="confirm_invite_csq" targetRef="Gateway_0pecc9m" />
+    <bpmn:userTask id="confirm_invite_csq" name="Confirmation Invitation au CSQ" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,admin">
       <bpmn:incoming>Flow_12ptdvu</bpmn:incoming>
       <bpmn:outgoing>Flow_180ny8i</bpmn:outgoing>
     </bpmn:userTask>
@@ -32,8 +32,16 @@
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_1fbonkg">
       <bpmn:incoming>Flow_14fyaam</bpmn:incoming>
+      <bpmn:incoming>Flow_0knurzf</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_14fyaam" sourceRef="Gateway_0pecc9m" targetRef="Event_1fbonkg" />
+    <bpmn:boundaryEvent id="Event_0gnblfb" attachedToRef="confirm_invite_csq">
+      <bpmn:outgoing>Flow_0knurzf</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1w1bjqs">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT72H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0knurzf" sourceRef="Event_0gnblfb" targetRef="Event_1fbonkg" />
   </bpmn:process>
   <bpmn:message id="Message_1m7rr9c" name="Message_Invite_CSQ" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -51,7 +59,7 @@
       <bpmndi:BPMNShape id="Event_0fscf7d_di" bpmnElement="Event_0mc9a6v">
         <dc:Bounds x="752" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0uic0an_di" bpmnElement="Activity_08kxbtd">
+      <bpmndi:BPMNShape id="Activity_0uic0an_di" bpmnElement="confirm_invite_csq">
         <dc:Bounds x="290" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0pecc9m_di" bpmnElement="Gateway_0pecc9m" isMarkerVisible="true">
@@ -59,6 +67,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1fbonkg_di" bpmnElement="Event_1fbonkg">
         <dc:Bounds x="462" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0gnblfb_di" bpmnElement="Event_0gnblfb">
+        <dc:Bounds x="372" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_12ptdvu_di" bpmnElement="Flow_12ptdvu">
         <di:waypoint x="218" y="100" />
@@ -79,6 +90,11 @@
       <bpmndi:BPMNEdge id="Flow_14fyaam_di" bpmnElement="Flow_14fyaam">
         <di:waypoint x="480" y="125" />
         <di:waypoint x="480" y="192" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0knurzf_di" bpmnElement="Flow_0knurzf">
+        <di:waypoint x="390" y="158" />
+        <di:waypoint x="390" y="210" />
+        <di:waypoint x="462" y="210" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

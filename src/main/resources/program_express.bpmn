@@ -5,6 +5,9 @@
       <bpmn:outgoing>Flow_0myjf73</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="Event_050xncz" name="Invite To Apply (ITA)">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${inviteToApplyListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1df4jl1</bpmn:incoming>
       <bpmn:outgoing>Flow_0qu3ao6</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0c907il" messageRef="Message_10r0kah" />
@@ -17,6 +20,9 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0wc6y5r" sourceRef="create_profil_express" targetRef="Activity_0j43imy" />
     <bpmn:userTask id="create_profil_express" name="Création de Profil Entrée Express" camunda:formRef="profil-express-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${createdProfilExpressListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0myjf73</bpmn:incoming>
       <bpmn:outgoing>Flow_0wc6y5r</bpmn:outgoing>
     </bpmn:userTask>

@@ -143,13 +143,14 @@
         <tr>
             <!-- Logo ou nom de l'organisation à gauche -->
             <td class="header-logo">
-                <!-- <img th:src="@{/images/logo.png}" style="height:40px;" alt="Logo"/> -->
-                <strong style="font-size:12px; color:#1a4f8b;">MON ORGANISME</strong>
+                <img th:src="'data:image/png;base64,' + ${logo}"
+                     style="height:40px;"
+                     alt="Logo"/>
             </td>
 
             <!-- Titre du document au centre -->
             <td class="header-title">
-                FICHE PROFIL CLIENT
+
             </td>
 
             <!-- Infos dossier à droite -->
@@ -170,12 +171,19 @@
     <table>
         <tr>
             <td class="footer-left">
-                © 2025 Mon Organisme — Document confidentiel
+                <strong>Email : </strong> globalinte@gmail.com <br/>
+                <strong>Adresse : </strong>  Douala – Makepé, Yaoundé – Feux Tongolo <br/>
+                <strong>B.P. : </strong>  6892 Douala <br/>
+                <strong>Tel. : </strong>  (237) 677 265 552 / 696 989 411 <br/>
             </td>
             <td class="footer-center">
                 Page <span class="page-number"></span> / <span class="page-total"></span>
             </td>
             <td class="footer-right">
+                <strong>CCA BANK N° : </strong> 10039 00269280601 51 <br/>
+                <strong>RCCM RC/ : </strong>  DLN/2021/B/1495  <br/>
+                <strong>N° Contribuable </strong> M032117476924L <br/>
+                <strong>N° CNPS </strong>   357-0114606-000-P <br/>
                 Généré le : <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}">19/02/2025</span>
             </td>
         </tr>
@@ -215,20 +223,6 @@
     </tr>
 </table>
 
-<h2>Coordonnées</h2>
-<table>
-    <tr>
-        <td class="label">Adresse</td>
-        <td class="value" colspan="3" th:text="${inscription.address}"></td>
-    </tr>
-    <tr>
-        <td class="label">Téléphone</td>
-        <td class="value" th:text="${inscription.mobile}"></td>
-        <td class="label">Email</td>
-        <td class="value" th:text="${inscription.email}"></td>
-    </tr>
-</table>
-
 <h2>Identité nationale</h2>
 <table>
     <tr>
@@ -265,21 +259,75 @@
     </tr>
 </table>
 
-<h2 th:if="${inscription.firstNameConjoint != null}">Conjoint</h2>
+<h2>Coordonnées</h2>
+<table>
+    <tr>
+        <td class="label">Adresse</td>
+        <td class="value" colspan="3" th:text="${inscription.address}"></td>
+    </tr>
+    <tr>
+        <td class="label">Téléphone</td>
+        <td class="value" th:text="${inscription.mobile}"></td>
+        <td class="label">Email</td>
+        <td class="value" th:text="${inscription.email}"></td>
+    </tr>
+</table>
+
+
+
+<h2 th:if="${inscription.firstNameConjoint != null}">Conjoint Identité</h2>
 <table th:if="${inscription.firstNameConjoint != null}">
     <tr>
         <td class="label">Nom</td>
         <td class="value" th:text="${inscription.firstNameConjoint + ' ' + inscription.lastNameConjoint}"></td>
-        <td class="label">Contact</td>
-        <td class="value" th:text="${inscription.mobileConjoint}"></td>
+        <td class="label">Nationalité</td>
+        <td class="value" th:text="${inscription.nationalityConjoint}"></td>
     </tr>
+    <tr>
+        <td class="label">Naissance</td>
+        <td class="value" th:text="${inscription.birthdayConjoint + ' à ' + inscription.birthplaceConjoint}"></td>
+    </tr>
+</table>
+<h2>Conjoint Identité nationale</h2>
+<table>
+    <tr>
+        <td class="label">CNI</td>
+        <td class="value" th:text="${inscription.cniNumberConjoint}"></td>
+        <td class="label">Délivrée</td>
+        <td class="value" th:text="${inscription.cniDeliveryConjoint + ' à ' + inscription.cniPlaceConjoint}"></td>
+    </tr>
+</table>
+
+<h2>Formation &amp; Expérience</h2>
+<table>
     <tr>
         <td class="label">Diplôme</td>
         <td class="value" th:text="${inscription.diplomaConjoint}"></td>
-        <td class="label">Exp.</td>
+        <td class="label">Année</td>
+        <td class="value" th:text="${inscription.yearGraduationConjoint}"></td>
+    </tr>
+    <tr>
+        <td class="label">École</td>
+        <td class="value" th:text="${inscription.schoolConjoint}"></td>
+        <td class="label">Exp. (ans)</td>
         <td class="value" th:text="${inscription.experienceConjoint}"></td>
     </tr>
 </table>
+
+<h2>Coordonnées</h2>
+<table>
+    <tr>
+        <td class="label">Adresse</td>
+        <td class="value" colspan="3" th:text="${inscription.address}"></td>
+    </tr>
+    <tr>
+        <td class="label">Téléphone</td>
+        <td class="value" th:text="${inscription.mobileConjoint}"></td>
+        <td class="label">Email</td>
+        <td class="value" th:text="${inscription.emailConjoint}"></td>
+    </tr>
+</table>
+
 
 </body>
 </html>

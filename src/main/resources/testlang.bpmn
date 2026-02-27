@@ -4,14 +4,21 @@
     <bpmn:startEvent id="StartEvent_1" name="Test de Langues">
       <bpmn:outgoing>Flow_1ognlvf</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1ognlvf" sourceRef="StartEvent_1" targetRef="contact-test-student" />
+    <bpmn:sequenceFlow id="Flow_1ognlvf" sourceRef="StartEvent_1" targetRef="contact_test_student" />
     <bpmn:userTask id="register_test_exam" name="Inscrire le Client à une Session de Tests" camunda:formRef="register-exam-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang,admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${registerTestCompletedListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_09ecocl</bpmn:incoming>
       <bpmn:incoming>Flow_08dzglo</bpmn:incoming>
+      <bpmn:incoming>Flow_0hv1ut4</bpmn:incoming>
       <bpmn:outgoing>Flow_03tde8j</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_03tde8j" sourceRef="register_test_exam" targetRef="Event_1xtnzjg" />
     <bpmn:intermediateCatchEvent id="Event_1xtnzjg" name="Resultats Test de Langues">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${resultTestListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_03tde8j</bpmn:incoming>
       <bpmn:outgoing>Flow_1usbati</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1pq50ko" messageRef="Message_0tm4e8f" />
@@ -31,15 +38,20 @@
     <bpmn:sequenceFlow id="Flow_09ecocl" sourceRef="Gateway_08xxsz6" targetRef="register_test_exam" />
     <bpmn:sequenceFlow id="Flow_0d48mma" sourceRef="verify_result_test" targetRef="Activity_0n8supl" />
     <bpmn:userTask id="verify_result_test" name="Appréciation du Resultat" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${appreciateExamListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1usbati</bpmn:incoming>
       <bpmn:outgoing>Flow_0d48mma</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0yyauzn" sourceRef="Activity_0n8supl" targetRef="Gateway_08xxsz6" />
     <bpmn:sequenceFlow id="Flow_1x3sirb" sourceRef="Event_1bcafvc" targetRef="Gateway_03qaso4" />
     <bpmn:intermediateCatchEvent id="Event_1bcafvc" name="Evaluation Niveau">
-      <bpmn:extensionElements />
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${levelUpExamListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1kpbcnw</bpmn:incoming>
-      <bpmn:incoming>Flow_08yptvw</bpmn:incoming>
+      <bpmn:incoming>Flow_1uul1v0</bpmn:incoming>
       <bpmn:outgoing>Flow_1x3sirb</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0gdolmi" messageRef="Message_3kt4vid" />
     </bpmn:intermediateCatchEvent>
@@ -56,14 +68,24 @@
       <bpmn:incoming>Flow_0d48mma</bpmn:incoming>
       <bpmn:outgoing>Flow_0yyauzn</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_08yptvw" sourceRef="contact-test-student" targetRef="Event_1bcafvc" />
-    <bpmn:userTask id="contact-test-student" name="Prendre Contact avec l&#39;Apprenant" camunda:candidateGroups="testlang">
+    <bpmn:sequenceFlow id="Flow_08yptvw" sourceRef="contact_test_student" targetRef="Gateway_0toczy5" />
+    <bpmn:userTask id="contact_test_student" name="Prendre Contact avec l&#39;Apprenant" camunda:formRef="contact-test-form" camunda:formRefBinding="latest" camunda:candidateGroups="testlang">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${contactStudentListener}" event="start" />
+        <camunda:executionListener delegateExpression="${contactStudentCompletedListener}" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ognlvf</bpmn:incoming>
       <bpmn:outgoing>Flow_08yptvw</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0toczy5" default="Flow_1uul1v0">
+      <bpmn:incoming>Flow_08yptvw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uul1v0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0hv1ut4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1uul1v0" sourceRef="Gateway_0toczy5" targetRef="Event_1bcafvc" />
+    <bpmn:sequenceFlow id="Flow_0hv1ut4" sourceRef="Gateway_0toczy5" targetRef="register_test_exam">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${level_up_exam}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:textAnnotation id="TextAnnotation_1wj11c1">
       <bpmn:text>Résultats Non satisfaisant</bpmn:text>
     </bpmn:textAnnotation>
@@ -95,7 +117,7 @@
         <dc:Bounds x="1552" y="212" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0xhh5bv_di" bpmnElement="verify_result_test">
-        <dc:Bounds x="1130" y="190" width="100" height="80" />
+        <dc:Bounds x="1120" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1m2k9tp_di" bpmnElement="Event_1bcafvc">
         <dc:Bounds x="562" y="212" width="36" height="36" />
@@ -109,8 +131,11 @@
       <bpmndi:BPMNShape id="Activity_0o6tumn_di" bpmnElement="Activity_0n8supl">
         <dc:Bounds x="1290" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1a657jj_di" bpmnElement="contact-test-student">
-        <dc:Bounds x="290" y="190" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1a657jj_di" bpmnElement="contact_test_student">
+        <dc:Bounds x="300" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0toczy5_di" bpmnElement="Gateway_0toczy5" isMarkerVisible="true">
+        <dc:Bounds x="455" y="205" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1wj11c1_di" bpmnElement="TextAnnotation_1wj11c1">
         <dc:Bounds x="1240" y="300" width="100" height="41" />
@@ -118,7 +143,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ognlvf_di" bpmnElement="Flow_1ognlvf">
         <di:waypoint x="218" y="230" />
-        <di:waypoint x="290" y="230" />
+        <di:waypoint x="300" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03tde8j_di" bpmnElement="Flow_03tde8j">
         <di:waypoint x="890" y="230" />
@@ -126,7 +151,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1usbati_di" bpmnElement="Flow_1usbati">
         <di:waypoint x="1038" y="230" />
-        <di:waypoint x="1130" y="230" />
+        <di:waypoint x="1120" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09am9er_di" bpmnElement="Flow_09am9er">
         <di:waypoint x="1485" y="230" />
@@ -139,7 +164,7 @@
         <di:waypoint x="840" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d48mma_di" bpmnElement="Flow_0d48mma">
-        <di:waypoint x="1230" y="230" />
+        <di:waypoint x="1220" y="230" />
         <di:waypoint x="1290" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yyauzn_di" bpmnElement="Flow_0yyauzn">
@@ -161,8 +186,18 @@
         <di:waypoint x="580" y="212" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08yptvw_di" bpmnElement="Flow_08yptvw">
-        <di:waypoint x="390" y="230" />
+        <di:waypoint x="400" y="230" />
+        <di:waypoint x="455" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uul1v0_di" bpmnElement="Flow_1uul1v0">
+        <di:waypoint x="505" y="230" />
         <di:waypoint x="562" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hv1ut4_di" bpmnElement="Flow_0hv1ut4">
+        <di:waypoint x="480" y="205" />
+        <di:waypoint x="480" y="40" />
+        <di:waypoint x="800" y="40" />
+        <di:waypoint x="800" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_082rdo2_di" bpmnElement="Association_082rdo2">
         <di:waypoint x="1157" y="370" />

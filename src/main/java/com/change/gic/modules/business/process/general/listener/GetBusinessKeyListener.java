@@ -14,17 +14,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GetBusinessKeyListener implements JavaDelegate {
 
-    private final ContratRepository contratRepository;
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         String reference = (String) delegateExecution.getVariable("reference");
-        Contrat contrat = contratRepository.findByReference(reference);
-
-        if(contrat == null) {
-            throw new BadRequestException("contrat reference does not exist");
-        }
 
         delegateExecution.setProcessBusinessKey(reference);
 

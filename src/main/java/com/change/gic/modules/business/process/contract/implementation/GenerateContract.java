@@ -50,6 +50,7 @@ public class GenerateContract implements JavaDelegate {
         Contrat contrat = new Contrat();
         Consultation consultation = (Consultation) delegateExecution.getVariable("consultation");
         contrat.setConsultation(consultation);
+        contrat.setArchived(false);
         contrat.setStatus(ContratStatus.DRAFT);
         String reference = (String) delegateExecution.getVariable("contract_customerRef");
         contrat.setReference(reference);
