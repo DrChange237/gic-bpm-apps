@@ -70,11 +70,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
 
-        String password = PasswordGenerator.generatePassword(10);
 
-
-
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEnabled(false);
         userRepository.save(user);
 
