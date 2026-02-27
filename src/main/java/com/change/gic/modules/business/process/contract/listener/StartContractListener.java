@@ -6,6 +6,7 @@ import com.change.gic.modules.business.entity.ContratTerm;
 import com.change.gic.modules.business.entity.ContratTermGroup;
 import com.change.gic.modules.business.entity.Inscription;
 import com.change.gic.modules.business.enumeration.InscriptionStatus;
+import com.change.gic.modules.business.enumeration.Matrimonial;
 import com.change.gic.modules.business.repository.ConsultationRepository;
 import com.change.gic.modules.business.repository.InscriptionRepository;
 import com.change.gic.modules.core.dto.camunda.form.SelectOptionDto;
@@ -17,6 +18,8 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +45,68 @@ public class StartContractListener implements ExecutionListener {
         }
 
         delegateExecution.setProcessBusinessKey(reference);
+
+        delegateExecution.setVariable("firstName", inscription.getFirstName());
+        delegateExecution.setVariable("lastName", inscription.getLastName());
+        delegateExecution.setVariable("birthday", inscription.getBirthday());
+        delegateExecution.setVariable("birthplace", inscription.getBirthplace());
+        delegateExecution.setVariable("sexe", inscription.getSexe());
+        delegateExecution.setVariable("nationality", inscription.getNationality());
+        delegateExecution.setVariable("matrimonial", inscription.getMatrimonial());
+        delegateExecution.setVariable("mobile", inscription.getMobile());
+        delegateExecution.setVariable("email", inscription.getEmail());
+        delegateExecution.setVariable("address", inscription.getAddress());
+        delegateExecution.setVariable("cniNumber", inscription.getCniNumber());
+        delegateExecution.setVariable("cniDelivery", inscription.getCniDelivery());
+        delegateExecution.setVariable("cniPlace", inscription.getCniPlace());
+        delegateExecution.setVariable("diploma", inscription.getDiploma());
+        delegateExecution.setVariable("yearGraduation", inscription.getYearGraduation());
+        delegateExecution.setVariable("school", inscription.getSchool());
+        delegateExecution.setVariable("formation", inscription.getFormation());
+        delegateExecution.setVariable("children", inscription.getChildren());
+        delegateExecution.setVariable("childrenAge", inscription.getChildrenAge());
+        delegateExecution.setVariable("experience", inscription.getExperience());
+
+        int age = Period.between(inscription.getBirthday(), LocalDate.now()).getYears();
+        delegateExecution.setVariable("age", age);
+
+        if(inscription.getBirthdayConjoint() != null){
+            int ageConjoint = Period.between(inscription.getBirthdayConjoint(), LocalDate.now()).getYears();
+            delegateExecution.setVariable("ageConjoint", ageConjoint);
+        }
+
+
+
+
+
+        log.info("Inscription Customer saved successfully");
+
+        // ------------------ CONJOINT -------------------------------------------------------------
+
+        delegateExecution.setVariable("firstNameConjoint", inscription.getFirstNameConjoint());
+        delegateExecution.setVariable("lastNameConjoint", inscription.getLastNameConjoint());
+
+        String birthdayConjoint = (String) delegateExecution.getVariable("birthdayConjoint");
+        if(!birthdayConjoint.isEmpty()){
+            delegateExecution.setVariable("birthdayConjoint", inscription.getBirthdayConjoint());
+        }
+
+        delegateExecution.setVariable("birthplaceConjoint", inscription.getBirthplaceConjoint());
+        delegateExecution.setVariable("nationalityConjoint", inscription.getNationalityConjoint());
+        delegateExecution.setVariable("mobileConjoint", inscription.getMobileConjoint());
+        delegateExecution.setVariable("emailConjoint", inscription.getEmailConjoint());
+        delegateExecution.setVariable("cniNumberConjoint", inscription.getCniNumberConjoint());
+
+        String cniDeliveryConjoint = (String) delegateExecution.getVariable("cniDeliveryConjoint");
+        if(!cniDeliveryConjoint.isEmpty()){
+            delegateExecution.setVariable("cniDeliveryConjoint", inscription.getCniDeliveryConjoint());
+        }
+        delegateExecution.setVariable("cniPlaceConjoint", inscription.getCniPlaceConjoint());
+        delegateExecution.setVariable("diplomaConjoint", inscription.getDiplomaConjoint());
+        Object value = delegateExecution.getVariable("yearGraduationConjoint");
+        if (value instanceof Integer) {
+            delegateExecution.setVariable("yearGraduationConjoint", (Integer) value);
+        }
 
 
         Consultation consultation = consultationRepository.findByInscription(inscription);
