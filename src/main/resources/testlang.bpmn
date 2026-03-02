@@ -46,7 +46,7 @@
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0yyauzn" sourceRef="Activity_0n8supl" targetRef="Gateway_08xxsz6" />
     <bpmn:sequenceFlow id="Flow_1x3sirb" sourceRef="Event_1bcafvc" targetRef="Gateway_03qaso4" />
-    <bpmn:intermediateCatchEvent id="Event_1bcafvc" name="Evaluation Niveau">
+    <bpmn:intermediateCatchEvent id="Event_1bcafvc" name="Session de Formation / Evaluation Niveau">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${levelUpExamListener}" event="end" />
       </bpmn:extensionElements>
@@ -61,7 +61,7 @@
       <bpmn:outgoing>Flow_1kpbcnw</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_08dzglo" sourceRef="Gateway_03qaso4" targetRef="register_test_exam">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validate}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${levelup}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1kpbcnw" sourceRef="Gateway_03qaso4" targetRef="Event_1bcafvc" />
     <bpmn:sendTask id="Activity_0n8supl" name="Notifier le Client" camunda:delegateExpression="${notifCustomer}">
@@ -122,7 +122,7 @@
       <bpmndi:BPMNShape id="Event_1m2k9tp_di" bpmnElement="Event_1bcafvc">
         <dc:Bounds x="562" y="212" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="536" y="255" width="89" height="14" />
+          <dc:Bounds x="536" y="255" width="89" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_03qaso4_di" bpmnElement="Gateway_03qaso4" isMarkerVisible="true">

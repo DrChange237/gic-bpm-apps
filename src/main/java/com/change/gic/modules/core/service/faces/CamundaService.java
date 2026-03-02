@@ -4,12 +4,15 @@ import com.change.gic.modules.core.dto.camunda.ProcessStartResponse;
 import com.change.gic.modules.core.dto.camunda.form.CamundaFormResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 
 import java.util.List;
 import java.util.Map;
 
 public interface CamundaService {
+    ProcessInstance getProcessInstanceByTaskId(String taskId);
+
     boolean canUserStartProcess(String processDefinitionKey, String username);
 
     void claim(String taskId, String userId);

@@ -72,6 +72,14 @@ public class GenerateContract implements JavaDelegate {
             ContratTerm contratTerm = contratTermRepository.findByCode(term);
             if (contratTerm != null) {
                 terms.add(contratTerm);
+                if(contratTerm.getCode().equals("prep_doc_2")){
+                    contrat.setEquivalence(true);
+                    delegateExecution.setVariable("with_equivalence", contrat.getEquivalence());
+                }
+                if(contratTerm.getCode().equals("prep_doc_4")){
+                    contrat.setTestLang(true);
+                    delegateExecution.setVariable("with_test_lang", contrat.getTestLang());
+                }
             }
         }
         List<String> term_submit_folder = (List<String>) delegateExecution.getVariable("term_submit_folder");

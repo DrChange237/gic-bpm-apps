@@ -41,6 +41,26 @@ public class CamundaServiceImpl implements CamundaService {
 
 
     @Override
+    public ProcessInstance getProcessInstanceByTaskId(String taskId) {
+        // 1. Récupérer la task
+        Task task = taskService.createTaskQuery()
+                .taskId(taskId)
+                .singleResult();
+
+        if (task == null) {
+            throw new IllegalArgumentException("Task introuvable : " + taskId);
+        }
+
+        // 2. Récupérer la ProcessInstance via le processInstanceId
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(task.getProcessInstanceId())
+                .singleResult();
+
+        return processInstance;
+    }
+
+
+    @Override
     public boolean canUserStartProcess(String processDefinitionKey, String username) {
 
         // 1️⃣ Récupérer la process definition
@@ -201,7 +221,12 @@ public class CamundaServiceImpl implements CamundaService {
                 .endOr();
 
         // Exécuter la requête et retourner la liste des tâches
-        return taskQuery.list();
+        List<Task> allTasks = taskQuery.list();
+
+        // Trier par date de création (plus récent en premier)
+        allTasks.sort((t1, t2) -> t2.getCreateTime().compareTo(t1.getCreateTime()));
+        return allTasks;
+
     }
 
     @Override

@@ -46,6 +46,11 @@ public class StartContractListener implements ExecutionListener {
 
         delegateExecution.setProcessBusinessKey(reference);
 
+        delegateExecution.setVariable("with_test_lang", false);
+        delegateExecution.setVariable("with_equivalence", false);
+
+
+
         delegateExecution.setVariable("firstName", inscription.getFirstName());
         delegateExecution.setVariable("lastName", inscription.getLastName());
         delegateExecution.setVariable("birthday", inscription.getBirthday());
@@ -75,21 +80,12 @@ public class StartContractListener implements ExecutionListener {
             delegateExecution.setVariable("ageConjoint", ageConjoint);
         }
 
-
-
-
-
-        log.info("Inscription Customer saved successfully");
-
         // ------------------ CONJOINT -------------------------------------------------------------
 
         delegateExecution.setVariable("firstNameConjoint", inscription.getFirstNameConjoint());
         delegateExecution.setVariable("lastNameConjoint", inscription.getLastNameConjoint());
+        delegateExecution.setVariable("birthdayConjoint", inscription.getBirthdayConjoint());
 
-        String birthdayConjoint = (String) delegateExecution.getVariable("birthdayConjoint");
-        if(!birthdayConjoint.isEmpty()){
-            delegateExecution.setVariable("birthdayConjoint", inscription.getBirthdayConjoint());
-        }
 
         delegateExecution.setVariable("birthplaceConjoint", inscription.getBirthplaceConjoint());
         delegateExecution.setVariable("nationalityConjoint", inscription.getNationalityConjoint());
@@ -97,16 +93,12 @@ public class StartContractListener implements ExecutionListener {
         delegateExecution.setVariable("emailConjoint", inscription.getEmailConjoint());
         delegateExecution.setVariable("cniNumberConjoint", inscription.getCniNumberConjoint());
 
-        String cniDeliveryConjoint = (String) delegateExecution.getVariable("cniDeliveryConjoint");
-        if(!cniDeliveryConjoint.isEmpty()){
-            delegateExecution.setVariable("cniDeliveryConjoint", inscription.getCniDeliveryConjoint());
-        }
+        delegateExecution.setVariable("cniDeliveryConjoint", inscription.getCniDeliveryConjoint());
+
         delegateExecution.setVariable("cniPlaceConjoint", inscription.getCniPlaceConjoint());
         delegateExecution.setVariable("diplomaConjoint", inscription.getDiplomaConjoint());
-        Object value = delegateExecution.getVariable("yearGraduationConjoint");
-        if (value instanceof Integer) {
-            delegateExecution.setVariable("yearGraduationConjoint", (Integer) value);
-        }
+        delegateExecution.setVariable("yearGraduationConjoint", inscription.getYearGraduationConjoint());
+
 
 
         Consultation consultation = consultationRepository.findByInscription(inscription);
