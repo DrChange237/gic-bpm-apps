@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -23,6 +24,12 @@ public class SelectionExpress {
 
     @Column(name = "END_DATE", nullable = true)
     private LocalDate endDate;
+
+    @Column(name = "POINTS", nullable = true)
+    private BigDecimal points;
+
+    @Column(name = "NUMERO", nullable = true)
+    private String numero;
 
     @ManyToOne(optional = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "CONTRACT"), nullable = false)

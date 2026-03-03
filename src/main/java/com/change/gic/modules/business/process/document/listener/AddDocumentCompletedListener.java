@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +30,9 @@ public class AddDocumentCompletedListener implements ExecutionListener {
         File file = fileRepository.findByUrl(fileId);
         Document document = documentRepository.findByBusinessKeyAndTag(delegateExecution.getProcessBusinessKey(), documentType);
         if(document != null){
-            documentRepository.delete(document);
+            if(!type.getMultiple()){
+                documentRepository.delete(document);
+            }
         }
         document = new Document();
         document.setTag(documentType);

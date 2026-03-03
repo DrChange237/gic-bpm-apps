@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class StartAddDocumentListener implements ExecutionListener {
         String customer = inscription.getFullName();
         delegateExecution.setVariable("customer_value", customer);
 
-        List<DocumentType> documentTypes = documentTypeRepository.findAll();
+        List<DocumentType> documentTypes = documentTypeRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
         List<SelectOptionDto> selectOptionDtos = documentTypes.stream().map(x -> new SelectOptionDto(x.getName(), x.getTag())).collect(Collectors.toList());
         delegateExecution.setVariable("document_type_values", selectOptionDtos);
 

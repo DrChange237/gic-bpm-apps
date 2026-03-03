@@ -24,9 +24,13 @@ public class DocumentType {
     @Column(name = "TAG", nullable = false, unique = true)
     private String tag;
 
-    public DocumentType(String name, String tag) {
+    @Column(name = "MULTIPLE", nullable = true)
+    private Boolean multiple;
+
+    public DocumentType(String name, String tag, Boolean multiple) {
         this.name = name;
         this.tag = tag;
+        this.multiple = multiple;
     }
 
     public DocumentType() {

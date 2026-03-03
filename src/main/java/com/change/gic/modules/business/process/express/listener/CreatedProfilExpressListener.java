@@ -14,6 +14,8 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +29,10 @@ public class CreatedProfilExpressListener implements ExecutionListener {
         String reference = delegateExecution.getBusinessKey();
         Contrat contrat = contratRepository.findByReference(reference);
         SelectionExpress selectionExpress = new SelectionExpress();
+        String numero = delegateExecution.getVariable("id_express").toString();
+        Long points = Long.parseLong(delegateExecution.getVariable("points").toString());
+        selectionExpress.setNumero(numero);
+        selectionExpress.setPoints(BigDecimal.valueOf(points));
         selectionExpress.setContract(contrat);
         selectionExpress.setStatus(SelectionExpressStatus.PROFIL_CREATED);
         selectionExpressRepository.save(selectionExpress);

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1v5a1q6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="tirage" name="Tirage" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Nouveau Tirage" camunda:formRef="tirage-form" camunda:formRefBinding="latest">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${tirageListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1nex8x6</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1nex8x6" sourceRef="StartEvent_1" targetRef="Activity_1f5tirv" />
+    <bpmn:serviceTask id="Activity_1f5tirv" name="Generer le rapport de nos clients avec points" camunda:delegateExpression="${generateTirageReport}">
+      <bpmn:incoming>Flow_1nex8x6</bpmn:incoming>
+      <bpmn:outgoing>Flow_01opyfp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_05c9org">
+      <bpmn:incoming>Flow_01opyfp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_01opyfp" sourceRef="Activity_1f5tirv" targetRef="Event_05c9org" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="tirage">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="162" y="125" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05c9org_di" bpmnElement="Event_05c9org">
+        <dc:Bounds x="512" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17nu2us_di" bpmnElement="Activity_1f5tirv">
+        <dc:Bounds x="300" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1nex8x6_di" bpmnElement="Flow_1nex8x6">
+        <di:waypoint x="218" y="100" />
+        <di:waypoint x="300" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01opyfp_di" bpmnElement="Flow_01opyfp">
+        <di:waypoint x="400" y="100" />
+        <di:waypoint x="512" y="100" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

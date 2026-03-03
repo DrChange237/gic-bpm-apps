@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0ez49s7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="letter_biometry" name="Lettre de collecte biométrique" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Lettre de Collecte Biométrique" camunda:formRef="reference-form" camunda:formRefBinding="latest">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${getBusinessKeyListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1u9fb7e</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1u9fb7e" sourceRef="StartEvent_1" targetRef="Activity_1bkt96q" />
+    <bpmn:userTask id="Activity_1bkt96q" name="Confirmation Lettre de Collecte Biométrique" camunda:candidateGroups="biometry">
+      <bpmn:incoming>Flow_1u9fb7e</bpmn:incoming>
+      <bpmn:outgoing>Flow_19hjk2p</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_19hjk2p" sourceRef="Activity_1bkt96q" targetRef="Event_16k6n4y" />
+    <bpmn:endEvent id="Event_16k6n4y">
+      <bpmn:incoming>Flow_19hjk2p</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0zyfm1q" messageRef="Message_3hfkc7p" camunda:delegateExpression="${letterBiometryMessage}" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_3hfkc7p" name="Message_Collect_Biometry" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="letter_biometry">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="145" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12tac2g_di" bpmnElement="Activity_1bkt96q">
+        <dc:Bounds x="310" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ymn305_di" bpmnElement="Event_16k6n4y">
+        <dc:Bounds x="502" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1u9fb7e_di" bpmnElement="Flow_1u9fb7e">
+        <di:waypoint x="218" y="120" />
+        <di:waypoint x="310" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19hjk2p_di" bpmnElement="Flow_19hjk2p">
+        <di:waypoint x="410" y="120" />
+        <di:waypoint x="502" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

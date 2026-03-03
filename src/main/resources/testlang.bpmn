@@ -28,7 +28,7 @@
       <bpmn:outgoing>Flow_09am9er</bpmn:outgoing>
       <bpmn:outgoing>Flow_09ecocl</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1usbati" sourceRef="Event_1xtnzjg" targetRef="add_test_lang" />
+    <bpmn:sequenceFlow id="Flow_1usbati" sourceRef="Event_1xtnzjg" targetRef="verify_result_test" />
     <bpmn:endEvent id="Event_0kqitil">
       <bpmn:incoming>Flow_09am9er</bpmn:incoming>
     </bpmn:endEvent>
@@ -37,11 +37,11 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_09ecocl" sourceRef="Gateway_08xxsz6" targetRef="register_test_exam" />
     <bpmn:sequenceFlow id="Flow_0d48mma" sourceRef="verify_result_test" targetRef="Activity_0n8supl" />
-    <bpmn:userTask id="verify_result_test" name="Appréciation du Resultat" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,admin">
+    <bpmn:userTask id="verify_result_test" name="Appréciation du Resultat des Tests de Langues" camunda:formRef="validate-form" camunda:formRefBinding="latest" camunda:candidateGroups="consultant,admin">
       <bpmn:extensionElements>
         <camunda:executionListener delegateExpression="${appreciateExamListener}" event="end" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_18nxdkg</bpmn:incoming>
+      <bpmn:incoming>Flow_1usbati</bpmn:incoming>
       <bpmn:outgoing>Flow_0d48mma</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0yyauzn" sourceRef="Activity_0n8supl" targetRef="Gateway_08xxsz6" />
@@ -86,18 +86,6 @@
     <bpmn:sequenceFlow id="Flow_0hv1ut4" sourceRef="Gateway_0toczy5" targetRef="register_test_exam">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${level_up_exam}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_18nxdkg" sourceRef="add_test_lang" targetRef="verify_result_test" />
-    <bpmn:callActivity id="add_test_lang" name="Associer le Test de Langue Au Dossier" calledElement="add_document">
-      <bpmn:extensionElements>
-        <camunda:in businessKey="#{execution.processBusinessKey}" />
-        <camunda:in local="true" variables="all" />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="document_name">Resultat au Test de Langue</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1usbati</bpmn:incoming>
-      <bpmn:outgoing>Flow_18nxdkg</bpmn:outgoing>
-    </bpmn:callActivity>
     <bpmn:textAnnotation id="TextAnnotation_1wj11c1">
       <bpmn:text>Résultats Non satisfaisant</bpmn:text>
     </bpmn:textAnnotation>
@@ -148,9 +136,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0xhh5bv_di" bpmnElement="verify_result_test">
         <dc:Bounds x="1190" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0jnvuol_di" bpmnElement="add_test_lang">
-        <dc:Bounds x="1030" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1wj11c1_di" bpmnElement="TextAnnotation_1wj11c1">
         <dc:Bounds x="1240" y="300" width="100" height="41" />
@@ -166,7 +152,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1usbati_di" bpmnElement="Flow_1usbati">
         <di:waypoint x="988" y="230" />
-        <di:waypoint x="1030" y="230" />
+        <di:waypoint x="1190" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_09am9er_di" bpmnElement="Flow_09am9er">
         <di:waypoint x="1555" y="230" />
@@ -217,10 +203,6 @@
       <bpmndi:BPMNEdge id="Association_082rdo2_di" bpmnElement="Association_082rdo2">
         <di:waypoint x="1193" y="370" />
         <di:waypoint x="1240" y="317" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18nxdkg_di" bpmnElement="Flow_18nxdkg">
-        <di:waypoint x="1130" y="230" />
-        <di:waypoint x="1190" y="230" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
