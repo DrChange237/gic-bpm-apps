@@ -21,8 +21,9 @@ public class ProgramInit implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<Program> programs = Stream.of(
 
-                new Program("ARRIMA", "Programme de Sélection ARRIMA (QUEBEC)"),
-                new Program("EXPRESS", "Programme de Sélection Entrée Express (FEDERAL)")
+                new Program("TRAVAILLEUR", "Travailleur Qualifié"),
+                new Program("VISITEUR", "Visiteur"),
+                new Program("ETUDIANT", "Etudiant")
 
         ).filter(program -> !programRepository.existsByName(program.getName())).collect(Collectors.toList());
         programRepository.saveAll(programs);

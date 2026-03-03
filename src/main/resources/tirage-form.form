@@ -1,28 +1,28 @@
 {
   "components": [
     {
-      "label": "Numero",
-      "type": "textfield",
-      "layout": {
-        "row": "Row_1x5c4zm",
-        "columns": 12
-      },
-      "id": "Field_13at9dh",
-      "key": "id_express"
-    },
-    {
-      "label": "Points Obtenus",
+      "label": "Nombres de Points Minimal",
       "type": "number",
       "layout": {
-        "row": "Row_01sd5aa",
+        "row": "Row_0peq23l",
         "columns": 12
       },
-      "id": "Field_01ug2g5",
-      "key": "points"
+      "id": "Field_0cezgtv",
+      "key": "pointsMin"
+    },
+    {
+      "label": "Nombre de Personnes Tirées",
+      "type": "number",
+      "layout": {
+        "row": "Row_1q5xu1b",
+        "columns": 12
+      },
+      "id": "Field_14w96wi",
+      "key": "nb"
     }
   ],
   "type": "default",
-  "id": "profil-express-form",
+  "id": "tirage-form",
   "exporter": {
     "name": "Camunda Modeler",
     "version": "5.38.1"

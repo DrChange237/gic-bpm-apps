@@ -1,4 +1,4 @@
-package com.change.gic.modules.business.process.testlang.message;
+package com.change.gic.modules.business.process.rp.message;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EvaluateLevelTestMessage implements JavaDelegate {
+public class LetterBiometryMessage implements JavaDelegate {
 
     private final RuntimeService runtimeService;
 
@@ -19,10 +19,9 @@ public class EvaluateLevelTestMessage implements JavaDelegate {
 
         String reference = (String) delegateExecution.getVariable("reference");
 
-        runtimeService.createMessageCorrelation("Message_Evaluate_Level_Test")
+        runtimeService.createMessageCorrelation("Message_Collect_Biometry")
                 .processInstanceBusinessKey(reference)
-                .setVariable("levelup", delegateExecution.getVariable("levelup"))
+                .setVariable("validate", delegateExecution.getVariable("validate"))
                 .correlate();
-
     }
 }

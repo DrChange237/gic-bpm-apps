@@ -3,10 +3,21 @@ package com.change.gic.modules.core.service.impl;
 
 import com.change.gic.modules.core.dto.camunda.CompleteTask;
 import com.change.gic.modules.core.dto.camunda.TaskDto;
+import com.change.gic.modules.core.dto.file.FileUploadDto;
+import com.change.gic.modules.core.entity.Document;
+import com.change.gic.modules.core.repository.DocumentRepository;
 import com.change.gic.modules.core.service.faces.AuthService;
 import com.change.gic.modules.core.service.faces.CamundaService;
 import com.change.gic.modules.core.service.faces.TaskService;
+import com.change.gic.modules.core.util.Base64MultipartFile;
+import com.change.gic.modules.file.dto.FileDto;
+import com.change.gic.modules.file.entity.File;
+import com.change.gic.modules.file.exception.MaxFileSizeException;
+import com.change.gic.modules.file.exception.UnsupportedFileTypeException;
+import com.change.gic.modules.file.repository.FileRepository;
+import com.change.gic.modules.file.service.FileService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -14,8 +25,10 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +46,9 @@ public class TaskServiceImpl implements TaskService {
     private final AuthService authService;
     private final RuntimeService runtimeService;
     private final RepositoryService repositoryService;
+    private final FileService fileService;
+    private final FileRepository fileRepository;
+    private final DocumentRepository documentRepository;
 
 
     @Override
@@ -82,11 +98,42 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    @SneakyThrows
     @Override
     public void completeTask(CompleteTask completeTask) {
         String username = authService.getCurrentUsername();
         log.info("getMyTasks username={}", username);
-        camundaService.completeTask(completeTask.getTaskId(), completeTask.getFormData());
+
+        ProcessInstance processInstance = camundaService.getProcessInstanceByTaskId(completeTask.getTaskId());
+        String businessKey = processInstance.getBusinessKey();
+        log.info("getMyTasks businessKey={}", businessKey);
+        Map<String, FileUploadDto> files = completeTask.getFiles();
+        Map<String , Object> filesVariable = new HashMap<>();
+        MultipartFile multipartFile = null;
+        for (Map.Entry<String, FileUploadDto> entry : files.entrySet()) {
+            multipartFile = convertToMultipartFile(entry.getValue());
+            FileDto fileDto = fileService.uploadFileToDatabase("gic", multipartFile);
+            filesVariable.put(entry.getKey(), fileDto.getUrl());
+        }
+
+        Map<String, Object> variables = completeTask.getFormData();
+        variables.putAll(filesVariable);
+        camundaService.completeTask(completeTask.getTaskId(), variables);
+
+    }
+
+    public MultipartFile convertToMultipartFile(FileUploadDto bill) {
+        // Nettoyer le préfixe data:application/pdf;base64, si présent
+        String base64Clean = bill.getContent();
+        if (base64Clean.contains(",")) {
+            base64Clean = base64Clean.split(",")[1];
+        }
+
+        return new Base64MultipartFile(
+                base64Clean,
+                bill.getName(),
+                bill.getType()
+        );
     }
 
     @Override

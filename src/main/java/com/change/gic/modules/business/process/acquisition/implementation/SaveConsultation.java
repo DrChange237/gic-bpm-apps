@@ -52,7 +52,7 @@ public class SaveConsultation implements JavaDelegate {
         consultation.setLastAmount(BigDecimal.valueOf(amountLast));
 
 
-        ArrayList<String> charges = (ArrayList<String> ) delegateExecution.getVariable("consultation_charges");
+        ArrayList<String> charges = (ArrayList<String>) delegateExecution.getVariable("consultation_charges");
         log.info(charges.toString());
         if (charges.contains("charge_equivalence")){
             consultation.setEquivalence(true);

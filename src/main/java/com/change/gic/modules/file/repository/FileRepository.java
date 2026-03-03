@@ -9,4 +9,6 @@ public interface FileRepository extends JpaRepository<File, String> {
     List<File> findAllByProject(String project);
 
     List<File> findAllByProjectAndPathContainingIgnoreCase(String project, String path);
+
+    File findByUrl(String fileId);
 }

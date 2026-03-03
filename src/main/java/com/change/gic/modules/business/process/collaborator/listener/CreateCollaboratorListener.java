@@ -2,6 +2,7 @@ package com.change.gic.modules.business.process.collaborator.listener;
 
 
 import com.change.gic.modules.core.dto.auth.RegisterUserDto;
+import com.change.gic.modules.core.service.faces.EmailService;
 import com.change.gic.modules.core.service.faces.UserService;
 import com.change.gic.modules.core.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 public class CreateCollaboratorListener implements ExecutionListener {
 
     private final UserService userService;
+    private final EmailService emailService;
+
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
@@ -33,6 +36,8 @@ public class CreateCollaboratorListener implements ExecutionListener {
         registerUserDto.setAgencyId(agency);
         registerUserDto.setPassword(password);
         userService.createUser(registerUserDto);
+
+        emailService.sendSimpleMail(email, "GIC - Votre Mot de Passe", password);
 
     }
 }

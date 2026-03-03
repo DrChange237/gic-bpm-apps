@@ -23,11 +23,15 @@ public class EmailServiceImpl implements EmailService {
     public void sendSimpleMail(String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("votreadresse@gmail.com");
+        message.setFrom("trsor.simo.dev@gmail.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        }catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Override

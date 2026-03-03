@@ -66,6 +66,26 @@ public class Contrat extends Auditable {
     @Column(name = "ARCHIVED", nullable = true)
     private Boolean archived;
 
+    @Column(name = "EQUIVALENCE", nullable = true)
+    private Boolean equivalence;
+
+    @Column(name = "TEST_LANG", nullable = true)
+    private Boolean testLang;
+
+    public Boolean getEquivalence() {
+        if (equivalence == null) {
+            equivalence = false;
+        }
+        return equivalence;
+    }
+
+    public Boolean getTestLang() {
+        if (testLang == null) {
+            testLang = false;
+        }
+        return testLang;
+    }
+
     public BigDecimal getTotalAmount() {
         return this.firstAmount.add(this.secondAmount).add(this.lastAmount);
     }

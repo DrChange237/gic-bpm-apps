@@ -63,10 +63,10 @@ public class Consultation {
     )
     private Set<TestLang> testLangs = new HashSet<>();
 
-    @Column(name = "EQUIVALENCE", nullable = false)
+    @Column(name = "EQUIVALENCE", nullable = true)
     private Boolean equivalence;
 
-    @Column(name = "TEST_LANG", nullable = false)
+    @Column(name = "TEST_LANG", nullable = true)
     private Boolean testLang;
 
     @Column(name = "ELIGIBLE", nullable = false)

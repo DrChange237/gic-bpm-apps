@@ -9,6 +9,7 @@ import com.change.gic.modules.core.info.UserInfo;
 import com.change.gic.modules.core.mappers.UserMapper;
 import com.change.gic.modules.core.repository.AppUserRepository;
 import com.change.gic.modules.core.repository.RoleRepository;
+import com.change.gic.modules.core.service.faces.EmailService;
 import com.change.gic.modules.core.service.faces.UserService;
 import com.change.gic.modules.core.util.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final IdentityService identityService;
 
+
     @Override
     public List<UserInfo> getUsers(){
         List<AppUser> users = userRepository.findAll();
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
         AppUser user = userRepository.findByUsername(username).orElse(null);
         if(user != null){
             user.setEnabled(true);
+            userRepository.save(user);
         }
     }
 

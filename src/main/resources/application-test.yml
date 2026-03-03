@@ -16,8 +16,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: votreadresse@gmail.com
-    password: votre_mot_de_passe_application
+    username: trsor.simo.dev@gmail.com
+    password: skbq lcry huin ljad
     properties:
       mail:
         smtp:

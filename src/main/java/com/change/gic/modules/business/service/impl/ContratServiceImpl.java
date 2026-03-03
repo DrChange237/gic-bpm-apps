@@ -1,6 +1,7 @@
 package com.change.gic.modules.business.service.impl;
 
 import com.change.gic.modules.business.entity.*;
+import com.change.gic.modules.business.enumeration.EquivalenceStatus;
 import com.change.gic.modules.business.enumeration.SelectionArrimaStatus;
 import com.change.gic.modules.business.info.ContratInfo;
 import com.change.gic.modules.business.mappers.ContratMapper;
@@ -56,15 +57,30 @@ public class ContratServiceImpl implements ContratService {
     private ContratInfo mapInfo(ContratInfo contratInfo, Contrat contrat) {
 
         Optional<Equivalence> equivalence = equivalenceRepository.findByContract(contrat);
-        if (equivalence.isPresent()) {
-            contratInfo.setEquivalenceStatus(equivalence.get().getStatus().name());
-            contratInfo.setDiplomaStatus(equivalence.get().getDiplomaStatus().name());
-        }
 
-        Optional<TestExam> testExam = testExamRepository.findByContract(contrat);
-        if (testExam.isPresent()) {
-            contratInfo.setTestExamStatus(testExam.get().getStatus().name());
-        }
+        //if(contrat.getEquivalence()) {
+            if (equivalence.isPresent()) {
+                if(equivalence.get().getStatus() != null) {
+                    contratInfo.setEquivalenceStatus(equivalence.get().getStatus().name());
+                }
+                if(equivalence.get().getDiplomaStatus() != null) {
+                    contratInfo.setDiplomaStatus(equivalence.get().getDiplomaStatus().name());
+                }
+                //}
+            }
+        /*}else{
+            contratInfo.setEquivalenceStatus(EquivalenceStatus.NONE.name());
+        }*/
+
+        //if(contrat.getTestLang()){
+            Optional<TestExam> testExam = testExamRepository.findByContract(contrat);
+            if (testExam.isPresent()) {
+                contratInfo.setTestExamStatus(testExam.get().getStatus().name());
+            }
+        /*}else {
+            contratInfo.setTestExamStatus(TestExamStatus.NONE.name());
+        }*/
+
 
         Optional<SelectionExpress> selectionExpressOptional = selectionExpressRepository.findByContract(contrat);
         if (selectionExpressOptional.isPresent()) {
