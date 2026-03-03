@@ -61,4 +61,13 @@ public class FormComponentDto {
 
     @JsonProperty("layout")
     private FormLayoutDto layout;
+
+    public String getExtratype(){
+        if(properties != null){
+            if (properties.get("extratype") != null){
+                return properties.get("extratype").toString();
+            }
+        }
+        return "text";
+    }
 }

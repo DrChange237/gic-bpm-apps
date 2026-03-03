@@ -36,7 +36,10 @@
         "required": true,
         "minLength": "",
         "patternErrorMessage": "",
-        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$"
+        "pattern": ""
+      },
+      "properties": {
+        "extratype": "text"
       }
     },
     {
@@ -128,6 +131,9 @@
       "validate": {
         "validationType": "email",
         "required": true
+      },
+      "properties": {
+        "extratype": "email"
       }
     },
     {
@@ -160,8 +166,11 @@
       "id": "Field_1tj7y6h",
       "key": "cniDelivery",
       "validate": {
-        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$",
-        "required": true
+        "required": true,
+        "pattern": ""
+      },
+      "properties": {
+        "extratype": "text"
       }
     },
     {
@@ -286,7 +295,10 @@
       "id": "Field_04slw62",
       "key": "birthdayConjoint",
       "validate": {
-        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$"
+        "pattern": ""
+      },
+      "properties": {
+        "extratype": "text"
       }
     },
     {
@@ -327,7 +339,10 @@
         "columns": 3
       },
       "id": "Field_0oexw7g",
-      "key": "emailConjoint"
+      "key": "emailConjoint",
+      "properties": {
+        "extratype": "email"
+      }
     },
     {
       "label": "N° CNI",
@@ -349,8 +364,11 @@
       "id": "Field_1mndhiq",
       "key": "cniDeliveryConjoint",
       "validate": {
-        "pattern": "^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$",
-        "required": false
+        "required": false,
+        "pattern": ""
+      },
+      "properties": {
+        "extratype": "text"
       }
     },
     {

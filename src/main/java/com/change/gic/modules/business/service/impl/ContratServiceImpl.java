@@ -57,7 +57,8 @@ public class ContratServiceImpl implements ContratService {
     private ContratInfo mapInfo(ContratInfo contratInfo, Contrat contrat) {
 
         Optional<Equivalence> equivalence = equivalenceRepository.findByContract(contrat);
-        if(contrat.getEquivalence()) {
+
+        //if(contrat.getEquivalence()) {
             if (equivalence.isPresent()) {
                 if(equivalence.get().getStatus() != null) {
                     contratInfo.setEquivalenceStatus(equivalence.get().getStatus().name());
@@ -67,18 +68,18 @@ public class ContratServiceImpl implements ContratService {
                 }
                 //}
             }
-        }else{
-            contratInfo.setEquivalenceStatus(EquivalenceStatus.COMPLETED.name());
-        }
+        /*}else{
+            contratInfo.setEquivalenceStatus(EquivalenceStatus.NONE.name());
+        }*/
 
-        if(contrat.getTestLang()){
+        //if(contrat.getTestLang()){
             Optional<TestExam> testExam = testExamRepository.findByContract(contrat);
             if (testExam.isPresent()) {
                 contratInfo.setTestExamStatus(testExam.get().getStatus().name());
             }
-        }else {
-            contratInfo.setTestExamStatus(TestExamStatus.SUCCESS.name());
-        }
+        /*}else {
+            contratInfo.setTestExamStatus(TestExamStatus.NONE.name());
+        }*/
 
 
         Optional<SelectionExpress> selectionExpressOptional = selectionExpressRepository.findByContract(contrat);

@@ -56,10 +56,13 @@ public class ActivityInit implements CommandLineRunner {
         verify_result_test.put("email", "Email");
 
         HashMap<String, String> activate_collaborator = new HashMap<>();
-        setup_contract.put("role", "Rôle");
-        setup_contract.put("agency", "Agence");
-        setup_contract.put("username", "Username");
-        setup_contract.put("email", "Email");
+        activate_collaborator.put("role", "Rôle");
+        activate_collaborator.put("agency", "Agence");
+        activate_collaborator.put("username", "Username");
+        activate_collaborator.put("email", "Email");
+
+        HashMap<String, String> associate_document = setup_contract;
+        associate_document.put("document_name", "Document à Ajouter");
 
 
 
@@ -102,7 +105,8 @@ public class ActivityInit implements CommandLineRunner {
                 new ActivityUserTask("confirm_biometry", setup_contract),
                 new ActivityUserTask("confirm_rp", setup_contract),
                 new ActivityUserTask("back_diploma", setup_contract),
-                new ActivityUserTask("activate_collaborator", activate_collaborator)
+                new ActivityUserTask("activate_collaborator", activate_collaborator),
+                new ActivityUserTask("associate_document", associate_document)
 
         ).filter(activityUserTask -> !activityUserTaskRepository.existsByTaskDefinitionKey(activityUserTask.getTaskDefinitionKey())).collect(Collectors.toList());
         activityUserTaskRepository.saveAll(activityUserTasks);
