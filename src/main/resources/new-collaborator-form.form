@@ -63,6 +63,19 @@
       "validate": {
         "required": true
       }
+    },
+    {
+      "label": "Mot de Passe",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_19u4kgh",
+        "columns": 12
+      },
+      "id": "Field_1pck3wb",
+      "key": "password",
+      "validate": {
+        "required": true
+      }
     }
   ],
   "type": "default",
