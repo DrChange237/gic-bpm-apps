@@ -27,7 +27,9 @@ public class CreateCollaboratorListener implements ExecutionListener {
         String email = (String) delegateExecution.getVariable("email");
         String agency = (String) delegateExecution.getVariable("agency");
         String role = (String) delegateExecution.getVariable("role");
-        String password = PasswordGenerator.generatePassword(10);
+        String password = (String) delegateExecution.getVariable("password");
+
+        //String password = PasswordGenerator.generatePassword(10);
         delegateExecution.setVariable("password", password);
         RegisterUserDto registerUserDto = new RegisterUserDto();
         registerUserDto.setUsername(username);
