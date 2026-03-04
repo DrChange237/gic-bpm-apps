@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         // ---- 2️⃣ Création utilisateur Camunda ----
-        org.camunda.bpm.engine.identity.User camundaUser = identityService.newUser(request.getUsername());
+        /*org.camunda.bpm.engine.identity.User camundaUser = identityService.newUser(request.getUsername());
         camundaUser.setEmail(request.getEmail());
         camundaUser.setPassword(request.getPassword()); // stocké en clair dans Camunda DB, Spring hashé dans ton app
         identityService.saveUser(camundaUser);
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
             identityService.saveGroup(group);
         }
         // Assigner l’utilisateur au groupe
-        identityService.createMembership(request.getUsername(), groupId);
+        identityService.createMembership(request.getUsername(), groupId);*/
 
         return userMapper.toDto(user);
     }
